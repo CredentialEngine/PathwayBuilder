@@ -1,0 +1,249 @@
+@import '../../assets/styles/global.scss';
+
+.button {
+  margin: 0;
+  outline: none;
+  display: inline-block;
+  font-size: $font-size;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.primary {
+  font-size: 14px;
+  background-color: $primary-dark;
+  color: $white-color;
+  height: 36px;
+  border-radius: $button-radius;
+  border: 1px solid $primary-dark;
+  padding: 8px 16px;
+  .icon {
+    margin-right: 10px;
+  }
+  &:hover {
+    background-color: $primary;
+    border-radius: $button-radius;
+  }
+  &:disabled {
+    background-color: $inactive1;
+    opacity: $opacity;
+    color: $white-color;
+    cursor: not-allowed;
+    border-color: $inactive1;
+  }
+}
+
+.approve {
+  background-color: $secondary-color;
+  color: $white-color;
+  height: 36px;
+  border-radius: $button-radius;
+  padding: 4px 16px;
+  .icon {
+    margin-right: 10px;
+  }
+  &:hover {
+    color: $primary-dark-color;
+    background-color: $blue-color;
+    border-radius: $button-radius;
+  }
+  &:disabled {
+    background-color: $inactive1;
+    opacity: $opacity;
+    color: $white-color;
+    cursor: not-allowed;
+    border-color: $inactive1;
+  }
+}
+
+
+.selection {
+  background-color: $selection;
+  color: $primary-dark;
+  border: 1px solid $selection;
+  border-radius: $button-radius;
+  padding: 4px 16px;
+  .icon {
+    margin-right: 10px;
+  }
+  &:hover {
+    color: $primary-dark-color;
+    background-color: $blue-color;
+    border-radius: $button-radius;
+  }
+  &:disabled {
+    background-color: $inactive1;
+    opacity: $opacity;
+    color: $white-color;
+    cursor: not-allowed;
+    border-color: $inactive1;
+  }
+}
+.secondary {
+  background-color: $gold;
+  color: $white-color;
+  border: 1px solid $gold;
+  border-radius: $button-radius;
+  padding: 8px 16px;
+  .icon {
+    margin-right: 12px;
+  }
+  &:hover {
+    background-color: $gold-light;
+    border: 1px solid $gold-light;
+    color: $white-color;
+  }
+  &:disabled {
+    color: $white-color;
+    border: 1px solid $inactive2-color;
+    background: $inactive2-color;
+    cursor: not-allowed;
+  }
+}
+.secondary2 {
+  background-color: $inactive1;
+  color: $black;
+  border: 1px solid $inactive1;
+  border-radius: $button-radius;
+  padding: 8px 16px;
+  font-weight: bold;
+  .icon {
+    margin-right: 12px;
+  }
+  &:hover {
+    background-color: $inactive3;
+  }
+  &:disabled {
+    opacity: 0.5;
+    border: 1px solid #8494a0;
+    background: #8494a0;
+    cursor: not-allowed;
+  }
+}
+
+.outline {
+  background-color: $white-color;
+  height: 36px;
+  color: $black;
+  border: 1px solid $primary-dark;
+  border-radius: $button-radius;
+  padding: 8px 16px;
+  font-weight: bold;
+  .icon {
+    margin-right: 12px;
+  }
+  &:hover {
+    background-color: $inactive3;
+    border: 1px solid $primary-color;
+    color: $dark-blue-color;
+    background-color: $selection-light;
+  }
+  &:disabled {
+    color: #8494a0;
+    border: 1px solid #8494a0;
+    background: #8494a0;
+    cursor: not-allowed;
+  }
+}
+
+.selection {
+  background-color: $selection;
+  color: $primary-dark;
+  border: 1px solid $selection;
+  border-radius: $button-radius;
+  & > span {
+    text-emphasis-color: $white-color;
+  }
+  &:hover {
+    background-color: $selection-light;
+    border: 1px solid $light-gold-color;
+    color: $white-color;
+  }
+}
+
+.gold {
+  background-color: $gold-color;
+  color: $white-color;
+  border: 1px solid $gold-color;
+  border-radius: $button-radius;
+  padding: 8px 16px;
+  .icon {
+    margin-right: 12px;
+  }
+  &:hover {
+    background-color: $light-gold-color;
+    border: 1px solid $light-gold-color;
+    color: $white-color;
+  }
+
+  &:disabled {
+    color: $white-color;
+    border: 1px solid $gold-inactive-color;
+    background: $gold-inactive-color;
+    cursor: not-allowed;
+  }
+}
+
+.link {
+  background-color: transparent;
+  text-decoration: underline;
+  color: $primary;
+  border: none;
+  .icon {
+    margin-right: 7px;
+  }
+  &:hover {
+    color: $primary-dark;
+  }
+  &:disabled {
+    opacity: $opacity;
+    color: #8494a0;
+    cursor: no-drop;
+    & > i {
+      color: #8494a0;
+    }
+  }
+}
+
+.icon {
+  margin: 0 4px 2px 0;
+  vertical-align: middle;
+  font-size: 18px;
+}
+
+// color
+.white {
+  color: $white-color;
+}
+
+.blue1 {
+  color: $primary;
+}
+
+.grey6 {
+  color: #8494a0;
+  &:hover {
+    color: #8494a0;
+  }
+}
+
+.red4 {
+  color: $gold;
+  &:hover {
+    color: $gold;
+  }
+}
+
+.infoIcon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  right: 20px;
+  top: -16px;
+}
+
+.container {
+  display: flex;
+}

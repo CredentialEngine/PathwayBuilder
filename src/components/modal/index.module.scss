@@ -1,0 +1,104 @@
+@import '../../assets/styles/global.scss';
+@import '../../assets/styles/fonts.scss';
+
+$disabled-opacity: 0.51;
+.modal {
+  :global {
+    .ant-modal-wrap {
+      z-index: 1000;
+    }
+
+    .ant-modal-wrap {
+      position: fixed;
+      inset: 0;
+      overflow: auto;
+      outline: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ant-modal-header {
+      margin-bottom: 10px;
+    }
+
+    .ant-modal-body {
+      padding: 0;
+    }
+
+    .ant-modal-content {
+      border-radius: 8px;
+      box-shadow: 0px -1px 4px 0px #8494a0;
+      padding: 24px;
+    }
+
+    .ant-modal-confirm-title,
+    .ant-modal-title {
+      font-size: 20px;
+      font-weight: $bold;
+    }
+
+    .ant-modal-confirm-content,
+    .ant-modal-body {
+      color: $black;
+      font-family: $app-font-regular;
+    }
+
+    .ant-modal-body {
+      margin-top: 8px;
+    }
+
+    .ant-modal-header,
+    .ant-modal-footer {
+      border: none;
+      padding: 0;
+    }
+
+    .ant-btn {
+      border-color: $primary;
+      min-width: 80px;
+      height: 32px;
+    }
+
+    .ant-btn-ghost {
+      background-color: $inactive3;
+      color: $black;
+      border: 1px solid $inactive3;
+      border-radius: $button-radius;
+      padding: 8px 16px;
+      font-weight: bold;
+
+      span {
+        color: $primary;
+      }
+      &:hover {
+        background-color: $inactive1;
+      }
+      &:disabled {
+        opacity: 0.5;
+        border: 1px solid #8494a0;
+        background: #8494a0;
+        cursor: not-allowed;
+      }
+    }
+
+    .ant-btn-primary {
+      margin-left: 16px !important;
+      font-size: 14px;
+      background-color: $primary-dark;
+      color: $white-color;
+      border-radius: $button-radius;
+      border: 1px solid $primary-dark;
+      padding: 8px 16px;
+      &:hover {
+        height: 32px;
+        background-color: $primary;
+      }
+
+      &:disabled {
+        background-color: $inactive1;
+        opacity: $opacity;
+        color: $white-color;
+        cursor: not-allowed;
+        border-color: $inactive1;
+      }
+    }
+  }
+}

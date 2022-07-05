@@ -1,0 +1,14 @@
+// @import './fonts.scss';
+@import './assets/styles/fonts.scss';
+@import './assets/styles/global.scss';
+
+body {
+  margin: 0;
+  // font-family: $app-font-regular;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  // font-family: $app-font-bold;
+}

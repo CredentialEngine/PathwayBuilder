@@ -1,0 +1,104 @@
+body {
+    background-color: #f8f8f8;
+}
+.swTabMarginTop {
+    margin-top: 1rem !important;
+}
+.swLabel {
+    font-weight: 700;
+    text-align: left;
+    color: $grey7;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+}
+.swDivider {
+    margin-top: 12px !important;
+}
+.swDividerSm {
+    margin: 5px 0;
+}
+.swCenterTxt {
+    text-align: center;
+    display: block;
+}
+.swMarginFormField {
+    margin-bottom: 1rem;
+}
+.swMarginFormFieldSm {
+    margin-bottom: 0.5rem;
+}
+.swNoBotMargin {
+    .ant-row > .ant-col > .ant-form-item {
+        margin-bottom: 0;
+    }
+}
+.swLink {
+    min-width: auto;
+    padding: 0;
+    margin-right: 1rem;
+}
+.swLinkTxt{
+    min-width: auto;
+    padding: 0;
+}
+.swTags {
+    background-color: #f2f9ff !important;
+    border-radius: 3px !important;
+    border: 1px solid #5da4ed !important;
+    color: #5da4ed !important;
+    margin-right: 5px !important;
+    margin-bottom: 5px !important;
+}
+.swMinsLbl {
+    position: absolute;
+    right: -36px;
+    top: 6px;
+}
+.swPerLbl {
+    position: absolute;
+    margin-top: 6px;
+    margin-left: 6px;
+}
+.swDollar {
+    &::before {
+        content: "$";
+        text-align: center;
+        background-color: #f8f8f8;
+        z-index: 1;
+        left: -1px;
+        border-radius: 5px 0 0 5px;
+        padding: 4px 7px;
+        position: absolute;
+        border: 1px solid #c5c5c5;
+    }
+
+    .ant-input-number {
+        .ant-input-number-input-wrap {
+            margin-left: 16px !important;
+        }
+    }
+    .ant-input-number-disabled {
+        .ant-input-number-input-wrap {
+            margin-left: 16px !important;
+        }
+    }
+}
+.swNotes {
+    font-style: italic;
+    font-size: 12px;
+}
+.swRadioGrpCol {
+    display: flex;
+    height: 30px;
+    line-height: 30px;
+    flex-direction: column;
+}
+.swBlueTxt{
+    color: #263be6 !important
+}
+.swRedTxt{
+    color: #FF0000 !important
+}
+.swGrayTxt{
+    color: #888888 !important
+}

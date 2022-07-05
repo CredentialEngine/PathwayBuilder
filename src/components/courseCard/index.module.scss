@@ -1,0 +1,48 @@
+@mixin flex {
+  display: flex;
+}
+
+.cardPadding {
+  width: 300px;
+  margin-top: 16px;
+  & > div:first-child {
+    padding: 0;
+  }
+}
+
+.cardContainer {
+  @include flex;
+  justify-content: space-between;
+  padding: 10px 10px;
+}
+
+.cardHeader {
+  @include flex;
+  justify-content: flex-start;
+}
+
+.img {
+  height: 30px;
+  width: 30px;
+}
+
+.course {
+  padding: 0 15px;
+}
+
+.title {
+  padding: 20px 10px;
+  height: 50px;
+  font-weight: 700;
+}
+
+.divider {
+  margin: 0;
+}
+
+.cardFooter {
+  @include flex;
+  justify-content: space-between;
+  height: 41px;
+  padding: 0 10px;
+}

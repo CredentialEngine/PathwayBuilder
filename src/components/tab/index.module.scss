@@ -1,0 +1,40 @@
+.tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  .tabBar {
+    cursor: pointer;
+    box-sizing: border-box;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    text-align: center;
+    color: $primary;
+    width: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    border-left: 1px solid $primary;
+  }
+  .inkBar {
+    position: absolute;
+    bottom: 1px;
+    left: 20px;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 100px;
+    height: 3px;
+    transform-origin: 0 0;
+    transition: left 0.2s ease-in-out, width 0.2s ease-out 0.2s;
+  }
+}
+
+.active {
+  color: $primary;
+  font-weight: $bold;
+  border: 1px solid $primary;
+  border-left-color: transparent !important;
+  border-radius: 0 5px 5px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.65);
+}
