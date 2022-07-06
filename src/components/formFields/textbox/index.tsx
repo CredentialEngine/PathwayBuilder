@@ -2,7 +2,7 @@ import { Input } from 'antd';
 import React from 'react';
 
 export type InputProps = {
-  onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
+  onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
   defaultValue?: string;
   placeholder: string;
   maxLength: number;
@@ -11,7 +11,6 @@ export type InputProps = {
 
 const Textbox: React.FC<InputProps> = (props: InputProps) => {
   const { onChange, maxLength, placeholder, value, defaultValue } = props;
-
   return (
     <Input
       showCount

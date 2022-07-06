@@ -1,5 +1,4 @@
-@import '../../assets/styles/global.scss';
-@import '../../assets/styles/colors.scss';
+@import '../../styles/core.scss';
 
 @mixin buttonSpecification {
   height: 36px;
@@ -65,7 +64,7 @@
   font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-bold)
     var(--unnamed-font-size-18) / var(--unnamed-line-spacing-23)
     var(--unnamed-font-family-ibm-plex-sans);
-  color: $primary;
+  color: $primary-color;
   text-align: left;
   font: normal normal bold 18px/23px IBM Plex Sans;
 }
@@ -77,7 +76,7 @@
     var(--unnamed-line-spacing-18) var(--unnamed-font-family-ibm-plex-sans);
   letter-spacing: var(--unnamed-character-spacing-0);
   font: normal normal normal 14px/18px IBM Plex Sans;
-  color: $primary;
+  color: $primary-color;
 }
 
 .titleDescriptionContainer {
