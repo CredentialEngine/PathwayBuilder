@@ -1,4 +1,5 @@
 @import '../../assets/styles/global.scss';
+@import '../../assets/styles/colors.scss';
 
 .button {
   margin: 0;
@@ -57,7 +58,6 @@
     border-color: $inactive1;
   }
 }
-
 
 .selection {
   background-color: $selection;

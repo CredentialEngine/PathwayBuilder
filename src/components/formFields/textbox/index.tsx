@@ -11,6 +11,7 @@ export type InputProps = {
 
 const Textbox: React.FC<InputProps> = (props: InputProps) => {
   const { onChange, maxLength, placeholder, value, defaultValue } = props;
+
   return (
     <Input
       showCount

@@ -180,3 +180,20 @@ label {
 .swNoMarginAll {
   margin: 0 !important;
 }
+
+.confirmModal {
+  :global {
+    .ant-modal-header {
+      margin-top: 8px;
+    }
+
+    .ant-modal-body {
+      margin-top: 8px;
+      color: $black;
+    }
+
+    .ant-modal-footer {
+      margin-top: 24px;
+    }
+  }
+}

@@ -8,11 +8,13 @@ export type InputProps = {
   maxLength: number;
   value: string;
 };
+
 const Textarea: React.FC<InputProps> = (props: InputProps) => {
   const { onChange, maxLength, placeholder, value, defaultValue } = props;
   const handleChange = (e: any) => {
     onChange && onChange(e);
   };
+
   return (
     <TextArea
       showCount
