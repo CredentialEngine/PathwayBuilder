@@ -28,10 +28,10 @@ const Header = () => {
   return (
     <Row className={styles.container}>
       <Col span={5} className={styles.productImgLayout}>
-        <Col span={3}>
+        <Col span={9}>
           <img className={styles.logo} src={Logo} alt="logo" />
         </Col>
-        <Col span={18}>
+        <Col span={15}>
           <Row className={styles.createNewContainer}>
             <Col span={24}>
               <span className={styles.newPathway}>Create a New Pathway</span>
@@ -42,7 +42,7 @@ const Header = () => {
           </Row>
         </Col>
       </Col>
-      <Col span={18} className={styles.titleDescriptionContainer}>
+      <Col span={17} className={styles.titleDescriptionContainer}>
         <Row className={styles.headerCenter}>
           <Col span={10} className={styles.titleContainer}>
             <span className={styles.title}>
@@ -72,12 +72,12 @@ const Header = () => {
           </Col>
         </Row>
         {hasPublishVisible && (
-          <Col className={styles.conflictComponent} span={5}>
+          <Col className={styles.conflictComponent} span={3}>
             {ApprovedComponent}
           </Col>
         )}
       </Col>
-      <Col span={1} className={styles.helpContainer}>
+      <Col span={2} className={styles.helpContainer}>
         <img src={Help} className={styles.imgDimensions} alt="help" />
       </Col>
     </Row>

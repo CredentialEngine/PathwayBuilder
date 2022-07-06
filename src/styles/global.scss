@@ -1,36 +1,8 @@
-@import './fonts.scss';
-@import 'antd/dist/antd.css';
-@import './antd-global';
-@import './theme.scss';
+@import './core.scss';
 
-// @font-face {
-//   font-family: 'IBM Plex Sans';
-//   font-weight: 300;
-//   src: url('../fonts/IBMPlexSans-Light.ttf');
-// }
-// @font-face {
-//   font-family: 'IBM Plex Sans';
-//   font-weight: 400;
-//   src: url('../fonts/IBMPlexSans-Regular.ttf');
-// }
-// @font-face {
-//   font-family: 'IBM Plex Sans';
-//   font-weight: 500;
-//   src: url('../fonts/IBMPlexSans-Medium.ttf');
-// }
-// @font-face {
-//   font-family: 'IBM Plex Sans';
-//   font-weight: 600;
-//   src: url('../fonts/IBMPlexSans-SemiBold.ttf');
-// }
-// @font-face {
-//   font-family: 'IBM Plex Sans';
-//   font-weight: 900;
-//   src: url('../fonts/IBMPlexSans-Bold.ttf');
-// }
 body {
   margin: 0;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: $app-font-regular;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -172,28 +144,4 @@ label {
 
 .minWidth {
   min-width: 20px !important;
-}
-
-.swNoMargin {
-  margin-bottom: 0 !important;
-}
-.swNoMarginAll {
-  margin: 0 !important;
-}
-
-.confirmModal {
-  :global {
-    .ant-modal-header {
-      margin-top: 8px;
-    }
-
-    .ant-modal-body {
-      margin-top: 8px;
-      color: $black;
-    }
-
-    .ant-modal-footer {
-      margin-top: 24px;
-    }
-  }
 }

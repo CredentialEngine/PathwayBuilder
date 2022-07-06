@@ -1,0 +1,38 @@
+@import '../../styles/core.scss';
+
+.container {
+}
+.main {
+  margin: 0px 0px 0px 0px;
+  font-family: $app-font-medium;
+  .heading,
+  .subHeading {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .subHeading {
+    font-size: 16px;
+  }
+  .content {
+    font-size: 15px;
+    line-height: 1.2rem;
+    margin-top: 6px;
+    color: #0a2942;
+  }
+  .marginTop {
+    margin-top: 1rem;
+  }
+}
+
+:global {
+  .ant-modal-footer {
+    text-align: start;
+  }
+  .ant-btn.ant-btn-primary {
+    float: left;
+    margin-left: 0px !important;
+    margin-right: 16px;
+    width: 200px;
+  }
+}
