@@ -1,8 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 
-import Help from '../../assets/images/circleQuestionSolid.svg';
+// import Help from '../../assets/images/circleQuestionSolid.svg';
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 
 import Button from '../button';
@@ -26,12 +27,12 @@ const Header = () => {
   );
 
   return (
-    <Row className={styles.container}>
+    <div className={styles.container}>
       <Col span={5} className={styles.productImgLayout}>
-        <Col span={9}>
+        <Col span={6}>
           <img className={styles.logo} src={Logo} alt="logo" />
         </Col>
-        <Col span={15}>
+        <Col span={18}>
           <Row className={styles.createNewContainer}>
             <Col span={24}>
               <span className={styles.newPathway}>Create a New Pathway</span>
@@ -42,7 +43,7 @@ const Header = () => {
           </Row>
         </Col>
       </Col>
-      <Col span={17} className={styles.titleDescriptionContainer}>
+      <Col span={18} className={styles.titleDescriptionContainer}>
         <Row className={styles.headerCenter}>
           <Col span={10} className={styles.titleContainer}>
             <span className={styles.title}>
@@ -72,15 +73,15 @@ const Header = () => {
           </Col>
         </Row>
         {hasPublishVisible && (
-          <Col className={styles.conflictComponent} span={3}>
-            {ApprovedComponent}
-          </Col>
+          <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
         )}
       </Col>
-      <Col span={2} className={styles.helpContainer}>
-        <img src={Help} className={styles.imgDimensions} alt="help" />
+      <Col span={1} className={styles.helpContainer}>
+        <FontAwesomeIcon icon="fa-solid fa-check-square" />
+
+        {/* <img src={Help} className={styles.imgDimensions} alt="help" /> */}
       </Col>
-    </Row>
+    </div>
   );
 };
 
