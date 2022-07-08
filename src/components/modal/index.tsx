@@ -16,7 +16,7 @@ const mergeProps = (
 ): AntModalProps => ({
   centered: true,
   destroyOnClose: true,
-  closable: false,
+  closable: true,
   ...props,
   okButtonProps: {
     ...props.okButtonProps,

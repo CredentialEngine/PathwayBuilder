@@ -1,7 +1,5 @@
 @import '../../styles/core.scss';
 
-.container {
-}
 .main {
   margin: 0px 0px 0px 0px;
   font-family: $app-font-medium;
@@ -22,17 +20,5 @@
   }
   .marginTop {
     margin-top: 1rem;
-  }
-}
-
-:global {
-  .ant-modal-footer {
-    text-align: start;
-  }
-  .ant-btn.ant-btn-primary {
-    float: left;
-    margin-left: 0px !important;
-    margin-right: 16px;
-    width: 200px;
   }
 }
