@@ -122,12 +122,22 @@
 .helpContainer {
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  background-color: $primary-dark-color;
+  justify-content: center;
 }
 
 .imgDimensions {
-  width: 45px;
-  height: 45px;
+  width: 36px;
+  height: 36px;
+  color: $primary-color;
+  margin-left: 10px;
+}
+
+.exclamationImg {
+  width: 20px;
+  height: 20px;
+  color: $orange;
+  margin-left: 10px;
 }
 
 .conflictComponent {

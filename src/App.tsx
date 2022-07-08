@@ -15,7 +15,7 @@ const App = () => (
     <Header />
     <MainContainer>
       {/* <CreatePathway visible={true} /> */}
-      <RightPanel visible={true} />
+      <RightPanel visible={false} />
     </MainContainer>
   </div>
 );

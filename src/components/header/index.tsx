@@ -1,3 +1,7 @@
+import {
+  faCircleQuestion,
+  faExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
@@ -15,13 +19,20 @@ const Header = () => {
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Button type={Type.LINK} onClick={noop} text="Show One Conflict" />
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <FontAwesomeIcon
+          icon={faExclamation}
+          className={styles.exclamationImg}
+        />
+        <Button type={Type.LINK} onClick={noop} text="Show One Conflict" />
+      </div>
       <Button
         type={Type.APPROVE}
         className={styles.approveButtonSpecification}
         onClick={() => setHasPublishVisible(!hasPublishVisible)}
-        warningInfo={true}
+        iconOnTop={true}
         text="Approve"
+        iconColor="#f37422"
       />
     </div>
   );
@@ -77,9 +88,10 @@ const Header = () => {
         )}
       </Col>
       <Col span={1} className={styles.helpContainer}>
-        <FontAwesomeIcon icon="fa-solid fa-check-square" />
-
-        {/* <img src={Help} className={styles.imgDimensions} alt="help" /> */}
+        <FontAwesomeIcon
+          icon={faCircleQuestion}
+          className={styles.imgDimensions}
+        />
       </Col>
     </div>
   );

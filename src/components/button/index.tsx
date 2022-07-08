@@ -1,4 +1,4 @@
-import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React from 'react';
@@ -34,7 +34,8 @@ export interface ButtonProps {
   className?: string;
   title?: string;
   color?: Color;
-  warningInfo?: boolean;
+  iconOnTop?: boolean;
+  iconColor?: string;
 }
 
 const Button: React.FC<ButtonProps> & {
@@ -48,7 +49,8 @@ const Button: React.FC<ButtonProps> & {
   className,
   title,
   color,
-  warningInfo,
+  iconOnTop,
+  iconColor,
 }) => {
   const [disabled, setDisabled] = React.useState(disabledInProps);
   React.useEffect(() => {
@@ -88,11 +90,11 @@ const Button: React.FC<ButtonProps> & {
       >
         <span>{text}</span>
       </button>
-      {warningInfo && (
+      {iconOnTop && (
         <FontAwesomeIcon
+          icon={faCircleExclamation}
           className={styles.infoIcon}
-          icon={faAirFreshener}
-          color="red"
+          color={iconColor}
         />
       )}
     </div>
