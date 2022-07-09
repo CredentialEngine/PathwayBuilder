@@ -1,4 +1,10 @@
+import { noop } from 'lodash';
 import React, { useState } from 'react';
+
+import Button from './components/button';
+import { Type } from './components/button/type';
+
+import ConditionalComponent from './components/conditionalComponentForm';
 
 import CustomDrawer from './components/customDrawer';
 
@@ -16,6 +22,8 @@ const App = () => {
     useState<boolean>(true);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
     useState<boolean>(false);
+  const [isConditionComponentVisible, setIsConditionComponentVisible] =
+    useState<boolean>(false);
 
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayVisible(true);
@@ -28,10 +36,23 @@ const App = () => {
 
   const onAddPathwayOkHandler = () => {
     setIsAddPathwayVisible(false);
+    setIsConditionComponentVisible(true);
   };
 
   const onAddPathwayCancelHandler = () => {
     setIsAddPathwayVisible(false);
+  };
+
+  const onCloseHandler = () => {
+    setRightPanelDrawerVisible(false);
+  };
+
+  const onConditionalComponentOkHandler = () => {
+    setIsConditionComponentVisible(false);
+  };
+
+  const onConditionalComponentCancelHandler = () => {
+    setIsConditionComponentVisible(false);
   };
 
   return (
@@ -56,14 +77,28 @@ const App = () => {
           <AddPathwayForm />
         </Modal>
         <CustomDrawer
-          title="Transaction Review"
-          width="60%"
+          width="35%"
           visible={isrightPanelDrawerVisible}
           onClose={() => setRightPanelDrawerVisible(false)}
           footer={[]}
         >
-          <RightPanel />
+          <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
+        <Modal
+          visible={isConditionComponentVisible}
+          onOk={onConditionalComponentOkHandler}
+          onCancel={onConditionalComponentCancelHandler}
+          title="Add Component"
+          footer={
+            <Button
+              text="Save Condition"
+              onClick={noop}
+              type={Type.APPROVE}
+            ></Button>
+          }
+        >
+          <ConditionalComponent />
+        </Modal>
       </MainContainer>
     </div>
   );

@@ -178,6 +178,7 @@ const AddPathwayForm = () => {
               label="This Pathway Contains further Details"
             />
           </Col>
+          <Divider className={styles.divider} />
         </Row>
       </Form>
     </>

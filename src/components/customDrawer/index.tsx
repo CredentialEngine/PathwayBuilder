@@ -51,7 +51,11 @@ const CustomDrawer: React.FC<Props> = (props: Props) => {
           ? DOUBLE_CONFIRM_CANCEL_CONTENT
           : props?.customDescription}
       </Modal>
-      <Drawer {...mergeProps(props)} onClose={openConfirmationPopUp} />
+      <Drawer
+        {...mergeProps(props)}
+        closable={false}
+        onClose={openConfirmationPopUp}
+      />
     </>
   );
 };

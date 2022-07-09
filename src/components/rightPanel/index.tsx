@@ -1,4 +1,8 @@
-import { faCaretDown, faCubes } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCaretDown,
+  faCubes,
+  faClose,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Row } from 'antd';
 import { noop } from 'lodash';
@@ -10,8 +14,17 @@ import { Type } from '../button/type';
 
 import styles from './index.module.scss';
 
-const RightPanel: React.FC<any> = () => (
+const RightPanel: React.FC<any> = ({ onCloseHandler }) => (
   <div className={styles.rightPanelContainer}>
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Row style={{ fontSize: 22, fontWeight: 700 }}>Transaction Review</Row>
+      <FontAwesomeIcon
+        icon={faClose}
+        onClick={onCloseHandler}
+        style={{ height: '15px' }}
+      />
+    </div>
+    <Divider className={styles.divider} />
     <Row className={styles.topRow}>
       <Row>
         <FontAwesomeIcon icon={faCubes} style={{ height: '30px' }} />

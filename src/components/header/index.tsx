@@ -7,7 +7,6 @@ import { Col, Row } from 'antd';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 
-// import Help from '../../assets/images/circleQuestionSolid.svg';
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 
 import Button from '../button';
