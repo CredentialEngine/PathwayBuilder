@@ -4,9 +4,9 @@ import { Col, Divider, Form, Row } from 'antd';
 import React from 'react';
 
 import AutoCompleteBox from '../autoComplete';
+import InputBox from '../formFields/inputBox';
 import SearchBox from '../formFields/searchBox';
 import Textarea from '../formFields/textarea';
-import Textbox from '../formFields/textbox';
 
 import styles from './index.module.scss';
 
@@ -50,13 +50,13 @@ const ConditionalComponent = () => (
       </Col>
       <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Col span={8}>
-          <Textbox placeholder="Required Number" />
+          <InputBox placeholder="Required Number" />
         </Col>
         <Col span={7}>
-          <Textbox placeholder="Is Equal To" />
+          <InputBox placeholder="Is Equal To" />
         </Col>
         <Col span={8}>
-          <Textbox placeholder="0" />
+          <InputBox placeholder="0" />
         </Col>
       </Row>
       <Divider className={styles.divider} />
@@ -71,7 +71,7 @@ const ConditionalComponent = () => (
           />
         </Col>
         <Col span={3}>
-          <Textbox placeholder="0" />
+          <InputBox placeholder="0" />
         </Col>
       </Row>
       <Col span={24}>
