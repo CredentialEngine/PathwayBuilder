@@ -1,0 +1,13 @@
+@import '../../styles/core.scss';
+
+.divider {
+  border-top: 1px solid $secondary-color;
+}
+
+.autoComplete {
+  width: 100%;
+}
+
+.addConstraints {
+  text-decoration: underline;
+}

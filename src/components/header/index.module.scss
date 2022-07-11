@@ -1,4 +1,5 @@
-@import '../../assets/styles/global.scss';
+@import '../../styles/core.scss';
+// @import '../../styles/colors';
 
 @mixin buttonSpecification {
   height: 36px;
@@ -32,6 +33,12 @@
 
 .container {
   display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 200;
+  height: 70px;
 }
 
 .productImgLayout {
@@ -64,7 +71,7 @@
   font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-bold)
     var(--unnamed-font-size-18) / var(--unnamed-line-spacing-23)
     var(--unnamed-font-family-ibm-plex-sans);
-  color: $primary;
+  color: $primary-color;
   text-align: left;
   font: normal normal bold 18px/23px IBM Plex Sans;
 }
@@ -76,7 +83,7 @@
     var(--unnamed-line-spacing-18) var(--unnamed-font-family-ibm-plex-sans);
   letter-spacing: var(--unnamed-character-spacing-0);
   font: normal normal normal 14px/18px IBM Plex Sans;
-  color: $primary;
+  color: $primary-color;
 }
 
 .titleDescriptionContainer {
@@ -115,12 +122,22 @@
 .helpContainer {
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  background-color: $primary-dark-color;
+  justify-content: center;
 }
 
 .imgDimensions {
-  width: 45px;
-  height: 45px;
+  width: 36px;
+  height: 36px;
+  color: $primary-color;
+  margin-left: 10px;
+}
+
+.exclamationImg {
+  width: 20px;
+  height: 20px;
+  color: $orange;
+  margin-left: 10px;
 }
 
 .conflictComponent {

@@ -1,0 +1,11 @@
+.mainContainer {
+  background-color: #777777;
+  top: 70px; /* as the height of the other div is 30px */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: calc(100vh - 70px);
+  position: relative;
+  //  overflow-x:auto;
+  //  padding-top: 70px;
+}

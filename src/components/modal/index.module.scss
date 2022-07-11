@@ -1,5 +1,4 @@
-@import '../../assets/styles/global.scss';
-@import '../../assets/styles/fonts.scss';
+@import '../../styles/core.scss';
 
 $disabled-opacity: 0.51;
 .modal {
@@ -38,7 +37,7 @@ $disabled-opacity: 0.51;
     .ant-modal-confirm-content,
     .ant-modal-body {
       color: $black;
-      font-family: $app-font-regular;
+      // font-family: $app-font-regular;
     }
 
     .ant-modal-body {
@@ -57,12 +56,34 @@ $disabled-opacity: 0.51;
       height: 32px;
     }
 
+    .ant-btn-primary {
+      margin-left: 16px !important;
+      font-size: 14px;
+      background-color: $primary-dark;
+      color: $white-color;
+      border-radius: $button-radius;
+      border: 1px solid $primary-dark;
+      // padding: 8px 16px;
+      &:hover {
+        height: 32px;
+        background-color: $primary;
+      }
+
+      &:disabled {
+        background-color: $inactive1;
+        opacity: $opacity;
+        color: $white-color;
+        cursor: not-allowed;
+        border-color: $inactive1;
+      }
+    }
+
     .ant-btn-ghost {
       background-color: $inactive3;
       color: $black;
       border: 1px solid $inactive3;
       border-radius: $button-radius;
-      padding: 8px 16px;
+      // padding: 8px 16px;
       font-weight: bold;
 
       span {
@@ -79,26 +100,26 @@ $disabled-opacity: 0.51;
       }
     }
 
-    .ant-btn-primary {
-      margin-left: 16px !important;
-      font-size: 14px;
-      background-color: $primary-dark;
-      color: $white-color;
-      border-radius: $button-radius;
-      border: 1px solid $primary-dark;
-      padding: 8px 16px;
-      &:hover {
-        height: 32px;
-        background-color: $primary;
-      }
+    // .ant-btn-primary {
+    //   margin-left: 16px !important;
+    //   font-size: 14px;
+    //   background-color: $primary-dark;
+    //   color: $white-color;
+    //   border-radius: $button-radius;
+    //   border: 1px solid $primary-dark;
+    //   // padding: 8px 16px;
+    //   &:hover {
+    //     height: 32px;
+    //     background-color: $primary;
+    //   }
 
-      &:disabled {
-        background-color: $inactive1;
-        opacity: $opacity;
-        color: $white-color;
-        cursor: not-allowed;
-        border-color: $inactive1;
-      }
-    }
+    //   &:disabled {
+    //     background-color: $inactive1;
+    //     opacity: $opacity;
+    //     color: $white-color;
+    //     cursor: not-allowed;
+    //     border-color: $inactive1;
+    //   }
+    // }
   }
 }

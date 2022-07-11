@@ -32,29 +32,18 @@ module.exports = {
       },
 
       {
-        test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
-        type: 'asset/inline',
+        test: /\.(woff(2)?|eot|ttf|otf|)$/,
+        // type: 'asset/resource',
+        use: [
+          {
+            loader: 'url-loader',
+          },
+        ],
       },
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-        ],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
@@ -62,6 +51,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '..', './build'),
     filename: 'bundle.js',
+  },
+  devServer: {
+    port: 3000,
   },
 
   plugins: [

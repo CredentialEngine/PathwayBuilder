@@ -1,8 +1,12 @@
+import {
+  faCircleQuestion,
+  faExclamation,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 
-import Help from '../../assets/images/circleQuestionSolid.svg';
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 
 import Button from '../button';
@@ -14,21 +18,28 @@ const Header = () => {
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Button type={Type.LINK} onClick={noop} text="Show One Conflict" />
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <FontAwesomeIcon
+          icon={faExclamation}
+          className={styles.exclamationImg}
+        />
+        <Button type={Type.LINK} onClick={noop} text="Show One Conflict" />
+      </div>
       <Button
         type={Type.APPROVE}
         className={styles.approveButtonSpecification}
         onClick={() => setHasPublishVisible(!hasPublishVisible)}
-        warningInfo={true}
+        iconOnTop={true}
         text="Approve"
+        iconColor="#f37422"
       />
     </div>
   );
 
   return (
-    <Row className={styles.container}>
+    <div className={styles.container}>
       <Col span={5} className={styles.productImgLayout}>
-        <Col span={3}>
+        <Col span={6}>
           <img className={styles.logo} src={Logo} alt="logo" />
         </Col>
         <Col span={18}>
@@ -72,15 +83,16 @@ const Header = () => {
           </Col>
         </Row>
         {hasPublishVisible && (
-          <Col className={styles.conflictComponent} span={5}>
-            {ApprovedComponent}
-          </Col>
+          <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
         )}
       </Col>
       <Col span={1} className={styles.helpContainer}>
-        <img src={Help} className={styles.imgDimensions} alt="help" />
+        <FontAwesomeIcon
+          icon={faCircleQuestion}
+          className={styles.imgDimensions}
+        />
       </Col>
-    </Row>
+    </div>
   );
 };
 

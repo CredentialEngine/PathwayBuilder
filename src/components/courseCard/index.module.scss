@@ -1,3 +1,5 @@
+@import '../../styles/core.scss';
+
 @mixin flex {
   display: flex;
 }
@@ -5,6 +7,8 @@
 .cardPadding {
   width: 300px;
   margin-top: 16px;
+  box-shadow: 4px 4px $light-gray-color;
+  border-radius: 6px;
   & > div:first-child {
     padding: 0;
   }

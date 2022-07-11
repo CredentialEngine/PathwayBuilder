@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { omit } from 'lodash';
 import React from 'react';
 
-import { isPromise } from '../../selectProps.ts/object';
+import { isPromise } from '../../utils/object';
 
 import styles from './index.module.scss';
 
@@ -16,7 +16,7 @@ const mergeProps = (
 ): AntModalProps => ({
   centered: true,
   destroyOnClose: true,
-  closable: false,
+  closable: true,
   ...props,
   okButtonProps: {
     ...props.okButtonProps,
