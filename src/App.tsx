@@ -5,11 +5,8 @@ import React, { useState } from 'react';
 
 import Button from './components/button';
 import { Type } from './components/button/type';
-
 import ConditionalComponent from './components/conditionalComponentForm';
-
 import CustomDrawer from './components/customDrawer';
-
 import Header from './components/header';
 import LeftPanel from './components/leftPanel';
 import MainContainer from './components/mainContainer';
@@ -89,7 +86,6 @@ const App = () => {
             className={Styles.drawerIcon}
           />
         </div>
-
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}

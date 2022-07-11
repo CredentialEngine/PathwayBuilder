@@ -11,12 +11,13 @@ export interface Props {
   Subtitle?: string;
   IconName: IconProp;
   IconColor?: string;
+  inlineStyles?: any;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
-  const { title, Subtitle, IconName, IconColor } = props;
+  const { title, Subtitle, IconName, IconColor, inlineStyles } = props;
   return (
-    <Card size="small" className={styles.cardwrapper}>
+    <Card size="small" className={styles.cardwrapper} style={inlineStyles}>
       <Row>
         <Col span="6">
           <span className={styles.iconwrapper}>
