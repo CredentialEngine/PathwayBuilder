@@ -1,0 +1,94 @@
+import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
+import { noop } from 'lodash';
+import React from 'react';
+
+import Button from '../button';
+import CardWithLeftIcon from '../cardWithLeftIcon';
+import SearchBox from '../formFields/searchBox';
+import Tab, { TabPane } from '../tab';
+
+export enum LeftPanelTabKey {
+  Selected = 'Selected',
+  Components = 'Components',
+}
+
+const LeftPanel: React.FC<any> = () => {
+  const array = [1, 1, 1];
+  const propsChildrenData = [];
+
+  const tab = [
+    {
+      key: LeftPanelTabKey.Selected,
+      name: LeftPanelTabKey.Selected,
+    },
+    {
+      key: LeftPanelTabKey.Components,
+      name: LeftPanelTabKey.Components,
+    },
+  ];
+
+  const propsChildren = [
+    {
+      key: LeftPanelTabKey.Selected,
+      name: LeftPanelTabKey.Selected,
+      children: (
+        <>
+          <SearchBox placeholder="Search your components" />
+          {array.map((v, i) => (
+            <CardWithLeftIcon
+              key={i}
+              title="Course"
+              Subtitle="Course"
+              IconName={faAirFreshener}
+              IconColor="red"
+            />
+          ))}
+        </>
+      ),
+    },
+    {
+      key: LeftPanelTabKey.Components,
+      name: LeftPanelTabKey.Components,
+      children: array.map((v, i) => (
+        <CardWithLeftIcon
+          key={i}
+          title="Course"
+          Subtitle="Course"
+          IconName={faAirFreshener}
+        />
+      )),
+    },
+  ];
+  for (let i = 0; i < propsChildren.length; i++) {
+    propsChildrenData.push(
+      <TabPane name={propsChildren[i].name} key={propsChildren[i].key}>
+        {propsChildren[i].children}
+      </TabPane>
+    );
+  }
+
+  const tabVal = {
+    showTabBar: true,
+    activeKey: LeftPanelTabKey.Selected,
+    tabs: tab,
+    children: propsChildrenData,
+  };
+
+  return (
+    <>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <h1>Add Components</h1>
+        <Button onClick={noop} text="Edit Selections" type="selection" />
+      </div>
+      <Tab {...tabVal} />
+    </>
+  );
+};
+
+export default LeftPanel;

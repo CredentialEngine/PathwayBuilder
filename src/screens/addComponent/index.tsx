@@ -3,11 +3,11 @@ import TextArea from 'antd/lib/input/TextArea';
 import { noop } from 'lodash';
 import React from 'react';
 
-import Button from '../../button';
-import Dropdown from '../../formFields/dropdown';
-import SearchBox from '../../formFields/searchBox';
-import InputBox from '../../formFields/textbox';
-import Modal from '../../modal';
+import Button from '../../components/button';
+import Dropdown from '../../components/formFields/dropdown';
+import InputBox from '../../components/formFields/inputBox';
+import SearchBox from '../../components/formFields/searchBox';
+import Modal from '../../components/modal';
 
 const AddComponent: React.FC = () => {
   const [state, setState] = React.useState(false);

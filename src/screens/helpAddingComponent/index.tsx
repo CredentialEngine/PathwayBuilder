@@ -1,9 +1,10 @@
 import { Row, Col } from 'antd';
 import React from 'react';
+import ReactPlayer from 'react-player';
 
-import Button from '../../button';
-import SearchBox from '../../formFields/searchBox';
-import Modal from '../../modal';
+import Button from '../../components/button';
+import SearchBox from '../../components/formFields/searchBox';
+import Modal from '../../components/modal';
 
 const HelpAddingComponent: React.FC = () => {
   const [state, setState] = React.useState(false);
@@ -45,13 +46,11 @@ const HelpAddingComponent: React.FC = () => {
               mollitia, amet quidem quibusdam sunt rerum dicta odio perferendis
               dolor at asperiores repudiandae omnis?
             </p>
-            <video width="320" height="240" controls>
-              <source
-                src="movie.mp4"
-                type="https://www.w3schools.com/html/mov_bbb.mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
+            <ReactPlayer
+              height={280}
+              url="https://www.youtube.com/watch?v=u2RgGv8WPN0&list=PL37ZVnwpeshGHrl2h_1hm9a03b-GXH0td"
+              controls
+            />
           </Col>
         </Row>
       </Modal>

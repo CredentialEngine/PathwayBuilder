@@ -1,6 +1,7 @@
-@import 'src\styles\global.scss';
+@import '../../../styles/global.scss';
 
-.searchBox {
+.searchbox {
+  margin-bottom: 15px;
   :global {
     .ant-input-search-button {
       border: 0;

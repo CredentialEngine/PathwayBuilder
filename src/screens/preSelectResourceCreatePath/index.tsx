@@ -1,16 +1,12 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
 import { Col, Card, Row, Form, Space } from 'antd';
 import React from 'react';
 
-// import TextArea from 'antd/lib/input/TextArea';
-// import { noop } from 'lodash';
-import Button from '../../button';
-import CardWithLeftIcon from '../../cardWithLeftIcon';
-import SearchBox from '../../formFields/searchBox';
-// import InputBox from '../../formFields/textbox';
-import Modal from '../../modal';
-// import Dropdown from '../../formFields/dropdown';
-// import Card from '../../card/card';
+import Button from '../../components/button';
+import CardWithLeftIcon from '../../components/cardWithLeftIcon';
+import SearchBox from '../../components/formFields/searchBox';
+import Modal from '../../components/modal';
 
 import Styles from './index.module.scss';
 
@@ -67,7 +63,11 @@ const PreSelectResourceCreatePath: React.FC = () => {
                         }}
                         align="baseline"
                       >
-                        <CardWithLeftIcon />
+                        <CardWithLeftIcon
+                          title="Course"
+                          Subtitle="Course"
+                          IconName={faAirFreshener}
+                        />
                         <PlusOutlined onClick={() => add()} />
                       </Space>
                       {fields.map(({ key }) => (
@@ -79,7 +79,11 @@ const PreSelectResourceCreatePath: React.FC = () => {
                           }}
                           align="baseline"
                         >
-                          <CardWithLeftIcon />
+                          <CardWithLeftIcon
+                            title="Course"
+                            Subtitle="Course"
+                            IconName={faAirFreshener}
+                          />
                           <PlusOutlined onClick={() => add()} />
                         </Space>
                       ))}
@@ -103,16 +107,6 @@ const PreSelectResourceCreatePath: React.FC = () => {
                     <Form.List name="users">
                       {(fields, { remove }) => (
                         <>
-                          {/* <Space
-                            style={{
-                              display: 'flex',
-                              marginBottom: 8,
-                            }}
-                            align="baseline"
-                          >
-                            <CardWithLeftIcon />
-                            <MinusCircleOutlined onClick={() => remove(name)} />
-                          </Space> */}
                           {fields.map(({ key, name }) => (
                             <Space
                               key={key}
@@ -122,7 +116,11 @@ const PreSelectResourceCreatePath: React.FC = () => {
                               }}
                               align="baseline"
                             >
-                              <CardWithLeftIcon />
+                              <CardWithLeftIcon
+                                title="Course"
+                                Subtitle="Course"
+                                IconName={faAirFreshener}
+                              />
                               <MinusCircleOutlined
                                 onClick={() => remove(name)}
                               />
