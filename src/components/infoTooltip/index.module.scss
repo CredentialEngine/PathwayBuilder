@@ -1,0 +1,49 @@
+@import '../../styles/core.scss';
+
+.infoTooltipContainer {
+  line-height: 1.2rem;
+  font-family: $app-font-regular;
+  width: 240px;
+  .arrow {
+    width: 30px;
+    height: 15px;
+    border-right: 14px solid rgba(242, 213, 194, 1);
+    position: absolute;
+    top: 40px;
+    left: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+  }
+
+  .buttonContainer {
+    position: relative;
+    top: 24px;
+    left: 220px;
+    cursor: pointer;
+  }
+
+  .tooltipContent {
+    height: auto;
+    max-width: 210px;
+    background-color: #f2d5c2;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 30px;
+    box-shadow: 6px 6px 10px #00000029;
+    border-radius: 6px;
+  }
+  .title {
+    margin-top: 10px;
+    margin-left: 16px;
+    margin-right: 33px;
+    font-weight: 900;
+    font-size: 14px;
+  }
+
+  .content {
+    margin-top: 0px;
+    margin-left: 16px;
+    margin-right: 14px;
+  }
+}
