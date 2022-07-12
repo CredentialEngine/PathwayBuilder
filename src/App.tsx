@@ -8,6 +8,7 @@ import { Type } from './components/button/type';
 import ConditionalComponent from './components/conditionalComponentForm';
 import CustomDrawer from './components/customDrawer';
 import Header from './components/header';
+import InfoTooltip from './components/infoTooltip';
 import LeftPanel from './components/leftPanel';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
@@ -21,7 +22,7 @@ const App = () => {
     useState<boolean>(false);
 
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
     useState<boolean>(false);
   const [isConditionComponentVisible, setIsConditionComponentVisible] =
@@ -126,6 +127,11 @@ const App = () => {
         >
           <ConditionalComponent />
         </Modal>
+        <InfoTooltip
+          title="Add your destination component"
+          content="Drag your pre-selected destination component into the space provided, or search for a component to add"
+          onClose={noop}
+        />
       </MainContainer>
     </div>
   );
