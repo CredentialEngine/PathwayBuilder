@@ -1,0 +1,11 @@
+@import '../../../styles/global.scss';
+
+.searchbox {
+  margin-bottom: 15px;
+  :global {
+    .ant-input-search-button {
+      border: 0;
+      background: $inactive3;
+    }
+  }
+}

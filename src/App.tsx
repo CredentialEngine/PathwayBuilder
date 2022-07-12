@@ -1,30 +1,35 @@
+import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 
 import Button from './components/button';
 import { Type } from './components/button/type';
-
 import ConditionalComponent from './components/conditionalComponentForm';
-
 import CustomDrawer from './components/customDrawer';
-
 import Header from './components/header';
+import LeftPanel from './components/leftPanel';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
+import Styles from './index.module.scss';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
+
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
     useState<boolean>(true);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
     useState<boolean>(false);
   const [isConditionComponentVisible, setIsConditionComponentVisible] =
     useState<boolean>(false);
-
+  const [isLeftDrawerVisible, setLeftDrawerVisible] = useState<boolean>(false);
+  const leftDrawerVisible = () => {
+    setLeftDrawerVisible(!isLeftDrawerVisible);
+  };
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayVisible(true);
     setIsCreatePathwayVisible(false);
@@ -59,6 +64,28 @@ const App = () => {
     <div>
       <Header />
       <MainContainer>
+        <div
+          className={
+            Styles.leftdrawerWrapper +
+            ' ' +
+            (isLeftDrawerVisible ? '' : Styles.drawerOpen)
+          }
+        >
+          <CustomDrawer
+            width="28%"
+            visible={isLeftDrawerVisible}
+            onClose={() => setLeftDrawerVisible(false)}
+            footer={[]}
+            placement="left"
+          >
+            <LeftPanel onCloseHandler={() => setLeftDrawerVisible(false)} />
+          </CustomDrawer>
+          <FontAwesomeIcon
+            icon={faAngleDoubleLeft}
+            onClick={leftDrawerVisible}
+            className={Styles.drawerIcon}
+          />
+        </div>
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}
