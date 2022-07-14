@@ -1,0 +1,37 @@
+//Credential Component...
+{
+	"Keywords": "the text typed by the user",
+	"Filters": [
+		{
+			"URI": "search:recordOwnedBy",
+			"ItemTexts": [
+				"ce-abcdef-ghijkl..."
+			]
+		},
+		{
+			"URI": "meta:pathwayComponentType",
+			"ItemTexts": [
+				"ceterms:CredentialComponent"
+			]
+		}
+	]
+}
+
+//Course Component...
+{
+	"Keywords": "the text typed by the user",
+	"Filters": [
+		{
+			"URI": "search:recordOwnedBy",
+			"ItemTexts": [
+				"ce-abcdef-ghijkl..."
+			]
+		},
+		{
+			"URI": "meta:pathwayComponentType",
+			"ItemTexts": [
+				"ceterms:CourseComponent"
+			]
+		}
+	]
+}
