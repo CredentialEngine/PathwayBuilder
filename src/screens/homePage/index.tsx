@@ -1,10 +1,22 @@
-import { Col, Row } from 'antd';
-import React from 'react';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+// import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Col, Layout, Row } from 'antd';
+import { Content } from 'antd/lib/layout/layout';
+import Sider from 'antd/lib/layout/Sider';
+import React, { useState } from 'react';
 
 import CourseCard from '../../components/courseCard';
 import DropWrapper from '../../components/dropWrapper';
+import Header from '../../components/header';
+import LeftPanel from '../../components/leftPanel';
+// import RightPanel from '../../components/rightPanel';
+
+import styles from './index.module.scss';
 
 const Columns: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
   const items = [
     {
       id: 1,
@@ -120,90 +132,115 @@ const Columns: React.FC = () => {
   //   }
   // };
 
-  return (
-    <div style={{ width: '100%', marginLeft: '395px' }}>
-      <Row>
-        {/* <div
-          style={{
-            width: '60px',
-            height: '60px',
-            backgroundColor: 'white',
-            position: 'fixed',
-            top: 'auto',
-            left: '30px',
-            zIndex: 9,
-          }}
-          onClick={onLeftDrawerClickHandler}
-        >
-          <FontAwesomeIcon
-            icon={faAngleDoubleLeft}
-            style={{
-              height: '30px',
-              width: '30px',
-              display: 'flex',
-              justifyContent: 'center',
-              textAlign: 'center',
-              padding: '7px 8px',
-            }}
-          />
-        </div> */}
+  const onCloseHandler = () => {
+    const element = document.getElementById('left-frame');
+    if (element != null) {
+      element.style.display = 'none';
+    }
+    // setRightPanelDrawerVisible(false);
+  };
 
-        {columns.map((column: any) => (
-          <Col
-            key={column.title}
-            span={24 / columns.length}
-            style={{ backgroundColor: `${column.color}`, textAlign: 'center' }}
+  return (
+    <Layout className={styles.centralPannel}>
+      <Header />
+      <Layout style={{ display: 'flex', flexDirection: 'row' }}>
+        <Sider trigger={null} collapsible collapsed={collapsed}>
+          <LeftPanel onCloseHandler={() => onCloseHandler} />
+        </Sider>
+        <Layout className="site-layout">
+          <div
+            className="site-layout-background"
+            style={{
+              padding: 0,
+              width: 'fit-content',
+              position: 'relative',
+              top: '8px',
+              zIndex: '1',
+              backgroundColor: '#FFFFFF',
+              height: '0px',
+              left: '5px',
+            }}
           >
-            <span style={{ color: '#000000' }}>{column.title}</span>
+            {React.createElement(
+              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+              {
+                className: 'trigger',
+                onClick: () => setCollapsed(!collapsed),
+              }
+            )}
+          </div>
+          <Content
+            className="site-layout-background"
+            style={{
+              margin: '24px 16px',
+              padding: 24,
+              height: '100vh',
+              width: '100%',
+            }}
+          >
             <Row>
-              <DropWrapper onDrop={ondrop}>
-                {column.children.map((child: any) => (
-                  <Col
-                    draggable={true}
-                    key={child.title}
-                    span={24 / column.children.length}
-                    style={{
-                      backgroundColor: `${
-                        child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
-                      }`,
-                      textAlign: 'center',
-                      height: '100vh',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: '100%',
-                          backgroundColor: `${
-                            child.id % 2 === 0 ? child.color : '#aeaeae'
-                          }`,
-                        }}
-                      >
-                        {child.title}
-                      </span>
-                      {items.map((item: any) => (
-                        <CourseCard
-                          key={item.id}
-                          level={item.level}
-                          credits={item.credits}
-                        />
+              {columns.map((column: any) => (
+                <Col
+                  key={column.title}
+                  span={24 / columns.length}
+                  style={{
+                    backgroundColor: `${column.color}`,
+                    textAlign: 'center',
+                  }}
+                >
+                  <span style={{ color: '#000000' }}>{column.title}</span>
+                  <Row>
+                    <DropWrapper onDrop={ondrop}>
+                      {column.children.map((child: any) => (
+                        <Col
+                          draggable={true}
+                          key={child.title}
+                          span={24 / column.children.length}
+                          style={{
+                            backgroundColor: `${
+                              child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
+                            }`,
+                            textAlign: 'center',
+                            height: '100vh',
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: '100%',
+                                backgroundColor: `${
+                                  child.id % 2 === 0 ? child.color : '#aeaeae'
+                                }`,
+                              }}
+                            >
+                              {child.title}
+                            </span>
+                            {items.map((item: any) => (
+                              <CourseCard
+                                key={item.id}
+                                level={item.level}
+                                credits={item.credits}
+                              />
+                            ))}
+                          </div>
+                        </Col>
                       ))}
-                    </div>
-                  </Col>
-                ))}
-              </DropWrapper>
+                    </DropWrapper>
+                  </Row>
+                </Col>
+              ))}
             </Row>
-          </Col>
-        ))}
-      </Row>
-    </div>
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 };
 

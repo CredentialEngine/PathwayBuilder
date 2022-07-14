@@ -1,32 +1,38 @@
+// import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 
 import Button from './components/button';
 import { Type } from './components/button/type';
-
 import ConditionalComponent from './components/conditionalComponentForm';
-
 import CustomDrawer from './components/customDrawer';
-
-import Header from './components/header';
+// import Header from './components/header';
+// import InfoTooltip from './components/infoTooltip';
+// import LeftPanel from './components/leftPanel';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
+// import Styles from './index.module.scss';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
 import Columns from './screens/homePage';
-import TestComponent from './screens/testComponent';
+// import TestComponent from './screens/testComponent';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
+
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
     useState<boolean>(false);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
     useState<boolean>(false);
   const [isConditionComponentVisible, setIsConditionComponentVisible] =
     useState<boolean>(false);
-
+  // const [isLeftDrawerVisible, setLeftDrawerVisible] = useState<boolean>(false);
+  // const leftDrawerVisible = () => {
+  //   setLeftDrawerVisible(!isLeftDrawerVisible);
+  // };
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayVisible(true);
     setIsCreatePathwayVisible(false);
@@ -63,11 +69,11 @@ const App = () => {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <MainContainer>
-        <TestComponent>
-          <RightPanel onCloseHandler={onCloseHandler} />
-        </TestComponent>
+        {/* <TestComponent>
+          <LeftPanel onCloseHandler={() => onCloseHandler} />
+        </TestComponent> */}
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}

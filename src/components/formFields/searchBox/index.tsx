@@ -1,5 +1,7 @@
-import { Input, Space } from 'antd';
+import { Input } from 'antd';
 import React from 'react';
+
+import Styles from './index.module.scss';
 
 const { Search } = Input;
 
@@ -30,10 +32,12 @@ export interface Props {
   placeholder?: string;
 }
 
-const SearchBox: React.FC<Props> = ({ onSearch, direction, placeholder }) => (
-  <Space direction={direction}>
-    <Search placeholder={placeholder} onSearch={onSearch} />
-  </Space>
+const SearchBox: React.FC<Props> = ({ onSearch, placeholder, className }) => (
+  <Search
+    placeholder={placeholder}
+    onSearch={onSearch}
+    className={Styles.searchbox + ' ' + className}
+  />
 );
 
 export default SearchBox;
