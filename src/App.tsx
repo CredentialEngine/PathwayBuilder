@@ -14,12 +14,14 @@ import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
+import Columns from './screens/homePage';
+import TestComponent from './screens/testComponent';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
     useState<boolean>(false);
   const [isConditionComponentVisible, setIsConditionComponentVisible] =
@@ -44,6 +46,10 @@ const App = () => {
   };
 
   const onCloseHandler = () => {
+    const element = document.getElementById('left-frame');
+    if (element != null) {
+      element.style.display = 'none';
+    }
     setRightPanelDrawerVisible(false);
   };
 
@@ -59,6 +65,9 @@ const App = () => {
     <div>
       <Header />
       <MainContainer>
+        <TestComponent>
+          <RightPanel onCloseHandler={onCloseHandler} />
+        </TestComponent>
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}
@@ -99,6 +108,7 @@ const App = () => {
         >
           <ConditionalComponent />
         </Modal>
+        <Columns />
       </MainContainer>
     </div>
   );

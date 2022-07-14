@@ -14,7 +14,14 @@ const DropWrapper = (props: Props) => {
     onDrop(data);
   };
   return (
-    <div onDragOver={allowDrop} onDrop={handleDrop} className="drop-wrapper">
+    <div
+      onDragOver={allowDrop}
+      onDrop={handleDrop}
+      style={{
+        display: 'flex',
+        width: '100%',
+      }}
+    >
       {children}
     </div>
   );
