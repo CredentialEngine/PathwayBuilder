@@ -7,6 +7,8 @@ import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
 
+import Styles from './index.module.scss';
+
 export enum LeftPanelTabKey {
   Selected = 'Selected',
   Components = 'Components',
@@ -33,7 +35,10 @@ const LeftPanel: React.FC<any> = () => {
       name: LeftPanelTabKey.Selected,
       children: (
         <>
-          <SearchBox placeholder="Search your components" />
+          <SearchBox
+            placeholder="Search your components"
+            className={Styles.customsearch}
+          />
           {array.map((v, i) => (
             <CardWithLeftIcon
               key={i}
@@ -72,17 +77,12 @@ const LeftPanel: React.FC<any> = () => {
     activeKey: LeftPanelTabKey.Selected,
     tabs: tab,
     children: propsChildrenData,
+    className: Styles.leftPanelDrawer,
   };
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         <Button onClick={noop} text="Edit Selections" type="selection" />
       </div>

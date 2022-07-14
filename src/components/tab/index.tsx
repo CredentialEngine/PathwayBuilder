@@ -47,6 +47,7 @@ export const Tab: React.FC<Props> = (props: Props) => {
     setInkBarLeft(offsetLeft);
     setInkBarWidth(clientWidth);
   };
+  console.log(inkBarWidth);
 
   React.useEffect(() => {
     if (showTabBar && defaultActiveTabRef && defaultActiveTabRef.current) {
@@ -111,7 +112,7 @@ export const Tab: React.FC<Props> = (props: Props) => {
       ))}
       <div
         className={styles.inkBar}
-        style={{ left: inkBarLeft, width: inkBarWidth }}
+        style={{ left: inkBarLeft /*  width: inkBarWidth */ }}
       />
     </div>
   );

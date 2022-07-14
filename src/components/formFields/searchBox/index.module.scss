@@ -2,10 +2,32 @@
 
 .searchbox {
   margin-bottom: 15px;
+  &.outline {
+    :global {
+      .ant-input-search-button {
+        background: #fff;
+      }
+    }
+  }
+
+  :global {
+    input.ant-input {
+      border: 1px solid #8494a0;
+      border-radius: 6px;
+      border-right: 0;
+    }
+    .ant-input-search-button {
+      border: 1px solid #8494a0;
+      border-radius: 6px;
+      background: #fff;
+      border-left: 0;
+    }
+  }
+}
+.outline {
   :global {
     .ant-input-search-button {
-      border: 0;
-      background: $inactive3;
+      background: #fff;
     }
   }
 }
