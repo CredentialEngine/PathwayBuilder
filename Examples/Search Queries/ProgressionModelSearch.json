@@ -1,0 +1,11 @@
+{
+	"Keywords": "the text typed by the user",
+	"Filters": [
+		{
+			"URI": "search:recordOwnedBy",
+			"ItemTexts": [
+				"ce-abcdef-ghijkl..."
+			]
+		}
+	]
+}
