@@ -30,7 +30,7 @@ export interface Props {
     | undefined;
   direction?: 'horizontal' | 'vertical' | undefined;
   placeholder?: string;
-  styleType?: 'outline' | string;
+  styleType?: 'outline' | 'grey' | string;
 }
 
 const SearchBox: React.FC<Props> = ({

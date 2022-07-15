@@ -79,7 +79,7 @@ const App = () => {
           className={Styles.leftdrawerWrapper}
         >
           <CustomDrawer
-            width="24%"
+            width="22%"
             visible={isLeftDrawerVisible}
             onClose={() => setLeftDrawerVisible(false)}
             placement="left"

@@ -1,4 +1,4 @@
-import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
+import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { noop } from 'lodash';
 import React from 'react';
 
@@ -15,7 +15,7 @@ export enum LeftPanelTabKey {
 }
 
 const LeftPanel: React.FC<any> = () => {
-  const array = [1, 1, 1];
+  const array = [1, 1, 1, 1, 1, 1, 1, 1];
   const propsChildrenData = [];
 
   const tab = [
@@ -38,16 +38,19 @@ const LeftPanel: React.FC<any> = () => {
           <SearchBox
             placeholder="Search your components"
             className={Styles.customsearch}
+            styleType="grey"
           />
-          {array.map((v, i) => (
-            <CardWithLeftIcon
-              key={i}
-              title="Course"
-              Subtitle="Course"
-              IconName={faAirFreshener}
-              IconColor="red"
-            />
-          ))}
+          <div className={Styles.cardwrapper}>
+            {array.map((v, i) => (
+              <CardWithLeftIcon
+                key={i}
+                title="Course"
+                Subtitle="Business of Retail Course"
+                IconName={faCubes}
+                IconColor="black"
+              />
+            ))}
+          </div>
         </>
       ),
     },
@@ -59,7 +62,7 @@ const LeftPanel: React.FC<any> = () => {
           key={i}
           title="Course"
           Subtitle="Course"
-          IconName={faAirFreshener}
+          IconName={faCubes}
         />
       )),
     },
