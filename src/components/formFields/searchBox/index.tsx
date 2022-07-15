@@ -30,13 +30,19 @@ export interface Props {
     | undefined;
   direction?: 'horizontal' | 'vertical' | undefined;
   placeholder?: string;
+  styleType?: 'outline' | 'grey' | string;
 }
 
-const SearchBox: React.FC<Props> = ({ onSearch, placeholder, className }) => (
+const SearchBox: React.FC<Props> = ({
+  onSearch,
+  placeholder,
+  className,
+  styleType,
+}) => (
   <Search
     placeholder={placeholder}
     onSearch={onSearch}
-    className={Styles.searchbox + ' ' + className}
+    className={Styles.searchbox + ' ' + className + ' ' + styleType}
   />
 );
 

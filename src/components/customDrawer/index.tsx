@@ -10,11 +10,14 @@ import {
   DOUBLE_CONFIRM_CANCEL_TITLE,
   OK,
 } from './constant';
+import styles from './index.module.scss';
 
 export type Props = any;
 
 const mergeProps = (props: Props): Props => ({
   destroyOnClose: true,
+  className: styles.leftPanel,
+  drawerStyle: styles.leftPanel,
   ...props,
 });
 const CustomDrawer: React.FC<Props> = (props: Props) => {

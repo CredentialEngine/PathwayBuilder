@@ -4,11 +4,14 @@ import ReactPlayer from 'react-player';
 
 import SearchBox from '../../components/formFields/searchBox';
 
+import Styles from './index.module.scss';
+
 const HelpAddingComponent: React.FC = () => (
   <div>
+    <h2>Help</h2>
     <Row gutter={20}>
       <Col span="8">
-        <SearchBox />
+        <SearchBox placeholder="Search your Components" styleType="outline" />
         <h3>Adding First Component</h3>
         <p>Adding a condition</p>
         <p>Approving Pathway</p>
@@ -22,7 +25,7 @@ const HelpAddingComponent: React.FC = () => (
           repudiandae omnis?
         </p>
         <ReactPlayer
-          height={280}
+          className={Styles.player}
           url="https://www.youtube.com/watch?v=u2RgGv8WPN0&list=PL37ZVnwpeshGHrl2h_1hm9a03b-GXH0td"
           controls
         />

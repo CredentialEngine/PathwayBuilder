@@ -19,14 +19,14 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   return (
     <Card size="small" className={styles.cardwrapper} style={inlineStyles}>
       <Row>
-        <Col span="6">
+        <Col span="5">
           <span className={styles.iconwrapper}>
             <FontAwesomeIcon icon={IconName} color={IconColor} />
           </span>
         </Col>
         <Col span="16">
           <p>{title}</p>
-          <h3>{Subtitle}</h3>
+          <h5>{Subtitle}</h5>
         </Col>
       </Row>
     </Card>

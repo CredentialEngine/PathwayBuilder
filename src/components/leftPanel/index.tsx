@@ -1,4 +1,4 @@
-import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
+import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { noop } from 'lodash';
 import React from 'react';
 
@@ -7,13 +7,15 @@ import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
 
+import Styles from './index.module.scss';
+
 export enum LeftPanelTabKey {
   Selected = 'Selected',
   Components = 'Components',
 }
 
 const LeftPanel: React.FC<any> = () => {
-  const array = [1, 1, 1];
+  const array = [1, 1, 1, 1, 1, 1, 1, 1];
   const propsChildrenData = [];
 
   const tab = [
@@ -33,16 +35,22 @@ const LeftPanel: React.FC<any> = () => {
       name: LeftPanelTabKey.Selected,
       children: (
         <>
-          <SearchBox placeholder="Search your components" />
-          {array.map((v, i) => (
-            <CardWithLeftIcon
-              key={i}
-              title="Course"
-              Subtitle="Course"
-              IconName={faAirFreshener}
-              IconColor="red"
-            />
-          ))}
+          <SearchBox
+            placeholder="Search your components"
+            className={Styles.customsearch}
+            styleType="grey"
+          />
+          <div className={Styles.cardwrapper}>
+            {array.map((v, i) => (
+              <CardWithLeftIcon
+                key={i}
+                title="Course"
+                Subtitle="Business of Retail Course"
+                IconName={faCubes}
+                IconColor="black"
+              />
+            ))}
+          </div>
         </>
       ),
     },
@@ -54,7 +62,7 @@ const LeftPanel: React.FC<any> = () => {
           key={i}
           title="Course"
           Subtitle="Course"
-          IconName={faAirFreshener}
+          IconName={faCubes}
         />
       )),
     },
@@ -72,17 +80,12 @@ const LeftPanel: React.FC<any> = () => {
     activeKey: LeftPanelTabKey.Selected,
     tabs: tab,
     children: propsChildrenData,
+    className: Styles.leftPanelDrawer,
   };
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         <Button onClick={noop} text="Edit Selections" type="selection" />
       </div>

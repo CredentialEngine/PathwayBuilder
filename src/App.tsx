@@ -16,11 +16,11 @@ import RightPanel from './components/rightPanel';
 import Styles from './index.module.scss';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
+import SelectDestination from './screens/selectDestination';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
-
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
     useState<boolean>(false);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
@@ -28,8 +28,14 @@ const App = () => {
   const [isConditionComponentVisible, setIsConditionComponentVisible] =
     useState<boolean>(false);
   const [isLeftDrawerVisible, setLeftDrawerVisible] = useState<boolean>(false);
+  const [isDestinationScreenVisible, setDestinationScreenVisible] =
+    useState<boolean>(false);
+
   const leftDrawerVisible = () => {
     setLeftDrawerVisible(!isLeftDrawerVisible);
+  };
+  const handlerDestinationScreen = () => {
+    setDestinationScreenVisible(!isDestinationScreenVisible);
   };
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayVisible(true);
@@ -66,27 +72,41 @@ const App = () => {
       <Header />
       <MainContainer>
         <div
-          className={
-            Styles.leftdrawerWrapper +
-            ' ' +
-            (isLeftDrawerVisible ? '' : Styles.drawerOpen)
-          }
+          style={{
+            display: 'block',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+          className={Styles.leftdrawerWrapper}
         >
           <CustomDrawer
-            width="28%"
+            width="22%"
             visible={isLeftDrawerVisible}
             onClose={() => setLeftDrawerVisible(false)}
-            footer={[]}
             placement="left"
+            mask={false}
+            className={Styles.leftPanel}
           >
             <LeftPanel onCloseHandler={() => setLeftDrawerVisible(false)} />
           </CustomDrawer>
+
           <FontAwesomeIcon
             icon={faAngleDoubleLeft}
             onClick={leftDrawerVisible}
             className={Styles.drawerIcon}
           />
         </div>
+        <button onClick={handlerDestinationScreen}>
+          isDestinationScreenVisible
+        </button>
+        <Modal
+          visible={isDestinationScreenVisible}
+          onCancel={() => setDestinationScreenVisible(false)}
+          footer=""
+          title=""
+        >
+          <SelectDestination />
+        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}
