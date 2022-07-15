@@ -1,6 +1,8 @@
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-// import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Layout, Row } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
@@ -10,7 +12,6 @@ import CourseCard from '../../components/courseCard';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
-// import RightPanel from '../../components/rightPanel';
 
 import styles from './index.module.scss';
 
@@ -125,19 +126,11 @@ const Columns: React.FC = () => {
   //   e.preventDefault();
   // };
 
-  // const onLeftDrawerClickHandler = () => {
-  //   const element = document.getElementById('left-frame');
-  //   if (element != null) {
-  //     element.style.display = 'none';
-  //   }
-  // };
-
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {
       element.style.display = 'none';
     }
-    // setRightPanelDrawerVisible(false);
   };
 
   return (
@@ -147,9 +140,12 @@ const Columns: React.FC = () => {
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <LeftPanel onCloseHandler={() => onCloseHandler} />
         </Sider>
-        <Layout className="site-layout">
+        <Layout
+          className="site-layout"
+          style={{ marginLeft: !collapsed ? '397px' : '0px' }}
+        >
           <div
-            className="site-layout-background"
+            // className="site-layout-background"
             style={{
               padding: 0,
               width: 'fit-content',
@@ -161,23 +157,23 @@ const Columns: React.FC = () => {
               left: '5px',
             }}
           >
-            {React.createElement(
-              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: 'trigger',
-                onClick: () => setCollapsed(!collapsed),
-              }
-            )}
+            <div>
+              {collapsed ? (
+                <FontAwesomeIcon
+                  icon={faAngleDoubleRight}
+                  onClick={() => setCollapsed(!collapsed)}
+                  style={{ height: '24px', color: '#000000', width: '24px' }}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faAngleDoubleLeft}
+                  onClick={() => setCollapsed(!collapsed)}
+                  style={{ height: '24px', color: '#000000', width: '24px' }}
+                />
+              )}
+            </div>
           </div>
-          <Content
-            className="site-layout-background"
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              height: '100vh',
-              width: '100%',
-            }}
-          >
+          <Content className="site-layout-background">
             <Row>
               {columns.map((column: any) => (
                 <Col

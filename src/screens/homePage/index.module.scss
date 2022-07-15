@@ -2,20 +2,33 @@
   :global {
     .ant-layout-sider {
       background-color: #9a9a9a !important;
-      width: 396px !important;
-      min-width: 396px !important;
+      min-width: 398px !important;
       padding: 20px 20px;
+      position: fixed;
+      z-index: 9;
     }
 
     .ant-layout-sider-collapsed {
       width: 198px !important;
       min-width: 198px !important;
       display: none;
+      transition: fade 0.2s;
     }
 
     .ant-layout-content {
-      margin: 0 !important;
+      // margin: 0 !important;
       padding: 0 !important;
+    }
+
+    .site-layou > div {
+      padding: 0;
+      width: fit-content;
+      position: relative;
+      top: 8px;
+      z-index: 1;
+      background-color: #ffffff;
+      height: 0px;
+      left: 5px;
     }
 
     .site-layout-background > span > svg {
@@ -25,3 +38,11 @@
     }
   }
 }
+
+// .contentBoard {
+//   :global {
+//   .site-layout{
+//     margin-left: 396px;
+//   }
+//   }
+// }

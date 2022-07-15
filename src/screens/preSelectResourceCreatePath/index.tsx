@@ -75,7 +75,7 @@ const PreSelectResourceCreatePath: React.FC = () => (
             <>
               <Form
                 name="dynamic_form_nest_item"
-                onFinish={onFinish}
+                onFinish={noop}
                 autoComplete="off"
               >
                 <Form.List name="users">
