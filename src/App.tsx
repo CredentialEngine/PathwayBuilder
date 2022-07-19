@@ -1,5 +1,6 @@
 import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './App.scss';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 

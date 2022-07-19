@@ -2,7 +2,8 @@
 
 body {
   margin: 0;
-  font-family: $app-font-regular;
+  font-family: $app-font-primary;
+  font-weight: $normal-weight;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font: normal normal normal 14px/18px IBM Plex Sans;
