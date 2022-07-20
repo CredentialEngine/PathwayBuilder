@@ -1,5 +1,5 @@
 @import '../../styles/core.scss';
-// @import '../../styles/colors';
+@import '../../styles/global.scss';
 
 @mixin buttonSpecification {
   height: 36px;
@@ -13,7 +13,6 @@
 }
 
 .approveButtonSpecification {
-  width: 90px;
   @include buttonSpecification;
 }
 
@@ -21,14 +20,6 @@
   border: none;
   @include buttonSpecification;
   color: $dark-gray-color;
-}
-
-.logo {
-  top: 15px;
-  left: 20px;
-  width: 40px;
-  height: 40px;
-  opacity: 1;
 }
 
 .container {
@@ -42,13 +33,9 @@
 }
 
 .productImgLayout {
-  width: 20%;
-  height: 70px;
-  /* UI Properties */
   background: $dark-gray-color 0% 0% no-repeat padding-box;
   display: flex;
-  align-items: center;
-  padding: 0 20px;
+  padding: 0 5px 0 10px;
 }
 
 @mixin displayFlex {
@@ -58,7 +45,7 @@
 
 .createNewContainer {
   @include displayFlex;
-  padding: 0 20px;
+  padding: 0 5px 0 10px;
 }
 
 .titleContainer {
@@ -130,14 +117,6 @@
   width: 36px;
   height: 36px;
   color: $primary-color;
-  margin-left: 10px;
-}
-
-.exclamationImg {
-  width: 20px;
-  height: 20px;
-  color: $orange;
-  margin-left: 10px;
 }
 
 .conflictComponent {
@@ -145,7 +124,7 @@
   justify-content: space-between;
   background-color: $light-browm;
   align-items: center;
-  padding: 10px 10px;
+  padding: 10px 0 10px 10px;
 }
 
 .headerCenter {

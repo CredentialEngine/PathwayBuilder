@@ -1,6 +1,5 @@
 import {
-  faCircleQuestion,
-  faExclamation,
+  faCircleQuestion
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
@@ -19,12 +18,9 @@ const Header = () => {
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <FontAwesomeIcon
-          icon={faExclamation}
-          className={styles.exclamationImg}
-        />
-        <Button type={Type.LINK} onClick={noop} text="Show One Conflict" />
+        <Button type={Type.LINK} onClick={noop} text="Show 1 Conflict" />
       </div>
+      <div style={{ display: 'flex', position: 'relative' }}>
       <Button
         type={Type.APPROVE}
         className={styles.approveButtonSpecification}
@@ -33,25 +29,28 @@ const Header = () => {
         text="Approve"
         iconColor="#f37422"
       />
+      </div>
     </div>
   );
 
   return (
-    <div className={styles.container}>
+    <Row className={styles.container}>
       <Col span={5} className={styles.productImgLayout}>
-        <Col span={6}>
-          <img className={styles.logo} src={Logo} alt="logo" />
-        </Col>
-        <Col span={18}>
-          <Row className={styles.createNewContainer}>
-            <Col span={24}>
-              <span className={styles.newPathway}>Create a New Pathway</span>
-            </Col>
-            <Col span={24}>
-              <span className={styles.foundation}>NRF Foundation</span>
-            </Col>
-          </Row>
-        </Col>
+        <Row align="middle">
+          <Col span={4}>
+            <img src={Logo} alt="logo" />
+          </Col>
+          <Col span={20}>
+            <Row className={styles.createNewContainer}>
+              <Col span={24}>
+                <span className={styles.newPathway}>Create a New Pathway</span>
+              </Col>
+              <Col span={24}>
+                <span className={styles.foundation}>NRF Foundation</span>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       </Col>
       <Col span={18} className={styles.titleDescriptionContainer}>
         <Row className={styles.headerCenter}>
@@ -92,7 +91,7 @@ const Header = () => {
           className={styles.imgDimensions}
         />
       </Col>
-    </div>
+    </Row>
   );
 };
 
