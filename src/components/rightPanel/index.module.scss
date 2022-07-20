@@ -1,7 +1,8 @@
 @import '../../styles/core.scss';
 
 .rightPanelContainer {
-  font-family: $app-font-regular;
+  font-family: $app-font-primary;
+  font-weight: $normal-weight;
   line-height: 1.2rem;
   color: #0a2942;
   margin-right: 15px;
