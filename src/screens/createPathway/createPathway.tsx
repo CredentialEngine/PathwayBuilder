@@ -15,16 +15,19 @@ const CreatePathway: React.FC<any> = () => (
     </Row>
     <Row>
       <ReactPlayer
+        className={`${styles.videoPlayer}`}
         height={280}
         url="https://www.youtube.com/watch?v=u2RgGv8WPN0&list=PL37ZVnwpeshGHrl2h_1hm9a03b-GXH0td"
         controls
       />
     </Row>
-    <Row className={`${styles.content} ${styles.marginTop}`}>
-      {CreatePathwayTexts.content2}
+    <Row>
+      <p className={`${styles.content}`}>
+        {CreatePathwayTexts.content2}
+      </p>
     </Row>
     <Row>
-      <p className={`${styles.content} ${styles.marginTop}`}>
+      <p className={`${styles.content}`}>
         {CreatePathwayTexts.content3}
       </p>
     </Row>
