@@ -50,6 +50,18 @@ h5 {
   margin-bottom: 4px;
 }
 
+/* Icon Styles */
+
+.iconPrimary {
+  color: $primary-color;
+}
+.iconSecondary {
+  color: $primary-dark-color
+}
+.iconSpacing {
+  margin: 0 3px 0 0;
+}
+
 img {
   width: 100%;
 }

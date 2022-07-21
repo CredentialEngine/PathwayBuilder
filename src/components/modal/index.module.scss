@@ -14,10 +14,18 @@ $disabled-opacity: 0.51;
       outline: 0;
       -webkit-overflow-scrolling: touch;
     }
+    .ant-modal-header,
+    .ant-modal-footer {
+      border: none;
+      padding: 0;
+    }
     .ant-modal-header {
       margin-bottom: 10px;
     }
-
+    .ant-modal-footer {
+      padding-top: 15px;
+      text-align: left;
+    }
     .ant-modal-body {
       padding: 0;
     }
@@ -43,12 +51,6 @@ $disabled-opacity: 0.51;
 
     .ant-modal-body {
       margin-top: 8px;
-    }
-
-    .ant-modal-header,
-    .ant-modal-footer {
-      border: none;
-      padding: 0;
     }
 
     .ant-btn {

@@ -1,3 +1,9 @@
+import {
+  faCircle,
+  faQuestion
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { Row } from 'antd';
 import React from 'react';
 import ReactPlayer from 'react-player';
@@ -24,11 +30,18 @@ const CreatePathway: React.FC<any> = () => (
     <Row>
       <p className={`${styles.content}`}>
         {CreatePathwayTexts.content2}
+        <span className={styles.iconSpacing}>
+          <span className="fa-layers fa-fw fa-lg">
+            <FontAwesomeIcon icon={faCircle} className={styles.iconPrimary} />
+            <FontAwesomeIcon icon={faQuestion} transform="shrink-6" className={styles.iconSecondary} />
+          </span>
+        </span>
+        {CreatePathwayTexts.content3}
       </p>
     </Row>
     <Row>
       <p className={`${styles.content}`}>
-        {CreatePathwayTexts.content3}
+        {CreatePathwayTexts.content4}
       </p>
     </Row>
   </div>
