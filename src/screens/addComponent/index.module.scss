@@ -1,0 +1,16 @@
+.addComponentwrapper {
+  h2 {
+    margin-bottom: 15px;
+  }
+  .iconheader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    .iconwrapper {
+      margin-right: 10px;
+    }
+    h4 {
+      margin: 0;
+    }
+  }
+}

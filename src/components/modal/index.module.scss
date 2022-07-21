@@ -20,6 +20,16 @@ $disabled-opacity: 0.51;
 
     .ant-modal-body {
       padding: 0;
+      margin-top: 8px;
+      font: normal normal normal 14px/18px IBM Plex Sans;
+      letter-spacing: 0px;
+      color: #0a2942;
+      h3 {
+        margin-bottom: 20px;
+      }
+      p {
+        margin-bottom: 15px;
+      }
     }
 
     .ant-modal-content {
@@ -41,20 +51,10 @@ $disabled-opacity: 0.51;
       // font-family: $app-font-regular;
     }
 
-    .ant-modal-body {
-      margin-top: 8px;
-    }
-
     .ant-modal-header,
     .ant-modal-footer {
       border: none;
       padding: 0;
-    }
-
-    .ant-btn {
-      border-color: $primary;
-      min-width: 50px;
-      height: 32px;
     }
 
     .ant-btn-primary {
