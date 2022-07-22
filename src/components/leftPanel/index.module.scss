@@ -28,21 +28,7 @@
     opacity: 1;
   }
 }
-.customsearch {
-  :global {
-    input.ant-input {
-      color: #0a2942;
-      background: #e6eaec 0% 0% no-repeat padding-box;
-      border-radius: 6px;
-    }
-    .ant-input-search-button {
-      border: 0;
-      background: #e6eaec;
-      border-radius: 0 6px 6px 0 !important;
-      overflow: hidden;
-    }
-  }
-}
+
 .cardwrapper {
   height: calc(100vh - 200px);
   overflow-y: auto;

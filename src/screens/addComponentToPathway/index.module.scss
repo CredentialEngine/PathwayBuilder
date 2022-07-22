@@ -1,0 +1,17 @@
+body .addComponentToPathway {
+  label {
+    font: normal normal normal 14px/18px IBM Plex Sans;
+    letter-spacing: 0px;
+    color: #8494a0;
+  }
+  :global {
+    label.ant-radio-wrapper {
+      font: normal normal normal 14px/18px IBM Plex Sans;
+      letter-spacing: 0px;
+      color: #0a2942;
+    }
+  }
+}
+.addComToPathwaytab {
+  background: red;
+}

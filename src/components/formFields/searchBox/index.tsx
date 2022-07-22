@@ -31,6 +31,8 @@ export interface Props {
   direction?: 'horizontal' | 'vertical' | undefined;
   placeholder?: string;
   styleType?: 'outline' | 'grey' | string;
+  onKeyUp?: (value: React.KeyboardEvent<HTMLInputElement>) => void;
+  onChange?: (value: string) => void;
 }
 
 const SearchBox: React.FC<Props> = ({
@@ -38,11 +40,13 @@ const SearchBox: React.FC<Props> = ({
   placeholder,
   className,
   styleType,
+  onKeyUp,
 }) => (
   <Search
     placeholder={placeholder}
     onSearch={onSearch}
     className={Styles.searchbox + ' ' + className + ' ' + styleType}
+    onKeyUp={onKeyUp}
   />
 );
 

@@ -1,7 +1,8 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { noop } from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 
+import { ComponentsCards } from '../../assets/modal/constant';
 import Button from '../button';
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
@@ -15,8 +16,13 @@ export enum LeftPanelTabKey {
 }
 
 const LeftPanel: React.FC<any> = () => {
-  const array = [1, 1, 1, 1, 1, 1, 1, 1];
+  const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
+  const array = [1, 1, 1, 1, 1];
+
+  const searchComponent = (value: any) => {
+    setSearchValue(value.target.value);
+  };
 
   const tab = [
     {
@@ -39,13 +45,16 @@ const LeftPanel: React.FC<any> = () => {
             placeholder="Search your components"
             className={Styles.customsearch}
             styleType="grey"
+            onKeyUp={searchComponent}
           />
           <div className={Styles.cardwrapper}>
-            {array.map((v, i) => (
+            {ComponentsCards.filter((v) =>
+              v.description.toLocaleLowerCase().includes(searchValue)
+            ).map((v, i) => (
               <CardWithLeftIcon
                 key={i}
-                title="Course"
-                Subtitle="Business of Retail Course"
+                name={v.name}
+                description={v.description}
                 IconName={faCubes}
                 IconColor="black"
               />
@@ -60,8 +69,8 @@ const LeftPanel: React.FC<any> = () => {
       children: array.map((v, i) => (
         <CardWithLeftIcon
           key={i}
-          title="Course"
-          Subtitle="Course"
+          name="Course"
+          description="Course"
           IconName={faCubes}
         />
       )),

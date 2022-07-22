@@ -4,9 +4,6 @@ import './App.scss';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 
-import Button from './components/button';
-import { Type } from './components/button/type';
-import ConditionalComponent from './components/conditionalComponentForm';
 import CustomDrawer from './components/customDrawer';
 import Header from './components/header';
 import InfoTooltip from './components/infoTooltip';
@@ -17,7 +14,7 @@ import RightPanel from './components/rightPanel';
 import Styles from './index.module.scss';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
-import SelectDestination from './screens/selectDestination';
+import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
@@ -25,8 +22,6 @@ const App = () => {
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
     useState<boolean>(false);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
-    useState<boolean>(false);
-  const [isConditionComponentVisible, setIsConditionComponentVisible] =
     useState<boolean>(false);
   const [isLeftDrawerVisible, setLeftDrawerVisible] = useState<boolean>(false);
   const [isDestinationScreenVisible, setDestinationScreenVisible] =
@@ -49,7 +44,6 @@ const App = () => {
 
   const onAddPathwayOkHandler = () => {
     setIsAddPathwayVisible(false);
-    setIsConditionComponentVisible(true);
   };
 
   const onAddPathwayCancelHandler = () => {
@@ -58,14 +52,6 @@ const App = () => {
 
   const onCloseHandler = () => {
     setRightPanelDrawerVisible(false);
-  };
-
-  const onConditionalComponentOkHandler = () => {
-    setIsConditionComponentVisible(false);
-  };
-
-  const onConditionalComponentCancelHandler = () => {
-    setIsConditionComponentVisible(false);
   };
 
   return (
@@ -105,8 +91,10 @@ const App = () => {
           onCancel={() => setDestinationScreenVisible(false)}
           footer=""
           title=""
+          width="700"
         >
-          <SelectDestination />
+          {/* <SelectDestination /> */}
+          <PreSelectResourceCreatePath />
         </Modal>
         <Modal
           visible={isCreatePathwayVisible}
@@ -133,21 +121,6 @@ const App = () => {
         >
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
-        <Modal
-          visible={isConditionComponentVisible}
-          onOk={onConditionalComponentOkHandler}
-          onCancel={onConditionalComponentCancelHandler}
-          title="Add Component"
-          footer={
-            <Button
-              text="Save Condition"
-              onClick={noop}
-              type={Type.APPROVE}
-            ></Button>
-          }
-        >
-          <ConditionalComponent />
-        </Modal>
         <InfoTooltip
           title="Add your destination component"
           content="Drag your pre-selected destination component into the space provided, or search for a component to add"
