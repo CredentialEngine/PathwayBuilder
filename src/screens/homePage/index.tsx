@@ -157,14 +157,14 @@ const Columns: React.FC = () => {
                             }`,
                             textAlign: 'center',
                             height: '100vh',
-                            width: '750px',
+                            width: '450px',
                           }}
                         >
                           <div
                             style={{
-                              // display: 'flex',
-                              // flexDirection: 'column',
-                              // justifyContent: 'center',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
                               alignItems: 'center',
                             }}
                           >

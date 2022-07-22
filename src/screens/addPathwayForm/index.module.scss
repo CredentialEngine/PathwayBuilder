@@ -3,3 +3,9 @@
 .divider {
   border-top: 1px solid $secondary-color;
 }
+
+:global {
+  .ant-select-selector {
+    height: 40px;
+  }
+}
