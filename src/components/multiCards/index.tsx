@@ -23,8 +23,8 @@ interface Props {
 
 const MultiCard: React.FC<Props> = ({
   isAddDestination,
-  isDestination,
-  isCourseCard = true,
+  isDestination = true,
+  isCourseCard,
   isConditionalCard,
   isAddComponentCard,
   data,

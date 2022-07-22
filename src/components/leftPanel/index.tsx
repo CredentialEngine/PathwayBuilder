@@ -49,14 +49,16 @@ const LeftPanel: React.FC<any> = () => {
           />
           <div className={Styles.cardwrapper}>
             {ComponentsCards.filter((v) =>
-              v.description.toLocaleLowerCase().includes(searchValue)
+              v.description
+                .toLocaleLowerCase()
+                .includes(searchValue.toLocaleLowerCase())
             ).map((v, i) => (
               <CardWithLeftIcon
                 draggable={true}
                 key={i}
-                title="Course"
+                title={v.name}
                 type="Semester 1"
-                SubTitle="Business of Retail Course"
+                SubTitle={v.description}
                 IconName={faCubes}
                 IconColor="black"
               />

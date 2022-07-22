@@ -15,7 +15,10 @@ import MultiCard from '../../components/multiCards';
 
 import styles from './index.module.scss';
 
-const Columns: React.FC = () => {
+interface Props {
+  isLeftPanelVisible: boolean;
+}
+const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [cardsArray, setCardsArray] = useState<any>([]);
   const columns = [
@@ -108,100 +111,102 @@ const Columns: React.FC = () => {
   return (
     <Layout className={styles.centralPannel}>
       <Header />
-      <Layout style={{ display: 'flex', flexDirection: 'row' }}>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
-          <LeftPanel onCloseHandler={() => onCloseHandler} />
-        </Sider>
-        <Layout
-          className="site-layout"
-          style={{
-            marginLeft: !collapsed ? '397px' : '0px',
-          }}
-        >
-          <div>
-            {collapsed ? (
-              <FontAwesomeIcon
-                icon={faAngleDoubleRight}
-                onClick={() => setCollapsed(!collapsed)}
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={faAngleDoubleLeft}
-                onClick={() => setCollapsed(!collapsed)}
-              />
-            )}
-          </div>
-          <Content className="site-layout-background">
-            <div style={{ display: 'flex' }}>
-              {columns.map((column: any) => (
-                <div
-                  key={column.title}
-                  style={{
-                    backgroundColor: `${column.color}`,
-                    textAlign: 'center',
-                  }}
-                >
-                  <span style={{ color: '#000000' }}>{column.title}</span>
-                  <div style={{ display: 'flex' }}>
-                    {column.children.map((child: any) => (
-                      <DropWrapper
-                        onDrop={ondrop}
-                        key={child.title}
-                        column={child.title}
-                      >
-                        <div
+      {!!isLeftPanelVisible && (
+        <Layout style={{ display: 'flex', flexDirection: 'row' }}>
+          <Sider trigger={null} collapsible collapsed={collapsed}>
+            <LeftPanel onCloseHandler={() => onCloseHandler} />
+          </Sider>
+          <Layout
+            className="site-layout"
+            style={{
+              marginLeft: !collapsed ? '397px' : '0px',
+            }}
+          >
+            <div>
+              {collapsed ? (
+                <FontAwesomeIcon
+                  icon={faAngleDoubleRight}
+                  onClick={() => setCollapsed(!collapsed)}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faAngleDoubleLeft}
+                  onClick={() => setCollapsed(!collapsed)}
+                />
+              )}
+            </div>
+            <Content className="site-layout-background">
+              <div style={{ display: 'flex' }}>
+                {columns.map((column: any) => (
+                  <div
+                    key={column.title}
+                    style={{
+                      backgroundColor: `${column.color}`,
+                      textAlign: 'center',
+                    }}
+                  >
+                    <span style={{ color: '#000000' }}>{column.title}</span>
+                    <div style={{ display: 'flex' }}>
+                      {column.children.map((child: any) => (
+                        <DropWrapper
+                          onDrop={ondrop}
                           key={child.title}
-                          style={{
-                            backgroundColor: `${
-                              child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
-                            }`,
-                            textAlign: 'center',
-                            height: '100vh',
-                            width: '450px',
-                          }}
+                          column={child.title}
                         >
                           <div
+                            key={child.title}
                             style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'center',
-                              alignItems: 'center',
+                              backgroundColor: `${
+                                child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
+                              }`,
+                              textAlign: 'center',
+                              height: '100vh',
+                              width: '450px',
                             }}
                           >
-                            <span
+                            <div
                               style={{
-                                width: '100%',
-                                backgroundColor: `${
-                                  child.id % 2 === 0 ? child.color : '#aeaeae'
-                                }`,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                               }}
                             >
-                              {child.title}
-                            </span>
-                            {cardsArray.map((item: any) => (
-                              <MultiCard
-                                key={item.id}
-                                data={{
-                                  semester: child.title,
-                                  level: item.level,
-                                  credits: item.credits,
-                                  draggable: true,
+                              <span
+                                style={{
+                                  width: '100%',
+                                  backgroundColor: `${
+                                    child.id % 2 === 0 ? child.color : '#aeaeae'
+                                  }`,
                                 }}
-                              />
-                            ))}
+                              >
+                                {child.title}
+                              </span>
+                              {cardsArray.map((item: any) => (
+                                <MultiCard
+                                  key={item.id}
+                                  data={{
+                                    semester: child.title,
+                                    level: item.level,
+                                    credits: item.credits,
+                                    draggable: true,
+                                  }}
+                                />
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      </DropWrapper>
-                    ))}
+                        </DropWrapper>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Content>
+                ))}
+              </div>
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
+      )}
     </Layout>
   );
 };
 
-export default Columns;
+export default HomePage;

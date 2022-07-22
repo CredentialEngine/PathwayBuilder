@@ -1,5 +1,4 @@
-import { Modal, Select as AntSelect, Select } from 'antd';
-import { noop } from 'lodash';
+import { Select as AntSelect, Select } from 'antd';
 import React, { useState } from 'react';
 
 import styles from './index.module.scss';
@@ -10,7 +9,7 @@ interface Props {
   visible?: boolean;
 }
 
-const SelectOrganisation: React.FC<Props> = ({ visible = true }) => {
+const SelectOrganisation: React.FC<Props> = () => {
   const [selectedOrganisation, setSelectedOrganisation] = useState(
     'Select an organistaion'
   );
@@ -21,7 +20,7 @@ const SelectOrganisation: React.FC<Props> = ({ visible = true }) => {
 
   return (
     <div className={styles.selectOrganisationWrapper}>
-      <Modal onOk={noop} onCancel={noop} closable width={520} visible={visible}>
+      <div>
         <p className={styles.heading}>Please select an organisation.</p>
         <div className={styles.dropdown}>
           <span>Organisation:</span>
@@ -37,7 +36,7 @@ const SelectOrganisation: React.FC<Props> = ({ visible = true }) => {
             ))}
           </Select>
         </div>
-      </Modal>
+      </div>
     </div>
   );
 };

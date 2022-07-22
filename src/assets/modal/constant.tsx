@@ -1,14 +1,14 @@
 export const ComponentsCards = [
   {
-    name: 'Course',
-    description: 'Business of Retail Course',
+    name: 'Credentials Component',
+    description: 'FOS-291 BSCH',
   },
   {
     name: 'Course',
-    description: 'Components of Retail Course',
+    description: 'F20BP Design & Implementation',
   },
   {
-    name: 'Course',
-    description: 'Resource of Retail Course',
+    name: 'Mechanical',
+    description: 'Mechanical Data Engineering',
   },
 ];
