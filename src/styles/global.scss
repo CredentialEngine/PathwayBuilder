@@ -56,7 +56,7 @@ h5 {
   color: $primary-color;
 }
 .iconSecondary {
-  color: $primary-dark-color
+  color: $primary-dark-color;
 }
 .iconSpacing {
   margin: 0 3px 0 0;
@@ -65,7 +65,12 @@ h5 {
 img {
   width: 100%;
 }
-
+hr {
+  margin: 30px 0;
+}
+.min-top {
+  margin-top: 10px;
+}
 .show {
   display: block;
 }
@@ -193,7 +198,7 @@ label {
 
 :global {
   .ant-modal {
-    width: 700px;
+    width: 600px;
   }
   .ant-picker-content {
     max-width: 100% !important;

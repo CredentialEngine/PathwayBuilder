@@ -38,8 +38,8 @@ const PreSelectResourceCreatePath: React.FC = () => {
                       }}
                     >
                       <CardWithLeftIcon
-                        title="Course"
-                        Subtitle="Course"
+                        name="Course"
+                        description="Course"
                         IconName={faAirFreshener}
                         inlineStyles={{ flex: 1 }}
                       />
@@ -55,8 +55,8 @@ const PreSelectResourceCreatePath: React.FC = () => {
                         key={key}
                       >
                         <CardWithLeftIcon
-                          title="Course"
-                          Subtitle="Course"
+                          name="Course"
+                          description="Course"
                           IconName={faAirFreshener}
                           inlineStyles={{ flex: 1 }}
                         />
@@ -91,8 +91,8 @@ const PreSelectResourceCreatePath: React.FC = () => {
                           }}
                         >
                           <CardWithLeftIcon
-                            title="Course"
-                            Subtitle="Course"
+                            name="Course"
+                            description="Course"
                             IconName={faAirFreshener}
                             inlineStyles={{ flex: 1 }}
                           />
@@ -108,8 +108,8 @@ const PreSelectResourceCreatePath: React.FC = () => {
                             key={key}
                           >
                             <CardWithLeftIcon
-                              title="Course"
-                              Subtitle="Course"
+                              name="Course"
+                              description="Course"
                               IconName={faAirFreshener}
                               inlineStyles={{ flex: 1 }}
                             />
