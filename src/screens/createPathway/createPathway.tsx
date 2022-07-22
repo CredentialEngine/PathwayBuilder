@@ -6,7 +6,7 @@ import React from 'react';
 import ReactPlayer from 'react-player';
 
 import { CreatePathwayTexts } from './constants';
-import styles from './createPayhway.module.scss';
+import styles from './createPathway.module.scss';
 
 const CreatePathway: React.FC<any> = () => (
   <div className={styles.main}>

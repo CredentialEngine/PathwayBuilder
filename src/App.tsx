@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 
+import Button from './components/button';
+import { Type } from './components/button/type';
+
 import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
-import Columns from './screens/homePage';
+import HomePage from './screens/homePage';
 import SelectDestination from './screens/selectDestination';
+import SelectOrganisation from './screens/selectOrganisation';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [isAddPathwayFormVisible, setIsAddPathwayFormVisible] =
     useState<boolean>(false);
   const [isAddPathwayDestinationVisible, setIsAddPathwayDestinationVisible] =
     useState<boolean>(false);
+
+  const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
+    useState<boolean>(true);
+
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
     setIsCreatePathwayVisible(false);
@@ -44,10 +52,25 @@ const App = () => {
     setRightPanelDrawerVisible(false);
   };
 
+  const selectOrgOkHandler = () => {
+    setsSelectOrganizationsVisble(false);
+    setIsCreatePathwayVisible(true);
+  };
+
   return (
     <div>
       <MainContainer>
-        <Columns />
+        <HomePage
+          isLeftPanelVisible={
+            !isrightPanelDrawerVisible &&
+            !isCreatePathwayVisible &&
+            !isAddPathwayFormVisible &&
+            !isAddPathwayDestinationVisible &&
+            !isSelectOrganizationsVisble
+              ? true
+              : false
+          }
+        />
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}
@@ -84,6 +107,25 @@ const App = () => {
               setIsAddPathwayDestinationVisible
             }
           />
+        </Modal>
+
+        <Modal
+          width={520}
+          visible={isSelectOrganizationsVisble}
+          onOk={selectOrgOkHandler}
+          closable={false}
+          footer={[
+            <>
+              <Button
+                type={Type.PRIMARY}
+                onClick={selectOrgOkHandler}
+                text="Confirm"
+              />
+              ,
+            </>,
+          ]}
+        >
+          <SelectOrganisation />
         </Modal>
       </MainContainer>
     </div>
