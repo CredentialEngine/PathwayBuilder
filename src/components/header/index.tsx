@@ -1,6 +1,4 @@
-import {
-  faCircleQuestion
-} from '@fortawesome/free-solid-svg-icons';
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
@@ -21,14 +19,14 @@ const Header = () => {
         <Button type={Type.LINK} onClick={noop} text="Show 1 Conflict" />
       </div>
       <div style={{ display: 'flex', position: 'relative' }}>
-      <Button
-        type={Type.APPROVE}
-        className={styles.approveButtonSpecification}
-        onClick={() => setHasPublishVisible(!hasPublishVisible)}
-        iconOnTop={true}
-        text="Approve"
-        iconColor="#f37422"
-      />
+        <Button
+          type={Type.APPROVE}
+          className={styles.approveButtonSpecification}
+          onClick={() => setHasPublishVisible(!hasPublishVisible)}
+          iconOnTop={true}
+          text="Approve"
+          iconColor="#f37422"
+        />
       </div>
     </div>
   );
@@ -74,11 +72,11 @@ const Header = () => {
               type={Type.PRIMARY}
             />
 
-            <Button
+            {/* <Button
               className={styles.publishButtonSpecification}
               text="Publish Pathway"
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
-            />
+            /> */}
           </Col>
         </Row>
         {hasPublishVisible && (
