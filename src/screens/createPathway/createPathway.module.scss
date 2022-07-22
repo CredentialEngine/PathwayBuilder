@@ -1,0 +1,14 @@
+@import '../../styles/core.scss';
+@import '../../styles/global.scss';
+
+.main {
+  margin: 0px 0px 0px 0px;
+  .content {
+    line-height: 1.2rem;
+    margin-top: 6px;
+    color: #0a2942;
+  }
+  .videoPlayer {
+    margin: 1rem 0;
+  }
+}

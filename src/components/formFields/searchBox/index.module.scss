@@ -1,0 +1,54 @@
+@import '../../../styles/global.scss';
+
+.searchbox {
+  margin-bottom: 15px;
+  :global {
+    .ant-input-search-button {
+      border: 1px solid #8494a0;
+      border-radius: 6px;
+      background: #fff;
+      border-left: 0;
+    }
+  }
+  &.outline {
+    :global {
+      .ant-input-search-button {
+        background: #fff;
+      }
+      input.ant-input {
+        border: 1px solid #8494a0;
+        border-radius: 6px;
+        border-right: 0;
+      }
+    }
+  }
+  &.grey {
+    background-color: red;
+    :global {
+      .ant-input-search-button {
+        background: #e6eaec 0% 0% no-repeat padding-box;
+        border: 0;
+        background: #e6eaec;
+        border-radius: 0 6px 6px 0 !important;
+        overflow: hidden;
+      }
+      input.ant-input {
+        border: 0;
+      }
+    }
+  }
+}
+
+:global {
+  input.ant-input {
+    color: #0a2942;
+    // background: #e6eaec 0% 0% no-repeat padding-box;
+    border-radius: 6px;
+  }
+  .ant-input-search-button {
+    border: 0;
+    background: #e6eaec;
+    border-radius: 0 6px 6px 0 !important;
+    overflow: hidden;
+  }
+}

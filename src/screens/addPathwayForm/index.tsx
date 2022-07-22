@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import AutoCompleteBox from '../../components/autoComplete';
 
 import CheckBox from '../../components/formFields/checkbox';
+import InputBox from '../../components/formFields/inputBox';
 
 import MultiSelect from '../../components/formFields/multiSelect';
 
 import Textarea from '../../components/formFields/textarea';
 
-import Textbox from '../../components/formFields/textbox';
 import { Selecteprops } from '../../utils/selectProps';
 
 import styles from './index.module.scss';
@@ -41,7 +41,7 @@ const AddPathwayForm = () => {
               required={true}
               validateTrigger="onBlur"
             >
-              <Textbox
+              <InputBox
                 placeholder="Add a Pathway Name"
                 maxLength={75}
                 value="Add a Pathway Name"
@@ -133,7 +133,7 @@ const AddPathwayForm = () => {
               required={true}
               validateTrigger="onBlur"
             >
-              <Textbox
+              <InputBox
                 placeholder="add a URL"
                 maxLength={75}
                 value="add a URL"

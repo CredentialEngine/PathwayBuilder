@@ -63,7 +63,7 @@
   color: $primary-dark;
   border: 1px solid $selection;
   border-radius: $button-radius;
-  padding: 4px 16px;
+  padding: 2px 8px;
   .icon {
     margin-right: 10px;
   }
@@ -152,6 +152,7 @@
   color: $primary-dark;
   border: 1px solid $selection;
   border-radius: $button-radius;
+  line-height: normal;
   & > span {
     text-emphasis-color: $white-color;
   }
@@ -238,9 +239,9 @@
 .infoIcon {
   width: 20px;
   height: 20px;
-  position: relative;
-  right: 20px;
-  top: -15px;
+  position: absolute;
+  right: 3px;
+  top: -7px;
 }
 
 .container {

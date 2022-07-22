@@ -1,0 +1,30 @@
+@import './styles/core.scss';
+
+.leftdrawerWrapper {
+  position: relative;
+  width: 26%;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  top: 1px;
+  &drawerOpen {
+    transform: translateX(-100%);
+  }
+  .drawerIcon {
+    position: absolute;
+    right: 0px;
+    padding: 3px 5px;
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border-radius: 0px 6px 6px 0px;
+    text-align: center;
+    letter-spacing: 0px;
+    color: #0a2942;
+    opacity: 1;
+    font-size: 22px;
+  }
+}
+
+:global {
+  .leftPanel {
+    top: 30px;
+  }
+}

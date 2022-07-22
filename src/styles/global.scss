@@ -1,12 +1,76 @@
 @import './core.scss';
 
+/* Global Text Styles */
+
 body {
   margin: 0;
-  font-family: $app-font-regular;
+  font-family: $app-font-primary;
+  font-weight: $normal-weight;
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #0a2942;
+}
+p {
+  margin-bottom: 8px;
+}
+h1 {
+  font-size: 18px;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h2 {
+  font-size: 16px;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h3 {
+  font-size: 15px;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h4 {
+  font-size: 14px;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h5 {
+  font-size: 12px;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+.heading {
+  font-size: 18px;
+  font-weight: $bold-weight;
+  margin-bottom: 4px;
+}
+.subHeading {
+  font-size: 14px;
+  font-weight: $bold-weight;
+  margin-bottom: 4px;
 }
 
+/* Icon Styles */
+
+.iconPrimary {
+  color: $primary-color;
+}
+.iconSecondary {
+  color: $primary-dark-color;
+}
+.iconSpacing {
+  margin: 0 3px 0 0;
+}
+
+img {
+  width: 100%;
+}
+hr {
+  margin: 30px 0;
+}
+.min-top {
+  margin-top: 10px;
+}
 .show {
   display: block;
 }
@@ -38,10 +102,6 @@ body {
 .t0 {
   top: 0;
 }
-
-// .form-field-required {
-//     @include required;
-// }
 
 .bg-white3 {
   background-color: $white-color;
@@ -137,6 +197,9 @@ label {
 }
 
 :global {
+  .ant-modal {
+    width: 600px;
+  }
   .ant-picker-content {
     max-width: 100% !important;
   }

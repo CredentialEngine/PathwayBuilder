@@ -73,6 +73,7 @@ export const Tab: React.FC<Props> = (props: Props) => {
 
   const handleTabClick = (activeKey: string) => {
     setActiveKey(activeKey);
+    console.log('inkBarWidth -->', inkBarWidth);
     return onTabChange && onTabChange(activeKey);
   };
 
@@ -111,7 +112,7 @@ export const Tab: React.FC<Props> = (props: Props) => {
       ))}
       <div
         className={styles.inkBar}
-        style={{ left: inkBarLeft, width: inkBarWidth }}
+        style={{ left: inkBarLeft /*  width: inkBarWidth */ }}
       />
     </div>
   );
