@@ -1,39 +1,25 @@
-// import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { noop } from 'lodash';
 import React, { useState } from 'react';
 
-import Button from './components/button';
-import { Type } from './components/button/type';
-import ConditionalComponent from './components/conditionalComponentForm';
 import CustomDrawer from './components/customDrawer';
-// import Header from './components/header';
-// import InfoTooltip from './components/infoTooltip';
-// import LeftPanel from './components/leftPanel';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
-// import Styles from './index.module.scss';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
 import Columns from './screens/homePage';
-// import TestComponent from './screens/testComponent';
+import SelectDestination from './screens/selectDestination';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
+    useState<boolean>(true);
+  const [isAddPathwayFormVisible, setIsAddPathwayFormVisible] =
     useState<boolean>(false);
-  const [isAddPathwayVisible, setIsAddPathwayVisible] =
+  const [isAddPathwayDestinationVisible, setIsAddPathwayDestinationVisible] =
     useState<boolean>(false);
-  const [isConditionComponentVisible, setIsConditionComponentVisible] =
-    useState<boolean>(false);
-  // const [isLeftDrawerVisible, setLeftDrawerVisible] = useState<boolean>(false);
-  // const leftDrawerVisible = () => {
-  //   setLeftDrawerVisible(!isLeftDrawerVisible);
-  // };
   const oncreatePathwayOkHandler = () => {
-    setIsAddPathwayVisible(true);
+    setIsAddPathwayFormVisible(true);
     setIsCreatePathwayVisible(false);
   };
 
@@ -42,12 +28,12 @@ const App = () => {
   };
 
   const onAddPathwayOkHandler = () => {
-    setIsAddPathwayVisible(false);
-    setIsConditionComponentVisible(true);
+    setIsAddPathwayFormVisible(false);
+    setIsAddPathwayDestinationVisible(true);
   };
 
   const onAddPathwayCancelHandler = () => {
-    setIsAddPathwayVisible(false);
+    setIsAddPathwayFormVisible(false);
   };
 
   const onCloseHandler = () => {
@@ -58,21 +44,10 @@ const App = () => {
     setRightPanelDrawerVisible(false);
   };
 
-  const onConditionalComponentOkHandler = () => {
-    setIsConditionComponentVisible(false);
-  };
-
-  const onConditionalComponentCancelHandler = () => {
-    setIsConditionComponentVisible(false);
-  };
-
   return (
     <div>
-      {/* <Header /> */}
       <MainContainer>
-        {/* <TestComponent>
-          <LeftPanel onCloseHandler={() => onCloseHandler} />
-        </TestComponent> */}
+        <Columns />
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}
@@ -83,7 +58,7 @@ const App = () => {
         </Modal>
 
         <Modal
-          visible={isAddPathwayVisible}
+          visible={isAddPathwayFormVisible}
           onOk={onAddPathwayOkHandler}
           onCancel={onAddPathwayCancelHandler}
           title="Add a Pathway"
@@ -98,22 +73,18 @@ const App = () => {
         >
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
+
         <Modal
-          visible={isConditionComponentVisible}
-          onOk={onConditionalComponentOkHandler}
-          onCancel={onConditionalComponentCancelHandler}
-          title="Add Component"
-          footer={
-            <Button
-              text="Save Condition"
-              onClick={noop}
-              type={Type.APPROVE}
-            ></Button>
-          }
+          visible={isAddPathwayDestinationVisible}
+          title="Add a Pathway"
+          footer={[]}
         >
-          <ConditionalComponent />
+          <SelectDestination
+            setIsAddPathwayDestinationVisible={
+              setIsAddPathwayDestinationVisible
+            }
+          />
         </Modal>
-        <Columns />
       </MainContainer>
     </div>
   );

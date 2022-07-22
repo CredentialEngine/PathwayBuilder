@@ -1,7 +1,4 @@
-import {
-  faCircleQuestion,
-  faExclamation,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
@@ -19,39 +16,39 @@ const Header = () => {
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <FontAwesomeIcon
-          icon={faExclamation}
-          className={styles.exclamationImg}
-        />
-        <Button type={Type.LINK} onClick={noop} text="Show One Conflict" />
+        <Button type={Type.LINK} onClick={noop} text="Show 1 Conflict" />
       </div>
-      <Button
-        type={Type.APPROVE}
-        className={styles.approveButtonSpecification}
-        onClick={() => setHasPublishVisible(!hasPublishVisible)}
-        iconOnTop={true}
-        text="Approve"
-        iconColor="#f37422"
-      />
+      <div style={{ display: 'flex', position: 'relative' }}>
+        <Button
+          type={Type.APPROVE}
+          className={styles.approveButtonSpecification}
+          onClick={() => setHasPublishVisible(!hasPublishVisible)}
+          iconOnTop={true}
+          text="Approve"
+          iconColor="#f37422"
+        />
+      </div>
     </div>
   );
 
   return (
-    <div className={styles.container}>
+    <Row className={styles.container}>
       <Col span={5} className={styles.productImgLayout}>
-        <Col span={6}>
-          <img className={styles.logo} src={Logo} alt="logo" />
-        </Col>
-        <Col span={18}>
-          <Row className={styles.createNewContainer}>
-            <Col span={24}>
-              <span className={styles.newPathway}>Create a New Pathway</span>
-            </Col>
-            <Col span={24}>
-              <span className={styles.foundation}>NRF Foundation</span>
-            </Col>
-          </Row>
-        </Col>
+        <Row align="middle" style={{ width: '100%' }}>
+          <Col span={4}>
+            <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
+          </Col>
+          <Col span={20}>
+            <Row className={styles.createNewContainer}>
+              <Col span={24}>
+                <span className={styles.newPathway}>Create a New Pathway</span>
+              </Col>
+              <Col span={24}>
+                <span className={styles.foundation}>NRF Foundation</span>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       </Col>
       <Col span={18} className={styles.titleDescriptionContainer}>
         <Row className={styles.headerCenter}>
@@ -75,11 +72,15 @@ const Header = () => {
               type={Type.PRIMARY}
             />
 
-            <Button
+            {/* <Button
               className={styles.publishButtonSpecification}
               text="Publish Pathway"
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
-            />
+            /> 
+            
+            Commenting this code for now,
+            may be in future we need this
+            */}
           </Col>
         </Row>
         {hasPublishVisible && (
@@ -92,7 +93,7 @@ const Header = () => {
           className={styles.imgDimensions}
         />
       </Col>
-    </div>
+    </Row>
   );
 };
 

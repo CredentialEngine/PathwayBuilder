@@ -1,0 +1,20 @@
+.arrowDropdown {
+  font: normal normal normal 14px/18px IBM Plex Sans;
+  color: #0a2942;
+  &:hover {
+    color: black;
+  }
+}
+:global {
+  // .ant-dropdown-menu{
+  //     background-color: transparent;
+  // }
+  .ant-space-item svg {
+    transform: rotate(-95deg);
+  }
+  .ant-dropdown-open {
+    .ant-space-item svg {
+      transform: rotate(0deg);
+    }
+  }
+}

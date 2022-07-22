@@ -11,7 +11,7 @@ const HelpAddingComponent: React.FC = () => (
     <h2>Help</h2>
     <Row gutter={20}>
       <Col span="8">
-        <SearchBox placeholder="Search your Components" styleType="outline" />
+        <SearchBox placeholder="Search your Components" />
         <h3>Adding First Component</h3>
         <p>Adding a condition</p>
         <p>Approving Pathway</p>

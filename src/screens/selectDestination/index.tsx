@@ -1,12 +1,15 @@
 import { Row, Col } from 'antd';
 import React from 'react';
 
+import StartLeft from '../../assets/images/Start-Left.svg';
+import StartRight from '../../assets/images/Start-Right.svg';
 import Button from '../../components/button';
 
-const SelectDestination = () => (
+const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
   <>
-    <h3>Add Component</h3>
-    <h4>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h4>
+    <h3>Add a Pathway</h3>
+    <h5>Choose how you would like to buid your pathway.</h5>
+    <br />
     <p>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum commodi
       adipisci omnis accusamus velit ad nulla, quisquam, culpa esse nisi unde
@@ -14,21 +17,25 @@ const SelectDestination = () => (
     </p>
     <Row gutter={20}>
       <Col span="12">
-        <img
-          src="https://media.istockphoto.com/photos/mountain-landscape-picture-id517188688?k=20&m=517188688&s=612x612&w=0&h=i38qBm2P-6V4vZVEaMy_TaTEaoCMkYhvLCysE7yJQ5Q="
-          alt=""
-        />
+        <img src={StartLeft} alt="Start with Destination" />
         <div style={{ textAlign: 'center', margin: '15px 0' }}>
-          <Button text="Start with Destination" type="primary" />
+          <Button
+            text="Start with Destination"
+            type="primary"
+            style={{ width: '100%' }}
+            onClick={() => setIsAddPathwayDestinationVisible(false)}
+          />
         </div>
       </Col>
       <Col span="12">
-        <img
-          src="https://media.istockphoto.com/photos/mountain-landscape-picture-id517188688?k=20&m=517188688&s=612x612&w=0&h=i38qBm2P-6V4vZVEaMy_TaTEaoCMkYhvLCysE7yJQ5Q="
-          alt=""
-        />
+        <img src={StartRight} alt="Start with Destination" />
         <div style={{ textAlign: 'center', margin: '15px 0' }}>
-          <Button text="Start with Destination" type="primary" />
+          <Button
+            text="Start with Destination"
+            type="primary"
+            style={{ width: '100%' }}
+            onClick={() => setIsAddPathwayDestinationVisible(false)}
+          />
         </div>
       </Col>
     </Row>

@@ -14,23 +14,42 @@ $disabled-opacity: 0.51;
       outline: 0;
       -webkit-overflow-scrolling: touch;
     }
+    .ant-modal-header,
+    .ant-modal-footer {
+      border: none;
+      padding: 0;
+    }
     .ant-modal-header {
       margin-bottom: 10px;
     }
-
+    .ant-modal-footer {
+      padding-top: 15px;
+      text-align: left;
+    }
     .ant-modal-body {
       padding: 0;
+      margin-top: 8px;
+      font: normal normal normal 14px/18px IBM Plex Sans;
+      letter-spacing: 0px;
+      color: #0a2942;
+      h3 {
+        margin-bottom: 20px;
+      }
+      p {
+        margin-bottom: 15px;
+      }
     }
 
     .ant-modal-content {
-      border-radius: 8px;
+      border-radius: 10px;
       box-shadow: 0px -1px 4px 0px #8494a0;
       padding: 24px;
+      border: 3px solid $primary-color;
     }
 
     .ant-modal-confirm-title,
     .ant-modal-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: $bold;
     }
 
@@ -44,18 +63,16 @@ $disabled-opacity: 0.51;
       margin-top: 8px;
     }
 
-    .ant-modal-header,
-    .ant-modal-footer {
-      border: none;
-      padding: 0;
-    }
-
     .ant-btn {
       border-color: $primary;
       min-width: 50px;
       height: 32px;
     }
-
+    .ant-modal-header,
+    .ant-modal-footer {
+      border: none;
+      padding: 0;
+    }
     .ant-btn-primary {
       margin-left: 16px !important;
       font-size: 14px;

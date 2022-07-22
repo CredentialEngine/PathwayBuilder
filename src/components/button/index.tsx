@@ -15,7 +15,6 @@ type Type =
   | 'selection'
   | 'link'
   | 'linkIcon'
-  | 'cancel'
   | 'approve'
   | 'blue'
   | 'gold'
@@ -36,11 +35,13 @@ export interface ButtonProps {
   color?: Color;
   iconOnTop?: boolean;
   iconColor?: string;
+  style?: { [key: string]: string };
 }
 
 const Button: React.FC<ButtonProps> & {
   defaultProps: Partial<ButtonProps>;
 } = ({
+  style,
   type,
   text,
   onClick,
@@ -87,6 +88,7 @@ const Button: React.FC<ButtonProps> & {
         disabled={disabled}
         type={htmlType}
         title={title}
+        style={style}
       >
         <span>{text}</span>
       </button>

@@ -1,5 +1,4 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
 import React from 'react';
@@ -7,17 +6,19 @@ import React from 'react';
 import styles from './index.module.scss';
 
 export interface Props {
-  title?: string;
-  Subtitle?: string;
+  name?: string;
+  description?: string;
   IconName: IconProp;
   IconColor?: string;
   inlineStyles?: any;
   draggable?: boolean;
   type?: string;
+  SubTitle?: string;
+  title?: string;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
-  const { title, Subtitle, IconName, IconColor, inlineStyles, draggable } =
+  const { title, SubTitle, IconName, IconColor, inlineStyles, draggable } =
     props;
 
   const onDragStart = (e: any) => {
@@ -54,7 +55,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
         </Col>
         <Col span="16">
           <p>{title}</p>
-          <h5>{Subtitle}</h5>
+          <h5>{SubTitle}</h5>
         </Col>
       </Row>
     </Card>
