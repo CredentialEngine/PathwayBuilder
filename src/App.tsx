@@ -15,6 +15,8 @@ import Styles from './index.module.scss';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
+// import SelectDestination from './screens/selectDestination';
+import SelectOrganisation from './screens/selectOrganisation';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
@@ -126,6 +128,7 @@ const App = () => {
           content="Drag your pre-selected destination component into the space provided, or search for a component to add"
           onClose={noop}
         />
+        <SelectOrganisation />
       </MainContainer>
     </div>
   );
