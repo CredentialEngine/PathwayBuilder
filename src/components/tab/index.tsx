@@ -47,7 +47,6 @@ export const Tab: React.FC<Props> = (props: Props) => {
     setInkBarLeft(offsetLeft);
     setInkBarWidth(clientWidth);
   };
-  console.log(inkBarWidth);
 
   React.useEffect(() => {
     if (showTabBar && defaultActiveTabRef && defaultActiveTabRef.current) {
@@ -74,6 +73,7 @@ export const Tab: React.FC<Props> = (props: Props) => {
 
   const handleTabClick = (activeKey: string) => {
     setActiveKey(activeKey);
+    console.log('inkBarWidth -->', inkBarWidth);
     return onTabChange && onTabChange(activeKey);
   };
 

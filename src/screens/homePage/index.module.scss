@@ -1,0 +1,42 @@
+.centralPannel {
+  :global {
+    .ant-layout-sider {
+      background-color: #ffffff !important;
+      min-width: 398px !important;
+      padding: 20px 20px;
+      position: fixed;
+      z-index: 9;
+      box-shadow: 2px 0px #ced2d4;
+    }
+
+    .ant-layout-sider-collapsed {
+      width: 198px !important;
+      min-width: 198px !important;
+      display: none;
+      transition: fade 0.2s;
+    }
+
+    .ant-layout-content {
+      // margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .site-layout-background {
+    }
+    .site-layout > div {
+      padding: 0;
+      width: fit-content;
+      position: relative;
+      top: 8px;
+      z-index: 1;
+      background-color: #ffffff;
+      height: 0px;
+      left: 5px;
+      & > svg {
+        width: 25px !important;
+        height: 25px !important;
+        color: #000000;
+      }
+    }
+  }
+}

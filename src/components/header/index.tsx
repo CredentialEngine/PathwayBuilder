@@ -34,9 +34,9 @@ const Header = () => {
   return (
     <Row className={styles.container}>
       <Col span={5} className={styles.productImgLayout}>
-        <Row align="middle">
+        <Row align="middle" style={{ width: '100%' }}>
           <Col span={4}>
-            <img src={Logo} alt="logo" />
+            <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
           </Col>
           <Col span={20}>
             <Row className={styles.createNewContainer}>
@@ -76,7 +76,11 @@ const Header = () => {
               className={styles.publishButtonSpecification}
               text="Publish Pathway"
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
-            /> */}
+            /> 
+            
+            Commenting this code for now,
+            may be in future we need this
+            */}
           </Col>
         </Row>
         {hasPublishVisible && (

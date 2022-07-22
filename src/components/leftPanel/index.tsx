@@ -49,12 +49,16 @@ const LeftPanel: React.FC<any> = () => {
           />
           <div className={Styles.cardwrapper}>
             {ComponentsCards.filter((v) =>
-              v.description.toLocaleLowerCase().includes(searchValue)
+              v.description
+                .toLocaleLowerCase()
+                .includes(searchValue.toLocaleLowerCase())
             ).map((v, i) => (
               <CardWithLeftIcon
+                draggable={true}
                 key={i}
-                name={v.name}
-                description={v.description}
+                title={v.name}
+                type="Semester 1"
+                SubTitle={v.description}
                 IconName={faCubes}
                 IconColor="black"
               />
@@ -66,14 +70,22 @@ const LeftPanel: React.FC<any> = () => {
     {
       key: LeftPanelTabKey.Components,
       name: LeftPanelTabKey.Components,
-      children: array.map((v, i) => (
-        <CardWithLeftIcon
-          key={i}
-          name="Course"
-          description="Course"
-          IconName={faCubes}
-        />
-      )),
+      children: (
+        <>
+          <div className={Styles.cardwrapper}>
+            {array.map((v, i) => (
+              <CardWithLeftIcon
+                key={i}
+                title="Course"
+                SubTitle="Course"
+                IconName={faCubes}
+              />
+            ))}
+            ,
+          </div>
+          ,
+        </>
+      ),
     },
   ];
   for (let i = 0; i < propsChildren.length; i++) {

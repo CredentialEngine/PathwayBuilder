@@ -5,7 +5,7 @@ import StartLeft from '../../assets/images/Start-Left.svg';
 import StartRight from '../../assets/images/Start-Right.svg';
 import Button from '../../components/button';
 
-const SelectDestination = () => (
+const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
   <>
     <h3>Add a Pathway</h3>
     <h5>Choose how you would like to buid your pathway.</h5>
@@ -23,6 +23,7 @@ const SelectDestination = () => (
             text="Start with Destination"
             type="primary"
             style={{ width: '100%' }}
+            onClick={() => setIsAddPathwayDestinationVisible(false)}
           />
         </div>
       </Col>
@@ -33,6 +34,7 @@ const SelectDestination = () => (
             text="Start with Destination"
             type="primary"
             style={{ width: '100%' }}
+            onClick={() => setIsAddPathwayDestinationVisible(false)}
           />
         </div>
       </Col>

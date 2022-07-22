@@ -1,0 +1,206 @@
+@import '../../styles/core.scss';
+
+.multiCardWrapper {
+  height: 100px;
+  width: 250px;
+  margin: 10px;
+  border-radius: 6px;
+  // font-family: $app-font-regular;
+}
+.addDestinationCard {
+  border: 1px dashed #4ee5e1;
+  background-color: #4ee5e140;
+}
+.addDestinationContent {
+  .addDestinationTitle {
+    font-size: 14px;
+    color: #0a2942;
+    margin-top: 12px;
+    font-weight: 700;
+  }
+}
+.isDestination {
+  background: #d3f8f7 0% 0% no-repeat padding-box;
+  box-shadow: 0px 0px 6px #00000026;
+}
+
+.destinationContentWrapper {
+  display: flex;
+  flex-direction: column;
+  .topDestinationContent {
+    display: flex;
+    flex-direction: row;
+    margin: 12px 12px 0px 12px;
+
+    .credentials {
+      margin-left: 14px;
+      width: 180px;
+      text-align: left;
+      margin-bottom: 0px;
+    }
+
+    .popoverMenu {
+      display: flex;
+      flex-direction: column;
+      // align-items: center;
+      width: 80px;
+      height: 60px;
+      border: 1px solid #8494a0;
+      border-radius: 6px;
+      background: #ffffff 0% 0% no-repeat padding-box;
+      position: absolute;
+      right: 80px;
+      top: 60px;
+
+      > span {
+        margin-bottom: 0px;
+        margin-left: 15px;
+        width: fit-content;
+        margin-top: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #8494a0;
+      }
+
+      > span:hover {
+        color: #0a2942;
+      }
+    }
+  }
+  .bottomDestinationContent {
+    display: flex;
+    flex-direction: row;
+    margin: 8px 10px 10px 10px;
+
+    .title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 0px;
+    }
+  }
+}
+
+.isCourseCard {
+  background: #ffffff;
+  box-shadow: 0px 0px 6px #00000029;
+
+  .courseCardWrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topCourseContent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 8px;
+    margin-left: 8px;
+  }
+  .title {
+    // padding: 0 15px;
+    width: 70%;
+    text-align: left;
+    margin-left: 10px;
+    color: #0a2942;
+    font-size: 12px;
+  }
+  .courseNameContainter {
+    display: flex;
+    align-items: flex-start;
+    height: 40px;
+
+    > span {
+      color: #0a2942;
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 8px;
+      margin-left: 8px;
+    }
+  }
+
+  .creditSection {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 8px 0px 8px;
+    justify-content: space-between;
+
+    > span {
+      color: #0a2942;
+      font-size: 12px;
+    }
+  }
+}
+
+.conditionalCard {
+  height: 60px;
+  background: #00a0ff;
+  box-shadow: 0px 0px 6px #00000029;
+  border-radius: 6px;
+
+  .conditionalCardContent {
+    display: flex;
+    flex-direction: row;
+    margin: 8px 8px 0px 10px;
+    color: #ffffff;
+
+    > span {
+      font-size: 14px;
+      margin-left: 8px;
+      text-align: left;
+      width: 75%;
+    }
+  }
+  .requiredSection {
+    display: flex;
+    color: #ffffff;
+
+    > span {
+      margin-left: 40px;
+      font-size: 12px;
+    }
+  }
+}
+
+.addComponentCard {
+  background: #ffd363;
+  box-shadow: 0px 0px 6px #00000029;
+  border-radius: 6px;
+
+  .addComponentContent {
+    display: flex;
+    flex-direction: column;
+    .topContent {
+      display: flex;
+      flex-direction: row;
+      // align-items: center;
+      margin: 10px 8px 8px 10px;
+
+      .circle {
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .topMiddle {
+        width: 72%;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0a2942;
+        text-align: left;
+        margin-left: 8px;
+        margin-top: 4px;
+      }
+    }
+    .totalCredit {
+      color: #0a2942;
+      font-size: 12px;
+      text-align: left;
+      margin-left: 14px;
+      margin-top: 4px;
+    }
+  }
+}

@@ -36,6 +36,10 @@
   background: $dark-gray-color 0% 0% no-repeat padding-box;
   display: flex;
   padding: 0 5px 0 10px;
+  & > img{
+    width: 45px;
+    height: 45px;
+  }
 }
 
 @mixin displayFlex {

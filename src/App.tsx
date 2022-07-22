@@ -1,21 +1,16 @@
-import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './App.scss';
-import { noop } from 'lodash';
 import React, { useState } from 'react';
 
+import Button from './components/button';
+import { Type } from './components/button/type';
+
 import CustomDrawer from './components/customDrawer';
-import Header from './components/header';
-import InfoTooltip from './components/infoTooltip';
-import LeftPanel from './components/leftPanel';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
-import Styles from './index.module.scss';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
-import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
-// import SelectDestination from './screens/selectDestination';
+import HomePage from './screens/homePage';
+import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
 
 const App = () => {
@@ -23,20 +18,16 @@ const App = () => {
     useState<boolean>(false);
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
     useState<boolean>(false);
-  const [isAddPathwayVisible, setIsAddPathwayVisible] =
+  const [isAddPathwayFormVisible, setIsAddPathwayFormVisible] =
     useState<boolean>(false);
-  const [isLeftDrawerVisible, setLeftDrawerVisible] = useState<boolean>(false);
-  const [isDestinationScreenVisible, setDestinationScreenVisible] =
+  const [isAddPathwayDestinationVisible, setIsAddPathwayDestinationVisible] =
     useState<boolean>(false);
 
-  const leftDrawerVisible = () => {
-    setLeftDrawerVisible(!isLeftDrawerVisible);
-  };
-  const handlerDestinationScreen = () => {
-    setDestinationScreenVisible(!isDestinationScreenVisible);
-  };
+  const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
+    useState<boolean>(true);
+
   const oncreatePathwayOkHandler = () => {
-    setIsAddPathwayVisible(true);
+    setIsAddPathwayFormVisible(true);
     setIsCreatePathwayVisible(false);
   };
 
@@ -45,59 +36,41 @@ const App = () => {
   };
 
   const onAddPathwayOkHandler = () => {
-    setIsAddPathwayVisible(false);
+    setIsAddPathwayFormVisible(false);
+    setIsAddPathwayDestinationVisible(true);
   };
 
   const onAddPathwayCancelHandler = () => {
-    setIsAddPathwayVisible(false);
+    setIsAddPathwayFormVisible(false);
   };
 
   const onCloseHandler = () => {
+    const element = document.getElementById('left-frame');
+    if (element != null) {
+      element.style.display = 'none';
+    }
     setRightPanelDrawerVisible(false);
+  };
+
+  const selectOrgOkHandler = () => {
+    setsSelectOrganizationsVisble(false);
+    setIsCreatePathwayVisible(true);
   };
 
   return (
     <div>
-      <Header />
       <MainContainer>
-        <div
-          style={{
-            display: 'block',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          className={Styles.leftdrawerWrapper}
-        >
-          <CustomDrawer
-            width="22%"
-            visible={isLeftDrawerVisible}
-            onClose={() => setLeftDrawerVisible(false)}
-            placement="left"
-            mask={false}
-            className={Styles.leftPanel}
-          >
-            <LeftPanel onCloseHandler={() => setLeftDrawerVisible(false)} />
-          </CustomDrawer>
-
-          <FontAwesomeIcon
-            icon={faAngleDoubleLeft}
-            onClick={leftDrawerVisible}
-            className={Styles.drawerIcon}
-          />
-        </div>
-        <button onClick={handlerDestinationScreen}>
-          isDestinationScreenVisible
-        </button>
-        <Modal
-          visible={isDestinationScreenVisible}
-          onCancel={() => setDestinationScreenVisible(false)}
-          footer=""
-          title=""
-          width="700"
-        >
-          {/* <SelectDestination /> */}
-          <PreSelectResourceCreatePath />
-        </Modal>
+        <HomePage
+          isLeftPanelVisible={
+            !isrightPanelDrawerVisible &&
+            !isCreatePathwayVisible &&
+            !isAddPathwayFormVisible &&
+            !isAddPathwayDestinationVisible &&
+            !isSelectOrganizationsVisble
+              ? true
+              : false
+          }
+        />
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}
@@ -108,7 +81,7 @@ const App = () => {
         </Modal>
 
         <Modal
-          visible={isAddPathwayVisible}
+          visible={isAddPathwayFormVisible}
           onOk={onAddPathwayOkHandler}
           onCancel={onAddPathwayCancelHandler}
           title="Add a Pathway"
@@ -123,12 +96,37 @@ const App = () => {
         >
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
-        <InfoTooltip
-          title="Add your destination component"
-          content="Drag your pre-selected destination component into the space provided, or search for a component to add"
-          onClose={noop}
-        />
-        <SelectOrganisation />
+
+        <Modal
+          visible={isAddPathwayDestinationVisible}
+          title="Add a Pathway"
+          footer={[]}
+        >
+          <SelectDestination
+            setIsAddPathwayDestinationVisible={
+              setIsAddPathwayDestinationVisible
+            }
+          />
+        </Modal>
+
+        <Modal
+          width={520}
+          visible={isSelectOrganizationsVisble}
+          onOk={selectOrgOkHandler}
+          closable={false}
+          footer={[
+            <>
+              <Button
+                type={Type.PRIMARY}
+                onClick={selectOrgOkHandler}
+                text="Confirm"
+              />
+              ,
+            </>,
+          ]}
+        >
+          <SelectOrganisation />
+        </Modal>
       </MainContainer>
     </div>
   );

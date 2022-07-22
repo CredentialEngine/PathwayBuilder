@@ -11,12 +11,42 @@ export interface Props {
   IconName: IconProp;
   IconColor?: string;
   inlineStyles?: any;
+  draggable?: boolean;
+  type?: string;
+  SubTitle?: string;
+  title?: string;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
-  const { name, description, IconName, IconColor, inlineStyles } = props;
+  const { title, SubTitle, IconName, IconColor, inlineStyles, draggable } =
+    props;
+
+  const onDragStart = (e: any) => {
+    const target = e.target;
+    e.dataTransfer.setData('card_id', JSON.stringify(props));
+    setTimeout(() => {
+      target.style.display = 'hidden';
+    }, 0);
+  };
+
+  const onDragOver = (e: any) => {
+    e.stopPropagation();
+  };
+
+  const onDragEnd = (e: any) => {
+    e.target.style.visibility = 'visible';
+  };
+
   return (
-    <Card size="small" className={styles.cardwrapper} style={inlineStyles}>
+    <Card
+      size="small"
+      className={styles.cardwrapper}
+      style={inlineStyles}
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+    >
       <Row>
         <Col span="5">
           <span className={styles.iconwrapper}>
@@ -24,8 +54,8 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
           </span>
         </Col>
         <Col span="16">
-          <p>{name}</p>
-          <h5>{description}</h5>
+          <p>{title}</p>
+          <h5>{SubTitle}</h5>
         </Col>
       </Row>
     </Card>
