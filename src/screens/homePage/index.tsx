@@ -3,47 +3,21 @@ import {
   faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Layout, Row } from 'antd';
+import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import React, { useState } from 'react';
 
-import CourseCard from '../../components/courseCard';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import MultiCard from '../../components/multiCards';
 
 import styles from './index.module.scss';
 
 const Columns: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-
-  const items = [
-    {
-      id: 1,
-      level: '29',
-      credit: '40',
-      title: 'first test card',
-    },
-    {
-      id: 2,
-      level: '69',
-      credit: '11',
-      title: 'first test card',
-    },
-    {
-      id: 3,
-      level: '12',
-      credit: '38',
-      title: 'first test card',
-    },
-    {
-      id: 4,
-      level: '76',
-      credit: '23',
-      title: 'first test card',
-    },
-  ];
+  const [cardsArray, setCardsArray] = useState<any>([]);
   const columns = [
     {
       title: 'Stage 1',
@@ -111,20 +85,18 @@ const Columns: React.FC = () => {
     },
   ];
 
-  const ondrop = (e: any) => {
-    e.preventDefault();
-    const card_id: string = e?.dataTransfer?.getData('card_id');
-    const card = document.getElementById(card_id);
+  const ondrop = (cards: []) => {
+    /* Need to write a logic where same card should not be added
+      Need to filter accorrding to column type like which card should be display where
+      filtered card display accoriding to their column 
 
-    e.target.style.visibility = 'visible';
-    e.target.style.display = 'block';
+      need to find column id as well so we can expand column width at a moment
 
-    e.target.appendChild(card);
+      Need to set item move to any place
+    */
+
+    setCardsArray([...cardsArray, cards]);
   };
-
-  // const onDragOver = (e: any) => {
-  //   e.preventDefault();
-  // };
 
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
@@ -142,69 +114,57 @@ const Columns: React.FC = () => {
         </Sider>
         <Layout
           className="site-layout"
-          style={{ marginLeft: !collapsed ? '397px' : '0px' }}
+          style={{
+            marginLeft: !collapsed ? '397px' : '0px',
+          }}
         >
-          <div
-            // className="site-layout-background"
-            style={{
-              padding: 0,
-              width: 'fit-content',
-              position: 'relative',
-              top: '8px',
-              zIndex: '1',
-              backgroundColor: '#FFFFFF',
-              height: '0px',
-              left: '5px',
-            }}
-          >
-            <div>
-              {collapsed ? (
-                <FontAwesomeIcon
-                  icon={faAngleDoubleRight}
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{ height: '24px', color: '#000000', width: '24px' }}
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faAngleDoubleLeft}
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{ height: '24px', color: '#000000', width: '24px' }}
-                />
-              )}
-            </div>
+          <div>
+            {collapsed ? (
+              <FontAwesomeIcon
+                icon={faAngleDoubleRight}
+                onClick={() => setCollapsed(!collapsed)}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faAngleDoubleLeft}
+                onClick={() => setCollapsed(!collapsed)}
+              />
+            )}
           </div>
           <Content className="site-layout-background">
-            <Row>
+            <div style={{ display: 'flex' }}>
               {columns.map((column: any) => (
-                <Col
+                <div
                   key={column.title}
-                  span={24 / columns.length}
                   style={{
                     backgroundColor: `${column.color}`,
                     textAlign: 'center',
                   }}
                 >
                   <span style={{ color: '#000000' }}>{column.title}</span>
-                  <Row>
-                    <DropWrapper onDrop={ondrop}>
-                      {column.children.map((child: any) => (
-                        <Col
-                          draggable={true}
+                  <div style={{ display: 'flex' }}>
+                    {column.children.map((child: any) => (
+                      <DropWrapper
+                        onDrop={ondrop}
+                        key={child.title}
+                        column={child.title}
+                      >
+                        <div
                           key={child.title}
-                          span={24 / column.children.length}
                           style={{
                             backgroundColor: `${
                               child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
                             }`,
                             textAlign: 'center',
                             height: '100vh',
+                            width: '750px',
                           }}
                         >
                           <div
                             style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'center',
+                              // display: 'flex',
+                              // flexDirection: 'column',
+                              // justifyContent: 'center',
                               alignItems: 'center',
                             }}
                           >
@@ -218,21 +178,25 @@ const Columns: React.FC = () => {
                             >
                               {child.title}
                             </span>
-                            {items.map((item: any) => (
-                              <CourseCard
+                            {cardsArray.map((item: any) => (
+                              <MultiCard
                                 key={item.id}
-                                level={item.level}
-                                credits={item.credits}
+                                data={{
+                                  semester: child.title,
+                                  level: item.level,
+                                  credits: item.credits,
+                                  draggable: true,
+                                }}
                               />
                             ))}
                           </div>
-                        </Col>
-                      ))}
-                    </DropWrapper>
-                  </Row>
-                </Col>
+                        </div>
+                      </DropWrapper>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </Row>
+            </div>
           </Content>
         </Layout>
       </Layout>

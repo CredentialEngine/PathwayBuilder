@@ -5,6 +5,39 @@ body {
   font-family: $app-font-regular;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font: normal normal normal 14px/18px IBM Plex Sans;
+  color: #0a2942;
+}
+p {
+  margin-bottom: 8px;
+}
+h1 {
+  font: normal normal bold 18px/23px IBM Plex Sans;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h2 {
+  font: normal normal bold 16px/20px IBM Plex Sans;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h3 {
+  font: normal normal bold 14px/18px IBM Plex Sans;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h4 {
+  font: normal normal normal 14px/18px IBM Plex Sans;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+h5 {
+  font: normal normal bold 12px/15px IBM Plex Sans;
+  letter-spacing: 0px;
+  color: #0a2942;
+}
+img {
+  width: 100%;
 }
 
 .show {
@@ -38,10 +71,6 @@ body {
 .t0 {
   top: 0;
 }
-
-// .form-field-required {
-//     @include required;
-// }
 
 .bg-white3 {
   background-color: $white-color;
@@ -137,6 +166,9 @@ label {
 }
 
 :global {
+  .ant-modal {
+    width: 700px;
+  }
   .ant-picker-content {
     max-width: 100% !important;
   }

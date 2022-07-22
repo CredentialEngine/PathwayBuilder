@@ -22,7 +22,6 @@ import Columns from './screens/homePage';
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
-
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
     useState<boolean>(false);
   const [isAddPathwayVisible, setIsAddPathwayVisible] =
