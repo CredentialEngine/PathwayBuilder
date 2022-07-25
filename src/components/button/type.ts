@@ -3,4 +3,5 @@ export enum Type {
   SECONDARY = 'secondary',
   LINK = 'link',
   APPROVE = 'approve',
+  CANCEL = 'cancel',
 }

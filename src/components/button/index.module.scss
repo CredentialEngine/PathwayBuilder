@@ -122,6 +122,17 @@
   }
 }
 
+.cancel {
+  margin-left: 12px;
+  font-size: 14px;
+  background-color: $white-color;
+  color: $primary-dark;
+  height: 36px;
+  border-radius: $button-radius;
+  border: 1px solid $primary-dark;
+  padding: 8px 16px;
+}
+
 .outline {
   background-color: $white-color;
   height: 36px;
