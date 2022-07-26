@@ -36,7 +36,7 @@
   background: $dark-gray-color 0% 0% no-repeat padding-box;
   display: flex;
   padding: 0 5px 0 10px;
-  & > img{
+  & > img {
     width: 45px;
     height: 45px;
   }
@@ -113,7 +113,7 @@
 .helpContainer {
   display: flex;
   align-items: center;
-  background-color: $primary-dark-color;
+  background-color: $primary-dark;
   justify-content: center;
 }
 
