@@ -36,7 +36,7 @@
 }
 
 .approve {
-  background-color: $secondary-color;
+  background-color: $inactive1;
   color: $white-color;
   height: 36px;
   border-radius: $button-radius;
@@ -46,7 +46,7 @@
   }
   &:hover {
     color: $primary-dark;
-    background-color: $blue-color;
+    background-color: $primary;
     border-radius: $button-radius;
   }
   &:disabled {
@@ -69,7 +69,7 @@
   }
   &:hover {
     color: $primary-dark;
-    background-color: $blue-color;
+    background-color: $primary;
     border-radius: $button-radius;
   }
   &:disabled {
@@ -96,8 +96,8 @@
   }
   &:disabled {
     color: $white-color;
-    border: 1px solid $inactive2-color;
-    background: $inactive2-color;
+    border: 1px solid $inactive2;
+    background: $inactive2;
     cursor: not-allowed;
   }
 }
@@ -135,8 +135,8 @@
   }
   &:hover {
     background-color: $inactive3;
-    border: 1px solid $primary-color;
-    color: $dark-blue-color;
+    border: 1px solid $selection;
+    color: $primary-dark;
     background-color: $selection-light;
   }
   &:disabled {
@@ -158,30 +158,30 @@
   }
   &:hover {
     background-color: $selection-light;
-    border: 1px solid $light-gold-color;
+    border: 1px solid $gold-light;
     color: $white-color;
   }
 }
 
 .gold {
-  background-color: $gold-color;
+  background-color: $gold;
   color: $white-color;
-  border: 1px solid $gold-color;
+  border: 1px solid $gold;
   border-radius: $button-radius;
   padding: 8px 16px;
   .icon {
     margin-right: 12px;
   }
   &:hover {
-    background-color: $light-gold-color;
-    border: 1px solid $light-gold-color;
+    background-color: $gold-light;
+    border: 1px solid $gold-light;
     color: $white-color;
   }
 
   &:disabled {
     color: $white-color;
-    border: 1px solid $gold-inactive-color;
-    background: $gold-inactive-color;
+    border: 1px solid $gold-inactive;
+    background: $gold-inactive;
     cursor: not-allowed;
   }
 }
