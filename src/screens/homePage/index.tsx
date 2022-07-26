@@ -119,7 +119,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
           <Layout
             className="site-layout"
             style={{
-              marginLeft: !collapsed ? '397px' : '0px',
+              marginLeft: !collapsed ? '277px' : '0px',
             }}
           >
             <div>

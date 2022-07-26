@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import Button from './components/button';
 import { Type } from './components/button/type';
-
 import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
@@ -22,7 +21,6 @@ const App = () => {
     useState<boolean>(false);
   const [isAddPathwayDestinationVisible, setIsAddPathwayDestinationVisible] =
     useState<boolean>(false);
-
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
     useState<boolean>(true);
 
@@ -121,7 +119,6 @@ const App = () => {
                 onClick={selectOrgOkHandler}
                 text="Confirm"
               />
-              ,
             </>,
           ]}
         >
