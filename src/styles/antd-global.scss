@@ -289,28 +289,27 @@ body {
   .ant-row.ant-form-item {
     margin-bottom: 18px;
   }
-}
-
-.ant-modal-mask {
-  background: #0a2942 0% 0% no-repeat padding-box;
-  opacity: 0.9;
-}
-.ant-modal-close-x {
-  position: absolute;
-  width: 20px;
-  height: 19px;
-  top: 20px;
-  right: 20px;
-  font-weight: bold;
-  z-index: 10;
-  padding: 0;
-  color: #00000073;
-  font-weight: 700;
-  line-height: 1;
-  text-decoration: none;
-  background: 0 0;
-  border: 0;
-  outline: 0;
-  cursor: pointer;
-  transition: color 0.3s;
+  .ant-modal-mask {
+    background: #0a2942 0% 0% no-repeat padding-box;
+    opacity: 0.9;
+  }
+  .ant-modal-close-x {
+    position: absolute;
+    width: 20px;
+    height: 19px;
+    top: 20px;
+    right: 20px;
+    font-weight: bold;
+    z-index: 10;
+    padding: 0;
+    color: #00000073;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    background: 0 0;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
 }
