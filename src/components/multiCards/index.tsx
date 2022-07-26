@@ -68,6 +68,8 @@ const MultiCard: React.FC<Props> = ({
     }
   };
 
+  const darkColor = '#0A2942';
+
   return (
     <div
       className={`${styles.multiCardWrapper} ${
@@ -99,13 +101,13 @@ const MultiCard: React.FC<Props> = ({
         <div className={styles.destinationContentWrapper}>
           <div className={styles.topDestinationContent}>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px' }}
               icon={faStar}
             />
             <p className={styles.credentials}>Credential</p>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
               icon={faEllipsis}
               onClick={() => setShowPopover(!showPopover)}
@@ -134,7 +136,7 @@ const MultiCard: React.FC<Props> = ({
             />
             <span className={styles.title}>Course</span>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
               icon={faEllipsis}
               onClick={noop}
@@ -178,7 +180,7 @@ const MultiCard: React.FC<Props> = ({
           <div className={styles.topContent}>
             <span className={styles.circle}>
               <FontAwesomeIcon
-                color="#0A2942"
+                color={darkColor}
                 style={{ height: '18px', cursor: 'pointer' }}
                 icon={faSitemap}
                 onClick={noop}
@@ -186,7 +188,7 @@ const MultiCard: React.FC<Props> = ({
             </span>
             <span className={styles.topMiddle}>Required: 0</span>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
               icon={faEllipsis}
               onClick={noop}

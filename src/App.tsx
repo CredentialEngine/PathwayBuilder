@@ -57,6 +57,21 @@ const App = () => {
     setIsCreatePathwayVisible(true);
   };
 
+  const createPathwayFooter = () => (
+    <div style={{ display: 'flex' }}>
+      <Button
+        onClick={oncreatePathwayOkHandler}
+        text="Start Your Pathway"
+        type={Type.PRIMARY}
+      />
+      <Button
+        onClick={onCreatePathwayCancelHandler}
+        text="Cancel"
+        type={Type.CANCEL}
+      />
+    </div>
+  );
+
   return (
     <div>
       <MainContainer>
@@ -73,9 +88,8 @@ const App = () => {
         />
         <Modal
           visible={isCreatePathwayVisible}
-          onOk={oncreatePathwayOkHandler}
-          onCancel={onCreatePathwayCancelHandler}
           title="Add a Pathway"
+          footer={createPathwayFooter()}
         >
           <CreatePathway />
         </Modal>
@@ -121,7 +135,6 @@ const App = () => {
                 onClick={selectOrgOkHandler}
                 text="Confirm"
               />
-              ,
             </>,
           ]}
         >

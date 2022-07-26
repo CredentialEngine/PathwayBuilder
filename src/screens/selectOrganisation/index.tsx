@@ -1,6 +1,8 @@
 import { Select as AntSelect, Select } from 'antd';
 import React, { useState } from 'react';
 
+import { organisations, selectOrganisationTexts } from './constants';
+
 import styles from './index.module.scss';
 
 const { Option } = AntSelect;
@@ -13,17 +15,13 @@ const SelectOrganisation: React.FC<Props> = () => {
   const [selectedOrganisation, setSelectedOrganisation] = useState(
     'Select an organistaion'
   );
-  const organisations = [
-    { id: 1, name: 'Organisation 1' },
-    { id: 2, name: 'Organisation 2' },
-  ];
 
   return (
     <div className={styles.selectOrganisationWrapper}>
       <div>
-        <p className={styles.heading}>Please select an organisation.</p>
+        <p className={styles.heading}>{selectOrganisationTexts.heading}</p>
         <div className={styles.dropdown}>
-          <span>Organisation:</span>
+          <span>{selectOrganisationTexts.dropdownLabel}</span>
           <Select
             style={{ width: '240px' }}
             value={selectedOrganisation}
