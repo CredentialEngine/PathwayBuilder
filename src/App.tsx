@@ -95,11 +95,7 @@ const App = () => {
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
 
-        <Modal
-          visible={isAddPathwayDestinationVisible}
-          title="Add a Pathway"
-          footer={[]}
-        >
+        <Modal visible={isAddPathwayDestinationVisible} title="" footer={[]}>
           <SelectDestination
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
