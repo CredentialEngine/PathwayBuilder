@@ -7,15 +7,15 @@ body {
   .ant-input-search input,
   .ant-picker-input input {
     border: 1px solid $inactive1;
-    border-radius: 6px;
+    border-radius: 4px;
     min-height: 40px;
     outline: none !important;
     box-shadow: none !important;
-    font: normal normal normal 14px/18px IBM Plex Sans;
+    font-size: 14px;
     letter-spacing: 0px;
-    color: #0a2942;
+    color: $primary-dark;
     &::placeholder {
-      color: #0a2942;
+      color: $primary-dark;
       opacity: 1 !important;
     }
   }
