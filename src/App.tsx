@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './App.scss';
 
 import Button from './components/button';
 import { Type } from './components/button/type';
