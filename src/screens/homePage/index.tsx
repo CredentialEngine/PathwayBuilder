@@ -7,6 +7,7 @@ import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import React, { useState } from 'react';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
@@ -135,72 +136,79 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                 />
               )}
             </div>
+
             <Content className="site-layout-background">
-              <div style={{ display: 'flex' }}>
-                {columns.map((column: any) => (
-                  <div
-                    key={column.title}
-                    style={{
-                      backgroundColor: `${column.color}`,
-                      textAlign: 'center',
-                    }}
-                  >
-                    <span style={{ color: '#000000' }}>{column.title}</span>
-                    <div style={{ display: 'flex' }}>
-                      {column.children.map((child: any) => (
-                        <DropWrapper
-                          onDrop={ondrop}
-                          key={child.title}
-                          column={child.title}
-                        >
-                          <div
-                            key={child.title}
-                            style={{
-                              backgroundColor: `${
-                                child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
-                              }`,
-                              textAlign: 'center',
-                              height: '100vh',
-                              width: '450px',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
+              <TransformWrapper>
+                <TransformComponent>
+                  <div style={{ display: 'flex' }}>
+                    {columns.map((column: any) => (
+                      <div
+                        key={column.title}
+                        style={{
+                          backgroundColor: `${column.color}`,
+                          textAlign: 'center',
+                        }}
+                      >
+                        <span style={{ color: '#000000' }}>{column.title}</span>
+                        <div style={{ display: 'flex' }}>
+                          {column.children.map((child: any) => (
+                            <DropWrapper
+                              onDrop={ondrop}
+                              key={child.title}
+                              column={child.title}
                             >
-                              <span
+                              <div
+                                key={child.title}
                                 style={{
-                                  width: '100%',
                                   backgroundColor: `${
-                                    child.id % 2 === 0 ? child.color : '#aeaeae'
+                                    child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
                                   }`,
+                                  textAlign: 'center',
+                                  height: '100vh',
+                                  width: '450px',
                                 }}
                               >
-                                {child.title}
-                              </span>
-                              {cardsArray.map((item: any) => (
-                                <MultiCard
-                                  key={item.id}
-                                  data={{
-                                    semester: child.title,
-                                    level: item.level,
-                                    credits: item.credits,
-                                    draggable: true,
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
                                   }}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </DropWrapper>
-                      ))}
-                    </div>
+                                >
+                                  <span
+                                    style={{
+                                      width: '100%',
+                                      backgroundColor: `${
+                                        child.id % 2 === 0
+                                          ? child.color
+                                          : '#aeaeae'
+                                      }`,
+                                    }}
+                                  >
+                                    {child.title}
+                                  </span>
+                                  {cardsArray.map((item: any) => (
+                                    <MultiCard
+                                      key={item.id}
+                                      data={{
+                                        semester: child.title,
+                                        level: item.level,
+                                        credits: item.credits,
+                                        draggable: true,
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            </DropWrapper>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </TransformComponent>
+              </TransformWrapper>
             </Content>
           </Layout>
         </Layout>
