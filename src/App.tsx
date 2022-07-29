@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 
 import Button from './components/button';
@@ -13,6 +13,7 @@ import CreatePathway from './screens/createPathway/createPathway';
 import HomePage from './screens/homePage';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
+import { organisations } from './screens/selectOrganisation/constants';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
@@ -25,7 +26,10 @@ const App = () => {
     useState<boolean>(false);
 
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
-    useState<boolean>(true);
+    useState<boolean>(false);
+
+  const [selectedOrganisationValue, setSelectedOrganisationValue] =
+    useState('');
 
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
@@ -57,6 +61,14 @@ const App = () => {
     setsSelectOrganizationsVisble(false);
     setIsCreatePathwayVisible(true);
   };
+
+  useEffect(() => {
+    if (organisations.length > 1) {
+      setsSelectOrganizationsVisble(true);
+    } else {
+      setIsCreatePathwayVisible(true);
+    }
+  }, [organisations.length]);
 
   const createPathwayFooter = () => (
     <div style={{ display: 'flex' }}>
@@ -123,7 +135,6 @@ const App = () => {
             }
           />
         </Modal>
-
         <Modal
           width={520}
           visible={isSelectOrganizationsVisble}
@@ -135,11 +146,19 @@ const App = () => {
                 type={Type.PRIMARY}
                 onClick={selectOrgOkHandler}
                 text="Confirm"
+                disabled={
+                  selectedOrganisationValue === 'Select an organistaion'
+                }
               />
             </>,
           ]}
         >
-          <SelectOrganisation />
+          <SelectOrganisation
+            organisationList={organisations}
+            getSelectedOrganisation={(value: string) =>
+              setSelectedOrganisationValue(value)
+            }
+          />
         </Modal>
       </MainContainer>
     </div>

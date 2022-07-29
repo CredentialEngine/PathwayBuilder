@@ -6,7 +6,7 @@ import {
   faSitemap,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider } from 'antd';
+import { Divider, Popover } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -19,6 +19,7 @@ interface Props {
   isConditionalCard?: boolean;
   isAddComponentCard?: boolean;
   data?: any;
+  onClick?: () => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const MultiCard: React.FC<Props> = ({
   isConditionalCard,
   isAddComponentCard,
   data,
+  onClick,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
@@ -83,6 +85,7 @@ const MultiCard: React.FC<Props> = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
+      onClick={onClick}
     >
       {isAddDestination && (
         <div className={styles.addDestinationContent}>
@@ -110,13 +113,38 @@ const MultiCard: React.FC<Props> = ({
               color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
               icon={faEllipsis}
-              onClick={() => setShowPopover(!showPopover)}
+              onClick={(e: any) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setShowPopover(!showPopover);
+              }}
             />
             {showPopover && (
-              <div className={styles.popoverMenu} ref={ref}>
-                <span>View</span>
-                <span>Delete</span>
-              </div>
+              <Popover
+                visible={showPopover}
+                arrowPointAtCenter
+                placement="bottomRight"
+                content={
+                  <div className={styles.popoverMenu} ref={ref}>
+                    <span
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                    >
+                      View
+                    </span>
+                    <span
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                    >
+                      Delete
+                    </span>
+                  </div>
+                }
+              ></Popover>
             )}
           </div>
           <div className={styles.bottomDestinationContent}>
