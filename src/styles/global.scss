@@ -6,7 +6,7 @@ body {
   margin: 0;
   font-family: $app-font-primary;
   font-weight: $normal-weight;
-  font-size: 14px;
+  font-size: 12px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $primary-dark;
@@ -56,7 +56,6 @@ h5 {
 }
 
 /* Icon Styles */
-
 .iconPrimary {
   color: $selection;
 }

@@ -9,6 +9,7 @@ import RightPanel from './components/rightPanel';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
 import HomePage from './screens/homePage';
+import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
 
@@ -23,7 +24,11 @@ const App = () => {
     useState<boolean>(false);
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
     useState<boolean>(true);
+  const [visible, setvisible] = useState<boolean>(false);
 
+  const handlevisible = () => {
+    setvisible(!visible);
+  };
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
     setIsCreatePathwayVisible(false);
@@ -69,6 +74,28 @@ const App = () => {
               : false
           }
         />
+        <div style={{ textAlign: 'center' }}>
+          <button onClick={handlevisible}>handlevisible</button>
+        </div>
+        <Modal
+          width={700}
+          visible={visible}
+          onOk={oncreatePathwayOkHandler}
+          onCancel={() => setvisible(false)}
+          title="Pre-Select Resource to Create Your Pathway"
+          footer={[
+            <div className="flex" key="1234">
+              <Button
+                type={Type.PRIMARY}
+                onClick={selectOrgOkHandler}
+                text="Done Adding"
+              />
+              <Button type="outline" onClick={selectOrgOkHandler} text="Skip" />
+            </div>,
+          ]}
+        >
+          <PreSelectResourceCreatePath />
+        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           onOk={oncreatePathwayOkHandler}
