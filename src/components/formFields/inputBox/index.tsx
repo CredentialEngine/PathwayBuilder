@@ -9,6 +9,7 @@ export type InputProps = {
   value?: string;
   type?: string;
   disabled?: boolean;
+  name?: string;
 };
 
 const InputBox: React.FC<InputProps> = (props: InputProps) => {
@@ -20,11 +21,13 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
     placeholder,
     value,
     defaultValue,
+    name,
   } = props;
   return maxLength ? (
     <Input
       type={type}
       showCount
+      name={name}
       onChange={onChange}
       placeholder={placeholder}
       maxLength={maxLength}

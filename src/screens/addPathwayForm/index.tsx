@@ -10,22 +10,73 @@ import MultiSelect from '../../components/formFields/multiSelect';
 
 import Textarea from '../../components/formFields/textarea';
 
-import { Selecteprops } from '../../utils/selectProps';
-
 import styles from './index.module.scss';
+import { PathwayWrapperEntity } from './model';
 
 const AddPathwayForm = () => {
-  const [isProgressionFieldVisible, setProgressionFieldVisible] =
-    useState<boolean>(false);
+  const [addPathwayFormFields, setAddPathwayFormFields] = useState<any>(
+    new PathwayWrapperEntity()
+  );
+  const [checkboxValues, setCheckboxvalues] = useState<any>({
+    progressionModel: false,
+    conceptSchema: false,
+    furtherDetails: false,
+  });
+
   const companyList = [
     {
       key: 1,
+      value: 'company',
+      label: 'company',
       title: 'Company',
     },
+    {
+      key: 2,
+      title: 'New Company',
+      value: 'Newcompany',
+      label: 'New company',
+    },
   ];
+  const onCheckBoxChangeHandler = (e: any) => {
+    const { name, checked } = e.target;
+    setCheckboxvalues({ ...checkboxValues, [name]: checked });
+  };
 
-  const onCheckBoxChangeHandler = () => {
-    setProgressionFieldVisible(!isProgressionFieldVisible);
+  const onInputChangeHandler = (e: any) => {
+    const updatedData = { ...addPathwayFormFields };
+    const { name, value } = e.target;
+    updatedData[name] = value;
+    setAddPathwayFormFields(updatedData);
+  };
+
+  const onSelectChangeHandler = (e: any, name: string) => {
+    const updatedData = { ...addPathwayFormFields };
+
+    if (name === 'industryType') {
+      const filteredIndustry = companyList.filter((company: any) =>
+        e.includes(company.key)
+      );
+      updatedData[name] = filteredIndustry;
+    }
+    if (name === 'keyword') {
+      const filteredKeywords = companyList.filter((company: any) =>
+        e.includes(company.key)
+      );
+      updatedData[name] = filteredKeywords;
+    }
+    if (name === 'occupationType') {
+      const filteredOccupations = companyList.filter((company: any) =>
+        e.includes(company.key)
+      );
+      updatedData[name] = filteredOccupations;
+    }
+    if (name === 'subject') {
+      const filteredOccupations = companyList.filter((company: any) =>
+        e.includes(company.key)
+      );
+      updatedData[name] = filteredOccupations;
+    }
+    setAddPathwayFormFields(updatedData);
   };
 
   return (
@@ -44,7 +95,9 @@ const AddPathwayForm = () => {
               <InputBox
                 placeholder="Add a Pathway Name"
                 maxLength={75}
-                value="Add a Pathway Name"
+                name="name"
+                onChange={onInputChangeHandler}
+                value={addPathwayFormFields?.pathway?.name}
               />
             </Form.Item>
           </Col>
@@ -60,7 +113,9 @@ const AddPathwayForm = () => {
               <Textarea
                 placeholder="Add a Pathway Description"
                 maxLength={200}
-                value="Add a Pathway Description"
+                name="description"
+                onChange={onInputChangeHandler}
+                value={addPathwayFormFields.description}
               />
             </Form.Item>
           </Col>
@@ -74,8 +129,10 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
-                {...Selecteprops(companyList, 'selectCompany')}
                 placeholder="Select Industry Types"
+                options={companyList}
+                optionLabelProp="label"
+                onChange={(e) => onSelectChangeHandler(e, 'industryType')}
               />
             </Form.Item>
           </Col>
@@ -89,8 +146,10 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
-                {...Selecteprops(companyList, 'selectCompany')}
                 placeholder="Add Keywords"
+                options={companyList}
+                optionLabelProp="label"
+                onChange={(e) => onSelectChangeHandler(e, 'keyword')}
               />
             </Form.Item>
           </Col>
@@ -104,8 +163,10 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
-                {...Selecteprops(companyList, 'selectOccupation')}
-                placeholder="Select Oppucation Types"
+                placeholder="Select Occupation Types"
+                options={companyList}
+                optionLabelProp="label"
+                onChange={(e) => onSelectChangeHandler(e, 'occupationType')}
               />
             </Form.Item>
           </Col>
@@ -119,8 +180,10 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
-                {...Selecteprops(companyList, 'selectOccupation')}
                 placeholder="Select Subjects"
+                options={companyList}
+                optionLabelProp="label"
+                onChange={(e) => onSelectChangeHandler(e, 'subject')}
               />
             </Form.Item>
           </Col>
@@ -136,7 +199,9 @@ const AddPathwayForm = () => {
               <InputBox
                 placeholder="add a URL"
                 maxLength={75}
-                value="add a URL"
+                value={addPathwayFormFields.subjectWebpage}
+                name="subjectWebpage"
+                onChange={onInputChangeHandler}
               />
             </Form.Item>
           </Col>
@@ -144,11 +209,12 @@ const AddPathwayForm = () => {
           <Col span={24}>
             <CheckBox
               onChange={onCheckBoxChangeHandler}
-              checked={isProgressionFieldVisible}
+              checked={checkboxValues.progressionModel}
+              name="progressionModel"
               label="This Pathway Contains a Progression Model"
             />
           </Col>
-          {!!isProgressionFieldVisible && (
+          {!!checkboxValues.progressionModel && (
             <Col span={24}>
               <Form.Item
                 label="Progression Model"
@@ -166,7 +232,8 @@ const AddPathwayForm = () => {
           <Col span={24}>
             <CheckBox
               onChange={onCheckBoxChangeHandler}
-              checked={isProgressionFieldVisible}
+              checked={checkboxValues.conceptSchema}
+              name="conceptSchema"
               label="This Pathway Contains a Concept Schemes"
             />
           </Col>
@@ -174,7 +241,8 @@ const AddPathwayForm = () => {
           <Col span={24}>
             <CheckBox
               onChange={onCheckBoxChangeHandler}
-              checked={isProgressionFieldVisible}
+              checked={checkboxValues.furtherDetails}
+              name="furtherDetails"
               label="This Pathway Contains further Details"
             />
           </Col>

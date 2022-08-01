@@ -7,8 +7,7 @@ import Button from '../../components/button';
 
 const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
   <>
-    {/* <h3>Add a Pathway</h3> */}
-    <h5>Choose how you would like to buid your pathway.</h5>
+    <h5>Choose how you would like to build your pathway.</h5>
     <br />
     <p>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum commodi
