@@ -1,7 +1,7 @@
 import { Select as AntSelect, Select } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { organisations, selectOrganisationTexts } from './constants';
+import { selectOrganisationTexts } from './constants';
 
 import styles from './index.module.scss';
 
@@ -9,12 +9,21 @@ const { Option } = AntSelect;
 
 interface Props {
   visible?: boolean;
+  organisationList?: any;
+  getSelectedOrganisation?: (value: string) => void;
 }
 
-const SelectOrganisation: React.FC<Props> = () => {
+const SelectOrganisation: React.FC<Props> = ({
+  organisationList,
+  getSelectedOrganisation,
+}) => {
   const [selectedOrganisation, setSelectedOrganisation] = useState(
     'Select an organistaion'
   );
+
+  useEffect(() => {
+    getSelectedOrganisation && getSelectedOrganisation(selectedOrganisation);
+  }, [selectedOrganisation]);
 
   return (
     <div className={styles.selectOrganisationWrapper}>
@@ -25,9 +34,11 @@ const SelectOrganisation: React.FC<Props> = () => {
           <Select
             style={{ width: '240px' }}
             value={selectedOrganisation}
-            onChange={(value: any) => setSelectedOrganisation(value)}
+            onChange={(value: any) => {
+              setSelectedOrganisation(value);
+            }}
           >
-            {organisations?.map((item: any) => (
+            {organisationList?.map((item: any) => (
               <Option value={item?.id} key={item.id}>
                 {item.name}
               </Option>

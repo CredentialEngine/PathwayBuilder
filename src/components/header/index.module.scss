@@ -19,7 +19,7 @@
 .publishButtonSpecification {
   border: none;
   @include buttonSpecification;
-  color: $dark-gray-color;
+  color: $primary-dark;
 }
 
 .container {
@@ -33,10 +33,10 @@
 }
 
 .productImgLayout {
-  background: $dark-gray-color 0% 0% no-repeat padding-box;
+  background: $primary-dark 0% 0% no-repeat padding-box;
   display: flex;
   padding: 0 5px 0 10px;
-  & > img{
+  & > img {
     width: 45px;
     height: 45px;
   }
@@ -62,7 +62,7 @@
   font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-bold)
     var(--unnamed-font-size-18) / var(--unnamed-line-spacing-23)
     var(--unnamed-font-family-ibm-plex-sans);
-  color: $primary-color;
+  color: $selection;
   text-align: left;
   font: normal normal bold 18px/23px IBM Plex Sans;
 }
@@ -74,7 +74,7 @@
     var(--unnamed-line-spacing-18) var(--unnamed-font-family-ibm-plex-sans);
   letter-spacing: var(--unnamed-character-spacing-0);
   font: normal normal normal 14px/18px IBM Plex Sans;
-  color: $primary-color;
+  color: $selection;
 }
 
 .titleDescriptionContainer {
@@ -92,7 +92,7 @@
     var(--unnamed-font-family-ibm-plex-sans);
   letter-spacing: var(--unnamed-character-spacing-0);
   font: normal normal bold 18px/23px IBM Plex Sans;
-  color: $dark-gray-color;
+  color: $primary-dark;
 }
 
 .editPathway {
@@ -107,20 +107,20 @@
   text-decoration: underline;
   font: normal normal normal 14px/18px IBM Plex Sans;
   letter-spacing: 0px;
-  color: $dark-gray-color;
+  color: $primary-dark;
 }
 
 .helpContainer {
   display: flex;
   align-items: center;
-  background-color: $primary-dark-color;
+  background-color: $primary-dark;
   justify-content: center;
 }
 
 .imgDimensions {
   width: 36px;
   height: 36px;
-  color: $primary-color;
+  color: $selection;
 }
 
 .conflictComponent {

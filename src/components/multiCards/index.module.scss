@@ -14,7 +14,7 @@
 .addDestinationContent {
   .addDestinationTitle {
     font-size: 14px;
-    color: #0a2942;
+    color: $primary-dark-color;
     margin-top: 12px;
     font-weight: 700;
   }
@@ -38,34 +38,6 @@
       text-align: left;
       margin-bottom: 0px;
     }
-
-    .popoverMenu {
-      display: flex;
-      flex-direction: column;
-      // align-items: center;
-      width: 80px;
-      height: 60px;
-      border: 1px solid #8494a0;
-      border-radius: 6px;
-      background: #ffffff 0% 0% no-repeat padding-box;
-      position: absolute;
-      right: 80px;
-      top: 60px;
-
-      > span {
-        margin-bottom: 0px;
-        margin-left: 15px;
-        width: fit-content;
-        margin-top: 5px;
-        cursor: pointer;
-        font-size: 12px;
-        color: #8494a0;
-      }
-
-      > span:hover {
-        color: #0a2942;
-      }
-    }
   }
   .bottomDestinationContent {
     display: flex;
@@ -81,7 +53,7 @@
 }
 
 .isCourseCard {
-  background: #ffffff;
+  background: $white-color;
   box-shadow: 0px 0px 6px #00000029;
 
   .courseCardWrapper {
@@ -101,7 +73,7 @@
     width: 70%;
     text-align: left;
     margin-left: 10px;
-    color: #0a2942;
+    color: $primary-dark-color;
     font-size: 12px;
   }
   .courseNameContainter {
@@ -110,7 +82,7 @@
     height: 40px;
 
     > span {
-      color: #0a2942;
+      color: $primary-dark-color;
       font-size: 14px;
       font-weight: 700;
       margin-top: 8px;
@@ -125,7 +97,7 @@
     justify-content: space-between;
 
     > span {
-      color: #0a2942;
+      color: $primary-dark-color;
       font-size: 12px;
     }
   }
@@ -141,7 +113,7 @@
     display: flex;
     flex-direction: row;
     margin: 8px 8px 0px 10px;
-    color: #ffffff;
+    color: $white-color;
 
     > span {
       font-size: 14px;
@@ -152,7 +124,7 @@
   }
   .requiredSection {
     display: flex;
-    color: #ffffff;
+    color: $white-color;
 
     > span {
       margin-left: 40px;
@@ -172,14 +144,13 @@
     .topContent {
       display: flex;
       flex-direction: row;
-      // align-items: center;
       margin: 10px 8px 8px 10px;
 
       .circle {
         height: 32px;
         width: 32px;
         border-radius: 50%;
-        background-color: #ffffff;
+        background-color: $white-color;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -189,18 +160,50 @@
         width: 72%;
         font-size: 14px;
         font-weight: 700;
-        color: #0a2942;
+        color: $primary-dark-color;
         text-align: left;
         margin-left: 8px;
         margin-top: 4px;
       }
     }
     .totalCredit {
-      color: #0a2942;
+      color: $primary-dark-color;
       font-size: 12px;
       text-align: left;
       margin-left: 14px;
       margin-top: 4px;
+    }
+  }
+}
+
+:global {
+  .ant-popover {
+    left: 650px;
+    .ant-popover-arrow {
+      display: none;
+    }
+    .ant-popover-inner-content {
+      border: 1px solid #8494a0;
+      border-radius: 6px;
+      > div {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 4px;
+        margin-right: 10px;
+
+        > span {
+          margin-bottom: 6px;
+          width: fit-content;
+          cursor: pointer;
+          font-size: 14px;
+          color: #8494a0;
+          display: block;
+        }
+
+        > span:hover {
+          color: $primary-dark-color;
+        }
+      }
     }
   }
 }

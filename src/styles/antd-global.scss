@@ -6,15 +6,15 @@ body {
   .ant-input-search input,
   .ant-picker-input input {
     border: 1px solid $inactive1;
-    border-radius: 6px;
+    border-radius: 4px;
     min-height: 40px;
     outline: none !important;
     box-shadow: none !important;
-    font: normal normal normal 14px/18px IBM Plex Sans;
+    font-size: 14px;
     letter-spacing: 0px;
-    color: #0a2942;
+    color: $primary-dark;
     &::placeholder {
-      color: #0a2942;
+      color: $primary-dark;
       opacity: 1 !important;
     }
   }
@@ -30,6 +30,10 @@ body {
       color: #0a2942;
       opacity: 1 !important;
     }
+  }
+  .ant-card,
+  .ant-form {
+    font-size: 12px;
   }
   .ant-input-search {
     &.grey {
@@ -66,7 +70,6 @@ body {
   .ant-btn {
     border-color: $primary;
     min-width: 50px;
-    height: 40px;
   }
   .ant-input-search-button {
     height: 40px;
@@ -301,28 +304,27 @@ body {
   .ant-row.ant-form-item {
     margin-bottom: 18px;
   }
-}
-
-.ant-modal-mask {
-  background: #0a2942 0% 0% no-repeat padding-box;
-  opacity: 0.9;
-}
-.ant-modal-close-x {
-  position: absolute;
-  width: 20px;
-  height: 19px;
-  top: 20px;
-  right: 20px;
-  font-weight: bold;
-  z-index: 10;
-  padding: 0;
-  color: #00000073;
-  font-weight: 700;
-  line-height: 1;
-  text-decoration: none;
-  background: 0 0;
-  border: 0;
-  outline: 0;
-  cursor: pointer;
-  transition: color 0.3s;
+  .ant-modal-mask {
+    background: #0a2942 0% 0% no-repeat padding-box;
+    opacity: 0.9;
+  }
+  .ant-modal-close-x {
+    position: absolute;
+    width: 20px;
+    height: 19px;
+    top: 20px;
+    right: 20px;
+    font-weight: bold;
+    z-index: 10;
+    padding: 0;
+    color: #00000073;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    background: 0 0;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
 }

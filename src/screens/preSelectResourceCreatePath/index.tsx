@@ -1,137 +1,130 @@
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
+import { PlusOutlined } from '@ant-design/icons';
+import { faCaretDown, faGear } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Card, Row, Form } from 'antd';
 import { noop } from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { ComponentsCards } from '../../assets/modal/constant';
 
 import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import SearchBox from '../../components/formFields/searchBox';
 
 import Styles from './index.module.scss';
 
-const PreSelectResourceCreatePath: React.FC = () => (
-  // const onFinish = (values: any) => {};
-  <div>
-    <Row gutter={20}>
-      <Col span="12">
-        <div>
-          <h3>Select Resources</h3>
-          <p>All types</p>
-        </div>
-        <SearchBox placeholder="Search your components" />
-        <div>
-          <Form
-            name="dynamic_form_nest_item"
-            onFinish={noop}
-            autoComplete="off"
-          >
-            <Form.List name="users">
-              {(fields, { add }) => (
-                <>
-                  <div
-                    style={{
-                      display: 'flex',
-                      marginBottom: 8,
-                      alignItems: 'center',
-                    }}
-                  >
+const PreSelectResourceCreatePath: React.FC = () => {
+  const [searchValue, setSearchValue] = React.useState('');
+  const [displaySearchContainer, setDisplaySearchContainer] =
+    React.useState(false);
+  const [SelectedResource, setSelectedResource] = React.useState<any>([]);
+  const [dataArray, setDataArray] = React.useState<any>([ComponentsCards]);
+  const searchComponent = (value: any) => {
+    setSearchValue(value.target.value);
+    setDisplaySearchContainer(true);
+  };
+
+  useEffect(() => {
+    setDataArray(ComponentsCards);
+  }, []);
+
+  const addResource = (itemId: string, itemIndex: number) => {
+    const filteredItem = dataArray.filter((item: any) => item.id === itemId);
+    setSelectedResource([...SelectedResource, filteredItem[0]]);
+    dataArray.splice(itemIndex, 1);
+    if (dataArray.length === 0) {
+      setDisplaySearchContainer(false);
+    }
+  };
+  const UnSelectSelectedItem = (itemId: string, itemIndex: number) => {
+    const filteredItem = SelectedResource.filter(
+      (item: any) => item.id === itemId
+    );
+    setDataArray([...dataArray, filteredItem[0]]);
+    SelectedResource.splice(itemIndex, 1);
+    if (dataArray.length > 0) {
+      setDisplaySearchContainer(true);
+    }
+  };
+  return (
+    <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
+      <Row gutter={20}>
+        <Col span="12">
+          <div className={Styles.flexCenter}>
+            <h5>Select Resources</h5>
+            <p className="dropdown-title">
+              All resources types{' '}
+              <FontAwesomeIcon icon={faCaretDown} color="black" />
+            </p>
+          </div>
+          <SearchBox
+            placeholder="Search your components"
+            onKeyUp={searchComponent}
+          />
+          {displaySearchContainer && (
+            <div className={Styles.searchItemWrapper}>
+              {dataArray
+                .filter((v: any) =>
+                  v.description
+                    ?.toLocaleLowerCase()
+                    .includes(searchValue.toLocaleLowerCase())
+                )
+                .map((v: any, i: number) => (
+                  <div className={Styles.flexGrowCenter} key={i}>
                     <CardWithLeftIcon
-                      title="Course"
-                      SubTitle="Course"
-                      IconName={faAirFreshener}
-                      inlineStyles={{ flex: 1 }}
+                      draggable={true}
+                      key={i}
+                      title={v.name}
+                      type="Semester 1"
+                      SubTitle={v.description}
+                      IconName={faGear}
+                      IconColor="black"
                     />
-                    <PlusOutlined onClick={() => add()} />
+                    <PlusOutlined onClick={() => addResource(v.id, i)} />
                   </div>
-                  {fields.map(({ key }) => (
-                    <div
-                      style={{
-                        display: 'flex',
-                        marginBottom: 8,
-                        alignItems: 'center',
-                      }}
-                      key={key}
-                    >
-                      <CardWithLeftIcon
-                        name="Course"
-                        description="Course"
-                        IconName={faAirFreshener}
-                        inlineStyles={{ flex: 1 }}
-                      />
-                      <PlusOutlined onClick={() => add()} />
-                    </div>
-                  ))}
-                </>
-              )}
-            </Form.List>
-          </Form>
-        </div>
-      </Col>
-      <Col span="12">
-        <div>
-          <h3>1 Resource Selected</h3>
-          <p>Alphabetical</p>
-          <Card>
-            <>
-              <Form
-                name="dynamic_form_nest_item"
-                onFinish={noop}
-                autoComplete="off"
-              >
-                <Form.List name="users">
-                  {(fields, { add, remove }) => (
-                    <>
-                      <div
-                        style={{
-                          display: 'flex',
-                          marginBottom: 8,
-                          alignItems: 'center',
-                        }}
-                      >
-                        <CardWithLeftIcon
-                          name="Course"
-                          description="Course"
-                          IconName={faAirFreshener}
-                          inlineStyles={{ flex: 1 }}
-                        />
-                        <PlusOutlined onClick={() => add()} />
-                      </div>
-                      {fields.map(({ key, name }) => (
-                        <div
-                          style={{
-                            display: 'flex',
-                            marginBottom: 8,
-                            alignItems: 'center',
-                          }}
-                          key={key}
-                        >
-                          <CardWithLeftIcon
-                            name="Course"
-                            description="Course"
-                            IconName={faAirFreshener}
-                            inlineStyles={{ flex: 1 }}
-                          />
-                          <MinusCircleOutlined onClick={() => remove(name)} />
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </Form.List>
-                <Form.Item></Form.Item>
-              </Form>
-              <p className={Styles.infoCard}>
-                Search for resources that you have uploaded to the Registry to
-                add them now as pre-selected options. This provides a smaller
-                set of resources to create the components you’ll ned work with
-                while you are building your Pathway. Any resource that you have
-                uploaded to the Registry will be availble to you when creating
-                your pathway so you can skip this step.
-              </p>
-            </>
+                ))}
+            </div>
+          )}
+        </Col>
+        <Col span="12">
+          <div className={Styles.flexCenter}>
+            <h5>1 Resource Selected</h5>
+            <p className="dropdown-title">
+              Alphabetical <FontAwesomeIcon icon={faCaretDown} color="black" />
+            </p>
+          </div>
+          <Card className="customacardstyle">
+            <div className={Styles.cardwrapper}>
+              {SelectedResource?.map((v: any, i: number) => (
+                <div className={Styles.flexGrowCenter} key={i}>
+                  <CardWithLeftIcon
+                    draggable={true}
+                    key={i}
+                    title={v.name}
+                    type="Semester 1"
+                    SubTitle={v.description}
+                    IconName={faGear}
+                    IconColor="black"
+                  />
+                  <PlusOutlined onClick={() => UnSelectSelectedItem(v.id, i)} />
+                </div>
+              ))}
+            </div>
+            <p className={Styles.infoCard}>
+              Search for resources that you have uploaded to the Registry to add
+              them now as pre-selected options. This provides a smaller set of
+              resources to create the components you’ll ned work with while you
+              are building your Pathway.
+              <br />
+              <i>
+                Any resource that you have uploaded to the Registry will be
+                availble to you when creating your pathway so you can skip this
+                step.
+              </i>
+            </p>
           </Card>
-        </div>
-      </Col>
-    </Row>
-  </div>
-);
+        </Col>
+      </Row>
+    </Form>
+  );
+};
 export default PreSelectResourceCreatePath;
