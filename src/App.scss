@@ -1,1 +1,5 @@
-// @import './styles/core.scss';
+@import './styles/core.scss';
+
+.resourceFooter {
+  @include flexSpaceBetween;
+}

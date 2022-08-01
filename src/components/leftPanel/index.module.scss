@@ -21,4 +21,9 @@
   height: calc(100vh - 200px);
   overflow-y: auto;
   padding-right: 5px;
+  :global {
+    .ant-card-body {
+      margin-bottom: 15px;
+    }
+  }
 }
