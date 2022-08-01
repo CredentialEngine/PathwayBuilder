@@ -1,9 +1,78 @@
-.antModal {
-  width: 720px !important;
+@import '../../styles/global.scss';
+.skinwrapper {
+  margin: 20px 0;
+
+  .ant-card-body {
+    h5,
+    p {
+      line-height: 1.2;
+    }
+  }
+  :global {
+    .customacardstyle {
+      min-height: 460px;
+    }
+    .customicon {
+      padding: 8px;
+      background: $inactive3;
+      margin-right: 5px;
+      svg {
+        font-size: 18px;
+      }
+    }
+    .anticon-plus {
+      border: 2px solid $selection;
+      border-radius: 50px;
+      padding: 2px;
+      margin-left: 13px;
+      margin-bottom: 15px;
+      svg {
+        fill: $selection !important;
+      }
+    }
+    .ant-modal-body {
+      .ant-row {
+        align-items: center;
+      }
+    }
+    .ant-card-bordered {
+      border-color: $inactive1;
+      border-radius: 4px;
+      height: 100%;
+    }
+    .ant-card-body {
+      padding: 10px;
+      box-shadow: none;
+    }
+  }
   .infoCard {
-    background: #f2d5c2 0% 0% no-repeat padding-box;
-    box-shadow: 0px 0px 6px #00000029;
+    background: $inactive3 0% 0% no-repeat padding-box;
     border-radius: 6px;
     padding: 10px;
+  }
+  .searchItemWrapper {
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border: 2px solid $selection;
+    border-radius: 6px;
+    padding: 15px;
+    :global {
+      .ant-card-bordered {
+        box-shadow: none;
+        border-color: $inactive3;
+      }
+    }
+  }
+}
+
+.antModal {
+  width: 720px !important;
+}
+.flexCenter {
+  @include flexSpaceBetween;
+}
+.flexGrowCenter {
+  @include flexSpaceBetween;
+  & > div {
+    flex-grow: 1;
   }
 }

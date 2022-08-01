@@ -11,3 +11,10 @@ $black-weight: 900;
 
 // font-variables
 $app-font-primary: 'IBM Plex Sans';
+
+// mixin
+@mixin flexSpaceBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

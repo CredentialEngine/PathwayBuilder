@@ -49,11 +49,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     >
       <Row>
         <Col span="5">
-          <span className={styles.iconwrapper}>
+          <span className={styles.iconwrapper + ' customicon'}>
             <FontAwesomeIcon icon={IconName} color={IconColor} />
           </span>
         </Col>
-        <Col span="16">
+        <Col span="19">
           <p>{title}</p>
           <h5>{SubTitle}</h5>
         </Col>

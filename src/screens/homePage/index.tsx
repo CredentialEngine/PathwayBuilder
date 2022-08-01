@@ -15,7 +15,7 @@ import LeftPanel from '../../components/leftPanel';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 
-import styles from './index.module.scss';
+import Styles from './index.module.scss';
 
 interface Props {
   isLeftPanelVisible: boolean;
@@ -112,7 +112,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
   };
 
   return (
-    <Layout className={styles.centralPannel}>
+    <Layout className={Styles.centralPannel}>
       <Header />
       {!!isLeftPanelVisible && (
         <Layout style={{ display: 'flex', flexDirection: 'row' }}>
@@ -122,10 +122,10 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
           <Layout
             className="site-layout"
             style={{
-              marginLeft: !collapsed ? '397px' : '0px',
+              marginLeft: !collapsed ? '277px' : '0px',
             }}
           >
-            <div>
+            <div className={Styles.leftPanelTrigger}>
               {collapsed ? (
                 <FontAwesomeIcon
                   icon={faAngleDoubleRight}

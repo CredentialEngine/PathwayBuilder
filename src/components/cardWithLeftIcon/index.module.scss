@@ -1,17 +1,16 @@
+@import '../../styles/global.scss';
+
 .cardwrapper {
   margin-bottom: 15px;
   p {
     margin-bottom: 0;
-    font: normal normal normal 12px/15px IBM Plex Sans;
-    letter-spacing: 0px;
-    color: #0a2942;
-    opacity: 1;
+    font-size: 12px;
+    color: $primary-dark;
   }
-  h3 {
-    font: normal normal bold 12px/15px IBM Plex Sans;
-    letter-spacing: 0px;
-    color: #0a2942;
-    opacity: 1;
+  h5 {
+    font-size: 12px;
+    color: $primary-dark;
+    margin-bottom: 0;
   }
   :global {
     .ant-card {
@@ -21,18 +20,15 @@
       background: #ffffff 0% 0% no-repeat padding-box;
       box-shadow: 0px 0px 6px #00000029;
       border-radius: 6px;
-      padding: 13px 12px 6px;
+      padding: 10px 12px 8px;
     }
   }
   .iconwrapper {
-    // background: #eee;
     font-size: 23px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
-    // align-items: center;
-    // min-height: 48px;
-    min-width: 50px;
     width: max-content;
+    padding-top: 6px;
   }
 }
