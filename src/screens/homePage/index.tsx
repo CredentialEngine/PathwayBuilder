@@ -13,6 +13,7 @@ import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
 import MultiCard from '../../components/multiCards';
+import RightPanel from '../../components/rightPanel';
 
 import styles from './index.module.scss';
 
@@ -22,6 +23,7 @@ interface Props {
 const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [cardsArray, setCardsArray] = useState<any>([]);
+  const [showRightPanel, setShowRightPanel] = useState(false);
   const columns = [
     {
       title: 'Stage 1',
@@ -212,6 +214,12 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
             </Content>
           </Layout>
         </Layout>
+      )}
+      {showRightPanel && (
+        <RightPanel
+          visible={showRightPanel}
+          onCloseHandler={(value: boolean) => setShowRightPanel(value)}
+        />
       )}
     </Layout>
   );
