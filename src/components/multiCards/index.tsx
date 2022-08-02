@@ -93,7 +93,7 @@ const MultiCard: React.FC<Props> = ({
             Add your destination component
           </p>
           <FontAwesomeIcon
-            style={{ height: '20px' }}
+            style={{ height: '28px', marginTop: '20px' }}
             color="#ffffff"
             icon={faCirclePlus}
           />
@@ -108,7 +108,7 @@ const MultiCard: React.FC<Props> = ({
               style={{ height: '20px' }}
               icon={faStar}
             />
-            <p className={styles.credentials}>Credential</p>
+            <p className={styles.credentials}>Credential Component</p>
             <FontAwesomeIcon
               color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
@@ -147,9 +147,10 @@ const MultiCard: React.FC<Props> = ({
               ></Popover>
             )}
           </div>
+          <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
           <div className={styles.bottomDestinationContent}>
             <p className={styles.title}>
-              Business of Retail: Operations and Profit
+              F291-COS BSCH - Bachlor of Science Honours
             </p>
           </div>
         </div>
@@ -170,12 +171,15 @@ const MultiCard: React.FC<Props> = ({
               onClick={noop}
             />
           </div>
+          <Divider
+            style={{ backgroundColor: '#F3F4F6', margin: '8px 0px 4px 0px' }}
+          />
           <div className={styles.courseNameContainter}>
-            <span>Business of Retail Course</span>
+            <span>F20PB Project Testing & Implementation</span>
           </div>
           <div className={styles.creditSection}>
-            <span>3 Credits</span>
-            <span>Management Level</span>
+            <span>Credits: 3</span>
+            <span>Level 10</span>
           </div>
         </div>
       )}
@@ -222,8 +226,17 @@ const MultiCard: React.FC<Props> = ({
               onClick={noop}
             />
           </div>
-          <Divider style={{ color: '#ffb90b', margin: '0px', opacity: 1 }} />
-          <span className={styles.totalCredit}>480 Credits Total</span>
+          <Divider
+            style={{
+              backgroundColor: 'rgb(255,185,11)',
+              margin: '4px 0px',
+              opacity: 1,
+            }}
+          />
+          <span className={styles.totalCredit}>
+            8 of 8 Courses (120 Credits at level 7) minimum grade D in 7
+            specified Courses
+          </span>
         </div>
       )}
     </div>
