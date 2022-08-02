@@ -192,6 +192,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                   </span>
                                   {cardsArray.map((item: any) => (
                                     <MultiCard
+                                      onClick={() => setShowRightPanel(true)}
                                       key={item.id}
                                       data={{
                                         semester: child.title,
