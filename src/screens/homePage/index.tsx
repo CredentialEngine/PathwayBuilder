@@ -24,6 +24,8 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [cardsArray, setCardsArray] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
+  const [isZoomDisabled, setIsZoomDisabled] = useState(false);
+
   const columns = [
     {
       title: 'Stage 1',
@@ -140,7 +142,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
             </div>
 
             <Content className="site-layout-background">
-              <TransformWrapper>
+              <TransformWrapper disabled={isZoomDisabled}>
                 <TransformComponent>
                   <div style={{ display: 'flex' }}>
                     {columns.map((column: any) => (
@@ -199,6 +201,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                         credits: item.credits,
                                         draggable: true,
                                       }}
+                                      setIsZoomDisabled={setIsZoomDisabled}
                                     />
                                   ))}
                                 </div>
