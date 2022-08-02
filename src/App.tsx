@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import './App.scss';
 
 import Button from './components/button';
 import { Type } from './components/button/type';
-
 import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
@@ -12,6 +12,7 @@ import CreatePathway from './screens/createPathway/createPathway';
 import HomePage from './screens/homePage';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
+import { organisations } from './screens/selectOrganisation/constants';
 
 const App = () => {
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
@@ -22,9 +23,11 @@ const App = () => {
     useState<boolean>(false);
   const [isAddPathwayDestinationVisible, setIsAddPathwayDestinationVisible] =
     useState<boolean>(false);
-
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
-    useState<boolean>(true);
+    useState<boolean>(false);
+
+  const [selectedOrganisationValue, setSelectedOrganisationValue] =
+    useState('');
 
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
@@ -57,6 +60,29 @@ const App = () => {
     setIsCreatePathwayVisible(true);
   };
 
+  useEffect(() => {
+    if (organisations.length > 1) {
+      setsSelectOrganizationsVisble(true);
+    } else {
+      setIsCreatePathwayVisible(true);
+    }
+  }, [organisations.length]);
+
+  const createPathwayFooter = () => (
+    <div style={{ display: 'flex' }}>
+      <Button
+        onClick={oncreatePathwayOkHandler}
+        text="Start Your Pathway"
+        type={Type.PRIMARY}
+      />
+      <Button
+        onClick={onCreatePathwayCancelHandler}
+        text="Cancel"
+        type={Type.CANCEL}
+      />
+    </div>
+  );
+
   return (
     <div>
       <MainContainer>
@@ -73,9 +99,8 @@ const App = () => {
         />
         <Modal
           visible={isCreatePathwayVisible}
-          onOk={oncreatePathwayOkHandler}
-          onCancel={onCreatePathwayCancelHandler}
           title="Add a Pathway"
+          footer={createPathwayFooter()}
         >
           <CreatePathway />
         </Modal>
@@ -97,18 +122,13 @@ const App = () => {
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
 
-        <Modal
-          visible={isAddPathwayDestinationVisible}
-          title="Add a Pathway"
-          footer={[]}
-        >
+        <Modal visible={isAddPathwayDestinationVisible} title="" footer={[]}>
           <SelectDestination
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
             }
           />
         </Modal>
-
         <Modal
           width={520}
           visible={isSelectOrganizationsVisble}
@@ -120,12 +140,19 @@ const App = () => {
                 type={Type.PRIMARY}
                 onClick={selectOrgOkHandler}
                 text="Confirm"
+                disabled={
+                  selectedOrganisationValue === 'Select an organistaion'
+                }
               />
-              ,
             </>,
           ]}
         >
-          <SelectOrganisation />
+          <SelectOrganisation
+            organisationList={organisations}
+            getSelectedOrganisation={(value: string) =>
+              setSelectedOrganisationValue(value)
+            }
+          />
         </Modal>
       </MainContainer>
     </div>

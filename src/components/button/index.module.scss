@@ -15,10 +15,9 @@
   font-size: 14px;
   background-color: $primary-dark;
   color: $white-color;
-  height: 36px;
   border-radius: $button-radius;
   border: 1px solid $primary-dark;
-  padding: 8px 16px;
+  padding: 6px 16px;
   .icon {
     margin-right: 10px;
   }
@@ -36,7 +35,7 @@
 }
 
 .approve {
-  background-color: $secondary-color;
+  background-color: $inactive1;
   color: $white-color;
   height: 36px;
   border-radius: $button-radius;
@@ -45,8 +44,8 @@
     margin-right: 10px;
   }
   &:hover {
-    color: $primary-dark-color;
-    background-color: $blue-color;
+    color: $primary-dark;
+    background-color: $primary;
     border-radius: $button-radius;
   }
   &:disabled {
@@ -68,8 +67,8 @@
     margin-right: 10px;
   }
   &:hover {
-    color: $primary-dark-color;
-    background-color: $blue-color;
+    color: $primary-dark;
+    background-color: $primary;
     border-radius: $button-radius;
   }
   &:disabled {
@@ -85,7 +84,7 @@
   color: $white-color;
   border: 1px solid $gold;
   border-radius: $button-radius;
-  padding: 8px 16px;
+  padding: 6px 16px;
   .icon {
     margin-right: 12px;
   }
@@ -96,8 +95,8 @@
   }
   &:disabled {
     color: $white-color;
-    border: 1px solid $inactive2-color;
-    background: $inactive2-color;
+    border: 1px solid $inactive2;
+    background: $inactive2;
     cursor: not-allowed;
   }
 }
@@ -122,21 +121,32 @@
   }
 }
 
+.cancel {
+  margin-left: 12px;
+  font-size: 14px;
+  background-color: $white-color;
+  color: $primary-dark;
+  height: 36px;
+  border-radius: $button-radius;
+  border: 1px solid $primary-dark;
+  padding: 6px 16px;
+}
+
 .outline {
   background-color: $white-color;
   height: 36px;
   color: $black;
   border: 1px solid $primary-dark;
   border-radius: $button-radius;
-  padding: 8px 16px;
+  padding: 6px 16px;
   font-weight: bold;
   .icon {
     margin-right: 12px;
   }
   &:hover {
     background-color: $inactive3;
-    border: 1px solid $primary-color;
-    color: $dark-blue-color;
+    border: 1px solid $selection;
+    color: $primary-dark;
     background-color: $selection-light;
   }
   &:disabled {
@@ -158,30 +168,30 @@
   }
   &:hover {
     background-color: $selection-light;
-    border: 1px solid $light-gold-color;
+    border: 1px solid $gold-light;
     color: $white-color;
   }
 }
 
 .gold {
-  background-color: $gold-color;
+  background-color: $gold;
   color: $white-color;
-  border: 1px solid $gold-color;
+  border: 1px solid $gold;
   border-radius: $button-radius;
-  padding: 8px 16px;
+  padding: 6px 16px;
   .icon {
     margin-right: 12px;
   }
   &:hover {
-    background-color: $light-gold-color;
-    border: 1px solid $light-gold-color;
+    background-color: $gold-light;
+    border: 1px solid $gold-light;
     color: $white-color;
   }
 
   &:disabled {
     color: $white-color;
-    border: 1px solid $gold-inactive-color;
-    background: $gold-inactive-color;
+    border: 1px solid $gold-inactive;
+    background: $gold-inactive;
     cursor: not-allowed;
   }
 }

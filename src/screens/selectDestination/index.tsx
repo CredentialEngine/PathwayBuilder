@@ -7,8 +7,7 @@ import Button from '../../components/button';
 
 const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
   <>
-    <h3>Add a Pathway</h3>
-    <h5>Choose how you would like to buid your pathway.</h5>
+    <h5>Choose how you would like to build your pathway.</h5>
     <br />
     <p>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum commodi
@@ -17,7 +16,8 @@ const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
     </p>
     <Row gutter={20}>
       <Col span="12">
-        <img src={StartLeft} alt="Start with Destination" />
+        <img src={StartRight} alt="Start with Destination" />
+
         <div style={{ textAlign: 'center', margin: '15px 0' }}>
           <Button
             text="Start with Destination"
@@ -28,10 +28,10 @@ const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
         </div>
       </Col>
       <Col span="12">
-        <img src={StartRight} alt="Start with Destination" />
+        <img src={StartLeft} alt="Start with Destination" />
         <div style={{ textAlign: 'center', margin: '15px 0' }}>
           <Button
-            text="Start with Destination"
+            text="Start with Initial components"
             type="primary"
             style={{ width: '100%' }}
             onClick={() => setIsAddPathwayDestinationVisible(false)}

@@ -6,7 +6,7 @@ import {
   faSitemap,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider } from 'antd';
+import { Divider, Popover } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -19,6 +19,8 @@ interface Props {
   isConditionalCard?: boolean;
   isAddComponentCard?: boolean;
   data?: any;
+  onClick?: () => void;
+  setIsZoomDisabled: (a: any) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -28,11 +30,14 @@ const MultiCard: React.FC<Props> = ({
   isConditionalCard,
   isAddComponentCard,
   data,
+  onClick,
+  setIsZoomDisabled,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
 
   const onDragStart = (e: any) => {
+    setIsZoomDisabled(true);
     const target = e.target;
     e.dataTransfer.setData('card_id', JSON.stringify(data));
     setTimeout(() => {
@@ -45,6 +50,8 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragEnd = (e: any) => {
+    setIsZoomDisabled(false);
+
     e.target.style.visibility = 'visible';
 
     const shiftX = e.clientX - e.target.getBoundingClientRect().left;
@@ -68,6 +75,8 @@ const MultiCard: React.FC<Props> = ({
     }
   };
 
+  const darkColor = '#0A2942';
+
   return (
     <div
       className={`${styles.multiCardWrapper} ${
@@ -81,6 +90,9 @@ const MultiCard: React.FC<Props> = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
+      onClick={onClick}
+      onMouseLeave={() => setIsZoomDisabled(false)}
+      onMouseOver={() => setIsZoomDisabled(true)}
     >
       {isAddDestination && (
         <div className={styles.addDestinationContent}>
@@ -88,7 +100,7 @@ const MultiCard: React.FC<Props> = ({
             Add your destination component
           </p>
           <FontAwesomeIcon
-            style={{ height: '20px' }}
+            style={{ height: '28px', marginTop: '20px' }}
             color="#ffffff"
             icon={faCirclePlus}
           />
@@ -99,27 +111,53 @@ const MultiCard: React.FC<Props> = ({
         <div className={styles.destinationContentWrapper}>
           <div className={styles.topDestinationContent}>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px' }}
               icon={faStar}
             />
-            <p className={styles.credentials}>Credential</p>
+            <p className={styles.credentials}>Credential Component</p>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
               icon={faEllipsis}
-              onClick={() => setShowPopover(!showPopover)}
+              onClick={(e: any) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setShowPopover(!showPopover);
+              }}
             />
             {showPopover && (
-              <div className={styles.popoverMenu} ref={ref}>
-                <span>View</span>
-                <span>Delete</span>
-              </div>
+              <Popover
+                visible={showPopover}
+                arrowPointAtCenter
+                placement="bottomRight"
+                content={
+                  <div className={styles.popoverMenu} ref={ref}>
+                    <span
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                    >
+                      View
+                    </span>
+                    <span
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                    >
+                      Delete
+                    </span>
+                  </div>
+                }
+              ></Popover>
             )}
           </div>
+          <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
           <div className={styles.bottomDestinationContent}>
             <p className={styles.title}>
-              Business of Retail: Operations and Profit
+              F291-COS BSCH - Bachlor of Science Honours
             </p>
           </div>
         </div>
@@ -134,18 +172,21 @@ const MultiCard: React.FC<Props> = ({
             />
             <span className={styles.title}>Course</span>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
               icon={faEllipsis}
               onClick={noop}
             />
           </div>
+          <Divider
+            style={{ backgroundColor: '#F3F4F6', margin: '8px 0px 4px 0px' }}
+          />
           <div className={styles.courseNameContainter}>
-            <span>Business of Retail Course</span>
+            <span>F20PB Project Testing & Implementation</span>
           </div>
           <div className={styles.creditSection}>
-            <span>3 Credits</span>
-            <span>Management Level</span>
+            <span>Credits: 3</span>
+            <span>Level 10</span>
           </div>
         </div>
       )}
@@ -178,7 +219,7 @@ const MultiCard: React.FC<Props> = ({
           <div className={styles.topContent}>
             <span className={styles.circle}>
               <FontAwesomeIcon
-                color="#0A2942"
+                color={darkColor}
                 style={{ height: '18px', cursor: 'pointer' }}
                 icon={faSitemap}
                 onClick={noop}
@@ -186,14 +227,23 @@ const MultiCard: React.FC<Props> = ({
             </span>
             <span className={styles.topMiddle}>Required: 0</span>
             <FontAwesomeIcon
-              color="#0A2942"
+              color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
               icon={faEllipsis}
               onClick={noop}
             />
           </div>
-          <Divider style={{ color: '#ffb90b', margin: '0px', opacity: 1 }} />
-          <span className={styles.totalCredit}>480 Credits Total</span>
+          <Divider
+            style={{
+              backgroundColor: 'rgb(255,185,11)',
+              margin: '4px 0px',
+              opacity: 1,
+            }}
+          />
+          <span className={styles.totalCredit}>
+            8 of 8 Courses (120 Credits at level 7) minimum grade D in 7
+            specified Courses
+          </span>
         </div>
       )}
     </div>

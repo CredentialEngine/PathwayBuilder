@@ -1,9 +1,7 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
-import { noop } from 'lodash';
 import React, { useState } from 'react';
 
 import { ComponentsCards } from '../../assets/modal/constant';
-import Button from '../button';
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
@@ -44,7 +42,7 @@ const LeftPanel: React.FC<any> = () => {
           <SearchBox
             placeholder="Search your components"
             className={Styles.customsearch}
-            styleType="grey"
+            styleType="outline"
             onKeyUp={searchComponent}
           />
           <div className={Styles.cardwrapper}>
@@ -75,6 +73,7 @@ const LeftPanel: React.FC<any> = () => {
           <div className={Styles.cardwrapper}>
             {array.map((v, i) => (
               <CardWithLeftIcon
+                draggable={true}
                 key={i}
                 title="Course"
                 SubTitle="Course"
@@ -108,7 +107,8 @@ const LeftPanel: React.FC<any> = () => {
     <>
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
-        <Button onClick={noop} text="Edit Selections" type="selection" />
+        {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
+        <u>Select</u>
       </div>
       <Tab {...tabVal} />
     </>
