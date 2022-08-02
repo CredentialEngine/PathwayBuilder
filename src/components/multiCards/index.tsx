@@ -20,6 +20,7 @@ interface Props {
   isAddComponentCard?: boolean;
   data?: any;
   onClick?: () => void;
+  setIsZoomDisabled: (a: any) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -30,11 +31,13 @@ const MultiCard: React.FC<Props> = ({
   isAddComponentCard,
   data,
   onClick,
+  setIsZoomDisabled,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
 
   const onDragStart = (e: any) => {
+    setIsZoomDisabled(true);
     const target = e.target;
     e.dataTransfer.setData('card_id', JSON.stringify(data));
     setTimeout(() => {
@@ -47,6 +50,8 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragEnd = (e: any) => {
+    setIsZoomDisabled(false);
+
     e.target.style.visibility = 'visible';
 
     const shiftX = e.clientX - e.target.getBoundingClientRect().left;
@@ -86,6 +91,8 @@ const MultiCard: React.FC<Props> = ({
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
       onClick={onClick}
+      onMouseLeave={() => setIsZoomDisabled(false)}
+      onMouseOver={() => setIsZoomDisabled(true)}
     >
       {isAddDestination && (
         <div className={styles.addDestinationContent}>
