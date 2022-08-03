@@ -1,4 +1,4 @@
-import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
@@ -20,12 +20,11 @@ const Header = () => {
       </div>
       <div style={{ display: 'flex', position: 'relative' }}>
         <Button
-          type={Type.APPROVE}
+          type={Type.DISABLED}
           className={styles.approveButtonSpecification}
           onClick={() => setHasPublishVisible(!hasPublishVisible)}
           iconOnTop={true}
           text="Approve"
-          iconColor="#f37422"
         />
       </div>
     </div>
@@ -69,7 +68,6 @@ const Header = () => {
               key="save"
               onClick={noop}
               text="save"
-              type={Type.PRIMARY}
             />
 
             {/* <Button

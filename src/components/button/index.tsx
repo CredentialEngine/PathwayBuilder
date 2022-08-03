@@ -1,4 +1,4 @@
-import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React from 'react';
@@ -93,11 +93,16 @@ const Button: React.FC<ButtonProps> & {
         <span>{text}</span>
       </button>
       {iconOnTop && (
-        <FontAwesomeIcon
-          icon={faCircleExclamation}
-          className={styles.infoIcon}
-          color={iconColor}
-        />
+        <span className={styles.infoIconContainer}>
+          <span className="fa-layers fa-fw fa-lg">
+            <FontAwesomeIcon icon={faCircle} className={styles.infoCircle} />
+            <FontAwesomeIcon
+              icon={faExclamation}
+              transform="shrink-6"
+              className={styles.infoIcon}
+            />
+          </span>
+        </span>
       )}
     </div>
   );

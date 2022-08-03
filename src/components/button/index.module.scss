@@ -13,6 +13,7 @@
 
 .primary {
   font-size: 14px;
+  font-weight: 600;
   background-color: $primary-dark;
   color: $white-color;
   border-radius: $button-radius;
@@ -24,6 +25,7 @@
   &:hover {
     background-color: $primary;
     border-radius: $button-radius;
+    border-color: $primary;
   }
   &:disabled {
     background-color: $inactive1;
@@ -34,26 +36,18 @@
   }
 }
 
-.approve {
+.disabled {
   background-color: $inactive1;
-  color: $white-color;
+  color: $inactive-text;
+  font-weight: 600;
   height: 36px;
+  border: 1px solid $inactive1;
   border-radius: $button-radius;
   padding: 4px 16px;
+  pointer-events: none;
+  cursor: not-allowed;
   .icon {
     margin-right: 10px;
-  }
-  &:hover {
-    color: $primary-dark;
-    background-color: $primary;
-    border-radius: $button-radius;
-  }
-  &:disabled {
-    background-color: $inactive1;
-    opacity: $opacity;
-    color: $white-color;
-    cursor: not-allowed;
-    border-color: $inactive1;
   }
 }
 
@@ -82,6 +76,7 @@
 .secondary {
   background-color: $gold;
   color: $white-color;
+  font-weight: 600;
   border: 1px solid $gold;
   border-radius: $button-radius;
   padding: 6px 16px;
@@ -103,6 +98,7 @@
 .secondary2 {
   background-color: $inactive1;
   color: $black;
+  font-weight: 600;
   border: 1px solid $inactive1;
   border-radius: $button-radius;
   padding: 8px 16px;
@@ -126,6 +122,7 @@
   font-size: 14px;
   background-color: $white-color;
   color: $primary-dark;
+  font-weight: 600;
   height: 36px;
   border-radius: $button-radius;
   border: 1px solid $primary-dark;
@@ -136,6 +133,7 @@
   background-color: $white-color;
   height: 36px;
   color: $black;
+  font-weight: 600;
   border: 1px solid $primary-dark;
   border-radius: $button-radius;
   padding: 6px 16px;
@@ -161,6 +159,7 @@
   background-color: $selection;
   color: $primary-dark;
   border: 1px solid $selection;
+  font-weight: 600;
   border-radius: $button-radius;
   line-height: normal;
   & > span {
@@ -177,6 +176,7 @@
   background-color: $gold;
   color: $white-color;
   border: 1px solid $gold;
+  font-weight: 600;
   border-radius: $button-radius;
   padding: 6px 16px;
   .icon {
@@ -246,12 +246,22 @@
   }
 }
 
-.infoIcon {
+.infoIconContainer {
   width: 20px;
   height: 20px;
   position: absolute;
   right: 3px;
   top: -7px;
+
+  .infoCircle {
+    font-size: 18px;
+    color: #f37422;
+  }
+  .infoIcon {
+    font-size: 18px;
+    color: $white-color;
+    font-weight: 700;
+  }
 }
 
 .container {
