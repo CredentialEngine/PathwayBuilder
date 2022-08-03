@@ -9,6 +9,7 @@ import Styles from './index.module.scss';
 const HelpAddingComponent: React.FC = () => (
   <div>
     <h2>Help</h2>
+    <br />
     <Row gutter={20}>
       <Col span="8">
         <SearchBox placeholder="Search your Components" styleType="outline" />
