@@ -141,7 +141,7 @@ const App = () => {
                 onClick={selectOrgOkHandler}
                 text="Confirm"
                 disabled={
-                  selectedOrganisationValue === 'Select an organistaion'
+                  selectedOrganisationValue === 'Select an organization'
                 }
               />
             </>,
