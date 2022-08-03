@@ -33,12 +33,12 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
       children: [
         {
           id: 1,
-          title: 'Semster 1',
+          title: 'Semester 1',
           color: '#48bdba',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          title: 'Semester 2',
           color: '#adf1ef',
         },
       ],
@@ -49,12 +49,12 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
       children: [
         {
           id: 1,
-          title: 'Semster 1',
+          title: 'Semester 1',
           color: '#48bdba',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          title: 'Semester 2',
           color: '#adf1ef',
         },
       ],
@@ -65,12 +65,12 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
       children: [
         {
           id: 1,
-          title: 'Semster 1',
+          title: 'Semester 1',
           color: '#48bdba',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          title: 'Semester 2',
           color: '#adf1ef',
         },
       ],
@@ -81,12 +81,12 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
       children: [
         {
           id: 1,
-          title: 'Semster 1',
+          title: 'Semester 1',
           color: '#48bdba',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          title: 'Semester 2',
           color: '#adf1ef',
         },
       ],
