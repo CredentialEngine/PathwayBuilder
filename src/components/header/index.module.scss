@@ -5,10 +5,14 @@
   height: 36px;
   margin: 0 10px;
   border-radius: 4px;
+  font-weight: 600;
 }
 
 .saveButtonSpecification {
   width: 90px;
+  border: 1px solid $selection;
+  background-color: $selection;
+  color: $primary-dark;
   @include buttonSpecification;
 }
 
@@ -81,7 +85,7 @@
   display: flex;
   flex-direction: row;
   width: 80%;
-  background: #fafafa 0% 0% no-repeat padding-box;
+  background: #edfcfc 0% 0% no-repeat padding-box;
   justify-content: space-between;
 }
 
@@ -122,15 +126,15 @@
 .imgDimensions {
   width: 36px;
   height: 36px;
-  color: $selection;
+  color: $white-color;
 }
 
 .conflictComponent {
   display: flex;
   justify-content: space-between;
-  background-color: $light-browm;
+  background-color: $gray-back;
   align-items: center;
-  padding: 10px 0 10px 10px;
+  padding: 10px;
 }
 
 .headerCenter {

@@ -15,15 +15,26 @@ export interface Props {
   type?: string;
   SubTitle?: string;
   title?: string;
+  id?: number | string;
+  getUpdatedCardArr?: (value: any) => void;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
-  const { title, SubTitle, IconName, IconColor, inlineStyles, draggable } =
-    props;
+  const {
+    title,
+    SubTitle,
+    IconName,
+    IconColor,
+    inlineStyles,
+    draggable,
+    id,
+    getUpdatedCardArr,
+  } = props;
 
   const onDragStart = (e: any) => {
     const target = e.target;
     e.dataTransfer.setData('card_id', JSON.stringify(props));
+    getUpdatedCardArr && getUpdatedCardArr(props.id);
     setTimeout(() => {
       target.style.display = 'hidden';
     }, 0);
@@ -46,6 +57,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
+      id={id?.toString()}
     >
       <Row>
         <Col span="5">

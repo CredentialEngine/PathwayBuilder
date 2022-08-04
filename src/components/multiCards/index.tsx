@@ -59,9 +59,9 @@ const MultiCard: React.FC<Props> = ({
     const shiftX = e.clientX - e.target.getBoundingClientRect().left;
     const shiftY = e.clientY - e.target.getBoundingClientRect().top;
 
+    e.target.style.position = 'absolute';
     e.target.style.left = `${e.pageX - shiftX}px`;
     e.target.style.top = `${e.pageY - shiftY}px`;
-    e.target.style.position = 'absolute';
   };
 
   useEffect(() => {

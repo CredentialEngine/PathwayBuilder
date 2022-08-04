@@ -18,7 +18,7 @@ const SelectOrganisation: React.FC<Props> = ({
   getSelectedOrganisation,
 }) => {
   const [selectedOrganisation, setSelectedOrganisation] = useState(
-    'Select an organistaion'
+    'Select an organization'
   );
 
   useEffect(() => {

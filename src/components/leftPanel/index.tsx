@@ -1,5 +1,5 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ComponentsCards } from '../../assets/modal/constant';
 import CardWithLeftIcon from '../cardWithLeftIcon';
@@ -17,6 +17,19 @@ const LeftPanel: React.FC<any> = () => {
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
   const array = [1, 1, 1, 1, 1];
+  const [updatedCardArr, setUpdatedCardArr] = useState<any>();
+  const [componentCardsData, setComponentCardsData] = useState<any>([
+    ...ComponentsCards,
+  ]);
+
+  useEffect(() => {
+    if (updatedCardArr?.length > 0) {
+      const temp = componentCardsData?.filter(
+        (item: any) => item?.id !== updatedCardArr
+      );
+      setComponentCardsData(temp);
+    }
+  }, [updatedCardArr]);
 
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
@@ -46,21 +59,25 @@ const LeftPanel: React.FC<any> = () => {
             onKeyUp={searchComponent}
           />
           <div className={Styles.cardwrapper}>
-            {ComponentsCards.filter((v) =>
-              v.description
-                .toLocaleLowerCase()
-                .includes(searchValue.toLocaleLowerCase())
-            ).map((v, i) => (
-              <CardWithLeftIcon
-                draggable={true}
-                key={i}
-                title={v.name}
-                type={v.type}
-                SubTitle={v.description}
-                IconName={faCubes}
-                IconColor="black"
-              />
-            ))}
+            {componentCardsData
+              .filter((v: any) =>
+                v.description
+                  .toLocaleLowerCase()
+                  .includes(searchValue.toLocaleLowerCase())
+              )
+              .map((v: any, i: any) => (
+                <CardWithLeftIcon
+                  draggable={true}
+                  key={i}
+                  title={v.name}
+                  type={v.type}
+                  SubTitle={v.description}
+                  IconName={faCubes}
+                  IconColor="black"
+                  id={v.id}
+                  getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                />
+              ))}
           </div>
         </>
       ),
