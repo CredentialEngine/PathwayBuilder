@@ -18,6 +18,7 @@ interface Props {
   isCourseCard?: boolean;
   isConditionalCard?: boolean;
   isAddComponentCard?: boolean;
+  isCredentialCard?: boolean;
   data?: any;
   onClick?: () => void;
   setIsZoomDisabled: (a: any) => void;
@@ -25,9 +26,10 @@ interface Props {
 
 const MultiCard: React.FC<Props> = ({
   isAddDestination,
-  isDestination = true,
+  isDestination,
   isCourseCard,
   isConditionalCard,
+  isCredentialCard,
   isAddComponentCard,
   data,
   onClick,
@@ -85,7 +87,7 @@ const MultiCard: React.FC<Props> = ({
         isCourseCard ? styles?.isCourseCard : ''
       } ${isConditionalCard ? styles.conditionalCard : ''} ${
         isAddComponentCard ? styles.addComponentCard : ''
-      }`}
+      } ${isCredentialCard ? styles.isCredentialCard : ''}`}
       draggable={true}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
@@ -164,13 +166,13 @@ const MultiCard: React.FC<Props> = ({
       )}
 
       {isCourseCard && (
-        <div className={styles.courseCardWrapeer}>
+        <div className={styles.credentialsCardWrapeer}>
           <div className={styles.topCourseContent}>
             <FontAwesomeIcon
               icon={faCubes}
               style={{ height: '24px', width: '24px' }}
             />
-            <span className={styles.title}>Course</span>
+            <span className={styles.title}>{data.name}</span>
             <FontAwesomeIcon
               color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
@@ -182,11 +184,35 @@ const MultiCard: React.FC<Props> = ({
             style={{ backgroundColor: '#F3F4F6', margin: '8px 0px 4px 0px' }}
           />
           <div className={styles.courseNameContainter}>
-            <span>F20PB Project Testing & Implementation</span>
+            <span>{data.description}</span>
           </div>
           <div className={styles.creditSection}>
             <span>Credits: 3</span>
             <span>Level 10</span>
+          </div>
+        </div>
+      )}
+
+      {isCredentialCard && (
+        <div className={styles.courseCardWrapeer}>
+          <div className={styles.topCourseContent}>
+            <FontAwesomeIcon
+              icon={faCubes}
+              style={{ height: '24px', width: '24px' }}
+            />
+            <span className={styles.title}>{data.name}</span>
+            <FontAwesomeIcon
+              color={darkColor}
+              style={{ height: '20px', cursor: 'pointer' }}
+              icon={faEllipsis}
+              onClick={noop}
+            />
+          </div>
+          <Divider
+            style={{ backgroundColor: '#6EFFFF', margin: '8px 0px 4px 0px' }}
+          />
+          <div className={styles.courseNameContainter}>
+            <span>{data.description}</span>
           </div>
         </div>
       )}

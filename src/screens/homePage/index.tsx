@@ -6,14 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
+import AddPathwayForm from '../addPathwayForm';
 
 import Styles from './index.module.scss';
 
@@ -25,6 +27,10 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
   const [cardsArray, setCardsArray] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
+  const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
+    useState<boolean>(false);
+
+  const columnRef = useRef<any>([]);
 
   const columns = [
     {
@@ -93,6 +99,12 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
     },
   ];
 
+  columnRef.current = columns.map((column: any) =>
+    column.children.map(
+      (element: any, i: any) => (columnRef.current[i] = React.createRef())
+    )
+  );
+
   const ondrop = (cards: []) => {
     /* Need to write a logic where same card should not be added
       Need to filter accorrding to column type like which card should be display where
@@ -113,9 +125,17 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
     }
   };
 
+  const onEditPathwayOkHandler = () => {
+    setIsEditPathwayFormVisible(false);
+  };
+
+  const onEditPathwayCancelHandler = () => {
+    setIsEditPathwayFormVisible(false);
+  };
+
   return (
     <Layout className={Styles.centralPannel}>
-      <Header />
+      <Header setIsEditPathwayFormVisible={setIsEditPathwayFormVisible} />
       {!!isLeftPanelVisible && (
         <Layout style={{ display: 'flex', flexDirection: 'row' }}>
           <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -155,11 +175,13 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                       >
                         <span style={{ color: '#000000' }}>{column.title}</span>
                         <div style={{ display: 'flex' }}>
-                          {column.children.map((child: any) => (
+                          {column.children.map((child: any, i: any) => (
                             <DropWrapper
                               onDrop={ondrop}
                               key={child.title}
                               column={child.title}
+                              forwardRef={columnRef.current[i]}
+                              width="450px"
                             >
                               <div
                                 key={child.title}
@@ -169,7 +191,6 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                   }`,
                                   textAlign: 'center',
                                   height: '100vh',
-                                  width: '450px',
                                 }}
                               >
                                 <div
@@ -196,9 +217,15 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                     <MultiCard
                                       onClick={() => setShowRightPanel(true)}
                                       key={item.id}
+                                      isCourseCard={item.type === 'course'}
+                                      isCredentialCard={
+                                        item.type === 'credentials'
+                                      }
                                       data={{
                                         semester: child.title,
                                         level: item.level,
+                                        name: item.title,
+                                        description: item.SubTitle,
                                         credits: item.credits,
                                         draggable: true,
                                       }}
@@ -225,6 +252,14 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
           onCloseHandler={(value: boolean) => setShowRightPanel(value)}
         />
       )}
+      <Modal
+        visible={isEditPathwayFormVisible}
+        onOk={onEditPathwayOkHandler}
+        onCancel={onEditPathwayCancelHandler}
+        title="Add a Pathway"
+      >
+        <AddPathwayForm />
+      </Modal>
     </Layout>
   );
 };

@@ -55,7 +55,7 @@ const LeftPanel: React.FC<any> = () => {
                 draggable={true}
                 key={i}
                 title={v.name}
-                type="Semester 1"
+                type={v.type}
                 SubTitle={v.description}
                 IconName={faCubes}
                 IconColor="black"

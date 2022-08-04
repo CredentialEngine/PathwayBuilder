@@ -108,6 +108,60 @@
   }
 }
 
+.isCredentialCard {
+  background: $credentials-component;
+  box-shadow: 0px 0px 6px #00000029;
+
+  .courseCardWrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topCourseContent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 8px;
+    margin-left: 8px;
+  }
+  .title {
+    // padding: 0 15px;
+    width: 80%;
+    text-align: left;
+    margin-left: 10px;
+    color: $primary-dark-color;
+    font-size: 14px;
+  }
+  .courseNameContainter {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    height: 66px;
+    margin-right: 10px;
+
+    > span {
+      color: $primary-dark-color;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 8px;
+      margin-left: 8px;
+      text-align: left;
+    }
+  }
+
+  .creditSection {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 8px 0px 8px;
+    justify-content: space-between;
+
+    > span {
+      color: $primary-dark-color;
+      font-size: 14px;
+    }
+  }
+}
+
 .conditionalCard {
   height: 60px;
   background: #00a0ff;

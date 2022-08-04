@@ -97,6 +97,7 @@
   letter-spacing: var(--unnamed-character-spacing-0);
   font: normal normal bold 18px/23px IBM Plex Sans;
   color: $primary-dark;
+  cursor: pointer;
 }
 
 .editPathway {
@@ -112,6 +113,7 @@
   font: normal normal normal 14px/18px IBM Plex Sans;
   letter-spacing: 0px;
   color: $primary-dark;
+  cursor: pointer;
 }
 
 .helpContainer {
