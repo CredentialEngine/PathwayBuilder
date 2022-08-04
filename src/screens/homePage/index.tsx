@@ -221,6 +221,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                         <div style={{ display: 'flex' }}>
                           {column.children.map((child: any, i: any) => (
                             <DropWrapper
+                              id={`${column.title} ${child.title}`}
                               onDrop={ondrop}
                               status={child.codedNotation}
                               key={child.id}
@@ -236,7 +237,9 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                     child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
                                   }`,
                                   textAlign: 'center',
-                                  height: '100vh',
+                                  minHeight: '100vh',
+                                  width: '450px',
+                                  height: 'auto',
                                 }}
                               >
                                 <div
@@ -245,6 +248,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                     flexDirection: 'column',
                                     justifyContent: 'center',
                                     alignItems: 'center',
+                                    marginBottom: '150px',
                                   }}
                                 >
                                   <span

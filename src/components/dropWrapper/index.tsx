@@ -9,10 +9,18 @@ interface Props {
   width?: any;
   status?: any;
   CTID?: string;
+  id?: number | string;
 }
 
-const DropWrapper = (props: Props) => {
-  const { onDrop, children, forwardRef, width, status, CTID } = props;
+const DropWrapper: React.FC<Props> = ({
+  id,
+  onDrop,
+  children,
+  forwardRef,
+  width,
+  status,
+  CTID,
+}) => {
   const allowDrop = (e: any) => e.preventDefault();
   // const [updatedWidth, setWidth] = useState(width);
   const handleDrop = (e: any) => {
@@ -34,6 +42,7 @@ const DropWrapper = (props: Props) => {
 
   return (
     <div
+      id={id?.toString()}
       onDragOver={allowDrop}
       onDrop={handleDrop}
       ref={forwardRef}
@@ -41,6 +50,8 @@ const DropWrapper = (props: Props) => {
         display: 'flex',
         width: `${width}`,
         flexDirection: 'column',
+        height: 'auto',
+        backgroundColor: '#ffffff',
       }}
     >
       {children}
