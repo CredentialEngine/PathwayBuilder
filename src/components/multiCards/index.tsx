@@ -22,6 +22,8 @@ interface Props {
   data?: any;
   onClick?: () => void;
   setIsZoomDisabled: (a: any) => void;
+  status?: string;
+  CTID?: string;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -34,6 +36,8 @@ const MultiCard: React.FC<Props> = ({
   data,
   onClick,
   setIsZoomDisabled,
+  status,
+  CTID,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
@@ -41,7 +45,10 @@ const MultiCard: React.FC<Props> = ({
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
-    e.dataTransfer.setData('card_id', JSON.stringify(data));
+    e.dataTransfer.setData(
+      'card_id',
+      JSON.stringify({ ...data, status, CTID })
+    );
     setTimeout(() => {
       target.style.display = 'hidden';
     }, 0);
@@ -56,12 +63,12 @@ const MultiCard: React.FC<Props> = ({
 
     e.target.style.visibility = 'visible';
 
-    const shiftX = e.clientX - e.target.getBoundingClientRect().left;
-    const shiftY = e.clientY - e.target.getBoundingClientRect().top;
+    // const shiftX = e.clientX - e.target.getBoundingClientRect().left;
+    // const shiftY = e.clientY - e.target.getBoundingClientRect().top;
 
-    e.target.style.position = 'absolute';
-    e.target.style.left = `${e.pageX - shiftX}px`;
-    e.target.style.top = `${e.pageY - shiftY}px`;
+    // e.target.style.position = 'absolute';
+    // e.target.style.left = `${e.pageX - shiftX}px`;
+    // e.target.style.top = `${e.pageY - shiftY}px`;
   };
 
   useEffect(() => {
@@ -96,7 +103,7 @@ const MultiCard: React.FC<Props> = ({
       onMouseLeave={() => setIsZoomDisabled(false)}
       onMouseOver={() => setIsZoomDisabled(true)}
     >
-      {isAddDestination && (
+      {(isAddDestination || data.type === 'addDestination') && (
         <div className={styles.addDestinationContent}>
           <p className={styles.addDestinationTitle}>
             Add your destination component
@@ -165,7 +172,7 @@ const MultiCard: React.FC<Props> = ({
         </div>
       )}
 
-      {isCourseCard && (
+      {(isCourseCard || data.type === 'course') && (
         <div className={styles.credentialsCardWrapeer}>
           <div className={styles.topCourseContent}>
             <FontAwesomeIcon
@@ -193,7 +200,7 @@ const MultiCard: React.FC<Props> = ({
         </div>
       )}
 
-      {isCredentialCard && (
+      {(isCredentialCard || data.type === 'credentials') && (
         <div className={styles.courseCardWrapeer}>
           <div className={styles.topCourseContent}>
             <FontAwesomeIcon

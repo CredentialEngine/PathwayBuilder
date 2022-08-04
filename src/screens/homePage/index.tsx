@@ -283,12 +283,17 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                         data={{
                                           semester: child.title,
                                           level: item.level,
-                                          name: item.title,
-                                          description: item.SubTitle,
+                                          name: item.name,
+                                          description: item.description,
                                           credits: item.credits,
                                           draggable: true,
+                                          IconName: item.IconName,
+                                          IconColor: item.IconColor,
+                                          type: item.type,
                                         }}
                                         setIsZoomDisabled={setIsZoomDisabled}
+                                        status={child.codedNotation}
+                                        CTID={child.CTID}
                                       />
                                     ))}
                                 </div>

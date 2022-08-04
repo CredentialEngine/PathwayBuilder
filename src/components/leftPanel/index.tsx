@@ -69,9 +69,9 @@ const LeftPanel: React.FC<any> = () => {
                 <CardWithLeftIcon
                   draggable={true}
                   key={i}
-                  title={v.name}
+                  name={v.name}
                   type={v.type}
-                  SubTitle={v.description}
+                  description={v.description}
                   IconName={faCubes}
                   IconColor="black"
                   id={v.id}
@@ -92,8 +92,8 @@ const LeftPanel: React.FC<any> = () => {
               <CardWithLeftIcon
                 draggable={true}
                 key={i}
-                title="Course"
-                SubTitle="Course"
+                name="Course"
+                description="Course"
                 IconName={faCubes}
               />
             ))}

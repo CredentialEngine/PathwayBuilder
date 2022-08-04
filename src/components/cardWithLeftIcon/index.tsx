@@ -21,8 +21,8 @@ export interface Props {
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const {
-    title,
-    SubTitle,
+    name,
+    description,
     IconName,
     IconColor,
     inlineStyles,
@@ -66,8 +66,8 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
           </span>
         </Col>
         <Col span="19">
-          <p>{title}</p>
-          <h5>{SubTitle}</h5>
+          <p>{name}</p>
+          <h5>{description}</h5>
         </Col>
       </Row>
     </Card>
