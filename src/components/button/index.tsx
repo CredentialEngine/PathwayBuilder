@@ -51,7 +51,6 @@ const Button: React.FC<ButtonProps> & {
   title,
   color,
   iconOnTop,
-  iconColor,
 }) => {
   const [disabled, setDisabled] = React.useState(disabledInProps);
   React.useEffect(() => {
