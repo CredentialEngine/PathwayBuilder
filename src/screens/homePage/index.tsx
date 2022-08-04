@@ -34,66 +34,110 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
 
   const columns = [
     {
-      title: 'Stage 1',
+      id: '12436789',
+      rowId: 298932,
+      name: 'Stage 1',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
       color: '#83edea',
       children: [
         {
           id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '6763827',
+          CTID: 'ab13288',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '6763827',
           color: '#adf1ef',
+          CTID: 'ab1',
         },
       ],
     },
     {
-      title: 'Stage 2',
-      color: '#5fb3b8',
-      children: [
-        {
-          id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
-        },
-        {
-          id: 2,
-          title: 'Semster 2',
-          color: '#adf1ef',
-        },
-      ],
-    },
-    {
-      title: 'Stage 3',
+      id: '1243df6789',
+      rowId: 29893232,
+      name: 'Stage 2',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
       color: '#83edea',
       children: [
         {
           id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '623483827',
+          CTID: 'ab12',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '623483827',
           color: '#adf1ef',
+          CTID: 'ab123',
         },
       ],
     },
     {
-      title: 'Stage 4',
-      color: '#5fb3b8',
+      id: '12436343789',
+      rowId: 29893432,
+      name: 'Stage 3',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
+      color: '#83edea',
       children: [
         {
           id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '6763898927',
+          CTID: 'abcd123728',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '6763898927',
           color: '#adf1ef',
+          CTID: 'abcd23728',
+        },
+      ],
+    },
+    {
+      id: '124332326789',
+      rowId: 298932,
+      name: 'Stage 4',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
+      color: '#83edea',
+      children: [
+        {
+          id: 1,
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '6761113827',
+          CTID: 'abc2378',
+        },
+        {
+          id: 2,
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '6761113827',
+          color: '#adf1ef',
+          CTID: 'abcd2378',
         },
       ],
     },
@@ -167,19 +211,21 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                   <div style={{ display: 'flex' }}>
                     {columns.map((column: any) => (
                       <div
-                        key={column.title}
+                        key={column.id}
                         style={{
-                          backgroundColor: `${column.color}`,
+                          backgroundColor: `${column?.color}`,
                           textAlign: 'center',
                         }}
                       >
-                        <span style={{ color: '#000000' }}>{column.title}</span>
+                        <span style={{ color: '#000000' }}>{column.name}</span>
                         <div style={{ display: 'flex' }}>
                           {column.children.map((child: any, i: any) => (
                             <DropWrapper
                               onDrop={ondrop}
-                              key={child.title}
-                              column={child.title}
+                              status={child.codedNotation}
+                              key={child.id}
+                              column={child.name}
+                              CTID={child.CTID}
                               forwardRef={columnRef.current[i]}
                               width="450px"
                             >
@@ -211,27 +257,37 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                       }`,
                                     }}
                                   >
-                                    {child.title}
+                                    {child.name}
                                   </span>
-                                  {cardsArray.map((item: any) => (
-                                    <MultiCard
-                                      onClick={() => setShowRightPanel(true)}
-                                      key={item.id}
-                                      isCourseCard={item.type === 'course'}
-                                      isCredentialCard={
-                                        item.type === 'credentials'
-                                      }
-                                      data={{
-                                        semester: child.title,
-                                        level: item.level,
-                                        name: item.title,
-                                        description: item.SubTitle,
-                                        credits: item.credits,
-                                        draggable: true,
-                                      }}
-                                      setIsZoomDisabled={setIsZoomDisabled}
-                                    />
-                                  ))}
+                                  {cardsArray
+                                    .filter(
+                                      (card: any) =>
+                                        card.status.toLowerCase().trim() ===
+                                          child.codedNotation
+                                            .toLowerCase()
+                                            .trim() &&
+                                        card.CTID.toLowerCase().trim() ===
+                                          child.CTID.toLowerCase().trim()
+                                    )
+                                    .map((item: any) => (
+                                      <MultiCard
+                                        onClick={() => setShowRightPanel(true)}
+                                        key={item.id}
+                                        isCourseCard={item.type === 'course'}
+                                        isCredentialCard={
+                                          item.type === 'credentials'
+                                        }
+                                        data={{
+                                          semester: child.title,
+                                          level: item.level,
+                                          name: item.title,
+                                          description: item.SubTitle,
+                                          credits: item.credits,
+                                          draggable: true,
+                                        }}
+                                        setIsZoomDisabled={setIsZoomDisabled}
+                                      />
+                                    ))}
                                 </div>
                               </div>
                             </DropWrapper>

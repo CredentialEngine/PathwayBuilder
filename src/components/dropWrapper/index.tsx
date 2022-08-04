@@ -7,17 +7,18 @@ interface Props {
   column: string;
   forwardRef?: any;
   width?: any;
+  status?: any;
+  CTID?: string;
 }
 
 const DropWrapper = (props: Props) => {
-  const { onDrop, children, forwardRef, width } = props;
+  const { onDrop, children, forwardRef, width, status, CTID } = props;
   const allowDrop = (e: any) => e.preventDefault();
   // const [updatedWidth, setWidth] = useState(width);
-
   const handleDrop = (e: any) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
-    onDrop(data);
+    onDrop({ ...data, status, CTID });
   };
 
   useEffect(() => {
