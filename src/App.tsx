@@ -9,7 +9,6 @@ import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
-import HelpAddingComponent from './screens/helpAddingComponent';
 import HomePage from './screens/homePage';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
@@ -28,11 +27,6 @@ const App = () => {
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState('');
-  const [helpAddComponent, setHelpAddComponent] = useState(false);
-
-  const handleHelpAddComponent = () => {
-    setHelpAddComponent(false);
-  };
 
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
@@ -109,10 +103,6 @@ const App = () => {
           width={550}
         >
           <CreatePathway />
-        </Modal>
-        <button onClick={handleHelpAddComponent}>handleHelpAddComponent</button>
-        <Modal visible={helpAddComponent} title="" footer="" width={750}>
-          <HelpAddingComponent />
         </Modal>
         <Modal
           visible={isAddPathwayFormVisible}

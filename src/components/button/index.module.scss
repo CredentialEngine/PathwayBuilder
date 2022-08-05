@@ -125,11 +125,11 @@
   font-weight: 600;
   height: 36px;
   border-radius: $button-radius;
-  border: 2px solid $primary-dark;
+  border: 1px solid $primary-dark;
   padding: 6px 16px;
   &:hover {
     background-color: $inactive-outline-btn;
-    border: 2px solid $primary-dark;
+    border: 1px solid $primary-dark;
     color: $primary-dark;
   }
   &:disabled {
