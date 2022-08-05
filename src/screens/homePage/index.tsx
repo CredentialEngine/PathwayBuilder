@@ -148,8 +148,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
       (element: any, i: any) => (columnRef.current[i] = React.createRef())
     )
   );
-
-  const ondrop = (cards: []) => {
+  const onDropHandler = (card: any, status: string, CTID: string) => {
     /* Need to write a logic where same card should not be added
       Need to filter accorrding to column type like which card should be display where
       filtered card display accoriding to their column 
@@ -158,8 +157,17 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
 
       Need to set item move to any place
     */
+    if (card.CTID === CTID) {
+      return;
+    }
 
-    setCardsArray([...cardsArray, cards]);
+    cardsArray.length === 0
+      ? setCardsArray([...cardsArray, { ...card, status, CTID }])
+      : setCardsArray(
+          cardsArray
+            .filter((item: any) => item.id !== card.id)
+            .concat({ ...card, status, CTID })
+        );
   };
 
   const onCloseHandler = () => {
@@ -222,7 +230,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                           {column.children.map((child: any, i: any) => (
                             <DropWrapper
                               id={`${column.title} ${child.title}`}
-                              onDrop={ondrop}
+                              onDrop={onDropHandler}
                               status={child.codedNotation}
                               key={child.id}
                               column={child.name}
@@ -265,11 +273,11 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                   {cardsArray
                                     .filter(
                                       (card: any) =>
-                                        card.status.toLowerCase().trim() ===
+                                        card?.status?.toLowerCase().trim() ===
                                           child.codedNotation
                                             .toLowerCase()
                                             .trim() &&
-                                        card.CTID.toLowerCase().trim() ===
+                                        card?.CTID?.toLowerCase().trim() ===
                                           child.CTID.toLowerCase().trim()
                                     )
                                     .map((item: any) => (
@@ -290,6 +298,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                           IconName: item.IconName,
                                           IconColor: item.IconColor,
                                           type: item.type,
+                                          id: item.id,
                                         }}
                                         setIsZoomDisabled={setIsZoomDisabled}
                                         status={child.codedNotation}

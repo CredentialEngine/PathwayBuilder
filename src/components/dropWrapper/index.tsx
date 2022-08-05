@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 interface Props {
-  onDrop: (a: any) => void;
+  onDrop: (a: any, b: any, c: any) => void;
   children: any;
   key: string;
   column: string;
@@ -27,7 +27,7 @@ const DropWrapper: React.FC<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
-    onDrop({ ...data, status, CTID });
+    onDrop(data, status, CTID);
   };
 
   useEffect(() => {
