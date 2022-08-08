@@ -25,7 +25,6 @@ const App = () => {
     useState<boolean>(false);
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
     useState<boolean>(false);
-
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState('');
 
@@ -101,10 +100,10 @@ const App = () => {
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
           footer={createPathwayFooter()}
+          width={550}
         >
           <CreatePathway />
         </Modal>
-
         <Modal
           visible={isAddPathwayFormVisible}
           onOk={onAddPathwayOkHandler}
@@ -141,7 +140,7 @@ const App = () => {
                 onClick={selectOrgOkHandler}
                 text="Confirm"
                 disabled={
-                  selectedOrganisationValue === 'Select an organistaion'
+                  selectedOrganisationValue === 'Select an organization'
                 }
               />
             </>,

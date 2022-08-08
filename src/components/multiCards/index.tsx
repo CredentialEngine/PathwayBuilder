@@ -18,20 +18,26 @@ interface Props {
   isCourseCard?: boolean;
   isConditionalCard?: boolean;
   isAddComponentCard?: boolean;
+  isCredentialCard?: boolean;
   data?: any;
   onClick?: () => void;
   setIsZoomDisabled: (a: any) => void;
+  status?: string;
+  CTID?: string;
 }
 
 const MultiCard: React.FC<Props> = ({
   isAddDestination,
-  isDestination = true,
+  isDestination,
   isCourseCard,
   isConditionalCard,
+  isCredentialCard,
   isAddComponentCard,
   data,
   onClick,
   setIsZoomDisabled,
+  status,
+  CTID,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
@@ -39,7 +45,10 @@ const MultiCard: React.FC<Props> = ({
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
-    e.dataTransfer.setData('card_id', JSON.stringify(data));
+    e.dataTransfer.setData(
+      'card_id',
+      JSON.stringify({ ...data, status, CTID })
+    );
     setTimeout(() => {
       target.style.display = 'hidden';
     }, 0);
@@ -54,12 +63,12 @@ const MultiCard: React.FC<Props> = ({
 
     e.target.style.visibility = 'visible';
 
-    const shiftX = e.clientX - e.target.getBoundingClientRect().left;
-    const shiftY = e.clientY - e.target.getBoundingClientRect().top;
+    // const shiftX = e.clientX - e.target.getBoundingClientRect().left;
+    // const shiftY = e.clientY - e.target.getBoundingClientRect().top;
 
-    e.target.style.left = `${e.pageX - shiftX}px`;
-    e.target.style.top = `${e.pageY - shiftY}px`;
-    e.target.style.position = 'absolute';
+    // e.target.style.position = 'absolute';
+    // e.target.style.left = `${e.pageX - shiftX}px`;
+    // e.target.style.top = `${e.pageY - shiftY}px`;
   };
 
   useEffect(() => {
@@ -85,7 +94,7 @@ const MultiCard: React.FC<Props> = ({
         isCourseCard ? styles?.isCourseCard : ''
       } ${isConditionalCard ? styles.conditionalCard : ''} ${
         isAddComponentCard ? styles.addComponentCard : ''
-      }`}
+      } ${isCredentialCard ? styles.isCredentialCard : ''}`}
       draggable={true}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
@@ -94,7 +103,7 @@ const MultiCard: React.FC<Props> = ({
       onMouseLeave={() => setIsZoomDisabled(false)}
       onMouseOver={() => setIsZoomDisabled(true)}
     >
-      {isAddDestination && (
+      {(isAddDestination || data.type === 'addDestination') && (
         <div className={styles.addDestinationContent}>
           <p className={styles.addDestinationTitle}>
             Add your destination component
@@ -163,14 +172,14 @@ const MultiCard: React.FC<Props> = ({
         </div>
       )}
 
-      {isCourseCard && (
-        <div className={styles.courseCardWrapeer}>
+      {(isCourseCard || data.type === 'course') && (
+        <div className={styles.credentialsCardWrapeer}>
           <div className={styles.topCourseContent}>
             <FontAwesomeIcon
               icon={faCubes}
               style={{ height: '24px', width: '24px' }}
             />
-            <span className={styles.title}>Course</span>
+            <span className={styles.title}>{data.name}</span>
             <FontAwesomeIcon
               color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
@@ -182,11 +191,35 @@ const MultiCard: React.FC<Props> = ({
             style={{ backgroundColor: '#F3F4F6', margin: '8px 0px 4px 0px' }}
           />
           <div className={styles.courseNameContainter}>
-            <span>F20PB Project Testing & Implementation</span>
+            <span>{data.description}</span>
           </div>
           <div className={styles.creditSection}>
             <span>Credits: 3</span>
             <span>Level 10</span>
+          </div>
+        </div>
+      )}
+
+      {(isCredentialCard || data.type === 'credentials') && (
+        <div className={styles.courseCardWrapeer}>
+          <div className={styles.topCourseContent}>
+            <FontAwesomeIcon
+              icon={faCubes}
+              style={{ height: '24px', width: '24px' }}
+            />
+            <span className={styles.title}>{data.name}</span>
+            <FontAwesomeIcon
+              color={darkColor}
+              style={{ height: '20px', cursor: 'pointer' }}
+              icon={faEllipsis}
+              onClick={noop}
+            />
+          </div>
+          <Divider
+            style={{ backgroundColor: '#6EFFFF', margin: '8px 0px 4px 0px' }}
+          />
+          <div className={styles.courseNameContainter}>
+            <span>{data.description}</span>
           </div>
         </div>
       )}

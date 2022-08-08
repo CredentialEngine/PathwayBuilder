@@ -13,6 +13,12 @@
     text-align: center;
     flex: 1 0;
     margin-right: 10px;
+    cursor: pointer;
+    &:hover {
+      background-color: $inactive-outline-btn;
+      border: 1px solid $primary-dark;
+      color: $primary-dark;
+    }
     &:last-child {
       margin-right: 0;
     }
@@ -30,10 +36,15 @@
   }
 }
 .active {
-  font-size: 14px;
   background-color: $primary-dark;
+  color: $white-color;
+  border-radius: $button-radius;
+  border: 1px solid $primary-dark;
   color: $white-color !important;
   padding: 5px 16px;
+  &:hover {
+    background-color: $primary !important;
+  }
 }
 :global {
   .customTabs:nth-last-child(2) {

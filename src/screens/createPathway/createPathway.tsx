@@ -43,6 +43,7 @@ const CreatePathway: React.FC<any> = () => (
     <Row>
       <p className={`${styles.content}`}>{CreatePathwayTexts.content4}</p>
     </Row>
+    <br />
   </div>
 );
 

@@ -1,4 +1,4 @@
-import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
@@ -11,7 +11,11 @@ import { Type } from '../button/type';
 
 import styles from './index.module.scss';
 
-const Header = () => {
+interface Props {
+  setIsEditPathwayFormVisible: (a: boolean) => void;
+}
+const Header = (props: Props) => {
+  const { setIsEditPathwayFormVisible } = props;
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -20,12 +24,11 @@ const Header = () => {
       </div>
       <div style={{ display: 'flex', position: 'relative' }}>
         <Button
-          type={Type.APPROVE}
+          type={Type.DISABLED}
           className={styles.approveButtonSpecification}
           onClick={() => setHasPublishVisible(!hasPublishVisible)}
           iconOnTop={true}
           text="Approve"
-          iconColor="#f37422"
         />
       </div>
     </div>
@@ -56,7 +59,12 @@ const Header = () => {
             <span className={styles.title}>
               National Retail Federation Foundation RISE Up Pathway
             </span>
-            <span className={styles.editPathway}>Edit Pathway Details</span>
+            <span
+              className={styles.editPathway}
+              onClick={() => setIsEditPathwayFormVisible(true)}
+            >
+              Edit Pathway Details
+            </span>
           </Col>
           <Col span={4} className={styles.saveButtonWrapper}>
             <Button
@@ -69,17 +77,18 @@ const Header = () => {
               key="save"
               onClick={noop}
               text="save"
-              type={Type.PRIMARY}
             />
 
-            {/* <Button
+            {/*
+            Commenting this code for now,
+            may be in future we need this
+            
+            <Button
               className={styles.publishButtonSpecification}
               text="Publish Pathway"
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
             /> 
-            
-            Commenting this code for now,
-            may be in future we need this
+
             */}
           </Col>
         </Row>

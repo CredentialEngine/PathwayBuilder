@@ -6,14 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
+import AddPathwayForm from '../addPathwayForm';
 
 import Styles from './index.module.scss';
 
@@ -25,75 +27,128 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
   const [cardsArray, setCardsArray] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
+  const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
+    useState<boolean>(false);
+
+  const columnRef = useRef<any>([]);
 
   const columns = [
     {
-      title: 'Stage 1',
+      id: '12436789',
+      rowId: 298932,
+      name: 'Stage 1',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
       color: '#83edea',
       children: [
         {
           id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '6763827',
+          CTID: 'ab13288',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '6763827',
           color: '#adf1ef',
+          CTID: 'ab1',
         },
       ],
     },
     {
-      title: 'Stage 2',
-      color: '#5fb3b8',
-      children: [
-        {
-          id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
-        },
-        {
-          id: 2,
-          title: 'Semster 2',
-          color: '#adf1ef',
-        },
-      ],
-    },
-    {
-      title: 'Stage 3',
+      id: '1243df6789',
+      rowId: 29893232,
+      name: 'Stage 2',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
       color: '#83edea',
       children: [
         {
           id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '623483827',
+          CTID: 'ab12',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '623483827',
           color: '#adf1ef',
+          CTID: 'ab123',
         },
       ],
     },
     {
-      title: 'Stage 4',
-      color: '#5fb3b8',
+      id: '12436343789',
+      rowId: 29893432,
+      name: 'Stage 3',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
+      color: '#83edea',
       children: [
         {
           id: 1,
-          title: 'Semster 1',
-          color: '#48bdba',
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '6763898927',
+          CTID: 'abcd123728',
         },
         {
           id: 2,
-          title: 'Semster 2',
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '6763898927',
           color: '#adf1ef',
+          CTID: 'abcd23728',
+        },
+      ],
+    },
+    {
+      id: '124332326789',
+      rowId: 298932,
+      name: 'Stage 4',
+      description: 'Description Stage 1',
+      cTID: 'ABCD',
+      color: '#83edea',
+      children: [
+        {
+          id: 1,
+          rowId: 237,
+          name: 'Semester 1',
+          description: 'Description Semster 1',
+          codedNotation: '6761113827',
+          CTID: 'abc2378',
+        },
+        {
+          id: 2,
+          rowId: 237737,
+          name: 'Semester 2',
+          description: 'Description Semster 2',
+          codedNotation: '6761113827',
+          color: '#adf1ef',
+          CTID: 'abcd2378',
         },
       ],
     },
   ];
 
-  const ondrop = (cards: []) => {
+  columnRef.current = columns.map((column: any) =>
+    column.children.map(
+      (element: any, i: any) => (columnRef.current[i] = React.createRef())
+    )
+  );
+  const onDropHandler = (card: any, status: string, CTID: string) => {
     /* Need to write a logic where same card should not be added
       Need to filter accorrding to column type like which card should be display where
       filtered card display accoriding to their column 
@@ -102,8 +157,17 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
 
       Need to set item move to any place
     */
+    if (card.CTID === CTID) {
+      return;
+    }
 
-    setCardsArray([...cardsArray, cards]);
+    cardsArray.length === 0
+      ? setCardsArray([...cardsArray, { ...card, status, CTID }])
+      : setCardsArray(
+          cardsArray
+            .filter((item: any) => item.id !== card.id)
+            .concat({ ...card, status, CTID })
+        );
   };
 
   const onCloseHandler = () => {
@@ -113,9 +177,17 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
     }
   };
 
+  const onEditPathwayOkHandler = () => {
+    setIsEditPathwayFormVisible(false);
+  };
+
+  const onEditPathwayCancelHandler = () => {
+    setIsEditPathwayFormVisible(false);
+  };
+
   return (
     <Layout className={Styles.centralPannel}>
-      <Header />
+      <Header setIsEditPathwayFormVisible={setIsEditPathwayFormVisible} />
       {!!isLeftPanelVisible && (
         <Layout style={{ display: 'flex', flexDirection: 'row' }}>
           <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -147,19 +219,24 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                   <div style={{ display: 'flex' }}>
                     {columns.map((column: any) => (
                       <div
-                        key={column.title}
+                        key={column.id}
                         style={{
-                          backgroundColor: `${column.color}`,
+                          backgroundColor: `${column?.color}`,
                           textAlign: 'center',
                         }}
                       >
-                        <span style={{ color: '#000000' }}>{column.title}</span>
+                        <span style={{ color: '#000000' }}>{column.name}</span>
                         <div style={{ display: 'flex' }}>
-                          {column.children.map((child: any) => (
+                          {column.children.map((child: any, i: any) => (
                             <DropWrapper
-                              onDrop={ondrop}
-                              key={child.title}
-                              column={child.title}
+                              id={`${column.title} ${child.title}`}
+                              onDrop={onDropHandler}
+                              status={child.codedNotation}
+                              key={child.id}
+                              column={child.name}
+                              CTID={child.CTID}
+                              forwardRef={columnRef.current[i]}
+                              width="450px"
                             >
                               <div
                                 key={child.title}
@@ -168,8 +245,8 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                     child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
                                   }`,
                                   textAlign: 'center',
-                                  height: '100vh',
-                                  width: '450px',
+                                  minHeight: '100vh',
+                                  height: 'auto',
                                 }}
                               >
                                 <div
@@ -178,6 +255,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                     flexDirection: 'column',
                                     justifyContent: 'center',
                                     alignItems: 'center',
+                                    marginBottom: '150px',
                                   }}
                                 >
                                   <span
@@ -190,21 +268,43 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                       }`,
                                     }}
                                   >
-                                    {child.title}
+                                    {child.name}
                                   </span>
-                                  {cardsArray.map((item: any) => (
-                                    <MultiCard
-                                      onClick={() => setShowRightPanel(true)}
-                                      key={item.id}
-                                      data={{
-                                        semester: child.title,
-                                        level: item.level,
-                                        credits: item.credits,
-                                        draggable: true,
-                                      }}
-                                      setIsZoomDisabled={setIsZoomDisabled}
-                                    />
-                                  ))}
+                                  {cardsArray
+                                    .filter(
+                                      (card: any) =>
+                                        card?.status?.toLowerCase().trim() ===
+                                          child.codedNotation
+                                            .toLowerCase()
+                                            .trim() &&
+                                        card?.CTID?.toLowerCase().trim() ===
+                                          child.CTID.toLowerCase().trim()
+                                    )
+                                    .map((item: any) => (
+                                      <MultiCard
+                                        onClick={() => setShowRightPanel(true)}
+                                        key={item.id}
+                                        isCourseCard={item.type === 'course'}
+                                        isCredentialCard={
+                                          item.type === 'credentials'
+                                        }
+                                        data={{
+                                          semester: child.title,
+                                          level: item.level,
+                                          name: item.name,
+                                          description: item.description,
+                                          credits: item.credits,
+                                          draggable: true,
+                                          IconName: item.IconName,
+                                          IconColor: item.IconColor,
+                                          type: item.type,
+                                          id: item.id,
+                                        }}
+                                        setIsZoomDisabled={setIsZoomDisabled}
+                                        status={child.codedNotation}
+                                        CTID={child.CTID}
+                                      />
+                                    ))}
                                 </div>
                               </div>
                             </DropWrapper>
@@ -225,6 +325,14 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
           onCloseHandler={(value: boolean) => setShowRightPanel(value)}
         />
       )}
+      <Modal
+        visible={isEditPathwayFormVisible}
+        onOk={onEditPathwayOkHandler}
+        onCancel={onEditPathwayCancelHandler}
+        title="Add a Pathway"
+      >
+        <AddPathwayForm />
+      </Modal>
     </Layout>
   );
 };

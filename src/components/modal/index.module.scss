@@ -57,7 +57,7 @@ $disabled-opacity: 0.51;
     }
 
     .ant-btn {
-      border-color: $primary;
+      // border-color: $primary;
       min-width: 50px;
     }
     .ant-modal-header,
@@ -87,17 +87,21 @@ $disabled-opacity: 0.51;
     }
 
     .ant-btn-ghost {
-      background-color: $inactive3;
-      color: $black;
-      border: 1px solid $inactive3;
+      font-size: 14px;
+      background-color: $white-color;
+      color: $primary-dark;
+      font-weight: 600;
       border-radius: $button-radius;
-      font-weight: bold;
-
+      border: 1px solid $primary-dark;
+      padding: 6px 16px;
+      line-height: 1;
       span {
         color: $primary;
       }
       &:hover {
-        background-color: $inactive1;
+        background-color: $inactive-outline-btn;
+        border: 1px solid $primary-dark;
+        color: $primary-dark;
       }
       &:disabled {
         opacity: 0.5;
