@@ -63,12 +63,9 @@ const MultiCard: React.FC<Props> = ({
 
     e.target.style.visibility = 'visible';
 
-    // const shiftX = e.clientX - e.target.getBoundingClientRect().left;
-    // const shiftY = e.clientY - e.target.getBoundingClientRect().top;
-
-    // e.target.style.position = 'absolute';
-    // e.target.style.left = `${e.pageX - shiftX}px`;
-    // e.target.style.top = `${e.pageY - shiftY}px`;
+    e.target.style.position = 'absolute';
+    e.target.style.left = `${e.pageX + 75} px`;
+    e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {
