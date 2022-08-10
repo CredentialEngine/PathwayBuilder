@@ -121,14 +121,14 @@ const LeftPanel: React.FC<any> = () => {
   };
 
   return (
-    <>
+    <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
         <u>Select</u>
       </div>
       <Tab {...tabVal} />
-    </>
+    </div>
   );
 };
 
