@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import initalReducer from './reducer';
+import initalReducer from './states/reducer';
 
 const rootReducer = combineReducers({
-  initalReducer,
+  app: initalReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

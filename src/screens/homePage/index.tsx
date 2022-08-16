@@ -284,6 +284,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                       <MultiCard
                                         onClick={() => setShowRightPanel(true)}
                                         key={item.id}
+                                        id={item.id}
                                         isCourseCard={item.type === 'course'}
                                         isCredentialCard={
                                           item.type === 'credentials'
