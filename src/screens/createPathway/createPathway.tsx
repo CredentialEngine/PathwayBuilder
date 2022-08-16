@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { useDispatch } from 'react-redux';
 
-import { firstCallRequest } from '../../states/actions';
+import { getDataForPathwayAndComponentsRequest } from '../../states/actions';
 
 import { CreatePathwayTexts } from './constants';
 import styles from './createPathway.module.scss';
@@ -15,7 +15,7 @@ const CreatePathway: React.FC<any> = () => {
   const dispatch = useDispatch();
   // const result = useSelector((state: any) => state.app);
   useEffect(() => {
-    dispatch(firstCallRequest());
+    dispatch(getDataForPathwayAndComponentsRequest(35));
   }, []);
 
   return (
