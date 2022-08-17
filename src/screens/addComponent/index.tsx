@@ -7,10 +7,26 @@ import React from 'react';
 
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
+import Options from '../../components/formFields/dropdown/lib/options';
 import InputBox from '../../components/formFields/inputBox';
-import SearchBox from '../../components/formFields/searchBox';
+import MultiSelect from '../../components/formFields/multiSelect';
 
 import Styles from './index.module.scss';
+
+const companyList = [
+  {
+    key: 1,
+    value: 'company',
+    label: 'company',
+    title: 'Company',
+  },
+  {
+    key: 2,
+    title: 'New Company',
+    value: 'Newcompany',
+    label: 'New company',
+  },
+];
 
 const AddComponent: React.FC = () => {
   const onFinish = (values: any) => {
@@ -38,33 +54,32 @@ const AddComponent: React.FC = () => {
         <TextArea onChange={noop} placeholder="" maxLength={0} rows={4} />
       </Form.Item>
       <Row gutter={20}>
-        <Col span="10">
+        <Col span="12">
           <Form.Item>
+            <label>Required Number</label>
             <InputBox
-              onChange={noop}
-              placeholder="RequiredNumber"
+              type="number"
+              onChange={undefined}
+              placeholder=""
+              maxLength={0}
               value=""
-              disabled
             />
           </Form.Item>
         </Col>
-        <Col span="10">
+        <Col span="12">
           <Form.Item>
-            <InputBox
-              onChange={noop}
-              placeholder="is equal to"
-              value=""
-              disabled
-            />
-          </Form.Item>
-        </Col>
-        <Col span="3">
-          <Form.Item>
-            <InputBox onChange={noop} placeholder="0" value="" type="number" />
+            <label>Logical Operator</label>
+            <Dropdown defaultValue="And" showSearch={false}>
+              <Options value="And">And</Options>
+              <Options value="OR">OR</Options>
+            </Dropdown>
           </Form.Item>
         </Col>
       </Row>
-      <hr className="min-top" />
+      <div className={Styles.divider}>
+        <label>Constraints</label>
+        <hr className="min-top" />
+      </div>
       <Form
         name="dynamic_form_nest_item"
         onFinish={onFinish}
@@ -74,46 +89,62 @@ const AddComponent: React.FC = () => {
           {(fields, { add }) => (
             <>
               <Row gutter={20}>
-                <Col span="10">
+                <Col span="9">
                   <Form.Item>
-                    <SearchBox placeholder="totalCredit" />
+                    <MultiSelect
+                      placeholder="Select Industry Types"
+                      options={companyList}
+                      optionLabelProp="label"
+                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
+                    />
                   </Form.Item>
                 </Col>
-                <Col span="10">
+                <Col span="6">
                   <Form.Item>
-                    <Dropdown />
+                    <Dropdown defaultValue="Equals" showSearch={false}>
+                      <Options value="Equals">Equals</Options>
+                      <Options value="Greaterthan">Greater than</Options>
+                    </Dropdown>
                   </Form.Item>
                 </Col>
-                <Col span="3">
+                <Col span="9">
                   <Form.Item>
-                    <InputBox
-                      onChange={noop}
-                      placeholder="480"
-                      value=""
-                      type="number"
+                    <MultiSelect
+                      placeholder="Select Industry Types"
+                      options={companyList}
+                      optionLabelProp="label"
+                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
                     />
                   </Form.Item>
                 </Col>
               </Row>
-              {fields.map((key, i) => (
+              {fields.map((v, i) => (
                 <Row gutter={20} key={i}>
-                  <Col span="10">
+                  <Col span="9">
                     <Form.Item>
-                      <SearchBox placeholder="totalCredit" />
+                      <MultiSelect
+                        placeholder="Select Industry Types"
+                        options={companyList}
+                        optionLabelProp="label"
+                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
+                      />
                     </Form.Item>
                   </Col>
-                  <Col span="10">
+                  <Col span="6">
                     <Form.Item>
-                      <Dropdown />
+                      <Dropdown defaultValue="Equals" showSearch={false}>
+                        <Options value="Equals">Equals</Options>
+                        <Options value="Greaterthan">Greater than</Options>
+                      </Dropdown>
                     </Form.Item>
                   </Col>
-                  <Col span="3">
+                  <Col span="9">
                     <Form.Item>
-                      <InputBox
-                        onChange={noop}
-                        placeholder="480"
-                        value=""
-                        type="number"
+                      <MultiSelect
+                        placeholder="Select Industry Types"
+                        options={companyList}
+                        optionLabelProp="label"
+                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
                       />
                     </Form.Item>
                   </Col>
