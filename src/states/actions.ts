@@ -14,27 +14,10 @@ import {
   GET_LOGICAL_OPERATOR_FAILURE,
   GET_LOGICAL_OPERATOR_REQUEST,
   GET_LOGICAL_OPERATOR_SUCCESS,
-  GET_PATHWAY_COMPONENT_FAILURE,
-  GET_PATHWAY_COMPONENT_REQUEST,
-  GET_PATHWAY_COMPONENT_SUCCESS,
   SAVE_PATHWAY_DATA_FAILURE,
   SAVE_PATHWAY_DATA_REQUEST,
   SAVE_PATHWAY_DATA_SUCCESS,
 } from './actionTypes';
-
-export const getAllPathwayComponentRequest = () => ({
-  type: GET_PATHWAY_COMPONENT_REQUEST,
-});
-
-export const getAllPathwayComponentSuccess = (payload: any) => ({
-  type: GET_PATHWAY_COMPONENT_SUCCESS,
-  payload,
-});
-
-export const getAllPathwayComponentFailure = (payload: any) => ({
-  type: GET_PATHWAY_COMPONENT_FAILURE,
-  payload,
-});
 
 export const getLogicalOperatorsRequest = () => ({
   type: GET_LOGICAL_OPERATOR_REQUEST,

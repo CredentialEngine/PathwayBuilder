@@ -5,13 +5,14 @@ import React from 'react';
 export interface Props {
   options?: DefaultOptionType[];
   onSearch?: any;
-  onSelect?: any;
+  onSelect?: (a: any) => void;
   defaultValue?: React.MouseEvent<HTMLElement, MouseEvent>;
   placeholder: string;
   className?: any;
   allowClear?: boolean;
   dropdownClassName?: any;
   value?: string;
+  onChange?: any;
 }
 
 const AutoCompleteBox = (props: Props) => {
@@ -24,6 +25,7 @@ const AutoCompleteBox = (props: Props) => {
     allowClear,
     dropdownClassName,
     value,
+    onChange,
   } = props;
   return (
     <AutoComplete
@@ -33,6 +35,7 @@ const AutoCompleteBox = (props: Props) => {
       onSelect={onSelect}
       value={value}
       onSearch={onSearch}
+      onChange={onChange}
       dropdownClassName={dropdownClassName}
       allowClear={allowClear}
     />

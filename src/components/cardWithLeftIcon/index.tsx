@@ -16,6 +16,7 @@ export interface Props {
   SubTitle?: string;
   title?: string;
   id?: number | string;
+  uri?: string;
   getUpdatedCardArr?: (value: any) => void;
 }
 

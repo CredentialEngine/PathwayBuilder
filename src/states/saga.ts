@@ -6,14 +6,11 @@ import {
   GET_ALL_ARRAY_OPERATION,
   GET_ALL_COMPARATORS,
   GET_ALL_LOGICAL_OPERATOR,
-  GET_ALL_PATHWAY_COMPONENT,
   GET_DATA_FOR_CURRENT_USER,
   GET_DATA_FOR_PATHWAY,
 } from '../apiConfig/endpoint';
 
 import {
-  getAllPathwayComponentSuccess,
-  getAllPathwayComponentFailure,
   getLogicalOperatorsFailure,
   getLogicalOperatorsSuccess,
   getAllComparatorsFailure,
@@ -31,23 +28,7 @@ import {
   GET_CURRENT_USER_REQUEST,
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
   GET_LOGICAL_OPERATOR_REQUEST,
-  GET_PATHWAY_COMPONENT_REQUEST,
 } from './actionTypes';
-
-export function* getAllPathwayComponents(): Generator {
-  try {
-    const result: any = yield call(request, {
-      url: `${BASE_URL}${GET_ALL_PATHWAY_COMPONENT}`,
-      method: 'GET',
-      params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
-      },
-    });
-    yield put(getAllPathwayComponentSuccess(result));
-  } catch (error) {
-    yield put(getAllPathwayComponentFailure(error));
-  }
-}
 
 export function* getAllLogicalOperators(): Generator {
   try {
@@ -125,7 +106,6 @@ export function* getPathwayAndComponentData(payload: any): Generator {
 }
 
 function* saga() {
-  yield takeLatest(GET_PATHWAY_COMPONENT_REQUEST, getAllPathwayComponents);
   yield takeLatest(GET_LOGICAL_OPERATOR_REQUEST, getAllLogicalOperators);
   yield takeLatest(GET_ALL_COMPARATORS_REQUEST, getComparatorsData);
   yield takeLatest(GET_ARRAY_CONCEPT_REQUEST, getArrayConceptData);

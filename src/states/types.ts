@@ -1,9 +1,4 @@
 export type RootState = {
-  allPathwayComponent: {
-    loading: boolean;
-    data: any;
-    valid: boolean;
-  };
   logicalOperatorData: {
     loading: boolean;
     data: any;

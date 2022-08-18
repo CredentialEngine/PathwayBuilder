@@ -14,18 +14,10 @@ import {
   GET_LOGICAL_OPERATOR_FAILURE,
   GET_LOGICAL_OPERATOR_REQUEST,
   GET_LOGICAL_OPERATOR_SUCCESS,
-  GET_PATHWAY_COMPONENT_FAILURE,
-  GET_PATHWAY_COMPONENT_REQUEST,
-  GET_PATHWAY_COMPONENT_SUCCESS,
 } from './actionTypes';
 import { RootState } from './types';
 
 const initState: RootState = {
-  allPathwayComponent: {
-    loading: false,
-    data: null,
-    valid: false,
-  },
   logicalOperatorData: {
     loading: false,
     data: null,
@@ -55,32 +47,6 @@ const initState: RootState = {
 
 export default (state = initState, action: { type: string; payload: any }) => {
   switch (action.type) {
-    case GET_PATHWAY_COMPONENT_REQUEST:
-      return {
-        ...state,
-        allPathwayComponent: { ...state.allPathwayComponent, loading: true },
-      };
-    case GET_PATHWAY_COMPONENT_SUCCESS:
-      return {
-        ...state,
-        allPathwayComponent: {
-          ...state.allPathwayComponent,
-          loading: false,
-          data: action.payload.Data,
-          valid: action?.payload?.Valid,
-        },
-      };
-    case GET_PATHWAY_COMPONENT_FAILURE:
-      return {
-        ...state,
-        allPathwayComponent: {
-          ...state.allPathwayComponent,
-          loading: false,
-          data: action.payload.Data,
-          valid: action?.payload?.Valid,
-        },
-      };
-
     case GET_LOGICAL_OPERATOR_REQUEST:
       return {
         ...state,

@@ -5,7 +5,7 @@ export type InputProps = {
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   defaultValue?: string;
   placeholder: string;
-  maxLength: number;
+  maxLength?: number;
   value: string;
   name?: string;
 };
