@@ -16,7 +16,6 @@ export enum LeftPanelTabKey {
 const LeftPanel: React.FC<any> = () => {
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  const array = [1, 1, 1, 1, 1];
   const [updatedCardArr, setUpdatedCardArr] = useState<any>();
   const [componentCardsData, setComponentCardsData] = useState<any>([
     ...ComponentsCards,
@@ -72,6 +71,7 @@ const LeftPanel: React.FC<any> = () => {
                   name={v.name}
                   type={v.type}
                   description={v.description}
+                  codedNotation={v.codedNotation}
                   IconName={faCubes}
                   IconColor="black"
                   id={v.id}
@@ -88,15 +88,23 @@ const LeftPanel: React.FC<any> = () => {
       children: (
         <>
           <div className={Styles.cardwrapper}>
-            {array.map((v, i) => (
-              <CardWithLeftIcon
-                draggable={true}
-                key={i}
-                name="Course"
-                description="Course"
-                IconName={faCubes}
-              />
-            ))}
+            {componentCardsData
+              .filter((v: any) =>
+                v.description
+                  .toLocaleLowerCase()
+                  .includes(searchValue.toLocaleLowerCase())
+              )
+              .map((v: any, i: any) => (
+                <CardWithLeftIcon
+                  draggable={true}
+                  key={i}
+                  name="Course"
+                  description="Course"
+                  IconName={faCubes}
+                  id={v.id}
+                  getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                />
+              ))}
             ,
           </div>
           ,

@@ -97,7 +97,7 @@ const App = () => {
               : false
           }
         />
-        <Modal visible={true} title="" footer={[]} width={700}>
+        <Modal visible={false} title="" footer={[]} width={650}>
           <AddComponent />
         </Modal>
         <Modal
@@ -125,7 +125,11 @@ const App = () => {
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
 
-        <Modal visible={isAddPathwayDestinationVisible} title="" footer={[]}>
+        <Modal
+          visible={isAddPathwayDestinationVisible}
+          title="Add a Pathway"
+          footer={[]}
+        >
           <SelectDestination
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible

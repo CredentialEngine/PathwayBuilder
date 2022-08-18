@@ -212,3 +212,12 @@ label {
 .minWidth {
   min-width: 20px !important;
 }
+.iconwrapper {
+  background: $inactive3;
+  border-radius: 50px;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

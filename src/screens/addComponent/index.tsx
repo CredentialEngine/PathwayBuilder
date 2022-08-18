@@ -36,7 +36,7 @@ const AddComponent: React.FC = () => {
     <div className={Styles.addComponentwrapper}>
       <h2>Add Component</h2>
       <div className={Styles.iconheader}>
-        <span className={Styles.iconwrapper}>
+        <span className={Styles.iconwrapper + ' iconwrapper'}>
           <FontAwesomeIcon
             icon={faCubes}
             style={{ height: '15px' }}
@@ -51,7 +51,7 @@ const AddComponent: React.FC = () => {
       </Form.Item>
       <Form.Item>
         <label>Condition Description</label>
-        <TextArea onChange={noop} placeholder="" maxLength={0} rows={4} />
+        <TextArea onChange={noop} placeholder="" maxLength={0} rows={3} />
       </Form.Item>
       <Row gutter={20}>
         <Col span="12">
@@ -161,7 +161,7 @@ const AddComponent: React.FC = () => {
       </Form>
 
       <hr />
-      <Button text="Save Consition" type="primary" />
+      <Button size="medium" text="Save Consition" type="primary" />
     </div>
   );
 };

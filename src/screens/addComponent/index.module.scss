@@ -1,3 +1,4 @@
+@import '../../styles/global.scss';
 .addComponentwrapper {
   h2 {
     margin-bottom: 15px;
@@ -8,6 +9,7 @@
     margin-bottom: 15px;
     .iconwrapper {
       margin-right: 10px;
+      background-color: $yellow;
     }
     h4 {
       margin: 0;
