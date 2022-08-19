@@ -14,13 +14,22 @@ import MultiSelect from '../../components/formFields/multiSelect';
 import Textarea from '../../components/formFields/textarea';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
 
+import DebounceSelect from './debounceSelect';
+
 import styles from './index.module.scss';
 import { PathwayWrapperEntity } from './model';
-import {
-  getHasProgressionModel,
-  getIndustryTypeCodeRequest,
-  getOccupationTypeCodeRequest,
-} from './state/actions';
+import { getHasProgressionModel } from './state/actions';
+
+interface OccupationValue {
+  label: string;
+  value: string;
+  RowId?: string;
+  Id?: number;
+  CodedNotation?: string;
+  Name?: string;
+  Description?: string;
+  URI?: string;
+}
 
 const AddPathwayForm = () => {
   const [addPathwayFormFields, setAddPathwayFormFields] = useState<any>(
@@ -30,7 +39,13 @@ const AddPathwayForm = () => {
     useState<string>('');
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
-
+  const [occupationSelectedValue, setOccupationSelectedValue] = useState<
+    OccupationValue[]
+  >([]);
+  const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
+  const [industrySelectedValue, setIndustrySelectedValue] = useState<
+    OccupationValue[]
+  >([]);
   const [checkboxValues, setCheckboxvalues] = useState<any>({
     progressionModel: false,
     conceptSchema: false,
@@ -51,29 +66,27 @@ const AddPathwayForm = () => {
       label: 'New company',
     },
   ];
+  useEffect(() => {
+    const updatedData = { ...addPathwayFormFields };
+
+    if (occupationSelectedValue.length > 0) {
+      updatedData.occupationType = occupationSelectedValue;
+    }
+    if (industrySelectedValue.length > 0) {
+      updatedData.industryType = industrySelectedValue;
+    }
+    setAddPathwayFormFields(updatedData);
+  }, [occupationSelectedValue, industrySelectedValue]);
 
   const allHasProgressionModel = useSelector(
     (state: any) => state.addPathwayFormReducer.allHasProgressionModel
-  );
-
-  const allOccupationTypeCode = useSelector(
-    (state: any) => state.addPathwayFormReducer.allOccupationTypeCode
   );
 
   useEffect(() => {
     if (allHasProgressionModel.valid) {
       setAllProgressionModel(allHasProgressionModel.data?.Results);
     }
-    if (allOccupationTypeCode.valid) {
-      setAllOccupationTypeData(
-        allOccupationTypeCode.data?.Results.map((dta: any) => ({
-          ...dta,
-          label: dta.Name,
-          title: dta.Name,
-        }))
-      );
-    }
-  }, [allHasProgressionModel.data, allOccupationTypeCode.data]);
+  }, [allHasProgressionModel.data]);
 
   const onCheckBoxChangeHandler = (e: any) => {
     const { name, checked } = e.target;
@@ -89,15 +102,6 @@ const AddPathwayForm = () => {
 
   const onSelectChangeHandler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
-
-    if (name === 'industryType') {
-      dispatch(getIndustryTypeCodeRequest(e));
-
-      const filteredIndustry = companyList.filter((company: any) =>
-        e.includes(company.key)
-      );
-      updatedData[name] = filteredIndustry;
-    }
     if (name === 'keyword') {
       const filteredKeywords = companyList.filter((company: any) =>
         e.includes(company.key)
@@ -107,14 +111,6 @@ const AddPathwayForm = () => {
       } else {
         updatedData[name] = filteredKeywords;
       }
-    }
-    if (name === 'occupationType') {
-      // dispatch(getOccupationTypeCodeRequest(e));
-
-      const filteredOccupations = allOccupationTypeData.filter((company: any) =>
-        e.includes(company.key)
-      );
-      updatedData[name] = filteredOccupations;
     }
     if (name === 'subject') {
       const filteredOccupations = companyList.filter((company: any) =>
@@ -140,12 +136,90 @@ const AddPathwayForm = () => {
     });
   };
 
-  const onSelectSearchHandler = (e: any, name: string) => {
-    if (name === 'occupationType') {
-      dispatch(getOccupationTypeCodeRequest(e));
+  async function fetchOccupationList(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
+
+    return fetch(
+      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/OccupationType',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: data,
+      }
+    )
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          URI: dta.URI,
+          CodedNotation: dta.CodedNotation,
+          Id: dta.Id,
+          RowId: dta.RowId,
+          label: dta.Name,
+          value: dta.Name,
+        }));
+        setAllOccupationTypeData(updatedBody);
+        return updatedBody;
+      });
+  }
+
+  async function fetchIndustryList(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
+
+    return fetch(
+      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/IndustryType',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: data,
+      }
+    )
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          URI: dta.URI,
+          CodedNotation: dta.CodedNotation,
+          Id: dta.Id,
+          RowId: dta.RowId,
+          label: dta.Name,
+          value: dta.Name,
+        }));
+        setAllIndustryTypeData(updatedBody);
+        return updatedBody;
+      });
+  }
+
+  const onDebounceSelectHnadler = (e: any, name: string) => {
+    if (name === 'occupation') {
+      const filteredOccupations = allOccupationTypeData.filter(
+        (data: any) => data.Name === e.value
+      );
+
+      setOccupationSelectedValue((prevState: any) => [
+        ...prevState,
+        ...filteredOccupations,
+      ]);
+    }
+    if (name === 'industry') {
+      const filteredIndustry = allIndustryTypeData.filter(
+        (data: any) => data.Name === e.value
+      );
+
+      setIndustrySelectedValue((prevState: any) => [
+        ...prevState,
+        ...filteredIndustry,
+      ]);
     }
   };
-
   return (
     <>
       <Form>
@@ -193,11 +267,12 @@ const AddPathwayForm = () => {
               required={true}
               validateTrigger="onBlur"
             >
-              <MultiSelect
-                placeholder="Select Industry Types"
-                options={companyList}
-                optionLabelProp="label"
-                onSearch={(e) => onSelectChangeHandler(e, 'industryType')}
+              <DebounceSelect
+                mode="multiple"
+                value={industrySelectedValue}
+                placeholder="Select Industry"
+                fetchOptions={fetchIndustryList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'industry')}
               />
             </Form.Item>
           </Col>
@@ -227,15 +302,12 @@ const AddPathwayForm = () => {
               required={true}
               validateTrigger="onBlur"
             >
-              <MultiSelect
-                placeholder="Select Occupation Types"
-                options={allOccupationTypeData}
-                optionLabelProp="label"
-                // value={['abc', 'xyz']}
-                onSelect={(e: any) =>
-                  onSelectChangeHandler(e, 'occupationType')
-                }
-                onSearch={(e) => onSelectSearchHandler(e, 'occupationType')}
+              <DebounceSelect
+                mode="multiple"
+                value={occupationSelectedValue}
+                placeholder="Select Occupations"
+                fetchOptions={fetchOccupationList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'occupation')}
               />
             </Form.Item>
           </Col>

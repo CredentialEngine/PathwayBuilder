@@ -58,9 +58,10 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`,
       method: 'POST',
-      params: {
-        search: payload.payload,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
+      data: payload.payload,
     });
 
     yield put(getDataForOccupationTypeCodeSuccess(result));

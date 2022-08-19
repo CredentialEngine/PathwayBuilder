@@ -3,7 +3,8 @@ import { faCaretDown, faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Card, Row, Form } from 'antd';
 import { noop } from 'lodash';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ComponentsCards } from '../../assets/modal/constant';
 
@@ -11,24 +12,46 @@ import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import SearchBox from '../../components/formFields/searchBox';
 
 import Styles from './index.module.scss';
+import { getAllProxyForResourcesRequest } from './state/actions';
 
 const PreSelectResourceCreatePath: React.FC = () => {
-  const [searchValue, setSearchValue] = React.useState('');
+  const [searchValue, setSearchValue] = useState<string>('');
   const [displaySearchContainer, setDisplaySearchContainer] =
     React.useState(false);
   const [SelectedResource, setSelectedResource] = React.useState<any>([]);
   const [dataArray, setDataArray] = React.useState<any>([ComponentsCards]);
+  const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<[]>([]);
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
     setDisplaySearchContainer(true);
   };
+  const dispatch = useDispatch();
+
+  const allProxyForResourcesComponent = useSelector(
+    (state: any) => state.preSelectProxyResources.allProxyForResourcesComponent
+  );
+  useEffect(() => {
+    if (allProxyForResourcesComponent.valid)
+      setAllProxyResourcesCard(allProxyForResourcesComponent.data.Results);
+  }, [allProxyForResourcesComponent.data]);
 
   useEffect(() => {
     setDataArray(ComponentsCards);
   }, []);
 
+  useEffect(() => {
+    dispatch(
+      getAllProxyForResourcesRequest({
+        Filters: 'Name',
+        Keywords: searchValue,
+      })
+    );
+  }, [searchValue]);
+
   const addResource = (itemId: string, itemIndex: number) => {
-    const filteredItem = dataArray.filter((item: any) => item.id === itemId);
+    const filteredItem = allProxyResourcesCard.filter(
+      (item: any) => item.id === itemId
+    );
     setSelectedResource([...SelectedResource, filteredItem[0]]);
     dataArray.splice(itemIndex, 1);
     if (dataArray.length === 0) {
@@ -62,24 +85,26 @@ const PreSelectResourceCreatePath: React.FC = () => {
           />
           {displaySearchContainer && (
             <div className={Styles.searchItemWrapper}>
-              {dataArray
-                .filter((v: any) =>
-                  v.description
-                    ?.toLocaleLowerCase()
-                    .includes(searchValue.toLocaleLowerCase())
+              {allProxyResourcesCard
+                .filter((resource: any) =>
+                  resource.Description?.toLocaleLowerCase().includes(
+                    searchValue.toLocaleLowerCase()
+                  )
                 )
-                .map((v: any, i: number) => (
+                .map((filteredResources: any, i: number) => (
                   <div className={Styles.flexGrowCenter} key={i}>
                     <CardWithLeftIcon
                       draggable={true}
                       key={i}
-                      title={v.name}
+                      name={filteredResources.Name}
                       type="Semester 1"
-                      SubTitle={v.description}
+                      description={filteredResources.Description.slice(0, 30)}
                       IconName={faGear}
                       IconColor="black"
                     />
-                    <PlusOutlined onClick={() => addResource(v.id, i)} />
+                    <PlusOutlined
+                      onClick={() => addResource(filteredResources.id, i)}
+                    />
                   </div>
                 ))}
             </div>
@@ -94,18 +119,20 @@ const PreSelectResourceCreatePath: React.FC = () => {
           </div>
           <Card className="customacardstyle">
             <div className={Styles.cardwrapper}>
-              {SelectedResource?.map((v: any, i: number) => (
+              {SelectedResource?.map((select_resource: any, i: number) => (
                 <div className={Styles.flexGrowCenter} key={i}>
                   <CardWithLeftIcon
                     draggable={true}
                     key={i}
-                    title={v.name}
+                    name={select_resource.Name}
                     type="Semester 1"
-                    SubTitle={v.description}
+                    description={select_resource.Description.slice(0, 30)}
                     IconName={faGear}
                     IconColor="black"
                   />
-                  <PlusOutlined onClick={() => UnSelectSelectedItem(v.id, i)} />
+                  <PlusOutlined
+                    onClick={() => UnSelectSelectedItem(select_resource.id, i)}
+                  />
                 </div>
               ))}
             </div>

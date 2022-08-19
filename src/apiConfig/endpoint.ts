@@ -21,3 +21,5 @@ export const SEARCH_FOR_INDUSTRICAL_PROGRAM_TYPE =
   '/PathwayBuilderApi/Search/Codes/InstructionalProgramType';
 export const SEARCH_FOR_LEST_RIGHT_OPERAND =
   '/PathwayBuilderApi/Search/Resource/Constraint_Operand';
+export const PATHWAY_COMPONENT_PROXY_FOR =
+  'PathwayBuilderApi/Search/Resource/PathwayComponent_ProxyFor';
