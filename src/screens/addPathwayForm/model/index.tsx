@@ -1,7 +1,7 @@
 import { pathway, ResourceSummary } from './pathwayWrapper';
 
 export class PathwayWrapperEntity implements pathway {
-  id: number;
+  id = 0;
   uri: string;
   name: string;
   organization: ResourceSummary;

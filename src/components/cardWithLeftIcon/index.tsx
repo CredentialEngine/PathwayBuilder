@@ -8,6 +8,7 @@ import styles from './index.module.scss';
 export interface Props {
   name?: string;
   description?: string;
+  codedNotation?: string;
   IconName: IconProp;
   IconColor?: string;
   inlineStyles?: any;
@@ -24,6 +25,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const {
     name,
     description,
+    codedNotation,
     IconName,
     IconColor,
     inlineStyles,
@@ -68,7 +70,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
         </Col>
         <Col span="19">
           <p>{name}</p>
-          <h5>{description}</h5>
+          <h5>{(codedNotation ? codedNotation : '') + ' ' + description}</h5>
         </Col>
       </Row>
     </Card>

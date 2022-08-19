@@ -65,12 +65,9 @@ const MultiCard: React.FC<Props> = ({
 
     e.target.style.visibility = 'visible';
 
-    // const shiftX = e.clientX - e.target.getBoundingClientRect().left;
-    // const shiftY = e.clientY - e.target.getBoundingClientRect().top;
-
-    // e.target.style.position = 'absolute';
-    // e.target.style.left = `${e.pageX - shiftX}px`;
-    // e.target.style.top = `${e.pageY - shiftY}px`;
+    e.target.style.position = 'absolute';
+    e.target.style.left = `${e.pageX + 75} px`;
+    e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {
@@ -194,6 +191,7 @@ const MultiCard: React.FC<Props> = ({
             style={{ backgroundColor: '#F3F4F6', margin: '8px 0px 4px 0px' }}
           />
           <div className={styles.courseNameContainter}>
+            <span>{data.codedNotation}</span>
             <span>{data.description}</span>
           </div>
           <div className={styles.creditSection}>
@@ -239,6 +237,7 @@ const MultiCard: React.FC<Props> = ({
               style={{ backgroundColor: '#6EFFFF', margin: '8px 0px 4px 0px' }}
             />
             <div className={styles.courseNameContainter}>
+              <span>{data.codedNotation}</span>
               <span>{data.description}</span>
             </div>
           </div>

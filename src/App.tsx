@@ -7,6 +7,7 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
+import AddComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
 import CreatePathway from './screens/createPathway/createPathway';
 import HomePage from './screens/homePage';
@@ -106,6 +107,9 @@ const App = () => {
               : false
           }
         />
+        <Modal visible={false} title="" footer={[]} width={650}>
+          <AddComponent />
+        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
@@ -148,7 +152,11 @@ const App = () => {
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
 
-        <Modal visible={isAddPathwayDestinationVisible} title="" footer={[]}>
+        <Modal
+          visible={isAddPathwayDestinationVisible}
+          title="Add a Pathway"
+          footer={[]}
+        >
           <SelectDestination
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible

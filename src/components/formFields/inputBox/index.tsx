@@ -1,4 +1,5 @@
 import { Input } from 'antd';
+import { noop } from 'lodash';
 import React from 'react';
 
 export type InputProps = {
@@ -28,7 +29,7 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
       type={type}
       showCount
       name={name}
-      onChange={onChange}
+      onChange={onChange ? onChange : noop}
       placeholder={placeholder}
       maxLength={maxLength}
       value={value}
@@ -38,9 +39,10 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
   ) : (
     <Input
       type={type}
-      onChange={onChange}
+      onChange={onChange ? onChange : noop}
       placeholder={placeholder}
       value={value}
+      name={name}
       defaultValue={defaultValue}
       disabled={disabled}
     />

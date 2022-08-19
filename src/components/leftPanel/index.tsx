@@ -89,6 +89,7 @@ const LeftPanel: React.FC<any> = () => {
                   name={v.name}
                   type={v.type}
                   description={v.description}
+                  codedNotation={v.codedNotation}
                   IconName={faCubes}
                   IconColor="black"
                   id={v.id}
@@ -114,6 +115,7 @@ const LeftPanel: React.FC<any> = () => {
                 IconName={faCubes}
                 uri={card.URI}
                 id={card.id}
+                getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
               />
             ))}
             ,
@@ -140,14 +142,14 @@ const LeftPanel: React.FC<any> = () => {
   };
 
   return (
-    <>
+    <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
         <u>Select</u>
       </div>
       <Tab {...tabVal} />
-    </>
+    </div>
   );
 };
 

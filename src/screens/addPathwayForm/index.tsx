@@ -8,9 +8,7 @@ import AutoCompleteBox from '../../components/autoComplete';
 
 import CheckBox from '../../components/formFields/checkbox';
 import InputBox from '../../components/formFields/inputBox';
-
 import MultiSelect from '../../components/formFields/multiSelect';
-
 import Textarea from '../../components/formFields/textarea';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
 
@@ -52,20 +50,7 @@ const AddPathwayForm = () => {
     furtherDetails: false,
   });
   const dispatch = useDispatch();
-  const companyList = [
-    {
-      key: 1,
-      value: 'company',
-      label: 'company',
-      title: 'Company',
-    },
-    {
-      key: 2,
-      title: 'New Company',
-      value: 'Newcompany',
-      label: 'New company',
-    },
-  ];
+
   useEffect(() => {
     const updatedData = { ...addPathwayFormFields };
 
@@ -100,23 +85,15 @@ const AddPathwayForm = () => {
     setAddPathwayFormFields(updatedData);
   };
 
+  console.log('addPathwayFormFields -->', addPathwayFormFields);
+
   const onSelectChangeHandler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
     if (name === 'keyword') {
-      const filteredKeywords = companyList.filter((company: any) =>
-        e.includes(company.key)
-      );
-      if (!_.isEmpty(filteredKeywords)) {
-        updatedData[name] = e;
-      } else {
-        updatedData[name] = filteredKeywords;
-      }
+      updatedData[name] = e;
     }
     if (name === 'subject') {
-      const filteredOccupations = companyList.filter((company: any) =>
-        e.includes(company.key)
-      );
-      updatedData[name] = filteredOccupations;
+      updatedData[name] = e;
     }
     setAddPathwayFormFields(updatedData);
   };
@@ -222,7 +199,7 @@ const AddPathwayForm = () => {
   };
   return (
     <>
-      <Form>
+      <Form className={styles.addPathwayForm}>
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item
@@ -286,8 +263,8 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
+                mode="tags"
                 placeholder="Add Keywords"
-                options={companyList}
                 optionLabelProp="label"
                 onChange={(e) => onSelectChangeHandler(e, 'keyword')}
               />
@@ -321,8 +298,8 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
+                mode="tags"
                 placeholder="Select Subjects"
-                options={companyList}
                 optionLabelProp="label"
                 onChange={(e) => onSelectChangeHandler(e, 'subject')}
               />
