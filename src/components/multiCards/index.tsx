@@ -188,6 +188,7 @@ const MultiCard: React.FC<Props> = ({
             style={{ backgroundColor: '#F3F4F6', margin: '8px 0px 4px 0px' }}
           />
           <div className={styles.courseNameContainter}>
+            <span>{data.codedNotation}</span>
             <span>{data.description}</span>
           </div>
           <div className={styles.creditSection}>
@@ -216,6 +217,7 @@ const MultiCard: React.FC<Props> = ({
             style={{ backgroundColor: '#6EFFFF', margin: '8px 0px 4px 0px' }}
           />
           <div className={styles.courseNameContainter}>
+            <span>{data.codedNotation}</span>
             <span>{data.description}</span>
           </div>
         </div>

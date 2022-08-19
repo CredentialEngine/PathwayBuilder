@@ -7,7 +7,7 @@ body {
   .ant-picker-input input {
     border: 1px solid $inactive1;
     border-radius: 4px;
-    min-height: 40px;
+    min-height: 38px;
     outline: none !important;
     box-shadow: none !important;
     font-size: 14px;
@@ -33,7 +33,8 @@ body {
   }
   .ant-card,
   .ant-form {
-    font-size: 12px;
+    font-size: 13px;
+    color: $primary-dark;
   }
   .ant-input-search {
     &.grey {
@@ -82,7 +83,8 @@ body {
   }
   .ant-select-selection-placeholder,
   .ant-select-single.ant-select-open .ant-select-selection-item {
-    color: $inactive1 !important;
+    // color: $inactive1 !important;
+    color: $primary !important;
     opacity: 1 !important;
     line-height: 32px !important;
     display: block;
@@ -279,9 +281,20 @@ body {
     .ant-select-selection-search-input {
     // height: 40px;
   }
+  .ant-select-single .ant-select-selector .ant-select-selection-item {
+    line-height: 38px;
+  }
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-radius: 6px;
+    border: 0;
+    padding: 5px;
+  }
+  .ant-select-multiple .ant-select-selection-placeholder {
+    left: 0;
+  }
   .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
     width: 100%;
-    // height: 40px;
+    height: 38px;
     padding: 0;
     box-shadow: none !important;
     outline: none !important;
@@ -326,5 +339,16 @@ body {
     outline: 0;
     cursor: pointer;
     transition: color 0.3s;
+  }
+  .ant-form-vertical .ant-form-item-label,
+  .ant-col-24.ant-form-item-label,
+  .ant-col-xl-24.ant-form-item-label {
+    padding: 0 0 0px;
+  }
+  .ant-input-affix-wrapper {
+    color: $primary-dark;
+    border-radius: 6px;
+    padding: 0 10px;
+    border: 1px solid $inactive1;
   }
 }

@@ -10,7 +10,12 @@
   white-space: nowrap;
   text-transform: capitalize;
 }
-
+:global {
+  .medium {
+    padding: 10px !important;
+    min-width: 150px;
+  }
+}
 .primary {
   font-size: 14px;
   font-weight: 600;
@@ -62,7 +67,7 @@
   }
   &:hover {
     color: $primary-dark;
-    background-color: $primary;
+    background-color: $selection-light;
     border-radius: $button-radius;
   }
   &:disabled {
@@ -166,22 +171,22 @@
   }
 }
 
-.selection {
-  background-color: $selection;
-  color: $primary-dark;
-  border: 1px solid $selection;
-  font-weight: 600;
-  border-radius: $button-radius;
-  line-height: normal;
-  & > span {
-    text-emphasis-color: $white-color;
-  }
-  &:hover {
-    background-color: $selection-light;
-    border: 1px solid $gold-light;
-    color: $white-color;
-  }
-}
+// .selection {
+//   background-color: $selection;
+//   color: $primary-dark;
+//   border: 1px solid $selection;
+//   font-weight: 600;
+//   border-radius: $button-radius;
+//   line-height: normal;
+//   & > span {
+//     text-emphasis-color: $white-color;
+//   }
+//   &:hover {
+//     background-color: $selection-light;
+//     border: 1px solid $gold-light;
+//     color: $white-color;
+//   }
+// }
 
 .gold {
   background-color: $gold;
@@ -277,4 +282,11 @@
 
 .container {
   display: flex;
+}
+.disabled {
+  background-color: $inactive1;
+  opacity: $opacity;
+  color: $white-color;
+  cursor: not-allowed;
+  border-color: $inactive1;
 }

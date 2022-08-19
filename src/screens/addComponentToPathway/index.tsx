@@ -43,7 +43,7 @@ const AddComponentToPathway = () => {
           </Form.Item>
           <Form.Item label="Choose Resource" name="Choose Resource">
             <p>
-              <RadioButton label="Only DefineComponent resource" />
+              <RadioButton label="Only selected resource" />
               <RadioButton label="All my resource" />
               <RadioButton label="All resource" />
             </p>

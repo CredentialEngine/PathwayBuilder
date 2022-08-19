@@ -24,11 +24,12 @@ const Header = (props: Props) => {
       </div>
       <div style={{ display: 'flex', position: 'relative' }}>
         <Button
-          type={Type.DISABLED}
+          type={Type.PRIMARY}
           className={styles.approveButtonSpecification}
           onClick={() => setHasPublishVisible(!hasPublishVisible)}
           iconOnTop={true}
           text="Approve"
+          disabled
         />
       </div>
     </div>
@@ -77,6 +78,7 @@ const Header = (props: Props) => {
               key="save"
               onClick={noop}
               text="save"
+              type="selection"
             />
 
             {/*
