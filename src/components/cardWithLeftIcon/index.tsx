@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
 import React from 'react';
 
+// import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './index.module.scss';
 
 export interface Props {
@@ -72,6 +73,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
           <h5>{(codedNotation ? codedNotation : '') + ' ' + description}</h5>
         </Col>
       </Row>
+      {/* <FontAwesomeIcon icon={faQuestionCircle} color={IconColor} className="tipicon"/> */}
     </Card>
   );
 };
