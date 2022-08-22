@@ -8,9 +8,11 @@ export type InputProps = {
   maxLength: number;
   value: string;
   name?: string;
+  rows?: number;
 };
 const Textarea: React.FC<InputProps> = (props: InputProps) => {
-  const { onChange, maxLength, placeholder, value, defaultValue, name } = props;
+  const { onChange, maxLength, placeholder, value, defaultValue, name, rows } =
+    props;
   const handleChange = (e: any) => {
     onChange && onChange(e);
   };
@@ -23,6 +25,7 @@ const Textarea: React.FC<InputProps> = (props: InputProps) => {
       onChange={(e) => handleChange(e)}
       value={value}
       defaultValue={defaultValue}
+      rows={rows}
     />
   );
 };

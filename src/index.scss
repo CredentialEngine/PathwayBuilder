@@ -29,3 +29,24 @@ body {
 .flex > * {
   margin-right: 15px;
 }
+.btn-grp {
+  display: flex;
+}
+.btn-grp > * {
+  margin: 0 10px;
+}
+.btn-grp > *:first-child {
+  margin-left: 0;
+}
+.tipicon {
+  color: $selection;
+  background: black;
+  border-radius: 100%;
+  font-size: 15px;
+}
+.logowrapper {
+  min-width: 278px;
+}
+.headerright {
+  padding: 10px 17px;
+}

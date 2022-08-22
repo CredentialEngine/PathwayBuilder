@@ -113,6 +113,20 @@ const App = () => {
           onOk={onAddPathwayOkHandler}
           onCancel={onAddPathwayCancelHandler}
           title="Add a Pathway"
+          footer={[
+            <div className="btn-grp" key="458425">
+              <Button
+                type="cancel"
+                onClick={onAddPathwayCancelHandler}
+                text="Cancel"
+              />
+              <Button
+                type={Type.PRIMARY}
+                onClick={onAddPathwayOkHandler}
+                text="Next"
+              />
+            </div>,
+          ]}
         >
           <AddPathwayForm />
         </Modal>

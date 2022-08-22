@@ -29,15 +29,14 @@ const Header = (props: Props) => {
           onClick={() => setHasPublishVisible(!hasPublishVisible)}
           iconOnTop={true}
           text="Approve"
-          disabled
         />
       </div>
     </div>
   );
 
   return (
-    <Row className={styles.container}>
-      <Col span={5} className={styles.productImgLayout}>
+    <div className={styles.container + ' header-container'}>
+      <div className={styles.productImgLayout + ' logowrapper'}>
         <Row align="middle" style={{ width: '100%' }}>
           <Col span={4}>
             <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
@@ -53,10 +52,10 @@ const Header = (props: Props) => {
             </Row>
           </Col>
         </Row>
-      </Col>
-      <Col span={18} className={styles.titleDescriptionContainer}>
-        <Row className={styles.headerCenter}>
-          <Col span={10} className={styles.titleContainer}>
+      </div>
+      <div className={styles.titleDescriptionContainer + ' headermiddle'}>
+        <div className={styles.headerCenter}>
+          <div className={styles.titleContainer}>
             <span className={styles.title}>
               National Retail Federation Foundation RISE Up Pathway
             </span>
@@ -66,8 +65,8 @@ const Header = (props: Props) => {
             >
               Edit Pathway Details
             </span>
-          </Col>
-          <Col span={4} className={styles.saveButtonWrapper}>
+          </div>
+          <div className={styles.saveButtonWrapper}>
             <Button
               type={Type.LINK}
               onClick={noop}
@@ -92,19 +91,19 @@ const Header = (props: Props) => {
             /> 
 
             */}
-          </Col>
-        </Row>
+          </div>
+        </div>
         {hasPublishVisible && (
           <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
         )}
-      </Col>
-      <Col span={1} className={styles.helpContainer}>
+      </div>
+      <div className={styles.helpContainer + ' headerright'}>
         <FontAwesomeIcon
           icon={faCircleQuestion}
           className={styles.imgDimensions}
         />
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 };
 

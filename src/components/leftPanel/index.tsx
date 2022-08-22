@@ -1,7 +1,10 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
 
-import { ComponentsCards } from '../../assets/modal/constant';
+import {
+  SelectedTabCards,
+  ComponentTabCards,
+} from '../../assets/modal/constant';
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
@@ -17,16 +20,23 @@ const LeftPanel: React.FC<any> = () => {
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
   const [updatedCardArr, setUpdatedCardArr] = useState<any>();
-  const [componentCardsData, setComponentCardsData] = useState<any>([
-    ...ComponentsCards,
+  const [selectedTabCardsData, setSelectedTabCardsData] = useState<any>([
+    ...SelectedTabCards,
+  ]);
+  const [componentTabCardsData, setComponentTabCardsData] = useState<any>([
+    ...ComponentTabCards,
   ]);
 
   useEffect(() => {
     if (updatedCardArr?.length > 0) {
-      const temp = componentCardsData?.filter(
+      const filteredselectedCards = selectedTabCardsData?.filter(
         (item: any) => item?.id !== updatedCardArr
       );
-      setComponentCardsData(temp);
+      setSelectedTabCardsData(filteredselectedCards);
+      const filteredComponentCards = componentTabCardsData?.filter(
+        (item: any) => item?.id !== updatedCardArr
+      );
+      setComponentTabCardsData(filteredComponentCards);
     }
   }, [updatedCardArr]);
 
@@ -58,7 +68,7 @@ const LeftPanel: React.FC<any> = () => {
             onKeyUp={searchComponent}
           />
           <div className={Styles.cardwrapper}>
-            {componentCardsData
+            {selectedTabCardsData
               .filter((v: any) =>
                 v.description
                   .toLocaleLowerCase()
@@ -88,7 +98,7 @@ const LeftPanel: React.FC<any> = () => {
       children: (
         <>
           <div className={Styles.cardwrapper}>
-            {componentCardsData
+            {componentTabCardsData
               .filter((v: any) =>
                 v.description
                   .toLocaleLowerCase()
@@ -98,6 +108,7 @@ const LeftPanel: React.FC<any> = () => {
                 <CardWithLeftIcon
                   draggable={true}
                   key={i}
+                  type={v.type}
                   name="Course"
                   description="Course"
                   IconName={faCubes}
@@ -105,9 +116,7 @@ const LeftPanel: React.FC<any> = () => {
                   getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
                 />
               ))}
-            ,
           </div>
-          ,
         </>
       ),
     },

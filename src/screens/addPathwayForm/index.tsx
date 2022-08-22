@@ -50,8 +50,6 @@ const AddPathwayForm = () => {
   };
 
   const onSelectChangeHandler = (e: any, name: string) => {
-    console.log(e, 'asdasdasdas');
-
     const updatedData = { ...addPathwayFormFields };
 
     if (name === 'industryType') {
@@ -183,6 +181,7 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
+                mode="tags"
                 placeholder="Select Subjects"
                 options={companyList}
                 optionLabelProp="label"
