@@ -2,7 +2,10 @@ import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ComponentsCards } from '../../assets/modal/constant';
+import {
+  SelectedTabCards,
+  ComponentTabCards,
+} from '../../assets/modal/constant';
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
@@ -19,8 +22,11 @@ const LeftPanel: React.FC<any> = () => {
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
   const [updatedCardArr, setUpdatedCardArr] = useState<any>();
-  const [selectedTabCards, setSelectedtabCards] = useState<any>([
-    ...ComponentsCards,
+  const [selectedTabCardsData, setSelectedTabCardsData] = useState<any>([
+    ...SelectedTabCards,
+  ]);
+  const [componentTabCardsData, setComponentTabCardsData] = useState<any>([
+    ...ComponentTabCards,
   ]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
 
@@ -32,10 +38,14 @@ const LeftPanel: React.FC<any> = () => {
 
   useEffect(() => {
     if (updatedCardArr?.length > 0) {
-      const temp = selectedTabCards?.filter(
+      const filteredselectedCards = selectedTabCardsData?.filter(
         (item: any) => item?.id !== updatedCardArr
       );
-      setSelectedtabCards(temp);
+      setSelectedTabCardsData(filteredselectedCards);
+      const filteredComponentCards = componentTabCardsData?.filter(
+        (item: any) => item?.id !== updatedCardArr
+      );
+      setComponentTabCardsData(filteredComponentCards);
     }
   }, [updatedCardArr]);
 
@@ -76,7 +86,7 @@ const LeftPanel: React.FC<any> = () => {
             onKeyUp={searchComponent}
           />
           <div className={Styles.cardwrapper}>
-            {selectedTabCards
+            {selectedTabCardsData
               .filter((v: any) =>
                 v.description
                   .toLocaleLowerCase()
@@ -106,21 +116,25 @@ const LeftPanel: React.FC<any> = () => {
       children: (
         <>
           <div className={Styles.cardwrapper}>
-            {componentTabCards.map((card: any, index: any) => (
-              <CardWithLeftIcon
-                draggable={true}
-                key={index}
-                name={card.Name}
-                description={card.description}
-                IconName={faCubes}
-                uri={card.URI}
-                id={card.id}
-                getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
-              />
-            ))}
-            ,
+            {componentTabCardsData
+              .filter((v: any) =>
+                v.description
+                  .toLocaleLowerCase()
+                  .includes(searchValue.toLocaleLowerCase())
+              )
+              .map((v: any, i: any) => (
+                <CardWithLeftIcon
+                  draggable={true}
+                  key={i}
+                  type={v.type}
+                  name="Course"
+                  description="Course"
+                  IconName={faCubes}
+                  id={v.id}
+                  getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                />
+              ))}
           </div>
-          ,
         </>
       ),
     },
