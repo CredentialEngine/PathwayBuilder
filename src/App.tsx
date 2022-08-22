@@ -7,7 +7,7 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
-import AddComponent from './screens/addComponent';
+import AddConditionalComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
@@ -121,7 +121,7 @@ const App = () => {
           }
         />
         <Modal visible={false} title="" footer={[]} width={650}>
-          <AddComponent />
+          <AddConditionalComponent />
         </Modal>
         <Modal
           visible={isCreatePathwayVisible}
@@ -210,6 +210,13 @@ const App = () => {
           />
         </Modal>
       </MainContainer>
+      <Modal
+        visible={isAddPathwayDestinationVisible}
+        title="Add a Pathway"
+        footer={[]}
+      >
+        <AddConditionalComponent />
+      </Modal>
     </div>
   );
 };

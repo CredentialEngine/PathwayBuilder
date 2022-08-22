@@ -3,15 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Form, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { noop } from 'lodash';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
-import Options from '../../components/formFields/dropdown/lib/options';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
 
 import Styles from './index.module.scss';
+import {
+  getAllArrayConceptsRequest,
+  getAllComparatorsRequest,
+  getLogicalOperatorsRequest,
+} from './state/actions';
 
 const companyList = [
   {
@@ -28,10 +33,58 @@ const companyList = [
   },
 ];
 
-const AddComponent: React.FC = () => {
-  const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
-  };
+const AddConditionalComponent: React.FC = () => {
+  const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
+  const [allComparators, setAllComparators] = useState<any>([]);
+  const [allArrayConcept, setAllArrayConcept] = useState<any>([]);
+
+  const dispatch = useDispatch();
+  // const onFinish = (values: any) => {
+  //   console.log('Received values of form:', values);
+  // };
+  const getAllLogicalOperator = useSelector(
+    (state: any) => state.addConditionalComponent.logicalOperatorData
+  );
+
+  const getAllComparators = useSelector(
+    (state: any) => state.addConditionalComponent.comparatorsData
+  );
+
+  const getAllArrayConcept = useSelector(
+    (state: any) => state.addConditionalComponent.arrayOperationData
+  );
+  useEffect(() => {
+    if (getAllLogicalOperator.valid)
+      setAllLogicOperators(
+        getAllLogicalOperator.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+    if (getAllComparators.valid)
+      setAllComparators(
+        getAllComparators.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+    if (getAllArrayConcept.valid)
+      setAllArrayConcept(
+        getAllArrayConcept.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+  }, [getAllLogicalOperator, getAllComparators, getAllArrayConcept]);
+
+  useEffect(() => {
+    dispatch(getLogicalOperatorsRequest());
+    dispatch(getAllComparatorsRequest());
+    dispatch(getAllArrayConceptsRequest());
+  }, []);
   return (
     <div className={Styles.addComponentwrapper}>
       <h2>Add Component</h2>
@@ -69,10 +122,11 @@ const AddComponent: React.FC = () => {
         <Col span="12">
           <Form.Item>
             <label>Logical Operator</label>
-            <Dropdown defaultValue="And" showSearch={false}>
-              <Options value="And">And</Options>
-              <Options value="OR">OR</Options>
-            </Dropdown>
+            <Dropdown
+              options={allLogicalOperators}
+              defaultValue="And"
+              showSearch={false}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -82,7 +136,7 @@ const AddComponent: React.FC = () => {
       </div>
       <Form
         name="dynamic_form_nest_item"
-        onFinish={onFinish}
+        // onFinish={onFinish}
         autoComplete="off"
       >
         <Form.List name="users">
@@ -101,10 +155,11 @@ const AddComponent: React.FC = () => {
                 </Col>
                 <Col span="6">
                   <Form.Item>
-                    <Dropdown defaultValue="Equals" showSearch={false}>
-                      <Options value="Equals">Equals</Options>
-                      <Options value="Greaterthan">Greater than</Options>
-                    </Dropdown>
+                    <Dropdown
+                      options={allComparators}
+                      defaultValue="Equals"
+                      showSearch={false}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span="9">
@@ -132,17 +187,18 @@ const AddComponent: React.FC = () => {
                   </Col>
                   <Col span="6">
                     <Form.Item>
-                      <Dropdown defaultValue="Equals" showSearch={false}>
-                        <Options value="Equals">Equals</Options>
-                        <Options value="Greaterthan">Greater than</Options>
-                      </Dropdown>
+                      <Dropdown
+                        options={allArrayConcept}
+                        defaultValue="Equals"
+                        showSearch={false}
+                      />
                     </Form.Item>
                   </Col>
                   <Col span="9">
                     <Form.Item>
                       <MultiSelect
                         placeholder="Select Industry Types"
-                        options={companyList}
+                        options={allArrayConcept}
                         optionLabelProp="label"
                         // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
                       />
@@ -161,9 +217,14 @@ const AddComponent: React.FC = () => {
       </Form>
 
       <hr />
-      <Button size="medium" text="Save Consition" type="primary" />
+      <Button
+        size="medium"
+        text="Save Consition"
+        type="primary"
+        onClick={noop}
+      />
     </div>
   );
 };
 
-export default AddComponent;
+export default AddConditionalComponent;

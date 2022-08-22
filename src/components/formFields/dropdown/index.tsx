@@ -10,25 +10,28 @@ export type DropdownProps = {
   style?: any;
   placeholder?: string;
   showSearch?: boolean;
+  options?: any;
 };
 
 export const Dropdown = (props: DropdownProps) => {
-  const { children, placeholder, defaultValue, style, showSearch } = props;
+  const { children, placeholder, defaultValue, style, showSearch, options } =
+    props;
 
-  const onChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+  // const onChange = (value: string) => {
+  //   console.log(`selected ${value}`);
+  // };
 
-  const onSearch = (value: string) => {
-    console.log('search:', value);
-  };
+  // const onSearch = (value: string) => {
+  //   console.log('search:', value);
+  // };
   return (
     <>
       {showSearch ? (
         <Select
           showSearch
-          onChange={onChange}
-          onSearch={onSearch}
+          // onChange={onChange}
+          // onSearch={onSearch}
+          options={options}
           defaultValue={defaultValue}
           placeholder={placeholder}
           style={style}
@@ -45,6 +48,7 @@ export const Dropdown = (props: DropdownProps) => {
         <Select
           onChange={onChange}
           onSearch={onSearch}
+          options={options}
           defaultValue={defaultValue}
           placeholder={placeholder}
           style={style}
