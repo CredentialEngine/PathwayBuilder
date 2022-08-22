@@ -9,6 +9,7 @@ import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
 import AddComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
+import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
 import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
@@ -17,6 +18,10 @@ import SelectOrganisation from './screens/selectOrganisation';
 import { organisations } from './screens/selectOrganisation/constants';
 
 const App = () => {
+  const [addPathwayWrapperFields, setAddPathwayWrapeprFields] = useState<any>(
+    new PathwayWrapperEntity()
+  );
+
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
@@ -33,6 +38,11 @@ const App = () => {
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState('');
+
+  const [
+    isAddPathwayFormNextButtonDisable,
+    setIsAddPathwayFormNextButtonDisable,
+  ] = useState<boolean>(false);
 
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
@@ -91,6 +101,9 @@ const App = () => {
   const onPreSelectResourceCancelHandler = () => {
     setIsCreatePathwayVisible(false);
   };
+  const getAllPathwayFormFields = (value: any, name: string) => {
+    setAddPathwayWrapeprFields({ ...addPathwayWrapperFields, [name]: value });
+  };
 
   return (
     <div>
@@ -128,11 +141,17 @@ const App = () => {
                 type={Type.PRIMARY}
                 onClick={onAddPathwayOkHandler}
                 text="Next"
+                disabled={!isAddPathwayFormNextButtonDisable}
               />
             </>,
           ]}
         >
-          <AddPathwayForm />
+          <AddPathwayForm
+            getAllPathwayFormFields={getAllPathwayFormFields}
+            setIsAddPathwayFormNextButtonDisable={
+              setIsAddPathwayFormNextButtonDisable
+            }
+          />
         </Modal>
         <Modal
           visible={isPreSelectedCreateResourceVisible}
@@ -141,7 +160,9 @@ const App = () => {
           width="650px"
           title="Pre-Select Resources to Create Your Pathway"
         >
-          <PreSelectResourceCreatePath />
+          <PreSelectResourceCreatePath
+            getAllPathwayFormFields={getAllPathwayFormFields}
+          />
         </Modal>
         <CustomDrawer
           width="35%"

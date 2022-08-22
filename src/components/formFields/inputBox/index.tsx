@@ -11,6 +11,8 @@ export type InputProps = {
   type?: string;
   disabled?: boolean;
   name?: string;
+  onBlur?: any;
+  required?: boolean;
 };
 
 const InputBox: React.FC<InputProps> = (props: InputProps) => {
@@ -23,6 +25,8 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
     value,
     defaultValue,
     name,
+    onBlur,
+    required,
   } = props;
   return maxLength ? (
     <Input
@@ -35,6 +39,8 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
       value={value}
       defaultValue={defaultValue}
       disabled={disabled}
+      onBlur={onBlur}
+      required={required}
     />
   ) : (
     <Input
@@ -45,6 +51,8 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
       name={name}
       defaultValue={defaultValue}
       disabled={disabled}
+      required={required}
+      onBlur={onBlur}
     />
   );
 };

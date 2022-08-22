@@ -7,10 +7,10 @@ export interface PathwayWrapper {
   pathway: pathway;
   pathwayComponents?: PathwayComponent[];
   progressionModels?: ProgressionModels[];
-  progressionLevels: [progressionLevels];
-  componentConditions: [ComponentConditions];
-  constraints: [Constraints];
-  pendingComponent: [PathwayComponent];
+  progressionLevels: ProgressionLevels[];
+  componentConditions: ComponentConditions[];
+  constraints: Constraints[];
+  pendingComponent: PathwayComponent[];
 }
 
 export interface pathway {
@@ -20,7 +20,7 @@ export interface pathway {
   organization: ResourceSummary;
   description: string;
   cTID: string;
-  hasDestinationComponent: []; //URI for Pathway Component
+  hasDestinationComponent: string[]; //URI for Pathway Component
   hasProgressionModel: []; //URI for Progression Model
   industryType: [ResourceSummary];
   occupationType: [ResourceSummary];
@@ -54,7 +54,7 @@ export interface ComponentConditions {
   targetComponent: ['x', 'y', 'z'];
 }
 
-export interface progressionLevels {
+export interface ProgressionLevels {
   id: number;
   rowId: number;
   name: string;

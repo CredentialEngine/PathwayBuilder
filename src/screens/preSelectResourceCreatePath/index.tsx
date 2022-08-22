@@ -14,19 +14,28 @@ import SearchBox from '../../components/formFields/searchBox';
 import Styles from './index.module.scss';
 import { getAllProxyForResourcesRequest } from './state/actions';
 
-const PreSelectResourceCreatePath: React.FC = () => {
+export interface Props {
+  getAllPathwayFormFields: (a: any, b: string) => void;
+}
+const PreSelectResourceCreatePath: React.FC<Props> = ({
+  getAllPathwayFormFields,
+}) => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [displaySearchContainer, setDisplaySearchContainer] =
     React.useState(false);
-  const [SelectedResource, setSelectedResource] = React.useState<any>([]);
-  const [dataArray, setDataArray] = React.useState<any>([ComponentsCards]);
-  const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<[]>([]);
+  const [SelectedResource, setSelectedResource] = useState<any>([]);
+  const [dataArray, setDataArray] = useState<any>([ComponentsCards]);
+  const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
     setDisplaySearchContainer(true);
   };
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (SelectedResource.length > 0)
+      getAllPathwayFormFields(SelectedResource, 'pendingComponent');
+  }, [SelectedResource]);
   const allProxyForResourcesComponent = useSelector(
     (state: any) => state.preSelectProxyResources.allProxyForResourcesComponent
   );
@@ -53,8 +62,8 @@ const PreSelectResourceCreatePath: React.FC = () => {
       (item: any) => item.id === itemId
     );
     setSelectedResource([...SelectedResource, filteredItem[0]]);
-    dataArray.splice(itemIndex, 1);
-    if (dataArray.length === 0) {
+    allProxyResourcesCard.splice(itemIndex, 1);
+    if (allProxyResourcesCard.length === 0) {
       setDisplaySearchContainer(false);
     }
   };
@@ -63,8 +72,9 @@ const PreSelectResourceCreatePath: React.FC = () => {
       (item: any) => item.id === itemId
     );
     setDataArray([...dataArray, filteredItem[0]]);
+    setAllProxyResourcesCard([...allProxyResourcesCard, filteredItem[0]]);
     SelectedResource.splice(itemIndex, 1);
-    if (dataArray.length > 0) {
+    if (allProxyResourcesCard.length > 0) {
       setDisplaySearchContainer(true);
     }
   };
