@@ -6,7 +6,7 @@ export const GET_ALL_LOGICAL_OPERATOR =
 export const GET_ALL_COMPARATORS = '/PathwayBuilderApi/Schema/Comparator';
 export const GET_ALL_ARRAY_OPERATION =
   '/PathwayBuilderApi/Schema/ArrayOperation';
-export const GET_DATA_FOR_CURRENT_USER = '/PathwayBuilderApi/Load/User';
+export const GET_DATA_FOR_CURRENT_USER = 'PathwayBuilderApi/Load/User';
 export const GET_DATA_FOR_PATHWAY = '/PathwayBuilderApi/Load/Pathway/';
 
 export const SAVE_DATA_FOR_PATHWAY = '/PathwayBuilderApi/Save/Pathway';

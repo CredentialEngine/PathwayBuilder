@@ -1,7 +1,16 @@
-import { pathway, ResourceSummary } from './pathwayWrapper';
+import {
+  ComponentConditions,
+  Constraints,
+  pathway,
+  PathwayComponent,
+  PathwayWrapper,
+  ProgressionLevels,
+  ProgressionModels,
+  ResourceSummary,
+} from './pathwayWrapper';
 
-export class PathwayWrapperEntity implements pathway {
-  id = 0;
+export class PathwayEntity implements pathway {
+  id: number;
   uri: string;
   name: string;
   organization: ResourceSummary;
@@ -15,4 +24,17 @@ export class PathwayWrapperEntity implements pathway {
   keyword: [];
   subject: [];
   lastUpdated: '22-02-2022';
+}
+
+export class PathwayWrapperEntity
+  extends PathwayEntity
+  implements PathwayWrapper
+{
+  pathway: PathwayEntity = new PathwayEntity();
+  pathwayComponents?: PathwayComponent[] = [];
+  progressionModels?: ProgressionModels[] = [];
+  progressionLevels: ProgressionLevels[] = [];
+  componentConditions: ComponentConditions[] = [];
+  constraints: Constraints[] = [];
+  pendingComponent: PathwayComponent[] = [];
 }

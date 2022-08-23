@@ -1,10 +1,15 @@
 export type RootState = {
-  currentUserData: {
+  logicalOperatorData: {
     loading: boolean;
     data: any;
     valid: boolean;
   };
-  pathwayComponentData: {
+  comparatorsData: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
+  arrayOperationData: {
     loading: boolean;
     data: any;
     valid: boolean;
