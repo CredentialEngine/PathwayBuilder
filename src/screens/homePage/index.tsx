@@ -209,11 +209,13 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                 <FontAwesomeIcon
                   icon={faAngleDoubleRight}
                   onClick={() => setCollapsed(!collapsed)}
+                  style={{ position: 'fixed' }}
                 />
               ) : (
                 <FontAwesomeIcon
                   icon={faAngleDoubleLeft}
                   onClick={() => setCollapsed(!collapsed)}
+                  style={{ position: 'fixed' }}
                 />
               )}
             </div>
@@ -299,6 +301,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                                           level: item.level,
                                           name: item.name,
                                           description: item.description,
+                                          codedNotation: item.codedNotation,
                                           credits: item.credits,
                                           draggable: true,
                                           IconName: item.IconName,

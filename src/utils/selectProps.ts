@@ -51,8 +51,8 @@ export const SelectAutoCompleteProps = (
   label: any = null
 ) => {
   const options = [];
-  const labelInUse = !_.isNull(label) ? label : 'title';
-  const keyInUse = !_.isNull(valueField) ? valueField : 'key';
+  const labelInUse = !_.isNull(label) ? label : 'Name';
+  const keyInUse = !_.isNull(valueField) ? valueField : 'id';
   let selectProps = {};
   if (!_.isNil(values)) {
     for (let i = 0; i < values.length; i++) {

@@ -22,6 +22,7 @@ type Type =
   | 'green'
   | 'link'
   | 'buttonIcon'
+  | 'disabled'
   | 'cancel';
 
 export interface ButtonProps {
@@ -36,6 +37,7 @@ export interface ButtonProps {
   iconOnTop?: boolean;
   iconColor?: string;
   style?: { [key: string]: string };
+  size?: 'small' | 'medium' | 'large';
 }
 
 const Button: React.FC<ButtonProps> & {
@@ -51,6 +53,7 @@ const Button: React.FC<ButtonProps> & {
   title,
   color,
   iconOnTop,
+  size,
 }) => {
   const [disabled, setDisabled] = React.useState(disabledInProps);
   React.useEffect(() => {
@@ -81,7 +84,8 @@ const Button: React.FC<ButtonProps> & {
           styles[typeClassname],
           styles.button,
           className,
-          color ? styles[COLOR_MAP[color]] : ''
+          color ? styles[COLOR_MAP[color]] : '',
+          size
         )}
         onClick={handleClick}
         disabled={disabled}

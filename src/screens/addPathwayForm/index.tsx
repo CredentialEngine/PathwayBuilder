@@ -1,42 +1,112 @@
 import { Row, Col, Form, Divider } from 'antd';
-import React, { useState } from 'react';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+
+import { useDispatch, useSelector } from 'react-redux';
 
 import AutoCompleteBox from '../../components/autoComplete';
 
 import CheckBox from '../../components/formFields/checkbox';
 import InputBox from '../../components/formFields/inputBox';
-
 import MultiSelect from '../../components/formFields/multiSelect';
-
 import Textarea from '../../components/formFields/textarea';
+import { SelectAutoCompleteProps } from '../../utils/selectProps';
+
+import DebounceSelect from './debounceSelect';
 
 import styles from './index.module.scss';
-import { PathwayWrapperEntity } from './model';
+import { PathwayEntity } from './model';
+import { getHasProgressionModel } from './state/actions';
 
-const AddPathwayForm = () => {
+interface ComponentTypesValue {
+  label: string;
+  value: string;
+  RowId?: string;
+  Id?: number;
+  CodedNotation?: string;
+  Name?: string;
+  Description?: string;
+  URI?: string;
+}
+
+export interface Props {
+  getAllPathwayFormFields: (a: any, b: string) => void;
+  setIsAddPathwayFormNextButtonDisable: (a: boolean) => void;
+}
+
+const AddPathwayForm: React.FC<Props> = ({
+  getAllPathwayFormFields,
+  setIsAddPathwayFormNextButtonDisable,
+}) => {
   const [addPathwayFormFields, setAddPathwayFormFields] = useState<any>(
-    new PathwayWrapperEntity()
+    new PathwayEntity()
   );
+  const [selectedProgressionModelValue, setSelectedProgressionModelValue] =
+    useState<string>('');
+  const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
+  const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
+  const [occupationSelectedValue, setOccupationSelectedValue] = useState<
+    ComponentTypesValue[]
+  >([]);
+  const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
+  const [industrySelectedValue, setIndustrySelectedValue] = useState<
+    ComponentTypesValue[]
+  >([]);
+  const [allInstructionalProgramTypeData, setAllInstructionalProgramTypeData] =
+    useState<[]>([]);
+  const [
+    instructionalProgramSelectedValue,
+    setInstructionalProgramSelectedValue,
+  ] = useState<ComponentTypesValue[]>([]);
+
   const [checkboxValues, setCheckboxvalues] = useState<any>({
     progressionModel: false,
     conceptSchema: false,
     furtherDetails: false,
   });
 
-  const companyList = [
-    {
-      key: 1,
-      value: 'company',
-      label: 'company',
-      title: 'Company',
-    },
-    {
-      key: 2,
-      title: 'New Company',
-      value: 'Newcompany',
-      label: 'New company',
-    },
-  ];
+  const [isTouched, setisTouched] = useState({
+    name: false,
+    description: false,
+    subjectWebpage: false,
+    organization: false,
+  });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!_.isEmpty(addPathwayFormFields))
+      getAllPathwayFormFields(addPathwayFormFields, 'pathway');
+
+    setIsAddPathwayFormNextButtonDisable(
+      !_.isEmpty(addPathwayFormFields.name) &&
+        !_.isEmpty(addPathwayFormFields.description) &&
+        !_.isEmpty(addPathwayFormFields.subjectWebpage)
+    );
+  }, [addPathwayFormFields]);
+
+  useEffect(() => {
+    const updatedData = { ...addPathwayFormFields };
+
+    if (occupationSelectedValue.length > 0) {
+      updatedData.occupationType = occupationSelectedValue;
+    }
+    if (industrySelectedValue.length > 0) {
+      updatedData.industryType = industrySelectedValue;
+    }
+    setAddPathwayFormFields(updatedData);
+  }, [occupationSelectedValue, industrySelectedValue]);
+
+  const allHasProgressionModel = useSelector(
+    (state: any) => state.addPathwayFormReducer.allHasProgressionModel
+  );
+
+  useEffect(() => {
+    if (allHasProgressionModel.valid) {
+      setAllProgressionModel(allHasProgressionModel.data?.Results);
+    }
+  }, [allHasProgressionModel.data]);
+
   const onCheckBoxChangeHandler = (e: any) => {
     const { name, checked } = e.target;
     setCheckboxvalues({ ...checkboxValues, [name]: checked });
@@ -48,56 +118,188 @@ const AddPathwayForm = () => {
     updatedData[name] = value;
     setAddPathwayFormFields(updatedData);
   };
-
   const onSelectChangeHandler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
-
-    if (name === 'industryType') {
-      const filteredIndustry = companyList.filter((company: any) =>
-        e.includes(company.key)
-      );
-      updatedData[name] = filteredIndustry;
-    }
     if (name === 'keyword') {
-      const filteredKeywords = companyList.filter((company: any) =>
-        e.includes(company.key)
-      );
-      updatedData[name] = filteredKeywords;
-    }
-    if (name === 'occupationType') {
-      const filteredOccupations = companyList.filter((company: any) =>
-        e.includes(company.key)
-      );
-      updatedData[name] = filteredOccupations;
+      updatedData[name] = e;
     }
     if (name === 'subject') {
-      const filteredOccupations = companyList.filter((company: any) =>
-        e.includes(company.key)
-      );
-      updatedData[name] = filteredOccupations;
+      updatedData[name] = e;
     }
     setAddPathwayFormFields(updatedData);
   };
 
+  const onProgressionModelSearchHandler = (e: any) => {
+    dispatch(getHasProgressionModel(e));
+  };
+
+  const onProgressionModelSelectHandler = (e: any) => {
+    const selectedProgressionModel = allProgressionModel.filter(
+      (model: any) => model.Name === e
+    );
+    setSelectedProgressionModelValue(_.get(selectedProgressionModel, '0').Name);
+    setAddPathwayFormFields({
+      ...addPathwayFormFields,
+      hasProgressionModel: _.get(selectedProgressionModel, '0').RowId,
+    });
+    getAllPathwayFormFields(selectedProgressionModel, 'progressionLevels');
+  };
+
+  async function fetchOccupationList(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
+
+    return fetch(
+      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/OccupationType',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: data,
+      }
+    )
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          URI: dta.URI,
+          CodedNotation: dta.CodedNotation,
+          Id: dta.Id,
+          RowId: dta.RowId,
+          label: dta.Name,
+          value: dta.Name,
+        }));
+        setAllOccupationTypeData(updatedBody);
+        return updatedBody;
+      });
+  }
+
+  async function fetchIndustryList(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
+
+    return fetch(
+      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/IndustryType',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: data,
+      }
+    )
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          URI: dta.URI,
+          CodedNotation: dta.CodedNotation,
+          Id: dta.Id,
+          RowId: dta.RowId,
+          label: dta.Name,
+          value: dta.Name,
+        }));
+        setAllIndustryTypeData(updatedBody);
+        return updatedBody;
+      });
+  }
+
+  async function fetchInstructionalProgramList(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
+
+    return fetch(
+      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/InstructionalProgramType',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: data,
+      }
+    )
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          URI: dta.URI,
+          CodedNotation: dta.CodedNotation,
+          Id: dta.Id,
+          RowId: dta.RowId,
+          label: dta.Name,
+          value: dta.Name,
+        }));
+        setAllInstructionalProgramTypeData(updatedBody);
+        return updatedBody;
+      });
+  }
+  const onDebounceSelectHnadler = (e: any, name: string) => {
+    if (name === 'occupation') {
+      const filteredOccupations = allOccupationTypeData.filter(
+        (data: any) => data.Name === e.value
+      );
+
+      setOccupationSelectedValue((prevState: any) => [
+        ...prevState,
+        ...filteredOccupations,
+      ]);
+    }
+    if (name === 'industry') {
+      const filteredIndustry = allIndustryTypeData.filter(
+        (data: any) => data.Name === e.value
+      );
+
+      setIndustrySelectedValue((prevState: any) => [
+        ...prevState,
+        ...filteredIndustry,
+      ]);
+    }
+    if (name === 'instructionalProgram') {
+      const filteredInstructionalProgram =
+        allInstructionalProgramTypeData.filter(
+          (data: any) => data.Name === e.value
+        );
+
+      setInstructionalProgramSelectedValue((prevState: any) => [
+        ...prevState,
+        ...filteredInstructionalProgram,
+      ]);
+    }
+  };
   return (
     <>
-      <Form>
+      <Form className={styles.addPathwayForm}>
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item
               label="Pathway Name"
-              className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               required={true}
               validateTrigger="onBlur"
+              help={
+                (_.isNil(addPathwayFormFields.name) ||
+                  addPathwayFormFields.name === '') &&
+                isTouched.name
+                  ? 'Name is Required'
+                  : null
+              }
             >
               <InputBox
                 placeholder="Add a Pathway Name"
-                maxLength={75}
                 name="name"
+                required={true}
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields?.pathway?.name}
+                onBlur={() =>
+                  isTouched.name === true
+                    ? null
+                    : setisTouched({ ...isTouched, name: true })
+                }
               />
             </Form.Item>
           </Col>
@@ -109,13 +311,25 @@ const AddPathwayForm = () => {
               labelCol={{ span: 24 }}
               required={true}
               validateTrigger="onBlur"
+              help={
+                (_.isNil(addPathwayFormFields.description) ||
+                  addPathwayFormFields.description === '') &&
+                isTouched.name
+                  ? 'Description is Required'
+                  : null
+              }
             >
               <Textarea
                 placeholder="Add a Pathway Description"
-                maxLength={200}
                 name="description"
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields.description}
+                required={true}
+                onBlur={() =>
+                  isTouched.description === true
+                    ? null
+                    : setisTouched({ ...isTouched, description: true })
+                }
               />
             </Form.Item>
           </Col>
@@ -128,11 +342,12 @@ const AddPathwayForm = () => {
               required={true}
               validateTrigger="onBlur"
             >
-              <MultiSelect
-                placeholder="Select Industry Types"
-                options={companyList}
-                optionLabelProp="label"
-                onChange={(e) => onSelectChangeHandler(e, 'industryType')}
+              <DebounceSelect
+                mode="multiple"
+                value={industrySelectedValue}
+                placeholder="Select Industry"
+                fetchOptions={fetchIndustryList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'industry')}
               />
             </Form.Item>
           </Col>
@@ -146,8 +361,8 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
+                mode="tags"
                 placeholder="Add Keywords"
-                options={companyList}
                 optionLabelProp="label"
                 onChange={(e) => onSelectChangeHandler(e, 'keyword')}
               />
@@ -162,11 +377,32 @@ const AddPathwayForm = () => {
               required={true}
               validateTrigger="onBlur"
             >
-              <MultiSelect
-                placeholder="Select Occupation Types"
-                options={companyList}
-                optionLabelProp="label"
-                onChange={(e) => onSelectChangeHandler(e, 'occupationType')}
+              <DebounceSelect
+                mode="multiple"
+                value={occupationSelectedValue}
+                placeholder="Select Occupations"
+                fetchOptions={fetchOccupationList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'occupation')}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Instructional Program Type"
+              className="swNoMargin"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              required={true}
+              validateTrigger="onBlur"
+            >
+              <DebounceSelect
+                mode="multiple"
+                value={instructionalProgramSelectedValue}
+                placeholder="Select Instructional Program"
+                fetchOptions={fetchInstructionalProgramList}
+                onSelect={(e: any) =>
+                  onDebounceSelectHnadler(e, 'instructionalProgram')
+                }
               />
             </Form.Item>
           </Col>
@@ -180,8 +416,8 @@ const AddPathwayForm = () => {
               validateTrigger="onBlur"
             >
               <MultiSelect
+                mode="tags"
                 placeholder="Select Subjects"
-                options={companyList}
                 optionLabelProp="label"
                 onChange={(e) => onSelectChangeHandler(e, 'subject')}
               />
@@ -195,6 +431,13 @@ const AddPathwayForm = () => {
               labelCol={{ span: 24 }}
               required={true}
               validateTrigger="onBlur"
+              help={
+                (_.isNil(addPathwayFormFields.subjectWebpage) ||
+                  addPathwayFormFields.subjectWebpage === '') &&
+                isTouched.subjectWebpage
+                  ? 'Subject Webpage is Required'
+                  : null
+              }
             >
               <InputBox
                 placeholder="add a URL"
@@ -202,6 +445,11 @@ const AddPathwayForm = () => {
                 value={addPathwayFormFields.subjectWebpage}
                 name="subjectWebpage"
                 onChange={onInputChangeHandler}
+                onBlur={() =>
+                  isTouched.subjectWebpage === true
+                    ? null
+                    : setisTouched({ ...isTouched, subjectWebpage: true })
+                }
               />
             </Form.Item>
           </Col>
@@ -224,7 +472,17 @@ const AddPathwayForm = () => {
                 required={true}
                 validateTrigger="onBlur"
               >
-                <AutoCompleteBox placeholder="Start typing to choose a Progression Model" />
+                <AutoCompleteBox
+                  {...SelectAutoCompleteProps(
+                    allProgressionModel,
+                    selectedProgressionModelValue,
+                    'Name',
+                    'Name'
+                  )}
+                  placeholder="Start typing to choose a Progression Model"
+                  onSearch={onProgressionModelSearchHandler}
+                  onSelect={(e: any) => onProgressionModelSelectHandler(e)}
+                />
               </Form.Item>
             </Col>
           )}

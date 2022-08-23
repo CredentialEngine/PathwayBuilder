@@ -9,36 +9,59 @@ export type DropdownProps = {
   defaultValue?: string;
   style?: any;
   placeholder?: string;
+  showSearch?: boolean;
+  options?: any;
 };
 
 export const Dropdown = (props: DropdownProps) => {
-  const { children, placeholder, defaultValue, style } = props;
+  const { children, placeholder, defaultValue, style, showSearch, options } =
+    props;
 
-  const onChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+  // const onChange = (value: string) => {
+  //   console.log(`selected ${value}`);
+  // };
 
-  const onSearch = (value: string) => {
-    console.log('search:', value);
-  };
+  // const onSearch = (value: string) => {
+  //   console.log('search:', value);
+  // };
   return (
     <>
-      <Select
-        showSearch
-        onChange={onChange}
-        onSearch={onSearch}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        style={style}
-        className={Styles.dropdownwrapper}
-        filterOption={(input, option) =>
-          (option!.children as unknown as string)
-            .toLowerCase()
-            .includes(input.toLowerCase())
-        }
-      >
-        {children}
-      </Select>
+      {showSearch ? (
+        <Select
+          showSearch
+          // onChange={onChange}
+          // onSearch={onSearch}
+          options={options}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          style={style}
+          className={Styles.dropdownwrapper}
+          filterOption={(input, option) =>
+            (option!.children as unknown as string)
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+        >
+          {children}
+        </Select>
+      ) : (
+        <Select
+          onChange={onChange}
+          onSearch={onSearch}
+          options={options}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          style={style}
+          className={Styles.dropdownwrapper}
+          filterOption={(input, option) =>
+            (option!.children as unknown as string)
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+        >
+          {children}
+        </Select>
+      )}
     </>
   );
 };

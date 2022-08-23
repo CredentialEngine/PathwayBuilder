@@ -3,24 +3,93 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Form, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { noop } from 'lodash';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
-import SearchBox from '../../components/formFields/searchBox';
+import MultiSelect from '../../components/formFields/multiSelect';
 
 import Styles from './index.module.scss';
+import {
+  getAllArrayConceptsRequest,
+  getAllComparatorsRequest,
+  getLogicalOperatorsRequest,
+} from './state/actions';
 
-const AddComponent: React.FC = () => {
-  const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
-  };
+const companyList = [
+  {
+    key: 1,
+    value: 'company',
+    label: 'company',
+    title: 'Company',
+  },
+  {
+    key: 2,
+    title: 'New Company',
+    value: 'Newcompany',
+    label: 'New company',
+  },
+];
+
+const AddConditionalComponent: React.FC = () => {
+  const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
+  const [allComparators, setAllComparators] = useState<any>([]);
+  const [allArrayConcept, setAllArrayConcept] = useState<any>([]);
+
+  const dispatch = useDispatch();
+  // const onFinish = (values: any) => {
+  //   console.log('Received values of form:', values);
+  // };
+  const getAllLogicalOperator = useSelector(
+    (state: any) => state.addConditionalComponent.logicalOperatorData
+  );
+
+  const getAllComparators = useSelector(
+    (state: any) => state.addConditionalComponent.comparatorsData
+  );
+
+  const getAllArrayConcept = useSelector(
+    (state: any) => state.addConditionalComponent.arrayOperationData
+  );
+  useEffect(() => {
+    if (getAllLogicalOperator.valid)
+      setAllLogicOperators(
+        getAllLogicalOperator.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+    if (getAllComparators.valid)
+      setAllComparators(
+        getAllComparators.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+    if (getAllArrayConcept.valid)
+      setAllArrayConcept(
+        getAllArrayConcept.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+  }, [getAllLogicalOperator, getAllComparators, getAllArrayConcept]);
+
+  useEffect(() => {
+    dispatch(getLogicalOperatorsRequest());
+    dispatch(getAllComparatorsRequest());
+    dispatch(getAllArrayConceptsRequest());
+  }, []);
   return (
     <div className={Styles.addComponentwrapper}>
       <h2>Add Component</h2>
       <div className={Styles.iconheader}>
-        <span className={Styles.iconwrapper}>
+        <span className={Styles.iconwrapper + ' iconwrapper'}>
           <FontAwesomeIcon
             icon={faCubes}
             style={{ height: '15px' }}
@@ -35,85 +104,103 @@ const AddComponent: React.FC = () => {
       </Form.Item>
       <Form.Item>
         <label>Condition Description</label>
-        <TextArea onChange={noop} placeholder="" maxLength={0} rows={4} />
+        <TextArea onChange={noop} placeholder="" maxLength={0} rows={3} />
       </Form.Item>
       <Row gutter={20}>
-        <Col span="10">
+        <Col span="12">
           <Form.Item>
+            <label>Required Number</label>
             <InputBox
-              onChange={noop}
-              placeholder="RequiredNumber"
+              type="number"
+              onChange={undefined}
+              placeholder=""
+              maxLength={0}
               value=""
-              disabled
             />
           </Form.Item>
         </Col>
-        <Col span="10">
+        <Col span="12">
           <Form.Item>
-            <InputBox
-              onChange={noop}
-              placeholder="is equal to"
-              value=""
-              disabled
+            <label>Logical Operator</label>
+            <Dropdown
+              options={allLogicalOperators}
+              defaultValue="And"
+              showSearch={false}
             />
-          </Form.Item>
-        </Col>
-        <Col span="3">
-          <Form.Item>
-            <InputBox onChange={noop} placeholder="0" value="" type="number" />
           </Form.Item>
         </Col>
       </Row>
-      <hr className="min-top" />
+      <div className={Styles.divider}>
+        <label>Constraints</label>
+        <hr className="min-top" />
+      </div>
       <Form
         name="dynamic_form_nest_item"
-        onFinish={onFinish}
+        // onFinish={onFinish}
         autoComplete="off"
       >
         <Form.List name="users">
           {(fields, { add }) => (
             <>
               <Row gutter={20}>
-                <Col span="10">
+                <Col span="9">
                   <Form.Item>
-                    <SearchBox placeholder="totalCredit" />
+                    <MultiSelect
+                      placeholder="Select Industry Types"
+                      options={companyList}
+                      optionLabelProp="label"
+                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
+                    />
                   </Form.Item>
                 </Col>
-                <Col span="10">
+                <Col span="6">
                   <Form.Item>
-                    <Dropdown />
+                    <Dropdown
+                      options={allComparators}
+                      defaultValue="Equals"
+                      showSearch={false}
+                    />
                   </Form.Item>
                 </Col>
-                <Col span="3">
+                <Col span="9">
                   <Form.Item>
-                    <InputBox
-                      onChange={noop}
-                      placeholder="480"
-                      value=""
-                      type="number"
+                    <MultiSelect
+                      placeholder="Select Industry Types"
+                      options={companyList}
+                      optionLabelProp="label"
+                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
                     />
                   </Form.Item>
                 </Col>
               </Row>
-              {fields.map((key, i) => (
+              {fields.map((v, i) => (
                 <Row gutter={20} key={i}>
-                  <Col span="10">
+                  <Col span="9">
                     <Form.Item>
-                      <SearchBox placeholder="totalCredit" />
+                      <MultiSelect
+                        placeholder="Select Industry Types"
+                        options={companyList}
+                        optionLabelProp="label"
+                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
+                      />
                     </Form.Item>
                   </Col>
-                  <Col span="10">
+                  <Col span="6">
                     <Form.Item>
-                      <Dropdown />
+                      <Dropdown
+                        options={allArrayConcept}
+                        defaultValue="Equals"
+                        showSearch={false}
+                      />
                     </Form.Item>
                   </Col>
-                  <Col span="3">
+                  <Col span="9">
                     <Form.Item>
-                      <InputBox
-                        onChange={noop}
-                        placeholder="480"
-                        value=""
-                        type="number"
+                      <MultiSelect
+                        placeholder="Select Industry Types"
+                        options={allArrayConcept}
+                        optionLabelProp="label"
+                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
                       />
                     </Form.Item>
                   </Col>
@@ -130,9 +217,14 @@ const AddComponent: React.FC = () => {
       </Form>
 
       <hr />
-      <Button text="Save Consition" type="primary" />
+      <Button
+        size="medium"
+        text="Save Consition"
+        type="primary"
+        onClick={noop}
+      />
     </div>
   );
 };
 
-export default AddComponent;
+export default AddConditionalComponent;

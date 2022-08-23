@@ -1,37 +1,110 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { faCaretDown, faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Card, Row, Form } from 'antd';
-import { noop } from 'lodash';
-import React, { useEffect } from 'react';
+import { Col, Card, Row, Form, Dropdown, Typography, Space, Menu } from 'antd';
+import _, { noop } from 'lodash';
 
-import { ComponentsCards } from '../../assets/modal/constant';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import SearchBox from '../../components/formFields/searchBox';
+import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
 
 import Styles from './index.module.scss';
+import { getAllProxyForResourcesRequest } from './state/actions';
 
-const PreSelectResourceCreatePath: React.FC = () => {
-  const [searchValue, setSearchValue] = React.useState('');
+export interface Props {
+  getAllPathwayFormFields: (a: any, b: string) => void;
+}
+const PreSelectResourceCreatePath: React.FC<Props> = ({
+  getAllPathwayFormFields,
+}) => {
+  const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
+    new Array<any>([])
+  );
   const [displaySearchContainer, setDisplaySearchContainer] =
     React.useState(false);
-  const [SelectedResource, setSelectedResource] = React.useState<any>([]);
-  const [dataArray, setDataArray] = React.useState<any>([ComponentsCards]);
-  const searchComponent = (value: any) => {
-    setSearchValue(value.target.value);
+  const [SelectedResource, setSelectedResource] = useState<any>([]);
+  const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
+
+  const [searchFilterValue, setSearchFilterValue] = useState<any>({
+    keywords: '',
+    skip: 0,
+    Take: 20,
+    sort: '',
+    filters: [
+      {
+        URI: 'meta:pathwayComponentType',
+        ItemsText: [],
+      },
+    ],
+  });
+  const searchComponent = (e: any) => {
+    setSearchFilterValue({ ...searchFilterValue, keywords: e.target.value });
     setDisplaySearchContainer(true);
+  };
+  const dispatch = useDispatch();
+  const allComponentTabCards = useSelector(
+    (state: any) => state.leftPanelReducer.allLeftPathwayComponent
+  );
+
+  const menu = (
+    <Menu
+      onClick={(e) => onMenuClickHandler(e)}
+      selectable
+      items={allComponentTypes}
+    />
+  );
+
+  const onMenuClickHandler = (e: any) => {
+    const selectedCardType = allComponentTypes.filter(
+      (comp_type: any) => comp_type.key === _.toNumber(e.key)
+    );
+    const updatedSearchValue = { ...searchFilterValue };
+    updatedSearchValue.filters = [
+      {
+        URI: 'meta:pathwayComponentType',
+        ItemsText: [_.get(selectedCardType, '0').label],
+      },
+    ];
+    setSearchFilterValue(updatedSearchValue);
   };
 
   useEffect(() => {
-    setDataArray(ComponentsCards);
+    if (SelectedResource.length > 0)
+      getAllPathwayFormFields(SelectedResource, 'pendingComponent');
+
+    if (allComponentTabCards.data.length > 0) {
+      const allTypesOfComponentCards = allComponentTabCards.data.map(
+        (card: any, index: any) => ({ key: index, label: card.URI })
+      );
+      setAllComponentTypes(allTypesOfComponentCards);
+    }
+  }, [SelectedResource, allComponentTabCards]);
+  const allProxyForResourcesComponent = useSelector(
+    (state: any) => state.preSelectProxyResources.allProxyForResourcesComponent
+  );
+  useEffect(() => {
+    if (allProxyForResourcesComponent.valid)
+      setAllProxyResourcesCard(allProxyForResourcesComponent.data.Results);
+  }, [allProxyForResourcesComponent.data]);
+
+  useEffect(() => {
+    dispatch(getLeftPanelPathwayComponentRequest());
   }, []);
 
+  useEffect(() => {
+    dispatch(getAllProxyForResourcesRequest(searchFilterValue));
+  }, [searchFilterValue]);
+
   const addResource = (itemId: string, itemIndex: number) => {
-    const filteredItem = dataArray.filter((item: any) => item.id === itemId);
+    const filteredItem = allProxyResourcesCard.filter(
+      (item: any) => item.id === itemId
+    );
     setSelectedResource([...SelectedResource, filteredItem[0]]);
-    dataArray.splice(itemIndex, 1);
-    if (dataArray.length === 0) {
+    allProxyResourcesCard.splice(itemIndex, 1);
+    if (allProxyResourcesCard.length === 0) {
       setDisplaySearchContainer(false);
     }
   };
@@ -39,9 +112,9 @@ const PreSelectResourceCreatePath: React.FC = () => {
     const filteredItem = SelectedResource.filter(
       (item: any) => item.id === itemId
     );
-    setDataArray([...dataArray, filteredItem[0]]);
+    setAllProxyResourcesCard([...allProxyResourcesCard, filteredItem[0]]);
     SelectedResource.splice(itemIndex, 1);
-    if (dataArray.length > 0) {
+    if (allProxyResourcesCard.length > 0) {
       setDisplaySearchContainer(true);
     }
   };
@@ -51,10 +124,15 @@ const PreSelectResourceCreatePath: React.FC = () => {
         <Col span="12">
           <div className={Styles.flexCenter}>
             <h5>Select Resources</h5>
-            <p className="dropdown-title">
-              All resources types{' '}
-              <FontAwesomeIcon icon={faCaretDown} color="black" />
-            </p>
+
+            <Dropdown overlay={menu}>
+              <Typography.Link>
+                <Space>
+                  All resources types
+                  <DownOutlined />
+                </Space>
+              </Typography.Link>
+            </Dropdown>
           </div>
           <SearchBox
             placeholder="Search your components"
@@ -62,24 +140,26 @@ const PreSelectResourceCreatePath: React.FC = () => {
           />
           {displaySearchContainer && (
             <div className={Styles.searchItemWrapper}>
-              {dataArray
-                .filter((v: any) =>
-                  v.description
-                    ?.toLocaleLowerCase()
-                    .includes(searchValue.toLocaleLowerCase())
+              {allProxyResourcesCard
+                .filter((resource: any) =>
+                  resource.Description?.toLocaleLowerCase().includes(
+                    searchFilterValue.keywords.toLocaleLowerCase()
+                  )
                 )
-                .map((v: any, i: number) => (
+                .map((filteredResources: any, i: number) => (
                   <div className={Styles.flexGrowCenter} key={i}>
                     <CardWithLeftIcon
                       draggable={true}
                       key={i}
-                      title={v.name}
+                      name={filteredResources.Name}
                       type="Semester 1"
-                      SubTitle={v.description}
+                      description={filteredResources.Description.slice(0, 30)}
                       IconName={faGear}
                       IconColor="black"
                     />
-                    <PlusOutlined onClick={() => addResource(v.id, i)} />
+                    <PlusOutlined
+                      onClick={() => addResource(filteredResources.id, i)}
+                    />
                   </div>
                 ))}
             </div>
@@ -94,18 +174,20 @@ const PreSelectResourceCreatePath: React.FC = () => {
           </div>
           <Card className="customacardstyle">
             <div className={Styles.cardwrapper}>
-              {SelectedResource?.map((v: any, i: number) => (
+              {SelectedResource?.map((select_resource: any, i: number) => (
                 <div className={Styles.flexGrowCenter} key={i}>
                   <CardWithLeftIcon
                     draggable={true}
                     key={i}
-                    title={v.name}
+                    name={select_resource.Name}
                     type="Semester 1"
-                    SubTitle={v.description}
+                    description={select_resource.Description.slice(0, 30)}
                     IconName={faGear}
                     IconColor="black"
                   />
-                  <PlusOutlined onClick={() => UnSelectSelectedItem(v.id, i)} />
+                  <PlusOutlined
+                    onClick={() => UnSelectSelectedItem(select_resource.id, i)}
+                  />
                 </div>
               ))}
             </div>

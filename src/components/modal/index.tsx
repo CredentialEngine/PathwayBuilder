@@ -76,6 +76,7 @@ const Modal = (props: ModalProps) => {
     <AntModal
       {...mergeProps(omit(props, 'children'), buttonDisabled)}
       onOk={(e) => setStateIfPromiseAction(e, props.onOk)}
+      closable
       onCancel={(e) => setStateIfPromiseAction(e, props.onCancel)}
     >
       {errorMessage && renderErrorMessage()}

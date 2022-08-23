@@ -1,10 +1,15 @@
 export type RootState = {
-  currentUserData: {
+  allHasProgressionModel: {
     loading: boolean;
     data: any;
     valid: boolean;
   };
-  pathwayComponentData: {
+  allIndustryTypeCode: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
+  allOccupationTypeCode: {
     loading: boolean;
     data: any;
     valid: boolean;

@@ -5,12 +5,23 @@ export type InputProps = {
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   defaultValue?: string;
   placeholder: string;
-  maxLength: number;
+  maxLength?: number;
   value: string;
   name?: string;
+  onBlur?: any;
+  required?: boolean;
 };
 const Textarea: React.FC<InputProps> = (props: InputProps) => {
-  const { onChange, maxLength, placeholder, value, defaultValue, name } = props;
+  const {
+    onChange,
+    maxLength,
+    placeholder,
+    value,
+    defaultValue,
+    name,
+    required,
+    onBlur,
+  } = props;
   const handleChange = (e: any) => {
     onChange && onChange(e);
   };
@@ -23,6 +34,8 @@ const Textarea: React.FC<InputProps> = (props: InputProps) => {
       onChange={(e) => handleChange(e)}
       value={value}
       defaultValue={defaultValue}
+      required={required}
+      onBlur={onBlur}
     />
   );
 };

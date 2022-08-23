@@ -22,7 +22,7 @@ const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
           <Button
             text="Start with Destination"
             type="primary"
-            style={{ width: '100%' }}
+            style={{ width: '100%', padding: '8px' }}
             onClick={() => setIsAddPathwayDestinationVisible(false)}
           />
         </div>
@@ -33,7 +33,7 @@ const SelectDestination = ({ setIsAddPathwayDestinationVisible }) => (
           <Button
             text="Start with Initial components"
             type="primary"
-            style={{ width: '100%' }}
+            style={{ width: '100%', padding: '8px' }}
             onClick={() => setIsAddPathwayDestinationVisible(false)}
           />
         </div>

@@ -8,16 +8,22 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
+import AddConditionalComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
+import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
 import HomePage from './screens/homePage';
+import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
 import { getCurrentUserDataRequest } from './states/actions';
 
 const App = () => {
   const dispatch = useDispatch();
-  const appState = useSelector((state: any) => state.app);
+  const appState = useSelector((state: any) => state?.initalReducer);
+  const [addPathwayWrapperFields, setAddPathwayWrapeprFields] = useState<any>(
+    new PathwayWrapperEntity()
+  );
 
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
@@ -25,6 +31,10 @@ const App = () => {
     useState<boolean>(false);
   const [isAddPathwayFormVisible, setIsAddPathwayFormVisible] =
     useState<boolean>(false);
+  const [
+    isPreSelectedCreateResourceVisible,
+    setIsPreSelectedCreateResourceVisible,
+  ] = useState<boolean>(false);
   const [isAddPathwayDestinationVisible, setIsAddPathwayDestinationVisible] =
     useState<boolean>(false);
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
@@ -33,6 +43,10 @@ const App = () => {
     useState('');
 
   const [organisationList, setOrganisationList] = useState<any>([]);
+  const [
+    isAddPathwayFormNextButtonDisable,
+    setIsAddPathwayFormNextButtonDisable,
+  ] = useState<boolean>(false);
 
   const {
     currentUserData: { data: userData },
@@ -59,11 +73,7 @@ const App = () => {
 
   const onAddPathwayOkHandler = () => {
     setIsAddPathwayFormVisible(false);
-    setIsAddPathwayDestinationVisible(true);
-  };
-
-  const onAddPathwayCancelHandler = () => {
-    setIsAddPathwayFormVisible(false);
+    setIsPreSelectedCreateResourceVisible(true);
   };
 
   const onCloseHandler = () => {
@@ -101,6 +111,17 @@ const App = () => {
       />
     </div>
   );
+  const onPreSelectResourceOkHandler = () => {
+    setIsPreSelectedCreateResourceVisible(false);
+    setIsAddPathwayDestinationVisible(true);
+  };
+
+  const onPreSelectResourceCancelHandler = () => {
+    setIsCreatePathwayVisible(false);
+  };
+  const getAllPathwayFormFields = (value: any, name: string) => {
+    setAddPathwayWrapeprFields({ ...addPathwayWrapperFields, [name]: value });
+  };
 
   return (
     <div>
@@ -111,11 +132,15 @@ const App = () => {
             !isCreatePathwayVisible &&
             !isAddPathwayFormVisible &&
             !isAddPathwayDestinationVisible &&
-            !isSelectOrganizationsVisble
+            !isSelectOrganizationsVisble &&
+            !isPreSelectedCreateResourceVisible
               ? true
               : false
           }
         />
+        <Modal visible={false} title="" footer={[]} width={650}>
+          <AddConditionalComponent />
+        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
@@ -126,11 +151,36 @@ const App = () => {
         </Modal>
         <Modal
           visible={isAddPathwayFormVisible}
-          onOk={onAddPathwayOkHandler}
-          onCancel={onAddPathwayCancelHandler}
           title="Add a Pathway"
+          onCancel={() => setIsAddPathwayFormVisible(false)}
+          footer={[
+            <>
+              <Button
+                type={Type.PRIMARY}
+                onClick={onAddPathwayOkHandler}
+                text="Next"
+                disabled={!isAddPathwayFormNextButtonDisable}
+              />
+            </>,
+          ]}
         >
-          <AddPathwayForm />
+          <AddPathwayForm
+            getAllPathwayFormFields={getAllPathwayFormFields}
+            setIsAddPathwayFormNextButtonDisable={
+              setIsAddPathwayFormNextButtonDisable
+            }
+          />
+        </Modal>
+        <Modal
+          visible={isPreSelectedCreateResourceVisible}
+          onOk={onPreSelectResourceOkHandler}
+          onCancel={onPreSelectResourceCancelHandler}
+          width="650px"
+          title="Pre-Select Resources to Create Your Pathway"
+        >
+          <PreSelectResourceCreatePath
+            getAllPathwayFormFields={getAllPathwayFormFields}
+          />
         </Modal>
         <CustomDrawer
           width="35%"
@@ -141,7 +191,11 @@ const App = () => {
           <RightPanel onCloseHandler={onCloseHandler} />
         </CustomDrawer>
 
-        <Modal visible={isAddPathwayDestinationVisible} title="" footer={[]}>
+        <Modal
+          visible={isAddPathwayDestinationVisible}
+          title="Add a Pathway"
+          footer={[]}
+        >
           <SelectDestination
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
@@ -174,6 +228,13 @@ const App = () => {
           />
         </Modal>
       </MainContainer>
+      <Modal
+        visible={isAddPathwayDestinationVisible}
+        title="Add a Pathway"
+        footer={[]}
+      >
+        <AddConditionalComponent />
+      </Modal>
     </div>
   );
 };

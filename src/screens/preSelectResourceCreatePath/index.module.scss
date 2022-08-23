@@ -44,6 +44,14 @@
       padding: 10px;
       box-shadow: none;
     }
+    .ant-typography {
+      color: #1f2123;
+      font-weight: 600;
+      :hover {
+        color: #1f2123;
+        font-weight: 600;
+      }
+    }
   }
   .infoCard {
     background: $inactive3 0% 0% no-repeat padding-box;
