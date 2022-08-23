@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ComponentsCards } from '../../assets/modal/constant';
 
 import CardWithLeftIcon from '../../components/cardWithLeftIcon';
+import CheckBox from '../../components/formFields/checkbox';
 import SearchBox from '../../components/formFields/searchBox';
 
 import Styles from './index.module.scss';
@@ -83,6 +84,13 @@ const PreSelectResourceCreatePath: React.FC = () => {
             placeholder="Search your components"
             onKeyUp={searchComponent}
           />
+          <CheckBox
+            name="progressionModel"
+            label="Only components uploaded by my organisation"
+            className=" fontweightlight checkboxlabel"
+          />
+          <br />
+          <br />
           {displaySearchContainer && (
             <div className={Styles.searchItemWrapper}>
               {allProxyResourcesCard

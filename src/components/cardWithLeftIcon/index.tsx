@@ -19,6 +19,7 @@ export interface Props {
   id?: number | string;
   uri?: string;
   getUpdatedCardArr?: (value: any) => void;
+  disabledItem?: any;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
@@ -32,6 +33,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     draggable,
     id,
     getUpdatedCardArr,
+    disabledItem,
   } = props;
 
   const onDragStart = (e: any) => {
@@ -54,7 +56,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   return (
     <Card
       size="small"
-      className={styles.cardwrapper}
+      className={styles.cardwrapper + ' ' + disabledItem}
       style={inlineStyles}
       draggable={draggable}
       onDragStart={onDragStart}
