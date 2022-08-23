@@ -7,6 +7,7 @@ import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import React, { useRef, useState } from 'react';
+// import { useSelector } from 'react-redux';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 import DropWrapper from '../../components/dropWrapper';
@@ -29,6 +30,10 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
     useState<boolean>(false);
+  // const result = useSelector((state: any) => state.app);
+  // const {
+  //   pathwayComponentData: { data: componentsData },
+  // } = result;
 
   const columnRef = useRef<any>([]);
 
@@ -227,7 +232,7 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                       >
                         <span style={{ color: '#000000' }}>{column.name}</span>
                         <div style={{ display: 'flex' }}>
-                          {column.children.map((child: any, i: any) => (
+                          {column?.children?.map((child: any, i: any) => (
                             <DropWrapper
                               id={`${column.title} ${child.title}`}
                               onDrop={onDropHandler}
@@ -313,6 +318,24 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
                         </div>
                       </div>
                     ))}
+                    <div>
+                      <DropWrapper
+                        id={10000000}
+                        onDrop={onDropHandler}
+                        status="child.codedNotation"
+                        key="child.id"
+                        column="child.name"
+                        CTID="child.CTID"
+                        forwardRef={columnRef.current[1]}
+                        width="450px"
+                      >
+                        <MultiCard
+                          data={{ type: 'credentials' }}
+                          isCredentialCard={true}
+                          setIsZoomDisabled={setIsZoomDisabled}
+                        />
+                      </DropWrapper>
+                    </div>
                   </div>
                 </TransformComponent>
               </TransformWrapper>

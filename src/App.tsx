@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './App.scss';
 
 import Button from './components/button';
@@ -12,9 +13,12 @@ import CreatePathway from './screens/createPathway/createPathway';
 import HomePage from './screens/homePage';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
-import { organisations } from './screens/selectOrganisation/constants';
+import { getCurrentUserDataRequest } from './states/actions';
 
 const App = () => {
+  const dispatch = useDispatch();
+  const appState = useSelector((state: any) => state.app);
+
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
   const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
@@ -27,6 +31,22 @@ const App = () => {
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState('');
+
+  const [organisationList, setOrganisationList] = useState<any>([]);
+
+  const {
+    currentUserData: { data: userData },
+  } = appState || {};
+
+  useEffect(() => {
+    dispatch(getCurrentUserDataRequest());
+  }, []);
+
+  useEffect(() => {
+    if (userData) {
+      setOrganisationList(userData?.Organizations);
+    }
+  }, [userData]);
 
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
@@ -60,12 +80,12 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (organisations.length > 1) {
+    if (organisationList && organisationList?.length > 1) {
       setsSelectOrganizationsVisble(true);
     } else {
       setIsCreatePathwayVisible(true);
     }
-  }, [organisations.length]);
+  }, [organisationList?.length]);
 
   const createPathwayFooter = () => (
     <div style={{ display: 'flex' }}>
@@ -147,7 +167,7 @@ const App = () => {
           ]}
         >
           <SelectOrganisation
-            organisationList={organisations}
+            organisationList={organisationList}
             getSelectedOrganisation={(value: string) =>
               setSelectedOrganisationValue(value)
             }
