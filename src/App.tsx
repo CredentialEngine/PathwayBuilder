@@ -16,7 +16,10 @@ import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
-import { getCurrentUserDataRequest } from './states/actions';
+import {
+  getCurrentUserDataRequest,
+  saveDataForPathwayRequest,
+} from './states/actions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -47,7 +50,6 @@ const App = () => {
     isAddPathwayFormNextButtonDisable,
     setIsAddPathwayFormNextButtonDisable,
   ] = useState<boolean>(false);
-
   const {
     currentUserData: { data: userData },
   } = appState || {};
@@ -123,6 +125,9 @@ const App = () => {
     setAddPathwayWrapeprFields({ ...addPathwayWrapperFields, [name]: value });
   };
 
+  const onPathwaySaveHandler = () => {
+    dispatch(saveDataForPathwayRequest(addPathwayWrapperFields));
+  };
   return (
     <div>
       <MainContainer>
@@ -137,6 +142,7 @@ const App = () => {
               ? true
               : false
           }
+          setIsEditPathwayFormVisible={setIsAddPathwayFormVisible}
         />
         <Modal visible={false} title="" footer={[]} width={650}>
           <AddConditionalComponent />
@@ -176,6 +182,25 @@ const App = () => {
           onOk={onPreSelectResourceOkHandler}
           onCancel={onPreSelectResourceCancelHandler}
           width="650px"
+          footer={[
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button
+                  type={Type.PRIMARY}
+                  onClick={onPathwaySaveHandler}
+                  text="Done Adding"
+                  disabled={
+                    addPathwayWrapperFields.PendingComponent.length === 0
+                  }
+                />
+                <Button
+                  type={Type.PRIMARY}
+                  onClick={onPreSelectResourceCancelHandler}
+                  text="Cancel"
+                />
+              </div>
+            </>,
+          ]}
           title="Pre-Select Resources to Create Your Pathway"
         >
           <PreSelectResourceCreatePath

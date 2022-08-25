@@ -27,9 +27,13 @@ export function* getAllProgressionModelData(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`,
       method: 'POST',
-      params: {
-        search: payload.payload,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
+      params: {
+        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+      },
+      data: payload.payload,
     });
     yield put(getDataForProgressionModelSuccess(result));
   } catch (error) {
@@ -58,12 +62,14 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`,
       method: 'POST',
+      params: {
+        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+      },
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: payload.payload,
     });
-
     yield put(getDataForOccupationTypeCodeSuccess(result));
   } catch (error) {
     yield put(getDataForOccupationTypeCodeFailure(error));

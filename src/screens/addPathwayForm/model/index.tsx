@@ -10,31 +10,28 @@ import {
 } from './pathwayWrapper';
 
 export class PathwayEntity implements pathway {
-  id: number;
-  uri: string;
-  name: string;
-  organization: ResourceSummary;
-  description: string;
-  cTID: string;
-  hasDestinationComponent: [];
-  hasProgressionModel: [];
-  industryType: [ResourceSummary];
-  occupationType: [ResourceSummary];
-  subjectWebpage: 'test';
-  keyword: [];
-  subject: [];
-  lastUpdated: '22-02-2022';
+  Id: number;
+  Uri: string;
+  Name: string;
+  Organization: ResourceSummary;
+  Description: string;
+  CTID: string;
+  HasDestinationComponent: string[];
+  HasProgressionModel: string[];
+  IndustryType: [ResourceSummary];
+  OccupationType: [ResourceSummary];
+  SubjectWebpage: 'test';
+  Keyword: string[];
+  Subject: string[];
+  LastUpdated: '22-02-2022';
 }
 
-export class PathwayWrapperEntity
-  extends PathwayEntity
-  implements PathwayWrapper
-{
-  pathway: PathwayEntity = new PathwayEntity();
-  pathwayComponents?: PathwayComponent[] = [];
-  progressionModels?: ProgressionModels[] = [];
-  progressionLevels: ProgressionLevels[] = [];
-  componentConditions: ComponentConditions[] = [];
-  constraints: Constraints[] = [];
-  pendingComponent: PathwayComponent[] = [];
+export class PathwayWrapperEntity implements PathwayWrapper {
+  PathwayComponents: PathwayComponent[] = [];
+  ProgressionModels: ProgressionModels[] = [];
+  ProgressionLevels: ProgressionLevels[] = [];
+  ComponentConditions: ComponentConditions[] = [];
+  Constraints: Constraints[] = [];
+  PendingComponent: PathwayComponent[] = [];
+  Pathway: PathwayEntity = new PathwayEntity();
 }

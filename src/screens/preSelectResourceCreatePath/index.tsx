@@ -74,7 +74,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   useEffect(() => {
     if (SelectedResource.length > 0)
-      getAllPathwayFormFields(SelectedResource, 'pendingComponent');
+      getAllPathwayFormFields(SelectedResource, 'PendingComponent');
 
     if (allComponentTabCards.data.length > 0) {
       const allTypesOfComponentCards = allComponentTabCards.data.map(
@@ -148,13 +148,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
           <br />
           {displaySearchContainer && (
             <div className={Styles.searchItemWrapper}>
-              {allProxyResourcesCard
-                .filter((resource: any) =>
-                  resource.Description?.toLocaleLowerCase().includes(
-                    searchFilterValue.keywords.toLocaleLowerCase()
-                  )
-                )
-                .map((filteredResources: any, i: number) => (
+              {allProxyResourcesCard.map(
+                (filteredResources: any, i: number) => (
                   <div className={Styles.flexGrowCenter} key={i}>
                     <CardWithLeftIcon
                       draggable={true}
@@ -169,7 +164,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                       onClick={() => addResource(filteredResources.id, i)}
                     />
                   </div>
-                ))}
+                )
+              )}
             </div>
           )}
         </Col>

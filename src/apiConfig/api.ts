@@ -29,7 +29,7 @@ export const handleApiError = <R>(error: AxiosError): Promise<R> => {
   return Promise.reject(apiError);
 };
 
-export const request = <R>(config: AxiosRequestConfig): Promise<R | APIError> =>
+export const request = <R>(config: any): Promise<R | APIError> =>
   axios
     .request(config)
     .then((res) => res.data as R)

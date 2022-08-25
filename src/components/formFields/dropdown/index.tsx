@@ -46,8 +46,8 @@ export const Dropdown = (props: DropdownProps) => {
         </Select>
       ) : (
         <Select
-          onChange={onChange}
-          onSearch={onSearch}
+          // onChange={onChange}
+          // onSearch={onSearch}
           options={options}
           defaultValue={defaultValue}
           placeholder={placeholder}

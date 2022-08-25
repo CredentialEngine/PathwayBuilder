@@ -14,4 +14,9 @@ export type RootState = {
     data: any;
     valid: boolean;
   };
+  allHasProgressionLevel: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
 };
