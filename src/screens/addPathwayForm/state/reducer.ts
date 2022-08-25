@@ -4,6 +4,7 @@ import {
   SEARCH_FOR_OCCUPATION_TYPE_CODE_FAILURE,
   SEARCH_FOR_OCCUPATION_TYPE_CODE_REQUEST,
   SEARCH_FOR_OCCUPATION_TYPE_CODE_SUCCESS,
+  SEARCH_FOR_PROGRESSION_LEVEL_SUCCESS,
   SEARCH_FOR_PROGRESSION_MODAL_FAILURE,
   SEARCH_FOR_PROGRESSION_MODAL_REQUEST,
   SEARCH_FOR_PROGRESSION_MODAL_SUCCESS,
@@ -26,6 +27,11 @@ const initState: RootState = {
     data: null,
     valid: false,
   },
+  allHasProgressionLevel: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
 };
 
 export default (state = initState, action: { type: string; payload: any }) => {
@@ -44,7 +50,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
         allHasProgressionModel: {
           ...state.allHasProgressionModel,
           loading: false,
-          data: action.payload.Data,
+          data: action.payload,
           valid: action?.payload?.Valid,
         },
       };
@@ -116,6 +122,16 @@ export default (state = initState, action: { type: string; payload: any }) => {
         },
       };
 
+    case SEARCH_FOR_PROGRESSION_LEVEL_SUCCESS:
+      return {
+        ...state,
+        allHasProgressionLevel: {
+          ...state.allHasProgressionLevel,
+          loading: false,
+          data: action.payload,
+          valid: action?.payload?.Valid,
+        },
+      };
     default:
       return {
         ...state,

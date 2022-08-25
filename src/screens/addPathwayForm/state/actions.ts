@@ -5,6 +5,7 @@ import {
   SEARCH_FOR_OCCUPATION_TYPE_CODE_FAILURE,
   SEARCH_FOR_OCCUPATION_TYPE_CODE_REQUEST,
   SEARCH_FOR_OCCUPATION_TYPE_CODE_SUCCESS,
+  SEARCH_FOR_PROGRESSION_LEVEL_SUCCESS,
   SEARCH_FOR_PROGRESSION_MODAL_FAILURE,
   SEARCH_FOR_PROGRESSION_MODAL_REQUEST,
   SEARCH_FOR_PROGRESSION_MODAL_SUCCESS,
@@ -17,6 +18,11 @@ export const getHasProgressionModel = (payload: any) => ({
 
 export const getDataForProgressionModelSuccess = (payload: any) => ({
   type: SEARCH_FOR_PROGRESSION_MODAL_SUCCESS,
+  payload,
+});
+
+export const getDataForProgressionLevelSuccess = (payload: any) => ({
+  type: SEARCH_FOR_PROGRESSION_LEVEL_SUCCESS,
   payload,
 });
 

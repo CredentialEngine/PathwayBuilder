@@ -85,6 +85,7 @@ const AddConditionalComponent: React.FC = () => {
     dispatch(getAllComparatorsRequest());
     dispatch(getAllArrayConceptsRequest());
   }, []);
+
   return (
     <div className={Styles.addComponentwrapper}>
       <h2>Add Component</h2>
@@ -100,7 +101,7 @@ const AddConditionalComponent: React.FC = () => {
       </div>
       <Form.Item>
         <label>Parent Component</label>
-        <InputBox onChange={undefined} placeholder="" maxLength={0} value="" />
+        <InputBox onChange={noop} placeholder="" maxLength={0} value="" />
       </Form.Item>
       <Form.Item>
         <label>Condition Description</label>
@@ -112,7 +113,7 @@ const AddConditionalComponent: React.FC = () => {
             <label>Required Number</label>
             <InputBox
               type="number"
-              onChange={undefined}
+              onChange={noop}
               placeholder=""
               maxLength={0}
               value=""

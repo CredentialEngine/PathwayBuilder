@@ -19,7 +19,7 @@ export const ComponentsCards = [
   },
   {
     id: '09862349864729834',
-    name: 'Mechanical',
+    name: 'Credentials Component',
     description: 'Mechanical Data Engineering',
     rowId: '986234986472s9834', //GUID
     type: 'course',

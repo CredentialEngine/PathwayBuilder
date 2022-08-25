@@ -10,13 +10,17 @@ import CheckBox from '../../components/formFields/checkbox';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
 import Textarea from '../../components/formFields/textarea';
+import fetchProgressionList from '../../utils/fetchSearchResponse';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
 
 import DebounceSelect from './debounceSelect';
 
 import styles from './index.module.scss';
 import { PathwayEntity } from './model';
-import { getHasProgressionModel } from './state/actions';
+import {
+  getDataForProgressionLevelSuccess,
+  getDataForProgressionModelSuccess,
+} from './state/actions';
 
 interface ComponentTypesValue {
   label: string;
@@ -43,7 +47,11 @@ const AddPathwayForm: React.FC<Props> = ({
   );
   const [selectedProgressionModelValue, setSelectedProgressionModelValue] =
     useState<string>('');
+  const [selectedProgressionLevels, setSelectedProgressionLevels] = useState<
+    ComponentTypesValue[]
+  >([]);
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
+  const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
   const [occupationSelectedValue, setOccupationSelectedValue] = useState<
     ComponentTypesValue[]
@@ -66,33 +74,52 @@ const AddPathwayForm: React.FC<Props> = ({
   });
 
   const [isTouched, setisTouched] = useState({
-    name: false,
-    description: false,
-    subjectWebpage: false,
-    organization: false,
+    Name: false,
+    Description: false,
+    SubjectWebpage: false,
+    Organization: false,
+  });
+
+  const [searchFilterValue, setSearchFilterValue] = useState<any>({
+    keywords: '',
+    skip: 0,
+    Take: 20,
+    sort: '',
+    filters: [
+      {
+        URI: 'meta:pathwayComponentType',
+        ItemsText: [],
+      },
+    ],
   });
 
   const dispatch = useDispatch();
+  const userOrganizations = useSelector(
+    (state: any) => state.initalReducer.currentUserData.data.Organizations
+  );
 
   useEffect(() => {
     if (!_.isEmpty(addPathwayFormFields))
-      getAllPathwayFormFields(addPathwayFormFields, 'pathway');
+      getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
 
+    if (selectedProgressionLevels.length > 0) {
+      getAllPathwayFormFields(selectedProgressionLevels, 'ProgressionLevels');
+    }
     setIsAddPathwayFormNextButtonDisable(
-      !_.isEmpty(addPathwayFormFields.name) &&
-        !_.isEmpty(addPathwayFormFields.description) &&
-        !_.isEmpty(addPathwayFormFields.subjectWebpage)
+      !_.isEmpty(addPathwayFormFields.Name) &&
+        !_.isEmpty(addPathwayFormFields.Description) &&
+        !_.isEmpty(addPathwayFormFields.SubjectWebpage)
     );
-  }, [addPathwayFormFields]);
+  }, [addPathwayFormFields, selectedProgressionLevels]);
 
   useEffect(() => {
     const updatedData = { ...addPathwayFormFields };
 
     if (occupationSelectedValue.length > 0) {
-      updatedData.occupationType = occupationSelectedValue;
+      updatedData.OccupationType = occupationSelectedValue;
     }
     if (industrySelectedValue.length > 0) {
-      updatedData.industryType = industrySelectedValue;
+      updatedData.IndustryType = industrySelectedValue;
     }
     setAddPathwayFormFields(updatedData);
   }, [occupationSelectedValue, industrySelectedValue]);
@@ -105,7 +132,13 @@ const AddPathwayForm: React.FC<Props> = ({
     if (allHasProgressionModel.valid) {
       setAllProgressionModel(allHasProgressionModel.data?.Results);
     }
-  }, [allHasProgressionModel.data]);
+    if (userOrganizations.length > 0) {
+      setAddPathwayFormFields({
+        ...addPathwayFormFields,
+        Organization: userOrganizations[0],
+      });
+    }
+  }, [allHasProgressionModel.data, userOrganizations]);
 
   const onCheckBoxChangeHandler = (e: any) => {
     const { name, checked } = e.target;
@@ -118,31 +151,64 @@ const AddPathwayForm: React.FC<Props> = ({
     updatedData[name] = value;
     setAddPathwayFormFields(updatedData);
   };
+
   const onSelectChangeHandler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
-    if (name === 'keyword') {
+    if (name === 'Keyword') {
       updatedData[name] = e;
     }
-    if (name === 'subject') {
+    if (name === 'Subject') {
       updatedData[name] = e;
     }
     setAddPathwayFormFields(updatedData);
   };
 
   const onProgressionModelSearchHandler = (e: any) => {
-    dispatch(getHasProgressionModel(e));
+    setSearchFilterValue({ ...searchFilterValue, keywords: e });
+  };
+
+  useEffect(() => {
+    if (searchFilterValue.keywords !== '') {
+      getHasProgressionModel();
+    }
+  }, [searchFilterValue]);
+
+  const getHasProgressionModel = async () => {
+    const result = await fetchProgressionList(searchFilterValue);
+    if (result?.updatedProgressionModel.length > 0) {
+      dispatch(
+        getDataForProgressionModelSuccess(result?.updatedProgressionModel)
+      );
+      setAllProgressionModel(result?.updatedProgressionModel);
+    }
+    if (result?.updatedProgressionLevel.length > 0) {
+      dispatch(
+        getDataForProgressionLevelSuccess(result?.updatedProgressionLevel)
+      );
+      setAllProgressionLevel(result?.updatedProgressionLevel);
+    }
   };
 
   const onProgressionModelSelectHandler = (e: any) => {
     const selectedProgressionModel = allProgressionModel.filter(
       (model: any) => model.Name === e
     );
+    const selectedProgressionModelCTID = _.get(
+      selectedProgressionModel,
+      '0'
+    ).CTID;
+
+    const selectedProgressionLevel = allProgressionLevel.filter(
+      (level: any) => level.InProgressionModel === selectedProgressionModelCTID
+    );
+    setSelectedProgressionLevels(selectedProgressionLevel);
+
     setSelectedProgressionModelValue(_.get(selectedProgressionModel, '0').Name);
     setAddPathwayFormFields({
       ...addPathwayFormFields,
-      hasProgressionModel: _.get(selectedProgressionModel, '0').RowId,
+      HasProgressionModel: _.get(selectedProgressionModel, '0').RowId,
     });
-    getAllPathwayFormFields(selectedProgressionModel, 'progressionLevels');
+    getAllPathwayFormFields(selectedProgressionModel, 'ProgressionModels');
   };
 
   async function fetchOccupationList(e: string): Promise<any[]> {
@@ -184,9 +250,7 @@ const AddPathwayForm: React.FC<Props> = ({
       'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/IndustryType',
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
+
         body: data,
       }
     )
@@ -238,7 +302,7 @@ const AddPathwayForm: React.FC<Props> = ({
       });
   }
   const onDebounceSelectHnadler = (e: any, name: string) => {
-    if (name === 'occupation') {
+    if (name === 'Occupation') {
       const filteredOccupations = allOccupationTypeData.filter(
         (data: any) => data.Name === e.value
       );
@@ -248,7 +312,7 @@ const AddPathwayForm: React.FC<Props> = ({
         ...filteredOccupations,
       ]);
     }
-    if (name === 'industry') {
+    if (name === 'Industry') {
       const filteredIndustry = allIndustryTypeData.filter(
         (data: any) => data.Name === e.value
       );
@@ -282,23 +346,23 @@ const AddPathwayForm: React.FC<Props> = ({
               required={true}
               validateTrigger="onBlur"
               help={
-                (_.isNil(addPathwayFormFields.name) ||
-                  addPathwayFormFields.name === '') &&
-                isTouched.name
+                (_.isNil(addPathwayFormFields.Name) ||
+                  addPathwayFormFields.Name === '') &&
+                isTouched.Name
                   ? 'Name is Required'
                   : null
               }
             >
               <InputBox
                 placeholder="Add a Pathway Name"
-                name="name"
+                name="Name"
                 required={true}
                 onChange={onInputChangeHandler}
-                value={addPathwayFormFields?.pathway?.name}
+                value={addPathwayFormFields?.Pathway?.Name}
                 onBlur={() =>
-                  isTouched.name === true
+                  isTouched.Name === true
                     ? null
-                    : setisTouched({ ...isTouched, name: true })
+                    : setisTouched({ ...isTouched, Name: true })
                 }
               />
             </Form.Item>
@@ -312,23 +376,23 @@ const AddPathwayForm: React.FC<Props> = ({
               required={true}
               validateTrigger="onBlur"
               help={
-                (_.isNil(addPathwayFormFields.description) ||
-                  addPathwayFormFields.description === '') &&
-                isTouched.name
+                (_.isNil(addPathwayFormFields.Description) ||
+                  addPathwayFormFields.Description === '') &&
+                isTouched.Description
                   ? 'Description is Required'
                   : null
               }
             >
               <Textarea
                 placeholder="Add a Pathway Description"
-                name="description"
+                name="Description"
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields.description}
                 required={true}
                 onBlur={() =>
-                  isTouched.description === true
+                  isTouched.Description === true
                     ? null
-                    : setisTouched({ ...isTouched, description: true })
+                    : setisTouched({ ...isTouched, Description: true })
                 }
               />
             </Form.Item>
@@ -347,7 +411,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 value={industrySelectedValue}
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'industry')}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
               />
             </Form.Item>
           </Col>
@@ -364,7 +428,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 mode="tags"
                 placeholder="Add Keywords"
                 optionLabelProp="label"
-                onChange={(e) => onSelectChangeHandler(e, 'keyword')}
+                onChange={(e) => onSelectChangeHandler(e, 'Keyword')}
               />
             </Form.Item>
           </Col>
@@ -382,7 +446,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 value={occupationSelectedValue}
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'occupation')}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
               />
             </Form.Item>
           </Col>
@@ -401,7 +465,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 placeholder="Select Instructional Program"
                 fetchOptions={fetchInstructionalProgramList}
                 onSelect={(e: any) =>
-                  onDebounceSelectHnadler(e, 'instructionalProgram')
+                  onDebounceSelectHnadler(e, 'InstructionalProgram')
                 }
               />
             </Form.Item>
@@ -419,22 +483,22 @@ const AddPathwayForm: React.FC<Props> = ({
                 mode="tags"
                 placeholder="Select Subjects"
                 optionLabelProp="label"
-                onChange={(e) => onSelectChangeHandler(e, 'subject')}
+                onChange={(e) => onSelectChangeHandler(e, 'Subject')}
               />
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item
-              label="Subject Website"
+              label="Subject Webpage"
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               required={true}
               validateTrigger="onBlur"
               help={
-                (_.isNil(addPathwayFormFields.subjectWebpage) ||
-                  addPathwayFormFields.subjectWebpage === '') &&
-                isTouched.subjectWebpage
+                (_.isNil(addPathwayFormFields.SubjectWebpage) ||
+                  addPathwayFormFields.SubjectWebpage === '') &&
+                isTouched.SubjectWebpage
                   ? 'Subject Webpage is Required'
                   : null
               }
@@ -442,13 +506,13 @@ const AddPathwayForm: React.FC<Props> = ({
               <InputBox
                 placeholder="add a URL"
                 maxLength={75}
-                value={addPathwayFormFields.subjectWebpage}
-                name="subjectWebpage"
+                value={addPathwayFormFields.SubjectWebpage}
+                name="SubjectWebpage"
                 onChange={onInputChangeHandler}
                 onBlur={() =>
-                  isTouched.subjectWebpage === true
+                  isTouched.SubjectWebpage === true
                     ? null
-                    : setisTouched({ ...isTouched, subjectWebpage: true })
+                    : setisTouched({ ...isTouched, SubjectWebpage: true })
                 }
               />
             </Form.Item>

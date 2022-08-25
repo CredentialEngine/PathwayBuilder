@@ -7,33 +7,28 @@ import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import React, { useRef, useState } from 'react';
-// import { useSelector } from 'react-redux';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
-import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import AddPathwayForm from '../addPathwayForm';
 
 import Styles from './index.module.scss';
 
 interface Props {
   isLeftPanelVisible: boolean;
+  setIsEditPathwayFormVisible: (a: boolean) => void;
 }
-const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
+const HomePage: React.FC<Props> = ({
+  isLeftPanelVisible,
+  setIsEditPathwayFormVisible,
+}) => {
   const [collapsed, setCollapsed] = useState(false);
   const [cardsArray, setCardsArray] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
-  const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
-    useState<boolean>(false);
-  // const result = useSelector((state: any) => state.app);
-  // const {
-  //   pathwayComponentData: { data: componentsData },
-  // } = result;
 
   const columnRef = useRef<any>([]);
 
@@ -180,14 +175,6 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
     if (element != null) {
       element.style.display = 'none';
     }
-  };
-
-  const onEditPathwayOkHandler = () => {
-    setIsEditPathwayFormVisible(false);
-  };
-
-  const onEditPathwayCancelHandler = () => {
-    setIsEditPathwayFormVisible(false);
   };
 
   return (
@@ -352,14 +339,6 @@ const HomePage: React.FC<Props> = ({ isLeftPanelVisible }) => {
           onCloseHandler={(value: boolean) => setShowRightPanel(value)}
         />
       )}
-      <Modal
-        visible={isEditPathwayFormVisible}
-        onOk={onEditPathwayOkHandler}
-        onCancel={onEditPathwayCancelHandler}
-        title="Add a Pathway"
-      >
-        <AddPathwayForm />
-      </Modal>
     </Layout>
   );
 };
