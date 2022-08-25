@@ -45,11 +45,28 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     setSearchFilterValue({ ...searchFilterValue, keywords: e.target.value });
     setDisplaySearchContainer(true);
   };
+
+  const allProxyForResourcesComponent = useSelector(
+    (state: any) => state.preSelectProxyResources.allProxyForResourcesComponent
+  );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (allProxyForResourcesComponent.valid)
+      setAllProxyResourcesCard(allProxyForResourcesComponent.data.Results);
+  }, [allProxyForResourcesComponent.data]);
+
+  useEffect(() => {
+    dispatch(getLeftPanelPathwayComponentRequest());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getAllProxyForResourcesRequest(searchFilterValue));
+  }, [searchFilterValue]);
+
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
-
   const menu = (
     <Menu
       onClick={(e) => onMenuClickHandler(e)}
@@ -76,29 +93,13 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     if (SelectedResource.length > 0)
       getAllPathwayFormFields(SelectedResource, 'PendingComponent');
 
-    if (allComponentTabCards.data.length > 0) {
+    if (allComponentTabCards?.data?.length > 0) {
       const allTypesOfComponentCards = allComponentTabCards.data.map(
         (card: any, index: any) => ({ key: index, label: card.URI })
       );
       setAllComponentTypes(allTypesOfComponentCards);
     }
   }, [SelectedResource, allComponentTabCards]);
-  const allProxyForResourcesComponent = useSelector(
-    (state: any) => state.preSelectProxyResources.allProxyForResourcesComponent
-  );
-  useEffect(() => {
-    if (allProxyForResourcesComponent.valid)
-      setAllProxyResourcesCard(allProxyForResourcesComponent.data.Results);
-  }, [allProxyForResourcesComponent.data]);
-
-  useEffect(() => {
-    dispatch(getLeftPanelPathwayComponentRequest());
-  }, []);
-
-  useEffect(() => {
-    dispatch(getAllProxyForResourcesRequest(searchFilterValue));
-  }, [searchFilterValue]);
-
   const addResource = (itemId: string, itemIndex: number) => {
     const filteredItem = allProxyResourcesCard.filter(
       (item: any) => item.id === itemId
