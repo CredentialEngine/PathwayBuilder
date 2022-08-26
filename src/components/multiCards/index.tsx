@@ -203,23 +203,23 @@ const MultiCard: React.FC<Props> = ({
 
       {isCredentialCard && data.type === 'credentials' && (
         <>
-          <div className={styles.addIcon}>
-            <FontAwesomeIcon
-              icon={faCirclePlus}
-              fill="#000000"
-              style={{
-                height: '22px',
-                width: '22px',
-                color: '#ffd363',
-                cursor: 'pointer',
-              }}
-              onClick={(e: any) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            />
-          </div>
           <div className={styles.courseCredCardWrapper}>
+            <div className={styles.addIcon}>
+              <FontAwesomeIcon
+                icon={faCirclePlus}
+                fill="#000000"
+                style={{
+                  height: '22px',
+                  width: '22px',
+                  color: '#ffd363',
+                  cursor: 'pointer',
+                }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              />
+            </div>
             <div className={styles.topCourseContent}>
               <FontAwesomeIcon
                 icon={faCubes}

@@ -9,12 +9,10 @@ import Tab, { TabPane } from '../tab';
 
 import Styles from './index.module.scss';
 // import { getLeftPanelPathwayComponentRequest } from './state/actions';
-
 export enum LeftPanelTabKey {
   Selected = 'Selected',
   Components = 'Components',
 }
-
 const LeftPanel: React.FC<any> = () => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
@@ -25,19 +23,15 @@ const LeftPanel: React.FC<any> = () => {
   const [updatedCardArr, setUpdatedCardArr] = useState<any>();
   const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
-
   // const dispatch = useDispatch();
-
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
-
   useEffect(() => {
     if (selectedTabCardData) {
       setSelectedtabCards(selectedTabCardData);
     }
   }, [selectedTabCardData]);
-
   useEffect(() => {
     if (updatedCardArr?.length > 0) {
       const temp = selectedTabCards?.filter(
@@ -46,20 +40,16 @@ const LeftPanel: React.FC<any> = () => {
       setSelectedtabCards(temp);
     }
   }, [updatedCardArr]);
-
   // useEffect(() => {
   //   dispatch(getLeftPanelPathwayComponentRequest());
   // }, []);
-
   useEffect(() => {
     if (allComponentTabCards.valid)
       setComponentTabCards(allComponentTabCards.data);
   }, [allComponentTabCards]);
-
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
   };
-
   const tab = [
     {
       key: LeftPanelTabKey.Selected,
@@ -70,7 +60,6 @@ const LeftPanel: React.FC<any> = () => {
       name: LeftPanelTabKey.Components,
     },
   ];
-
   const propsChildren = [
     {
       key: LeftPanelTabKey.Selected,
@@ -96,7 +85,7 @@ const LeftPanel: React.FC<any> = () => {
                   key={i}
                   name={v?.Name}
                   type={v?.type}
-                  description={v?.Description}
+                  description={v?.Description.slice(0, 30)}
                   codedNotation={v?.CodedNotation}
                   IconName={faCubes}
                   IconColor="black"
@@ -140,7 +129,6 @@ const LeftPanel: React.FC<any> = () => {
       </TabPane>
     );
   }
-
   const tabVal = {
     showTabBar: true,
     activeKey: LeftPanelTabKey.Selected,
@@ -148,7 +136,6 @@ const LeftPanel: React.FC<any> = () => {
     children: propsChildrenData,
     className: Styles.leftPanelDrawer,
   };
-
   return (
     <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
@@ -160,5 +147,4 @@ const LeftPanel: React.FC<any> = () => {
     </div>
   );
 };
-
 export default LeftPanel;
