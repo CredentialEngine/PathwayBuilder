@@ -17,6 +17,7 @@ interface Props {
 const Header = (props: Props) => {
   const { setIsEditPathwayFormVisible } = props;
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
+
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
