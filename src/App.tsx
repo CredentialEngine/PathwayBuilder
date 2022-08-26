@@ -178,7 +178,7 @@ const App = () => {
           />
         </Modal>
         <Modal
-          visible={isPreSelectedCreateResourceVisible}
+          visible={true}
           onOk={onPreSelectResourceOkHandler}
           onCancel={onPreSelectResourceCancelHandler}
           width="650px"

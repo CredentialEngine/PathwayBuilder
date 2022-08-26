@@ -1,5 +1,9 @@
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
-import { faCaretDown, faGear } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCaretDown,
+  faGear,
+  faMinus,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Card, Row, Form, Dropdown, Typography, Space, Menu } from 'antd';
 import _, { noop } from 'lodash';
@@ -28,6 +32,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     React.useState(false);
   const [SelectedResource, setSelectedResource] = useState<any>([]);
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
+  const [dropDownRef, setDropDownRef] = useState<string>('');
 
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
     keywords: '',
@@ -69,7 +74,11 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   );
   const menu = (
     <Menu
-      onClick={(e) => onMenuClickHandler(e)}
+      onClick={(e) => {
+        console.log(e, '877a8s7d9asd');
+        setDropDownRef(e?.key);
+        onMenuClickHandler(e);
+      }}
       selectable
       items={allComponentTypes}
     />
@@ -120,6 +129,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       setDisplaySearchContainer(true);
     }
   };
+  console.log(dropDownRef, 'dropDownRef');
+
   return (
     <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
       <Row gutter={20}>
@@ -130,7 +141,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
             <Dropdown overlay={menu}>
               <Typography.Link>
                 <Space>
-                  All resources types
+                  {dropDownRef ? (
+                    <span className={Styles.dropDownRef}>
+                      All resources types
+                    </span>
+                  ) : (
+                    'All resources types'
+                  )}
+
                   <DownOutlined />
                 </Space>
               </Typography.Link>
@@ -190,9 +208,12 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                     IconName={faGear}
                     IconColor="black"
                   />
-                  <PlusOutlined
+                  <span
+                    className={Styles.iconCircle}
                     onClick={() => UnSelectSelectedItem(select_resource.id, i)}
-                  />
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </span>
                 </div>
               ))}
             </div>

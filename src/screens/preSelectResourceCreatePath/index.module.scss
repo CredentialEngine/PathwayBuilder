@@ -38,7 +38,6 @@
     .ant-card-bordered {
       border-color: $inactive1;
       border-radius: 4px;
-      height: 100%;
     }
     .ant-card-body {
       padding: 10px;
@@ -83,4 +82,18 @@
   & > div {
     flex-grow: 1;
   }
+}
+.dropDownRef {
+  color: $selection;
+}
+.iconCircle {
+  border: 2px solid $selection;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $selection;
+  margin-left: 10px;
 }
