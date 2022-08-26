@@ -8,7 +8,7 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
-import AddConditionalComponent from './screens/addComponent';
+// import AddConditionalComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
@@ -18,7 +18,7 @@ import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
 import {
   getCurrentUserDataRequest,
-  saveDataForPathwayRequest,
+  updateMappedDataRequest,
 } from './states/actions';
 
 const App = () => {
@@ -126,17 +126,19 @@ const App = () => {
   };
 
   const onPathwaySaveHandler = () => {
-    dispatch(saveDataForPathwayRequest(addPathwayWrapperFields));
+    setIsPreSelectedCreateResourceVisible(false);
+    dispatch(updateMappedDataRequest(addPathwayWrapperFields));
   };
   return (
     <div>
       <MainContainer>
         <HomePage
           isLeftPanelVisible={
+            // true
             !isrightPanelDrawerVisible &&
             !isCreatePathwayVisible &&
             !isAddPathwayFormVisible &&
-            !isAddPathwayDestinationVisible &&
+            // !isAddPathwayDestinationVisible &&
             !isSelectOrganizationsVisble &&
             !isPreSelectedCreateResourceVisible
               ? true
@@ -144,9 +146,9 @@ const App = () => {
           }
           setIsEditPathwayFormVisible={setIsAddPathwayFormVisible}
         />
-        <Modal visible={false} title="" footer={[]} width={650}>
+        {/* <Modal visible={false} title="" footer={[]} width={650}>
           <AddConditionalComponent />
-        </Modal>
+        </Modal> */}
         <Modal
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
@@ -253,13 +255,13 @@ const App = () => {
           />
         </Modal>
       </MainContainer>
-      <Modal
+      {/* <Modal
         visible={isAddPathwayDestinationVisible}
         title="Add a Pathway"
         footer={[]}
       >
         <AddConditionalComponent />
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

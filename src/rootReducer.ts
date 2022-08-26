@@ -11,7 +11,6 @@ const rootReducer = combineReducers({
   addPathwayFormReducer,
   leftPanelReducer,
   addConditionalComponent,
-
   preSelectProxyResources,
 });
 

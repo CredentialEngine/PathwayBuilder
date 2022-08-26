@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 import DropWrapper from '../../components/dropWrapper';
@@ -14,6 +15,9 @@ import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
+import { getDataForPathwayAndComponentsRequest } from '../../states/actions';
+// import AddPathwayForm from '../addPathwayForm';
+import { getAllProxyForResourcesRequest } from '../preSelectResourceCreatePath/state/actions';
 
 import Styles from './index.module.scss';
 
@@ -29,6 +33,63 @@ const HomePage: React.FC<Props> = ({
   const [cardsArray, setCardsArray] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
+  // const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
+  //   useState<boolean>(false);
+  const [columnsData, setColumnsData] = useState<any>([]);
+  const result = useSelector((state: any) => state?.initalReducer);
+  // const preSelectData = useSelector(
+  //   (state: any) =>
+  //     state?.preSelectProxyResources?.allProxyForResourcesComponent?.data
+  //       ?.Results
+  // );
+
+  const {
+    pathwayComponentData: { data: pathwayComponent },
+  } = result;
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getDataForPathwayAndComponentsRequest(35));
+    dispatch(
+      getAllProxyForResourcesRequest({
+        keywords: 'school',
+        skip: 0,
+        Take: 20,
+        sort: '',
+        filters: [{ URI: 'meta:pathwayComponentType', ItemsText: [] }],
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    if (pathwayComponent) {
+      if (pathwayComponent?.Pathway?.HasProgressionModel?.length > 0) {
+        const tempData = [] as any;
+        pathwayComponent?.ProgressionLevels?.forEach((item: any) => {
+          tempData.push({
+            ...item,
+            semesters: [
+              { id: 1, name: 'Semester 1' },
+              { id: 2, name: 'Semester 2' },
+            ],
+          });
+        });
+        setColumnsData([
+          ...tempData,
+          {
+            destinationComponent: true,
+            name: 'Destination Component',
+            semesters: [{ id: 1, name: '' }],
+          },
+        ]);
+      } else {
+        setColumnsData([
+          { id: 0, name: '' },
+          { id: 1, name: 'Destination Component' },
+        ]);
+      }
+    }
+  }, [pathwayComponent]);
 
   const columnRef = useRef<any>([]);
 
@@ -148,7 +209,11 @@ const HomePage: React.FC<Props> = ({
       (element: any, i: any) => (columnRef.current[i] = React.createRef())
     )
   );
-  const onDropHandler = (card: any, status: string, CTID: string) => {
+  const onDropHandler = (
+    card: any,
+    CTID: string,
+    destinationColumn: boolean
+  ) => {
     /* Need to write a logic where same card should not be added
       Need to filter accorrding to column type like which card should be display where
       filtered card display accoriding to their column 
@@ -162,11 +227,11 @@ const HomePage: React.FC<Props> = ({
     }
 
     cardsArray.length === 0
-      ? setCardsArray([...cardsArray, { ...card, status, CTID }])
+      ? setCardsArray([...cardsArray, { ...card, CTID, destinationColumn }])
       : setCardsArray(
           cardsArray
             .filter((item: any) => item.id !== card.id)
-            .concat({ ...card, status, CTID })
+            .concat({ ...card, CTID })
         );
   };
 
@@ -211,36 +276,36 @@ const HomePage: React.FC<Props> = ({
               <TransformWrapper disabled={isZoomDisabled}>
                 <TransformComponent>
                   <div style={{ display: 'flex' }}>
-                    {columns.map((column: any) => (
+                    {columnsData.map((column: any) => (
                       <div
-                        key={column.id}
+                        key="column.id"
                         style={{
-                          backgroundColor: `${column?.color}`,
+                          backgroundColor: '#4EE5E1',
                           textAlign: 'center',
                         }}
                       >
-                        <span style={{ color: '#000000' }}>{column.name}</span>
+                        <span style={{ color: '#000000' }}>
+                          {column.Id || column.name}
+                        </span>
                         <div style={{ display: 'flex' }}>
-                          {column?.children?.map((child: any, i: any) => (
+                          {column?.semesters?.map((child: any, i: any) => (
                             <DropWrapper
-                              id={`${column.title} ${child.title}`}
+                              id={`${column.Id} ${child.name}`}
                               onDrop={onDropHandler}
-                              status={child.codedNotation}
                               key={child.id}
                               column={child.name}
-                              CTID={child.CTID}
+                              CTID={`${column.CTID} ${child?.id}`}
+                              destinationColumn={!!column?.destinationComponent}
                               forwardRef={columnRef.current[i]}
                               width="450px"
                             >
                               <div
                                 key={child.title}
+                                className={Styles.container}
                                 style={{
                                   backgroundColor: `${
-                                    child.id % 2 !== 0 ? '#ffffff' : '#f0f0f0'
+                                    i % 2 !== 0 ? '#ffffff' : '#f0f0f0'
                                   }`,
-                                  textAlign: 'center',
-                                  minHeight: '100vh',
-                                  height: 'auto',
                                 }}
                               >
                                 <div
@@ -257,8 +322,8 @@ const HomePage: React.FC<Props> = ({
                                       width: '100%',
                                       backgroundColor: `${
                                         child.id % 2 === 0
-                                          ? child.color
-                                          : '#aeaeae'
+                                          ? '#D3F8F7'
+                                          : '#6EFFFF'
                                       }`,
                                     }}
                                   >
@@ -267,12 +332,12 @@ const HomePage: React.FC<Props> = ({
                                   {cardsArray
                                     .filter(
                                       (card: any) =>
-                                        card?.status?.toLowerCase().trim() ===
-                                          child.codedNotation
-                                            .toLowerCase()
-                                            .trim() &&
-                                        card?.CTID?.toLowerCase().trim() ===
-                                          child.CTID.toLowerCase().trim()
+                                        // card?.status?.toLowerCase().trim() ===
+                                        //   child.codedNotation
+                                        //     ?.toLowerCase()
+                                        //     .trim() &&
+                                        card?.CTID ===
+                                        `${column.CTID} ${child?.id}`
                                     )
                                     .map((item: any) => (
                                       <MultiCard
@@ -297,8 +362,8 @@ const HomePage: React.FC<Props> = ({
                                           id: item.id,
                                         }}
                                         setIsZoomDisabled={setIsZoomDisabled}
-                                        status={child.codedNotation}
-                                        CTID={child.CTID}
+                                        status={column.Id}
+                                        CTID={`${column.CTID} ${child?.id}`}
                                       />
                                     ))}
                                 </div>
@@ -308,24 +373,6 @@ const HomePage: React.FC<Props> = ({
                         </div>
                       </div>
                     ))}
-                    <div>
-                      <DropWrapper
-                        id={10000000}
-                        onDrop={onDropHandler}
-                        status="child.codedNotation"
-                        key="child.id"
-                        column="child.name"
-                        CTID="child.CTID"
-                        forwardRef={columnRef.current[1]}
-                        width="450px"
-                      >
-                        <MultiCard
-                          data={{ type: 'credentials' }}
-                          isCredentialCard={true}
-                          setIsZoomDisabled={setIsZoomDisabled}
-                        />
-                      </DropWrapper>
-                    </div>
                   </div>
                 </TransformComponent>
               </TransformWrapper>
@@ -339,6 +386,14 @@ const HomePage: React.FC<Props> = ({
           onCloseHandler={(value: boolean) => setShowRightPanel(value)}
         />
       )}
+      {/* <Modal
+        visible={isEditPathwayFormVisible}
+        onOk={onEditPathwayOkHandler}
+        onCancel={onEditPathwayCancelHandler}
+        title="Add a Pathway"
+      >
+        <AddPathwayForm />
+      </Modal> */}
     </Layout>
   );
 };

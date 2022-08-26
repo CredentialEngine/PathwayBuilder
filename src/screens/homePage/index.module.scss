@@ -1,4 +1,16 @@
 .centralPannel {
+  .container {
+    text-align: 'center';
+    min-height: 100vh;
+    height: auto;
+    // div:nth-child(2n) {
+    //   background-color: red;
+    // }
+    // div:nth-child(odd) {
+    //   background-color: #f0f0f0;
+    // }
+  }
+
   :global {
     .ant-layout-sider {
       background-color: #ffffff !important;

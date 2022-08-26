@@ -8,6 +8,7 @@ import {
   SAVE_PATHWAY_DATA_FAILURE,
   SAVE_PATHWAY_DATA_REQUEST,
   SAVE_PATHWAY_DATA_SUCCESS,
+  UPDATE_MAPPED_DATA_TO_SEND,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
@@ -66,5 +67,10 @@ export const approvePathwaySuccess = (payload: any) => ({
 });
 export const approvePathwayFailure = (payload: any) => ({
   type: PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
+  payload,
+});
+
+export const updateMappedDataRequest = (payload: any) => ({
+  type: UPDATE_MAPPED_DATA_TO_SEND,
   payload,
 });

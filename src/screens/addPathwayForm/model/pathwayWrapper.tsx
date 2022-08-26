@@ -24,10 +24,10 @@ export interface pathway {
   HasProgressionModel: string[]; //URI for Progression Model
   IndustryType: [ResourceSummary];
   OccupationType: [ResourceSummary];
-  SubjectWebpage: 'test';
+  SubjectWebpage: '';
   Keyword: string[];
   Subject: string[];
-  LastUpdated: '22-02-2022';
+  LastUpdated: '';
 }
 export interface Constraints {
   id: number;
