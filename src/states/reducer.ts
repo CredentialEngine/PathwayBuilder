@@ -5,6 +5,7 @@ import {
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_FAILURE,
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_SUCCESS,
+  UPDATE_MAPPED_DATA_TO_SEND,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -18,6 +19,61 @@ const initState: RootState = {
     loading: false,
     data: null,
     valid: false,
+  },
+  mappedData: {
+    ComponentConditions: [],
+    Constraints: [],
+    Pathway: {
+      Id: 0,
+      Uri: '',
+      Name: '',
+      Organization: {
+        id: 0,
+        name: '',
+        cTID: '',
+        codedNotation: '',
+        rowId: '',
+        description: '',
+        uri: '',
+        type: '',
+      },
+      Description: '',
+      CTID: '',
+      HasDestinationComponent: [], //URI for Pathway Component
+      HasProgressionModel: [], //URI for Progression Model
+      IndustryType: [
+        {
+          id: 0,
+          name: '',
+          cTID: '',
+          codedNotation: '',
+          rowId: '',
+          description: '',
+          uri: '',
+          type: '',
+        },
+      ],
+      OccupationType: [
+        {
+          id: 0,
+          name: '',
+          cTID: '',
+          codedNotation: '',
+          rowId: '',
+          description: '',
+          uri: '',
+          type: '',
+        },
+      ],
+      SubjectWebpage: '',
+      Keyword: [],
+      Subject: [],
+      LastUpdated: '',
+    },
+    PathwayComponents: [],
+    PendingComponent: [],
+    ProgressionLevels: [],
+    ProgressionModels: [],
   },
 };
 
@@ -72,6 +128,13 @@ export default (state = initState, action: { type: string; payload: any }) => {
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
+        },
+      };
+    case UPDATE_MAPPED_DATA_TO_SEND:
+      return {
+        ...state,
+        mappedData: {
+          ...action.payload,
         },
       };
 

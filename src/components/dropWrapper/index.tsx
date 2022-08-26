@@ -7,9 +7,9 @@ interface Props {
   column: string;
   forwardRef?: any;
   width?: any;
-  status?: any;
   CTID?: string;
   id?: number | string;
+  destinationColumn?: boolean;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -18,8 +18,8 @@ const DropWrapper: React.FC<Props> = ({
   children,
   forwardRef,
   width,
-  status,
   CTID,
+  destinationColumn,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   // const [updatedWidth, setWidth] = useState(width);
@@ -27,7 +27,7 @@ const DropWrapper: React.FC<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
-    onDrop(data, status, CTID);
+    onDrop(data, CTID, destinationColumn);
   };
 
   useEffect(() => {

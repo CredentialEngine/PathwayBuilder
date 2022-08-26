@@ -8,6 +8,7 @@ import {
   SAVE_PATHWAY_DATA_FAILURE,
   SAVE_PATHWAY_DATA_REQUEST,
   SAVE_PATHWAY_DATA_SUCCESS,
+  UPDATE_MAPPED_DATA_TO_SEND,
 } from './actionTypes';
 
 export const getCurrentUserDataRequest = () => ({
@@ -51,5 +52,10 @@ export const saveDataForPathwaySuccess = (payload: any) => ({
 
 export const saveDataForPathwayFailure = (payload: any) => ({
   type: SAVE_PATHWAY_DATA_FAILURE,
+  payload,
+});
+
+export const updateMappedDataRequest = (payload: any) => ({
+  type: UPDATE_MAPPED_DATA_TO_SEND,
   payload,
 });

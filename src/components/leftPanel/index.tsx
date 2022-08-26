@@ -2,7 +2,7 @@ import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ComponentsCards } from '../../assets/modal/constant';
+// import { ComponentsCards } from '../../assets/modal/constant';
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
@@ -16,19 +16,26 @@ export enum LeftPanelTabKey {
 }
 
 const LeftPanel: React.FC<any> = () => {
+  const dispatch = useDispatch();
+  const result = useSelector((state: any) => state?.initalReducer);
+  const {
+    mappedData: { PendingComponent: selectedTabCardData },
+  } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
   const [updatedCardArr, setUpdatedCardArr] = useState<any>();
-  const [selectedTabCards, setSelectedtabCards] = useState<any>([
-    ...ComponentsCards,
-  ]);
+  const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
-
-  const dispatch = useDispatch();
 
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
+
+  useEffect(() => {
+    if (selectedTabCardData) {
+      setSelectedtabCards(selectedTabCardData);
+    }
+  }, [selectedTabCardData]);
 
   useEffect(() => {
     if (updatedCardArr?.length > 0) {
@@ -78,21 +85,21 @@ const LeftPanel: React.FC<any> = () => {
           <div className={Styles.cardwrapper}>
             {selectedTabCards
               .filter((v: any) =>
-                v.description
-                  .toLocaleLowerCase()
-                  .includes(searchValue.toLocaleLowerCase())
+                v?.Description.toLocaleLowerCase().includes(
+                  searchValue.toLocaleLowerCase()
+                )
               )
               .map((v: any, i: any) => (
                 <CardWithLeftIcon
                   draggable={true}
                   key={i}
-                  name={v.name}
-                  type={v.type}
-                  description={v.description}
-                  codedNotation={v.codedNotation}
+                  name={v?.Name}
+                  type={v?.type}
+                  description={v?.Description}
+                  codedNotation={v?.CodedNotation}
                   IconName={faCubes}
                   IconColor="black"
-                  id={v.id}
+                  id={v?.Id}
                   getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
                 />
               ))}
