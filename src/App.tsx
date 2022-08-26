@@ -138,7 +138,7 @@ const App = () => {
               : false
           }
         />
-        <Modal visible={false} title="" footer={[]} width={650}>
+        <Modal visible={true} title="" footer={[]} width={650}>
           <AddConditionalComponent />
         </Modal>
         <Modal

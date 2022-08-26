@@ -116,7 +116,19 @@ const LeftPanel: React.FC<any> = () => {
       children: (
         <>
           <div className={Styles.cardwrapper}>
-            {componentTabCardsData
+            {componentTabCards.map((card: any, index: any) => (
+              <CardWithLeftIcon
+                draggable={true}
+                key={index}
+                name={card.Name}
+                description={card.description}
+                IconName={faCubes}
+                uri={card.URI}
+                id={card.id}
+                getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+              />
+            ))}
+            {/* {componentTabCardsData
               .filter((v: any) =>
                 v.description
                   .toLocaleLowerCase()
@@ -133,7 +145,7 @@ const LeftPanel: React.FC<any> = () => {
                   id={v.id}
                   getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
                 />
-              ))}
+              ))} */}
           </div>
         </>
       ),

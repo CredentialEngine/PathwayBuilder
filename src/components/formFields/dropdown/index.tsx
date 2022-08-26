@@ -17,13 +17,13 @@ export const Dropdown = (props: DropdownProps) => {
   const { children, placeholder, defaultValue, style, showSearch, options } =
     props;
 
-  // const onChange = (value: string) => {
-  //   console.log(`selected ${value}`);
-  // };
+  const onChange = (value: string) => {
+    console.log(`selected ${value}`);
+  };
 
-  // const onSearch = (value: string) => {
-  //   console.log('search:', value);
-  // };
+  const onSearch = (value: string) => {
+    console.log('search:', value);
+  };
   return (
     <>
       {showSearch ? (

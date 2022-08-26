@@ -116,8 +116,8 @@
     text-align: center;
     max-width: 60px;
     position: absolute;
-    left: 30rem;
-    top: 76px;
+    left: -35px;
+    top: 29px;
     display: flex;
   }
 
@@ -150,6 +150,7 @@
   .courseCredCardWrapper {
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .topCourseContent {

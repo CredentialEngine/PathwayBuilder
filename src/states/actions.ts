@@ -8,6 +8,9 @@ import {
   SAVE_PATHWAY_DATA_FAILURE,
   SAVE_PATHWAY_DATA_REQUEST,
   SAVE_PATHWAY_DATA_SUCCESS,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
 } from './actionTypes';
 
 export const getCurrentUserDataRequest = () => ({
@@ -51,5 +54,17 @@ export const saveDataForPathwaySuccess = (payload: any) => ({
 
 export const saveDataForPathwayFailure = (payload: any) => ({
   type: SAVE_PATHWAY_DATA_FAILURE,
+  payload,
+});
+export const approvePathwayRequest = (payload: any) => ({
+  type: PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
+  payload,
+});
+export const approvePathwaySuccess = (payload: any) => ({
+  type: PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
+  payload,
+});
+export const approvePathwayFailure = (payload: any) => ({
+  type: PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
   payload,
 });

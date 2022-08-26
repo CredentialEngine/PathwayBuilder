@@ -5,6 +5,7 @@ import {
   BASE_URL,
   GET_DATA_FOR_CURRENT_USER,
   GET_DATA_FOR_PATHWAY,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY,
 } from '../apiConfig/endpoint';
 
 import {
@@ -47,6 +48,20 @@ export function* getPathwayAndComponentData(payload: any): Generator {
     yield put(getDataForPathwayAndComponentsFailure(error));
   }
 }
+export function* approvePathway(): Generator {
+  try {
+    const result: any = yield call(request, {
+      url: `${BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}`,
+      method: 'POST',
+      params: {
+        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+      },
+    });
+    yield put(getDataForPathwayAndComponentsSuccess(result));
+  } catch (error) {
+    yield put(getDataForPathwayAndComponentsFailure(error));
+  }
+}
 
 function* saga() {
   yield takeLatest(GET_CURRENT_USER_REQUEST, getCurrentUserData);
@@ -54,6 +69,7 @@ function* saga() {
     GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
     getPathwayAndComponentData
   );
+  yield takeLatest(PATHWAYBUILDERAPI_APPROVE_PATHWAY, approvePathway);
 }
 
 export default saga;
