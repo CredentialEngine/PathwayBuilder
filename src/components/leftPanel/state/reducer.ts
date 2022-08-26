@@ -39,7 +39,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
         allLeftPathwayComponent: {
           ...state.allLeftPathwayComponent,
           loading: false,
-          data: action.payload.Data,
+          data: action.payload.Data, // Need to add data as an empty array on error.
           valid: action?.payload?.Valid,
         },
       };

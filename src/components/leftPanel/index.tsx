@@ -1,6 +1,6 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // import { ComponentsCards } from '../../assets/modal/constant';
 import CardWithLeftIcon from '../cardWithLeftIcon';
@@ -8,7 +8,7 @@ import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
 
 import Styles from './index.module.scss';
-import { getLeftPanelPathwayComponentRequest } from './state/actions';
+// import { getLeftPanelPathwayComponentRequest } from './state/actions';
 
 export enum LeftPanelTabKey {
   Selected = 'Selected',
@@ -16,7 +16,6 @@ export enum LeftPanelTabKey {
 }
 
 const LeftPanel: React.FC<any> = () => {
-  const dispatch = useDispatch();
   const result = useSelector((state: any) => state?.initalReducer);
   const {
     mappedData: { PendingComponent: selectedTabCardData },
@@ -26,6 +25,8 @@ const LeftPanel: React.FC<any> = () => {
   const [updatedCardArr, setUpdatedCardArr] = useState<any>();
   const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
+
+  // const dispatch = useDispatch();
 
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
@@ -46,9 +47,9 @@ const LeftPanel: React.FC<any> = () => {
     }
   }, [updatedCardArr]);
 
-  useEffect(() => {
-    dispatch(getLeftPanelPathwayComponentRequest());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getLeftPanelPathwayComponentRequest());
+  // }, []);
 
   useEffect(() => {
     if (allComponentTabCards.valid)
