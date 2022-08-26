@@ -9,4 +9,9 @@ export type RootState = {
     data: any;
     valid: boolean;
   };
+  approvePathway: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
 };

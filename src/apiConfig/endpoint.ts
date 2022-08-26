@@ -23,3 +23,5 @@ export const SEARCH_FOR_LEST_RIGHT_OPERAND =
   '/PathwayBuilderApi/Search/Resource/Constraint_Operand';
 export const PATHWAY_COMPONENT_PROXY_FOR =
   'PathwayBuilderApi/Search/Resource/PathwayComponent_ProxyFor';
+export const PATHWAYBUILDERAPI_APPROVE_PATHWAY =
+  'PathwayBuilderApi/Approve/Pathway';

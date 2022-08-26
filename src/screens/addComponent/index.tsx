@@ -143,43 +143,12 @@ const AddConditionalComponent: React.FC = () => {
         <Form.List name="users">
           {(fields, { add }) => (
             <>
-              <Row gutter={20}>
-                <Col span="9">
-                  <Form.Item>
-                    <MultiSelect
-                      placeholder="Select Industry Types"
-                      options={companyList}
-                      optionLabelProp="label"
-                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span="6">
-                  <Form.Item>
-                    <Dropdown
-                      options={allComparators}
-                      defaultValue="Equals"
-                      showSearch={false}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span="9">
-                  <Form.Item>
-                    <MultiSelect
-                      placeholder="Select Industry Types"
-                      options={companyList}
-                      optionLabelProp="label"
-                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
               {fields.map((v, i) => (
                 <Row gutter={20} key={i}>
                   <Col span="9">
                     <Form.Item>
                       <MultiSelect
-                        placeholder="Select Industry Types"
+                        placeholder="Left Sources"
                         options={companyList}
                         optionLabelProp="label"
                         // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
@@ -189,7 +158,7 @@ const AddConditionalComponent: React.FC = () => {
                   <Col span="6">
                     <Form.Item>
                       <Dropdown
-                        options={allArrayConcept}
+                        options={allComparators}
                         defaultValue="Equals"
                         showSearch={false}
                       />
@@ -198,7 +167,7 @@ const AddConditionalComponent: React.FC = () => {
                   <Col span="9">
                     <Form.Item>
                       <MultiSelect
-                        placeholder="Select Industry Types"
+                        placeholder="Right Sources"
                         options={allArrayConcept}
                         optionLabelProp="label"
                         // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
