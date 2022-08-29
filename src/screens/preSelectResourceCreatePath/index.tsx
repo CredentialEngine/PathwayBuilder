@@ -30,16 +30,16 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   );
   const [displaySearchContainer, setDisplaySearchContainer] =
     React.useState(false);
-  const [SelectedResource, setSelectedResource] = useState<any>([]);
+  const [selectedResource, setSelectedResource] = useState<any>([]);
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
   const [dropDownRef, setDropDownRef] = useState<string>('');
 
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
-    keywords: '',
-    skip: 0,
+    Keywords: '',
+    Skip: 0,
     Take: 20,
-    sort: '',
-    filters: [
+    Sort: '',
+    Filters: [
       {
         URI: 'meta:pathwayComponentType',
         ItemsText: [],
@@ -47,7 +47,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     ],
   });
   const searchComponent = (e: any) => {
-    setSearchFilterValue({ ...searchFilterValue, keywords: e.target.value });
+    setSearchFilterValue({ ...searchFilterValue, Keywords: e.target.value });
     setDisplaySearchContainer(true);
   };
 
@@ -75,7 +75,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const menu = (
     <Menu
       onClick={(e) => {
-        console.log(e, '877a8s7d9asd');
         setDropDownRef(e?.key);
         onMenuClickHandler(e);
       }}
@@ -89,7 +88,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       (comp_type: any) => comp_type.key === _.toNumber(e.key)
     );
     const updatedSearchValue = { ...searchFilterValue };
-    updatedSearchValue.filters = [
+    updatedSearchValue.Filters = [
       {
         URI: 'meta:pathwayComponentType',
         ItemsText: [_.get(selectedCardType, '0').label],
@@ -99,8 +98,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (SelectedResource.length > 0)
-      getAllPathwayFormFields(SelectedResource, 'PendingComponent');
+    if (selectedResource.length > 0)
+      getAllPathwayFormFields(selectedResource, 'PendingComponent');
 
     if (allComponentTabCards?.data?.length > 0) {
       const allTypesOfComponentCards = allComponentTabCards.data.map(
@@ -108,28 +107,27 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       );
       setAllComponentTypes(allTypesOfComponentCards);
     }
-  }, [SelectedResource, allComponentTabCards]);
+  }, [selectedResource, allComponentTabCards]);
   const addResource = (itemId: string, itemIndex: number) => {
     const filteredItem = allProxyResourcesCard.filter(
       (item: any) => item.id === itemId
     );
-    setSelectedResource([...SelectedResource, filteredItem[0]]);
+    setSelectedResource([...selectedResource, filteredItem[0]]);
     allProxyResourcesCard.splice(itemIndex, 1);
     if (allProxyResourcesCard.length === 0) {
       setDisplaySearchContainer(false);
     }
   };
   const UnSelectSelectedItem = (itemId: string, itemIndex: number) => {
-    const filteredItem = SelectedResource.filter(
+    const filteredItem = selectedResource.filter(
       (item: any) => item.id === itemId
     );
     setAllProxyResourcesCard([...allProxyResourcesCard, filteredItem[0]]);
-    SelectedResource.splice(itemIndex, 1);
+    selectedResource.splice(itemIndex, 1);
     if (allProxyResourcesCard.length > 0) {
       setDisplaySearchContainer(true);
     }
   };
-  console.log(dropDownRef, 'dropDownRef');
 
   return (
     <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
@@ -174,7 +172,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                       draggable={true}
                       key={i}
                       name={filteredResources.Name}
-                      type="Semester 1"
+                      type={filteredResources.Type}
                       description={filteredResources.Description.slice(0, 30)}
                       IconName={faGear}
                       IconColor="black"
@@ -190,20 +188,20 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         </Col>
         <Col span="12">
           <div className={Styles.flexCenter}>
-            <h5>1 Resource Selected</h5>
+            <h5>{selectedResource.length} Resource Selected</h5>
             <p className="dropdown-title">
               Alphabetical <FontAwesomeIcon icon={faCaretDown} color="black" />
             </p>
           </div>
           <Card className="customacardstyle">
             <div className={Styles.cardwrapper}>
-              {SelectedResource?.map((select_resource: any, i: number) => (
+              {selectedResource?.map((select_resource: any, i: number) => (
                 <div className={Styles.flexGrowCenter} key={i}>
                   <CardWithLeftIcon
                     draggable={true}
                     key={i}
                     name={select_resource.Name}
-                    type="Semester 1"
+                    type={select_resource.Type}
                     description={select_resource.Description.slice(0, 30)}
                     IconName={faGear}
                     IconColor="black"

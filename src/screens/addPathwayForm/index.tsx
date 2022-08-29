@@ -94,8 +94,9 @@ const AddPathwayForm: React.FC<Props> = ({
   });
 
   const dispatch = useDispatch();
+
   const userOrganizations = useSelector(
-    (state: any) => state.initalReducer.currentUserData.data.Organizations
+    (state: any) => state.initalReducer?.currentUserData?.data?.Organizations
   );
 
   useEffect(() => {
@@ -403,7 +404,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <DebounceSelect
@@ -421,7 +421,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <MultiSelect
@@ -438,7 +437,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <DebounceSelect
@@ -456,7 +454,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <DebounceSelect
@@ -476,7 +473,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <MultiSelect
@@ -533,7 +529,6 @@ const AddPathwayForm: React.FC<Props> = ({
                 className="swNoMargin"
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
-                required={true}
                 validateTrigger="onBlur"
               >
                 <AutoCompleteBox

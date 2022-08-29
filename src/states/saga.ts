@@ -73,7 +73,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       data: payload.payload,
     });
 

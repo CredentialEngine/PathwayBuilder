@@ -15,9 +15,7 @@ import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import { getDataForPathwayAndComponentsRequest } from '../../states/actions';
-// import AddPathwayForm from '../addPathwayForm';
-import { getAllProxyForResourcesRequest } from '../preSelectResourceCreatePath/state/actions';
+import { updateMappedDataRequest } from '../../states/actions';
 
 import Styles from './index.module.scss';
 
@@ -30,36 +28,41 @@ const HomePage: React.FC<Props> = ({
   setIsEditPathwayFormVisible,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [cardsArray, setCardsArray] = useState<any>([]);
+  const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
+  const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
   // const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
   //   useState<boolean>(false);
   const [columnsData, setColumnsData] = useState<any>([]);
-  const result = useSelector((state: any) => state?.initalReducer);
-  // const preSelectData = useSelector(
-  //   (state: any) =>
-  //     state?.preSelectProxyResources?.allProxyForResourcesComponent?.data
-  //       ?.Results
-  // );
+  const pathwayWrapper = useSelector((state: any) => state?.initalReducer);
 
   const {
     pathwayComponentData: { data: pathwayComponent },
-  } = result;
+  } = pathwayWrapper;
 
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getDataForPathwayAndComponentsRequest(35));
-    dispatch(
-      getAllProxyForResourcesRequest({
-        keywords: 'school',
-        skip: 0,
-        Take: 20,
-        sort: '',
-        filters: [{ URI: 'meta:pathwayComponentType', ItemsText: [] }],
-      })
-    );
-  }, []);
+    const updatedPathwayWrapper = { ...pathwayWrapper };
+    updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
+    updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setDeletedComponentCards([]);
+  }, [pathwayComponentCards]);
+
+  // useEffect(() => {
+  //   dispatch(getDataForPathwayAndComponentsRequest(35));
+  //   dispatch(
+  //     getAllProxyForResourcesRequest({
+  //       keywords: 'school',
+  //       skip: 0,
+  //       Take: 20,
+  //       sort: '',
+  //       filters: [{ URI: 'meta:pathwayComponentType', ItemsText: [] }],
+  //     })
+  //   );
+  // }, []);
 
   useEffect(() => {
     if (pathwayComponent) {
@@ -222,14 +225,18 @@ const HomePage: React.FC<Props> = ({
 
       Need to set item move to any place
     */
+
     if (card.CTID === CTID) {
       return;
     }
 
-    cardsArray.length === 0
-      ? setCardsArray([...cardsArray, { ...card, CTID, destinationColumn }])
-      : setCardsArray(
-          cardsArray
+    pathwayComponentCards.length === 0
+      ? setPathwayComponentCards([
+          ...pathwayComponentCards,
+          { ...card, CTID, destinationColumn },
+        ])
+      : setPathwayComponentCards(
+          pathwayComponentCards
             .filter((item: any) => item.id !== card.id)
             .concat({ ...card, CTID })
         );
@@ -329,7 +336,7 @@ const HomePage: React.FC<Props> = ({
                                   >
                                     {child.name}
                                   </span>
-                                  {cardsArray
+                                  {pathwayComponentCards
                                     .filter(
                                       (card: any) =>
                                         // card?.status?.toLowerCase().trim() ===

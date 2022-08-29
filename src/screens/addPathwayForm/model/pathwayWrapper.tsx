@@ -11,6 +11,8 @@ export interface PathwayWrapper {
   ComponentConditions: ComponentConditions[];
   Constraints: Constraints[];
   PendingComponent: PathwayComponent[];
+  DeletedComponents: [];
+  DeletedComponentConditions: [];
 }
 
 export interface pathway {

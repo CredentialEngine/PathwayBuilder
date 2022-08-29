@@ -26,17 +26,18 @@ export interface Props {
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const {
     name,
-    description,
     codedNotation,
     IconName,
     IconColor,
     inlineStyles,
     draggable,
     id,
+    type,
     getUpdatedCardArr,
     disabledItem,
   } = props;
 
+  const componentName = type?.split(':');
   const onDragStart = (e: any) => {
     const target = e.target;
     e.dataTransfer.setData('card_id', JSON.stringify(props));
@@ -71,12 +72,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
             <FontAwesomeIcon icon={IconName} color={IconColor} />
           </span>
         </Col>
-        <Col span="19">
-          <p>{name}</p>
-          <h5>{(codedNotation ? codedNotation : '') + ' ' + description}</h5>
+        <Col span="19" style={{ display: 'flex', justifyContent: 'center' }}>
+          <p>{!!componentName && componentName[1]}</p>
+          <h5>{(codedNotation ? codedNotation : '') + ' ' + name ?? 'Test'}</h5>
         </Col>
       </Row>
-      {/* <FontAwesomeIcon icon={faQuestionCircle} color={IconColor} className="tipicon"/> */}
     </Card>
   );
 };

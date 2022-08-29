@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
+import { saveDataForPathwayRequest } from '../../states/actions';
 
 import Button from '../button';
 import { Type } from '../button/type';
@@ -16,7 +18,13 @@ interface Props {
 }
 const Header = (props: Props) => {
   const { setIsEditPathwayFormVisible } = props;
+  const pathwayWrapper = useSelector(
+    (state: any) => state?.initalReducer?.mappedData
+  );
+
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
+
+  const dispatch = useDispatch();
 
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -34,6 +42,10 @@ const Header = (props: Props) => {
       </div>
     </div>
   );
+
+  const savePathwayWrapper = () => {
+    dispatch(saveDataForPathwayRequest(pathwayWrapper));
+  };
 
   return (
     <div className={styles.container + ' header-container'}>
@@ -76,7 +88,7 @@ const Header = (props: Props) => {
             <Button
               className={styles.saveButtonSpecification}
               key="save"
-              onClick={noop}
+              onClick={savePathwayWrapper}
               text="save"
               type="selection"
             />
