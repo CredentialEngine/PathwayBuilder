@@ -1,4 +1,3 @@
-import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -83,7 +82,6 @@ const LeftPanel: React.FC<any> = () => {
                   type={v?.Type}
                   description={v?.Description.slice(0, 30)}
                   codedNotation={v?.CodedNotation}
-                  IconName={faCubes}
                   IconColor="black"
                   id={v?.Id}
                   getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
@@ -105,15 +103,12 @@ const LeftPanel: React.FC<any> = () => {
                 key={index}
                 name={card.Name}
                 description={card.description}
-                IconName={faCubes}
                 uri={card.URI}
                 id={card.id}
                 getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
               />
             ))}
-            ,
           </div>
-          ,
         </>
       ),
     },
