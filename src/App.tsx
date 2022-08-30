@@ -193,7 +193,7 @@ const App = () => {
                   onClick={onPathwaySaveHandler}
                   text="Done Adding"
                   disabled={
-                    addPathwayWrapperFields.PendingComponent.length === 0
+                    addPathwayWrapperFields.PendingComponent?.length === 0
                   }
                 />
                 <Button
