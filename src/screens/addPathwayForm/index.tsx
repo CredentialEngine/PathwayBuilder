@@ -206,7 +206,7 @@ const AddPathwayForm: React.FC<Props> = ({
     setSelectedProgressionModelValue(_.get(selectedProgressionModel, '0').Name);
     setAddPathwayFormFields({
       ...addPathwayFormFields,
-      HasProgressionModel: _.get(selectedProgressionModel, '0').RowId,
+      HasProgressionModel: [_.get(selectedProgressionModel, '0').RowId],
     });
     getAllPathwayFormFields(selectedProgressionModel, 'ProgressionModels');
   };

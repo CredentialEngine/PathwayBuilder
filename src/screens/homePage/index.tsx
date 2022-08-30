@@ -15,7 +15,10 @@ import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import { getDataForPathwayAndComponentsRequest } from '../../states/actions';
+import {
+  getDataForPathwayAndComponentsRequest,
+  updateMappedDataRequest,
+} from '../../states/actions';
 // import AddPathwayForm from '../addPathwayForm';
 import { getAllProxyForResourcesRequest } from '../preSelectResourceCreatePath/state/actions';
 
@@ -43,13 +46,13 @@ const HomePage: React.FC<Props> = ({
   //       ?.Results
   // );
 
-  const {
-    pathwayComponentData: { data: pathwayComponent },
-  } = result;
+  const { mappedData: pathwayComponent } = result;
+
+  const { mappedData } = result;
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getDataForPathwayAndComponentsRequest(35));
+    dispatch(getDataForPathwayAndComponentsRequest(36));
     dispatch(
       getAllProxyForResourcesRequest({
         keywords: 'school',
@@ -63,7 +66,8 @@ const HomePage: React.FC<Props> = ({
 
   useEffect(() => {
     if (pathwayComponent) {
-      if (pathwayComponent?.Pathway?.HasProgressionModel?.length > 0) {
+      if (pathwayComponent?.Pathway) {
+        //?.HasProgressionModel?.length > 0
         const tempData = [] as any;
         pathwayComponent?.ProgressionLevels?.forEach((item: any) => {
           tempData.push({
@@ -82,14 +86,26 @@ const HomePage: React.FC<Props> = ({
             semesters: [{ id: 1, name: '' }],
           },
         ]);
-      } else {
-        setColumnsData([
-          { id: 0, name: '' },
-          { id: 1, name: 'Destination Component' },
-        ]);
       }
+      //  else {
+      //   setColumnsData([
+      //     { id: 0, name: '' },
+      //     { id: 1, name: 'Destination Component' },
+      //   ]);
+      // }
     }
   }, [pathwayComponent]);
+
+  useEffect(() => {
+    if (cardsArray.length > 0) {
+      dispatch(
+        updateMappedDataRequest({
+          ...mappedData,
+          PathwayComponents: [...cardsArray],
+        })
+      );
+    }
+  }, [cardsArray.length]);
 
   const columnRef = useRef<any>([]);
 
@@ -230,7 +246,7 @@ const HomePage: React.FC<Props> = ({
       ? setCardsArray([...cardsArray, { ...card, CTID, destinationColumn }])
       : setCardsArray(
           cardsArray
-            .filter((item: any) => item.id !== card.id)
+            .filter((item: any) => item.CTID !== card.CTID)
             .concat({ ...card, CTID })
         );
   };
@@ -294,7 +310,7 @@ const HomePage: React.FC<Props> = ({
                               onDrop={onDropHandler}
                               key={child.id}
                               column={child.name}
-                              CTID={`${column.CTID} ${child?.id}`}
+                              CTID={`${column.CTID} ${child?.name}`}
                               destinationColumn={!!column?.destinationComponent}
                               forwardRef={columnRef.current[i]}
                               width="450px"
@@ -336,15 +352,15 @@ const HomePage: React.FC<Props> = ({
                                         //   child.codedNotation
                                         //     ?.toLowerCase()
                                         //     .trim() &&
-                                        card?.CTID ===
-                                        `${column.CTID} ${child?.id}`
+                                        card?.CTID ==
+                                        `${column?.CTID} ${child?.name}`
                                     )
                                     .map((item: any) => (
                                       <MultiCard
                                         onClick={() => setShowRightPanel(true)}
                                         key={item.id}
                                         id={item.id}
-                                        isCourseCard={item.type === 'course'}
+                                        isCourseCard={true}
                                         isCredentialCard={
                                           item.type === 'credentials'
                                         }
@@ -363,7 +379,7 @@ const HomePage: React.FC<Props> = ({
                                         }}
                                         setIsZoomDisabled={setIsZoomDisabled}
                                         status={column.Id}
-                                        CTID={`${column.CTID} ${child?.id}`}
+                                        CTID={`${column.CTID} ${child?.name}`}
                                       />
                                     ))}
                                 </div>

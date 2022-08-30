@@ -201,48 +201,52 @@ const MultiCard: React.FC<Props> = ({
         </div>
       )}
 
-      {isCredentialCard && data.type === 'credentials' && (
-        <>
-          <div className={styles.addIcon}>
-            <FontAwesomeIcon
-              icon={faCirclePlus}
-              fill="#000000"
-              style={{
-                height: '22px',
-                width: '22px',
-                color: '#ffd363',
-                cursor: 'pointer',
-              }}
-              onClick={(e: any) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            />
-          </div>
-          <div className={styles.courseCredCardWrapper}>
-            <div className={styles.topCourseContent}>
+      {isCredentialCard ||
+        (data.type === 'credentials' && (
+          <>
+            <div className={styles.addIcon}>
               <FontAwesomeIcon
-                icon={faCubes}
-                style={{ height: '24px', width: '24px' }}
-              />
-              <span className={styles.title}>{data.name}</span>
-              <FontAwesomeIcon
-                color={darkColor}
-                style={{ height: '20px', cursor: 'pointer' }}
-                icon={faEllipsis}
-                onClick={noop}
+                icon={faCirclePlus}
+                fill="#000000"
+                style={{
+                  height: '22px',
+                  width: '22px',
+                  color: '#ffd363',
+                  cursor: 'pointer',
+                }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
               />
             </div>
-            <Divider
-              style={{ backgroundColor: '#6EFFFF', margin: '8px 0px 4px 0px' }}
-            />
-            <div className={styles.courseNameContainter}>
-              <span>{data.codedNotation}</span>
-              <span>{data.description}</span>
+            <div className={styles.courseCredCardWrapper}>
+              <div className={styles.topCourseContent}>
+                <FontAwesomeIcon
+                  icon={faCubes}
+                  style={{ height: '24px', width: '24px' }}
+                />
+                <span className={styles.title}>{data.name}</span>
+                <FontAwesomeIcon
+                  color={darkColor}
+                  style={{ height: '20px', cursor: 'pointer' }}
+                  icon={faEllipsis}
+                  onClick={noop}
+                />
+              </div>
+              <Divider
+                style={{
+                  backgroundColor: '#6EFFFF',
+                  margin: '8px 0px 4px 0px',
+                }}
+              />
+              <div className={styles.courseNameContainter}>
+                <span>{data.codedNotation}</span>
+                <span>{data.description}</span>
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        ))}
 
       {isConditionalCard && (
         <React.Fragment>

@@ -22,7 +22,7 @@ const LeftPanel: React.FC<any> = () => {
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  const [updatedCardArr, setUpdatedCardArr] = useState<any>();
+  // const [updatedCardArr, setUpdatedCardArr] = useState<any>();
   const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
 
@@ -38,14 +38,20 @@ const LeftPanel: React.FC<any> = () => {
     }
   }, [selectedTabCardData]);
 
-  useEffect(() => {
-    if (updatedCardArr?.length > 0) {
-      const temp = selectedTabCards?.filter(
-        (item: any) => item?.id !== updatedCardArr
-      );
-      setSelectedtabCards(temp);
-    }
-  }, [updatedCardArr]);
+  // useEffect(() => {
+  //   if (updatedCardArr?.length > 0) {
+  //     console.log('selected----', selectedTabCards)
+  //     const temp = selectedTabCards?.filter(
+  //       (item: any) => item?.Id !== updatedCardArr
+  //     );
+  //     setSelectedtabCards(temp);
+  //   }
+  // }, [updatedCardArr]);
+
+  const abc = (val: any) => {
+    const temp = selectedTabCards?.filter((item: any) => item?.CTID !== val);
+    setSelectedtabCards(temp);
+  };
 
   // useEffect(() => {
   //   dispatch(getLeftPanelPathwayComponentRequest());
@@ -101,7 +107,8 @@ const LeftPanel: React.FC<any> = () => {
                   IconName={faCubes}
                   IconColor="black"
                   id={v?.Id}
-                  getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                  CTID={v?.CTID}
+                  getUpdatedCardArr={(value: any) => abc(value)}
                 />
               ))}
           </div>
@@ -119,11 +126,11 @@ const LeftPanel: React.FC<any> = () => {
                 draggable={true}
                 key={index}
                 name={card.Name}
-                description={card.description}
+                description={card.Description}
                 IconName={faCubes}
                 uri={card.URI}
-                id={card.id}
-                getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                id={card.Id}
+                getUpdatedCardArr={(value: any) => abc(value)}
               />
             ))}
             ,
