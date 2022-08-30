@@ -1,16 +1,19 @@
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import {
+  faCubes,
+  faGear,
+  faFileCircleCheck,
+  faStar,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
 import React from 'react';
 
-// import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './index.module.scss';
 
 export interface Props {
   name?: string;
   description?: string;
   codedNotation?: string;
-  IconName: IconProp;
   IconColor?: string;
   inlineStyles?: any;
   draggable?: boolean;
@@ -27,7 +30,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const {
     name,
     codedNotation,
-    IconName,
     IconColor,
     inlineStyles,
     draggable,
@@ -35,6 +37,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     type,
     getUpdatedCardArr,
     disabledItem,
+    type,
   } = props;
 
   const componentName = type?.split(':');
@@ -69,7 +72,18 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       <Row>
         <Col span="5">
           <span className={styles.iconwrapper + ' customicon'}>
-            <FontAwesomeIcon icon={IconName} color={IconColor} />
+            {type == 'credentials' && (
+              <FontAwesomeIcon icon={faStar} color={IconColor} />
+            )}
+            {type == 'course' && (
+              <FontAwesomeIcon icon={faCubes} color={IconColor} />
+            )}
+            {type == 'competency' && (
+              <FontAwesomeIcon icon={faGear} color={IconColor} />
+            )}
+            {type == 'assessment' && (
+              <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+            )}
           </span>
         </Col>
         <Col span="19" style={{ display: 'flex', justifyContent: 'center' }}>
