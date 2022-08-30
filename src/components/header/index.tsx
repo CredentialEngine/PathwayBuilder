@@ -2,7 +2,7 @@ import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
@@ -21,10 +21,30 @@ const Header = (props: Props) => {
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
   );
-
+  const dispatch = useDispatch();
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
 
-  const dispatch = useDispatch();
+  async function approvePathway(id: string): Promise<any[]> {
+    return fetch(
+      `https://sandbox.credentialengine.org/publisher//PathwayBuilderApi/Approve/Pathway/${id}?userCreds=tara.mueller@protiviti.com~ceI$Awesome`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify({ id }),
+      }
+    )
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        console.log(body, 'body');
+        return body;
+      });
+  }
+
+  useEffect(() => {
+    if (!hasPublishVisible) approvePathway('9');
+  }, [hasPublishVisible]);
 
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
