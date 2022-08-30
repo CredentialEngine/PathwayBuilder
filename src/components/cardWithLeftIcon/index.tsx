@@ -56,7 +56,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const onDragEnd = (e: any) => {
     e.target.style.visibility = 'visible';
   };
-
   return (
     <Card
       size="small"
@@ -71,21 +70,31 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       <Row>
         <Col span="5">
           <span className={styles.iconwrapper + ' customicon'}>
-            {type == 'credentials' && (
+            {type?.toLowerCase().includes('credential'.toLowerCase()) && (
               <FontAwesomeIcon icon={faStar} color={IconColor} />
             )}
-            {type == 'course' && (
+            {type?.toLowerCase().includes('course'.toLowerCase()) && (
               <FontAwesomeIcon icon={faCubes} color={IconColor} />
             )}
-            {type == 'competency' && (
+            {type?.toLowerCase().includes('Basic'.toLowerCase()) && (
+              <FontAwesomeIcon icon={faCubes} color={IconColor} />
+            )}
+            {type?.toLowerCase().includes('competency'.toLocaleLowerCase()) && (
               <FontAwesomeIcon icon={faGear} color={IconColor} />
             )}
-            {type == 'assessment' && (
+            {type?.toLowerCase().includes('assessment'.toLowerCase()) && (
               <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
             )}
           </span>
         </Col>
-        <Col span="19" style={{ display: 'flex', justifyContent: 'center' }}>
+        <Col
+          span="19"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
           <p>{!!componentName && componentName[1]}</p>
           <h5>{(codedNotation ? codedNotation : '') + ' ' + name ?? 'Test'}</h5>
         </Col>

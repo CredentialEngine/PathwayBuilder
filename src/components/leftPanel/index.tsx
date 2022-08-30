@@ -45,6 +45,7 @@ const LeftPanel: React.FC<any> = () => {
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
   };
+
   const tab = [
     {
       key: LeftPanelTabKey.Selected,
@@ -105,6 +106,7 @@ const LeftPanel: React.FC<any> = () => {
                 description={card.description}
                 uri={card.URI}
                 id={card.id}
+                type={card?.URI}
                 getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
               />
             ))}
