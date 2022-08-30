@@ -38,24 +38,10 @@ const LeftPanel: React.FC<any> = () => {
     }
   }, [selectedTabCardData]);
 
-  // useEffect(() => {
-  //   if (updatedCardArr?.length > 0) {
-  //     console.log('selected----', selectedTabCards)
-  //     const temp = selectedTabCards?.filter(
-  //       (item: any) => item?.Id !== updatedCardArr
-  //     );
-  //     setSelectedtabCards(temp);
-  //   }
-  // }, [updatedCardArr]);
-
-  const abc = (val: any) => {
+  const filteredSelectedCards = (val: any) => {
     const temp = selectedTabCards?.filter((item: any) => item?.CTID !== val);
     setSelectedtabCards(temp);
   };
-
-  // useEffect(() => {
-  //   dispatch(getLeftPanelPathwayComponentRequest());
-  // }, []);
 
   useEffect(() => {
     if (allComponentTabCards.valid)
@@ -99,6 +85,7 @@ const LeftPanel: React.FC<any> = () => {
               .map((v: any, i: any) => (
                 <CardWithLeftIcon
                   draggable={true}
+                  data={v}
                   key={i}
                   name={v?.Name}
                   type={v?.type}
@@ -108,7 +95,9 @@ const LeftPanel: React.FC<any> = () => {
                   IconColor="black"
                   id={v?.Id}
                   CTID={v?.CTID}
-                  getUpdatedCardArr={(value: any) => abc(value)}
+                  getUpdatedCardArr={(value: any) =>
+                    filteredSelectedCards(value)
+                  }
                 />
               ))}
           </div>
@@ -125,12 +114,13 @@ const LeftPanel: React.FC<any> = () => {
               <CardWithLeftIcon
                 draggable={true}
                 key={index}
+                data={card}
                 name={card.Name}
                 description={card.Description}
                 IconName={faCubes}
                 uri={card.URI}
                 id={card.Id}
-                getUpdatedCardArr={(value: any) => abc(value)}
+                getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
               />
             ))}
             ,

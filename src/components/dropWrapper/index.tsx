@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 interface Props {
-  onDrop: (a: any, b: any, c: any) => void;
+  onDrop: (a: any, b: any, c: any, d: any) => void;
   children: any;
   key: string;
   column: string;
@@ -10,6 +10,7 @@ interface Props {
   CTID?: string;
   id?: number | string;
   destinationColumn?: boolean;
+  HasProgressionLevel?: string;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -20,6 +21,7 @@ const DropWrapper: React.FC<Props> = ({
   width,
   CTID,
   destinationColumn,
+  HasProgressionLevel,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   // const [updatedWidth, setWidth] = useState(width);
@@ -27,7 +29,7 @@ const DropWrapper: React.FC<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
-    onDrop(data, CTID, destinationColumn);
+    onDrop(data, CTID, destinationColumn, HasProgressionLevel);
   };
 
   useEffect(() => {

@@ -21,26 +21,25 @@ export interface Props {
   getUpdatedCardArr?: (value: any) => void;
   disabledItem?: any;
   CTID?: any;
+  data?: any;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const {
-    name,
-    description,
-    codedNotation,
+    Name,
+    Description,
+    CodedNotation,
     IconName,
     IconColor,
     inlineStyles,
-    draggable,
     id,
     getUpdatedCardArr,
     disabledItem,
     CTID,
-  } = props;
-
+  } = props.data;
   const onDragStart = (e: any) => {
     const target = e.target;
-    e.dataTransfer.setData('card_id', JSON.stringify(props));
+    e.dataTransfer.setData('card_id', JSON.stringify(props.data));
     getUpdatedCardArr && getUpdatedCardArr(CTID);
     setTimeout(() => {
       target.style.display = 'hidden';
@@ -60,7 +59,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       size="small"
       className={styles.cardwrapper + ' ' + disabledItem}
       style={inlineStyles}
-      draggable={draggable}
+      draggable={true}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
@@ -73,8 +72,8 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
           </span>
         </Col>
         <Col span="19">
-          <p>{name}</p>
-          <h5>{(codedNotation ? codedNotation : '') + ' ' + description}</h5>
+          <p>{Name}</p>
+          <h5>{(CodedNotation ? CodedNotation : '') + ' ' + Description}</h5>
         </Col>
       </Row>
     </Card>

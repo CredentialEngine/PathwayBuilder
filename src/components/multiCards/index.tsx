@@ -103,7 +103,7 @@ const MultiCard: React.FC<Props> = ({
       onMouseOver={() => setIsZoomDisabled(true)}
       id={id?.toString()}
     >
-      {(isAddDestination || data.type === 'addDestination') && (
+      {(isAddDestination || data.Type === 'addDestination') && (
         <div className={styles.addDestinationContent}>
           <p className={styles.addDestinationTitle}>
             Add your destination component
@@ -172,14 +172,14 @@ const MultiCard: React.FC<Props> = ({
         </div>
       )}
 
-      {(isCourseCard || data.type === 'course') && (
+      {(isCourseCard || data.Type === 'course') && (
         <div className={styles.credentialsCardWrapeer}>
           <div className={styles.topCourseContent}>
             <FontAwesomeIcon
               icon={faCubes}
               style={{ height: '24px', width: '24px' }}
             />
-            <span className={styles.title}>{data.name}</span>
+            <span className={styles.title}>{data.Name}</span>
             <FontAwesomeIcon
               color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
@@ -191,8 +191,8 @@ const MultiCard: React.FC<Props> = ({
             style={{ backgroundColor: '#F3F4F6', margin: '8px 0px 4px 0px' }}
           />
           <div className={styles.courseNameContainter}>
-            <span>{data.codedNotation}</span>
-            <span>{data.description}</span>
+            <span>{data.CodedNotation}</span>
+            <span>{data.Description}</span>
           </div>
           <div className={styles.creditSection}>
             <span>Credits: 3</span>
@@ -202,7 +202,7 @@ const MultiCard: React.FC<Props> = ({
       )}
 
       {isCredentialCard ||
-        (data.type === 'credentials' && (
+        (data?.Type.includes('credentials') && (
           <>
             <div className={styles.addIcon}>
               <FontAwesomeIcon
@@ -226,7 +226,7 @@ const MultiCard: React.FC<Props> = ({
                   icon={faCubes}
                   style={{ height: '24px', width: '24px' }}
                 />
-                <span className={styles.title}>{data.name}</span>
+                <span className={styles.title}>{data.Name}</span>
                 <FontAwesomeIcon
                   color={darkColor}
                   style={{ height: '20px', cursor: 'pointer' }}
@@ -241,8 +241,8 @@ const MultiCard: React.FC<Props> = ({
                 }}
               />
               <div className={styles.courseNameContainter}>
-                <span>{data.codedNotation}</span>
-                <span>{data.description}</span>
+                <span>{data.CodedNotation}</span>
+                <span>{data.Description}</span>
               </div>
             </div>
           </>

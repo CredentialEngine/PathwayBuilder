@@ -228,7 +228,8 @@ const HomePage: React.FC<Props> = ({
   const onDropHandler = (
     card: any,
     CTID: string,
-    destinationColumn: boolean
+    destinationColumn: boolean,
+    HasProgressionLevel: string
   ) => {
     /* Need to write a logic where same card should not be added
       Need to filter accorrding to column type like which card should be display where
@@ -243,11 +244,14 @@ const HomePage: React.FC<Props> = ({
     }
 
     cardsArray.length === 0
-      ? setCardsArray([...cardsArray, { ...card, CTID, destinationColumn }])
+      ? setCardsArray([
+          ...cardsArray,
+          { ...card, CTID, destinationColumn, HasProgressionLevel },
+        ])
       : setCardsArray(
           cardsArray
             .filter((item: any) => item.CTID !== card.CTID)
-            .concat({ ...card, CTID })
+            .concat({ ...card, CTID, HasProgressionLevel })
         );
   };
 
@@ -257,7 +261,6 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
-
   return (
     <Layout className={Styles.centralPannel}>
       <Header setIsEditPathwayFormVisible={setIsEditPathwayFormVisible} />
@@ -311,6 +314,7 @@ const HomePage: React.FC<Props> = ({
                               key={child.id}
                               column={child.name}
                               CTID={`${column.CTID} ${child?.name}`}
+                              HasProgressionLevel={column.CTID}
                               destinationColumn={!!column?.destinationComponent}
                               forwardRef={columnRef.current[i]}
                               width="450px"
@@ -348,10 +352,6 @@ const HomePage: React.FC<Props> = ({
                                   {cardsArray
                                     .filter(
                                       (card: any) =>
-                                        // card?.status?.toLowerCase().trim() ===
-                                        //   child.codedNotation
-                                        //     ?.toLowerCase()
-                                        //     .trim() &&
                                         card?.CTID ==
                                         `${column?.CTID} ${child?.name}`
                                     )
@@ -360,23 +360,19 @@ const HomePage: React.FC<Props> = ({
                                         onClick={() => setShowRightPanel(true)}
                                         key={item.id}
                                         id={item.id}
-                                        isCourseCard={true}
-                                        isCredentialCard={
-                                          item.type === 'credentials'
-                                        }
-                                        data={{
-                                          semester: child.title,
-                                          level: item.level,
-                                          name: item.name,
-                                          description: item.description,
-                                          codedNotation: item.codedNotation,
-                                          credits: item.credits,
-                                          draggable: true,
-                                          IconName: item.IconName,
-                                          IconColor: item.IconColor,
-                                          type: item.type,
-                                          id: item.id,
-                                        }}
+                                        isCredentialCard={item.Type.toLowerCase().includes(
+                                          'credential'.toLowerCase()
+                                        )}
+                                        isCourseCard={item.Type.toLowerCase().includes(
+                                          'basic'.toLowerCase()
+                                        )}
+                                        isConditionalCard={item.Type.toLowerCase().includes(
+                                          'condition'.toLowerCase()
+                                        )}
+                                        isDestination={item.Type.toLowerCase().includes(
+                                          'destination'.toLowerCase()
+                                        )}
+                                        data={item}
                                         setIsZoomDisabled={setIsZoomDisabled}
                                         status={column.Id}
                                         CTID={`${column.CTID} ${child?.name}`}
