@@ -15,12 +15,8 @@ import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import {
-  getDataForPathwayAndComponentsRequest,
-  updateMappedDataRequest,
-} from '../../states/actions';
+import { updateMappedDataRequest } from '../../states/actions';
 // import AddPathwayForm from '../addPathwayForm';
-import { getAllProxyForResourcesRequest } from '../preSelectResourceCreatePath/state/actions';
 
 import Styles from './index.module.scss';
 
@@ -33,41 +29,28 @@ const HomePage: React.FC<Props> = ({
   setIsEditPathwayFormVisible,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [cardsArray, setCardsArray] = useState<any>([]);
+  const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
+  const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
   // const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
   //   useState<boolean>(false);
   const [columnsData, setColumnsData] = useState<any>([]);
-  const result = useSelector((state: any) => state?.initalReducer);
-  // const preSelectData = useSelector(
-  //   (state: any) =>
-  //     state?.preSelectProxyResources?.allProxyForResourcesComponent?.data
-  //       ?.Results
-  // );
-
-  const { mappedData: pathwayComponent } = result;
-
-  const { mappedData } = result;
-
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getDataForPathwayAndComponentsRequest(36));
-    dispatch(
-      getAllProxyForResourcesRequest({
-        keywords: 'school',
-        skip: 0,
-        Take: 20,
-        sort: '',
-        filters: [{ URI: 'meta:pathwayComponentType', ItemsText: [] }],
-      })
-    );
-  }, []);
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
+    updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setDeletedComponentCards([]);
+  }, [pathwayComponentCards]);
 
   useEffect(() => {
     if (pathwayComponent) {
-      if (pathwayComponent?.Pathway) {
-        //?.HasProgressionModel?.length > 0
+      if (pathwayComponent?.Pathway?.HasProgressionModel?.length > 0) {
         const tempData = [] as any;
         pathwayComponent?.ProgressionLevels?.forEach((item: any) => {
           tempData.push({
@@ -96,140 +79,20 @@ const HomePage: React.FC<Props> = ({
     }
   }, [pathwayComponent]);
 
-  useEffect(() => {
-    if (cardsArray.length > 0) {
-      dispatch(
-        updateMappedDataRequest({
-          ...mappedData,
-          PathwayComponents: [...cardsArray],
-        })
-      );
-    }
-  }, [cardsArray.length]);
-
   const columnRef = useRef<any>([]);
 
-  const columns = [
-    {
-      id: '12436789',
-      rowId: 298932,
-      name: 'Stage 1',
-      description: 'Description Stage 1',
-      cTID: 'ABCD',
-      color: '#83edea',
-      children: [
-        {
-          id: 1,
-          rowId: 237,
-          name: 'Semester 1',
-          description: 'Description Semster 1',
-          codedNotation: '6763827',
-          CTID: 'ab13288',
-        },
-        {
-          id: 2,
-          rowId: 237737,
-          name: 'Semester 2',
-          description: 'Description Semster 2',
-          codedNotation: '6763827',
-          color: '#adf1ef',
-          CTID: 'ab1',
-        },
-      ],
-    },
-    {
-      id: '1243df6789',
-      rowId: 29893232,
-      name: 'Stage 2',
-      description: 'Description Stage 1',
-      cTID: 'ABCD',
-      color: '#83edea',
-      children: [
-        {
-          id: 1,
-          rowId: 237,
-          name: 'Semester 1',
-          description: 'Description Semster 1',
-          codedNotation: '623483827',
-          CTID: 'ab12',
-        },
-        {
-          id: 2,
-          rowId: 237737,
-          name: 'Semester 2',
-          description: 'Description Semster 2',
-          codedNotation: '623483827',
-          color: '#adf1ef',
-          CTID: 'ab123',
-        },
-      ],
-    },
-    {
-      id: '12436343789',
-      rowId: 29893432,
-      name: 'Stage 3',
-      description: 'Description Stage 1',
-      cTID: 'ABCD',
-      color: '#83edea',
-      children: [
-        {
-          id: 1,
-          rowId: 237,
-          name: 'Semester 1',
-          description: 'Description Semster 1',
-          codedNotation: '6763898927',
-          CTID: 'abcd123728',
-        },
-        {
-          id: 2,
-          rowId: 237737,
-          name: 'Semester 2',
-          description: 'Description Semster 2',
-          codedNotation: '6763898927',
-          color: '#adf1ef',
-          CTID: 'abcd23728',
-        },
-      ],
-    },
-    {
-      id: '124332326789',
-      rowId: 298932,
-      name: 'Stage 4',
-      description: 'Description Stage 1',
-      cTID: 'ABCD',
-      color: '#83edea',
-      children: [
-        {
-          id: 1,
-          rowId: 237,
-          name: 'Semester 1',
-          description: 'Description Semster 1',
-          codedNotation: '6761113827',
-          CTID: 'abc2378',
-        },
-        {
-          id: 2,
-          rowId: 237737,
-          name: 'Semester 2',
-          description: 'Description Semster 2',
-          codedNotation: '6761113827',
-          color: '#adf1ef',
-          CTID: 'abcd2378',
-        },
-      ],
-    },
-  ];
-
-  columnRef.current = columns.map((column: any) =>
-    column.children.map(
+  columnRef.current = columnsData?.map((column: any) =>
+    column.semesters.map(
       (element: any, i: any) => (columnRef.current[i] = React.createRef())
     )
   );
+
   const onDropHandler = (
     card: any,
     CTID: string,
     destinationColumn: boolean,
-    HasProgressionLevel: string
+    HasProgressionLevel: string,
+    inProgressLevel: string
   ) => {
     /* Need to write a logic where same card should not be added
       Need to filter accorrding to column type like which card should be display where
@@ -239,19 +102,19 @@ const HomePage: React.FC<Props> = ({
 
       Need to set item move to any place
     */
-    if (card.CTID === CTID) {
+    if (card.inProgressLevel === inProgressLevel) {
       return;
     }
 
-    cardsArray.length === 0
-      ? setCardsArray([
-          ...cardsArray,
-          { ...card, CTID, destinationColumn, HasProgressionLevel },
+    pathwayComponentCards.length === 0
+      ? setPathwayComponentCards([
+          ...pathwayComponentCards,
+          { ...card, destinationColumn, HasProgressionLevel, inProgressLevel },
         ])
-      : setCardsArray(
-          cardsArray
+      : setPathwayComponentCards(
+          pathwayComponentCards
             .filter((item: any) => item.CTID !== card.CTID)
-            .concat({ ...card, CTID, HasProgressionLevel })
+            .concat({ ...card, inProgressLevel, HasProgressionLevel })
         );
   };
 
@@ -295,17 +158,17 @@ const HomePage: React.FC<Props> = ({
               <TransformWrapper disabled={isZoomDisabled}>
                 <TransformComponent>
                   <div style={{ display: 'flex' }}>
-                    {columnsData.map((column: any) => (
+                    {columnsData.map((column: any, index: any) => (
                       <div
                         key="column.id"
                         style={{
-                          backgroundColor: '#4EE5E1',
+                          backgroundColor: `${
+                            index % 2 !== 0 ? '#4EE5E1' : '#f0f0f0'
+                          }`,
                           textAlign: 'center',
                         }}
                       >
-                        <span style={{ color: '#000000' }}>
-                          {column.Id || column.name}
-                        </span>
+                        <span style={{ color: '#000000' }}>{column.Name}</span>
                         <div style={{ display: 'flex' }}>
                           {column?.semesters?.map((child: any, i: any) => (
                             <DropWrapper
@@ -313,7 +176,7 @@ const HomePage: React.FC<Props> = ({
                               onDrop={onDropHandler}
                               key={child.id}
                               column={child.name}
-                              CTID={`${column.CTID} ${child?.name}`}
+                              inProgressLevel={`${column.CTID} ${child?.name}`}
                               HasProgressionLevel={column.CTID}
                               destinationColumn={!!column?.destinationComponent}
                               forwardRef={columnRef.current[i]}
@@ -349,11 +212,12 @@ const HomePage: React.FC<Props> = ({
                                   >
                                     {child.name}
                                   </span>
-                                  {cardsArray
+                                  {pathwayComponentCards
                                     .filter(
                                       (card: any) =>
-                                        card?.CTID ==
-                                        `${column?.CTID} ${child?.name}`
+                                        card?.inProgressLevel ==
+                                          `${column?.CTID} ${child?.name}` &&
+                                        card.HasProgressionLevel === column.CTID
                                     )
                                     .map((item: any) => (
                                       <MultiCard
@@ -375,7 +239,7 @@ const HomePage: React.FC<Props> = ({
                                         data={item}
                                         setIsZoomDisabled={setIsZoomDisabled}
                                         status={column.Id}
-                                        CTID={`${column.CTID} ${child?.name}`}
+                                        inProgressLevel={`${column.CTID} ${child?.name}`}
                                       />
                                     ))}
                                 </div>

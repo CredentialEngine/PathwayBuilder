@@ -1,20 +1,19 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-// import { ComponentsCards } from '../../assets/modal/constant';
+import { updateMappedDataRequest } from '../../states/actions';
+
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
 
 import Styles from './index.module.scss';
-// import { getLeftPanelPathwayComponentRequest } from './state/actions';
 
 export enum LeftPanelTabKey {
   Selected = 'Selected',
   Components = 'Components',
 }
-
 const LeftPanel: React.FC<any> = () => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
@@ -22,16 +21,15 @@ const LeftPanel: React.FC<any> = () => {
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  // const [updatedCardArr, setUpdatedCardArr] = useState<any>();
   const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
-
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
-
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
   useEffect(() => {
     if (selectedTabCardData) {
       setSelectedtabCards(selectedTabCardData);
@@ -39,8 +37,13 @@ const LeftPanel: React.FC<any> = () => {
   }, [selectedTabCardData]);
 
   const filteredSelectedCards = (val: any) => {
-    const temp = selectedTabCards?.filter((item: any) => item?.CTID !== val);
-    setSelectedtabCards(temp);
+    const filteredSelectedCards = selectedTabCards?.filter(
+      (item: any) => item.CTID !== val
+    );
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    updatedPathwayWrapper.PendingComponent = filteredSelectedCards;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setSelectedtabCards(filteredSelectedCards);
   };
 
   useEffect(() => {
@@ -62,7 +65,6 @@ const LeftPanel: React.FC<any> = () => {
       name: LeftPanelTabKey.Components,
     },
   ];
-
   const propsChildren = [
     {
       key: LeftPanelTabKey.Selected,
@@ -88,10 +90,9 @@ const LeftPanel: React.FC<any> = () => {
                   data={v}
                   key={i}
                   name={v?.Name}
-                  type={v?.type}
-                  description={v?.Description}
+                  type={v?.Type}
+                  description={v?.Description.slice(0, 30)}
                   codedNotation={v?.CodedNotation}
-                  IconName={faCubes}
                   IconColor="black"
                   id={v?.Id}
                   CTID={v?.CTID}
@@ -120,12 +121,11 @@ const LeftPanel: React.FC<any> = () => {
                 IconName={faCubes}
                 uri={card.URI}
                 id={card.Id}
+                type={card?.URI}
                 getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
               />
             ))}
-            ,
           </div>
-          ,
         </>
       ),
     },
@@ -137,7 +137,6 @@ const LeftPanel: React.FC<any> = () => {
       </TabPane>
     );
   }
-
   const tabVal = {
     showTabBar: true,
     activeKey: LeftPanelTabKey.Selected,
@@ -145,7 +144,6 @@ const LeftPanel: React.FC<any> = () => {
     children: propsChildrenData,
     className: Styles.leftPanelDrawer,
   };
-
   return (
     <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
@@ -157,5 +155,4 @@ const LeftPanel: React.FC<any> = () => {
     </div>
   );
 };
-
 export default LeftPanel;

@@ -10,7 +10,7 @@ import {
 } from './pathwayWrapper';
 
 export class PathwayEntity implements pathway {
-  Id: number;
+  Id = 0;
   Uri: string;
   Name: string;
   Organization: ResourceSummary;
@@ -20,18 +20,20 @@ export class PathwayEntity implements pathway {
   HasProgressionModel: string[];
   IndustryType: [ResourceSummary];
   OccupationType: [ResourceSummary];
-  SubjectWebpage: 'test';
+  SubjectWebpage: '';
   Keyword: string[];
   Subject: string[];
-  LastUpdated: '22-02-2022';
+  LastUpdated: '';
 }
 
 export class PathwayWrapperEntity implements PathwayWrapper {
-  PathwayComponents: PathwayComponent[] = [];
-  ProgressionModels: ProgressionModels[] = [];
-  ProgressionLevels: ProgressionLevels[] = [];
-  ComponentConditions: ComponentConditions[] = [];
-  Constraints: Constraints[] = [];
-  PendingComponent: PathwayComponent[] = [];
-  Pathway: PathwayEntity = new PathwayEntity();
+  Pathway: pathway;
+  PathwayComponents: PathwayComponent[];
+  ProgressionModels: ProgressionModels[];
+  ProgressionLevels: ProgressionLevels[];
+  ComponentConditions: ComponentConditions[];
+  Constraints: Constraints[];
+  PendingComponent: PathwayComponent[];
+  DeletedComponents: [];
+  DeletedComponentConditions: [];
 }

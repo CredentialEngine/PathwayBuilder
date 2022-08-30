@@ -14,4 +14,9 @@ export type RootState = {
     valid: boolean;
   };
   mappedData: mappedData;
+  approvePathway: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
 };

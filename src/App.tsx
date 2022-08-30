@@ -8,6 +8,7 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
+import AddConditionalComponent from './screens/addComponent';
 // import AddConditionalComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
@@ -73,11 +74,6 @@ const App = () => {
     setIsCreatePathwayVisible(false);
   };
 
-  const onAddPathwayOkHandler = () => {
-    setIsAddPathwayFormVisible(false);
-    setIsPreSelectedCreateResourceVisible(true);
-  };
-
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {
@@ -129,6 +125,12 @@ const App = () => {
     setIsPreSelectedCreateResourceVisible(false);
     dispatch(updateMappedDataRequest(addPathwayWrapperFields));
   };
+
+  const onAddPathwayOkHandler = () => {
+    setIsAddPathwayFormVisible(false);
+    setIsPreSelectedCreateResourceVisible(true);
+  };
+
   return (
     <div>
       <MainContainer>
@@ -146,9 +148,9 @@ const App = () => {
           }
           setIsEditPathwayFormVisible={setIsAddPathwayFormVisible}
         />
-        {/* <Modal visible={false} title="" footer={[]} width={650}>
+        <Modal visible={false} title="" footer={[]} width={650}>
           <AddConditionalComponent />
-        </Modal> */}
+        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
@@ -177,6 +179,8 @@ const App = () => {
             setIsAddPathwayFormNextButtonDisable={
               setIsAddPathwayFormNextButtonDisable
             }
+            addPathwayWrapperFields={addPathwayWrapperFields}
+            setAddPathwayWrapeprFields={setAddPathwayWrapeprFields}
           />
         </Modal>
         <Modal
@@ -192,7 +196,7 @@ const App = () => {
                   onClick={onPathwaySaveHandler}
                   text="Done Adding"
                   disabled={
-                    addPathwayWrapperFields.PendingComponent.length === 0
+                    addPathwayWrapperFields.PendingComponent?.length === 0
                   }
                 />
                 <Button

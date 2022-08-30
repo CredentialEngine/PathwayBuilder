@@ -36,20 +36,22 @@ interface ComponentTypesValue {
 export interface Props {
   getAllPathwayFormFields: (a: any, b: string) => void;
   setIsAddPathwayFormNextButtonDisable: (a: boolean) => void;
+  addPathwayWrapperFields?: any;
+  setAddPathwayWrapeprFields: (a: any) => void;
 }
 
 const AddPathwayForm: React.FC<Props> = ({
   getAllPathwayFormFields,
   setIsAddPathwayFormNextButtonDisable,
+  addPathwayWrapperFields,
+  setAddPathwayWrapeprFields,
 }) => {
   const [addPathwayFormFields, setAddPathwayFormFields] = useState<any>(
     new PathwayEntity()
   );
   const [selectedProgressionModelValue, setSelectedProgressionModelValue] =
     useState<string>('');
-  const [selectedProgressionLevels, setSelectedProgressionLevels] = useState<
-    ComponentTypesValue[]
-  >([]);
+
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
@@ -94,23 +96,21 @@ const AddPathwayForm: React.FC<Props> = ({
   });
 
   const dispatch = useDispatch();
+
   const userOrganizations = useSelector(
-    (state: any) => state.initalReducer.currentUserData.data.Organizations
+    (state: any) => state.initalReducer?.currentUserData?.data?.Organizations
   );
 
   useEffect(() => {
     if (!_.isEmpty(addPathwayFormFields))
       getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
 
-    if (selectedProgressionLevels.length > 0) {
-      getAllPathwayFormFields(selectedProgressionLevels, 'ProgressionLevels');
-    }
     setIsAddPathwayFormNextButtonDisable(
       !_.isEmpty(addPathwayFormFields.Name) &&
         !_.isEmpty(addPathwayFormFields.Description) &&
         !_.isEmpty(addPathwayFormFields.SubjectWebpage)
     );
-  }, [addPathwayFormFields, selectedProgressionLevels]);
+  }, [addPathwayFormFields]);
 
   useEffect(() => {
     const updatedData = { ...addPathwayFormFields };
@@ -132,7 +132,7 @@ const AddPathwayForm: React.FC<Props> = ({
     if (allHasProgressionModel.valid) {
       setAllProgressionModel(allHasProgressionModel.data?.Results);
     }
-    if (userOrganizations.length > 0) {
+    if (userOrganizations?.length > 0) {
       setAddPathwayFormFields({
         ...addPathwayFormFields,
         Organization: userOrganizations[0],
@@ -201,16 +201,17 @@ const AddPathwayForm: React.FC<Props> = ({
     const selectedProgressionLevel = allProgressionLevel.filter(
       (level: any) => level.InProgressionModel === selectedProgressionModelCTID
     );
-    setSelectedProgressionLevels(selectedProgressionLevel);
 
+    const updatedAddPathwayWrapperFields = { ...addPathwayWrapperFields };
+    updatedAddPathwayWrapperFields.ProgressionModels = selectedProgressionModel;
+    updatedAddPathwayWrapperFields.ProgressionLevels = selectedProgressionLevel;
+    setAddPathwayWrapeprFields(updatedAddPathwayWrapperFields);
     setSelectedProgressionModelValue(_.get(selectedProgressionModel, '0').Name);
     setAddPathwayFormFields({
       ...addPathwayFormFields,
       HasProgressionModel: [_.get(selectedProgressionModel, '0').RowId],
     });
-    getAllPathwayFormFields(selectedProgressionModel, 'ProgressionModels');
   };
-
   async function fetchOccupationList(e: string): Promise<any[]> {
     const data = new FormData();
     data.append('json', JSON.stringify({ Keywords: e }));
@@ -403,7 +404,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <DebounceSelect
@@ -421,7 +421,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <MultiSelect
@@ -438,7 +437,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <DebounceSelect
@@ -456,7 +454,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <DebounceSelect
@@ -476,7 +473,6 @@ const AddPathwayForm: React.FC<Props> = ({
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
             >
               <MultiSelect
@@ -533,7 +529,6 @@ const AddPathwayForm: React.FC<Props> = ({
                 className="swNoMargin"
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
-                required={true}
                 validateTrigger="onBlur"
               >
                 <AutoCompleteBox

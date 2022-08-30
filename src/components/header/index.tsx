@@ -2,9 +2,11 @@ import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import { noop } from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
+import { saveDataForPathwayRequest } from '../../states/actions';
 
 import Button from '../button';
 import { Type } from '../button/type';
@@ -16,7 +18,31 @@ interface Props {
 }
 const Header = (props: Props) => {
   const { setIsEditPathwayFormVisible } = props;
+  const pathwayWrapper = useSelector(
+    (state: any) => state?.initalReducer?.mappedData
+  );
+  const dispatch = useDispatch();
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
+
+  async function approvePathway(id: string): Promise<any[]> {
+    return fetch(
+      `https://sandbox.credentialengine.org/publisher//PathwayBuilderApi/Approve/Pathway/${id}?userCreds=tara.mueller@protiviti.com~ceI$Awesome`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify({ id }),
+      }
+    )
+      .then((response: any) => response.clone().json())
+      .then((body: any) => body);
+  }
+
+  useEffect(() => {
+    if (!hasPublishVisible) approvePathway('9');
+  }, [hasPublishVisible]);
+
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -29,15 +55,18 @@ const Header = (props: Props) => {
           onClick={() => setHasPublishVisible(!hasPublishVisible)}
           iconOnTop={true}
           text="Approve"
-          disabled
         />
       </div>
     </div>
   );
 
+  const savePathwayWrapper = () => {
+    dispatch(saveDataForPathwayRequest(pathwayWrapper));
+  };
+
   return (
-    <Row className={styles.container}>
-      <Col span={5} className={styles.productImgLayout}>
+    <div className={styles.container + ' header-container'}>
+      <div className={styles.productImgLayout + ' logowrapper'}>
         <Row align="middle" style={{ width: '100%' }}>
           <Col span={4}>
             <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
@@ -53,10 +82,10 @@ const Header = (props: Props) => {
             </Row>
           </Col>
         </Row>
-      </Col>
-      <Col span={18} className={styles.titleDescriptionContainer}>
-        <Row className={styles.headerCenter}>
-          <Col span={10} className={styles.titleContainer}>
+      </div>
+      <div className={styles.titleDescriptionContainer + ' headermiddle'}>
+        <div className={styles.headerCenter}>
+          <div className={styles.titleContainer}>
             <span className={styles.title}>
               National Retail Federation Foundation RISE Up Pathway
             </span>
@@ -66,8 +95,8 @@ const Header = (props: Props) => {
             >
               Edit Pathway Details
             </span>
-          </Col>
-          <Col span={4} className={styles.saveButtonWrapper}>
+          </div>
+          <div className={styles.saveButtonWrapper}>
             <Button
               type={Type.LINK}
               onClick={noop}
@@ -76,7 +105,7 @@ const Header = (props: Props) => {
             <Button
               className={styles.saveButtonSpecification}
               key="save"
-              onClick={noop}
+              onClick={savePathwayWrapper}
               text="save"
               type="selection"
             />
@@ -92,19 +121,19 @@ const Header = (props: Props) => {
             /> 
 
             */}
-          </Col>
-        </Row>
+          </div>
+        </div>
         {hasPublishVisible && (
           <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
         )}
-      </Col>
-      <Col span={1} className={styles.helpContainer}>
+      </div>
+      <div className={styles.helpContainer + ' headerright'}>
         <FontAwesomeIcon
           icon={faCircleQuestion}
           className={styles.imgDimensions}
         />
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 };
 

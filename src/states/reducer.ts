@@ -6,6 +6,9 @@ import {
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_SUCCESS,
   UPDATE_MAPPED_DATA_TO_SEND,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -75,6 +78,11 @@ const initState: RootState = {
     ProgressionLevels: [],
     ProgressionModels: [],
   },
+  approvePathway: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
 };
 
 export default (state = initState, action: { type: string; payload: any }) => {
@@ -135,7 +143,34 @@ export default (state = initState, action: { type: string; payload: any }) => {
         ...state,
         mappedData: action.payload,
       };
-
+    case PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST:
+      return {
+        ...state,
+        approvePathway: {
+          ...state.approvePathway,
+          loading: true,
+        },
+      };
+    case PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS:
+      return {
+        ...state,
+        approvePathway: {
+          ...state.approvePathway,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE:
+      return {
+        ...state,
+        approvePathway: {
+          ...state.approvePathway,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
     default:
       return {
         ...state,

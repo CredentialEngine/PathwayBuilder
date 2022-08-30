@@ -25,6 +25,7 @@ interface Props {
   status?: string;
   CTID?: string;
   id?: number | string;
+  inProgressLevel?: string;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -38,8 +39,8 @@ const MultiCard: React.FC<Props> = ({
   onClick,
   setIsZoomDisabled,
   status,
-  CTID,
   id,
+  inProgressLevel,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
@@ -49,7 +50,7 @@ const MultiCard: React.FC<Props> = ({
     const target = e.target;
     e.dataTransfer.setData(
       'card_id',
-      JSON.stringify({ ...data, status, CTID })
+      JSON.stringify({ ...data, status, inProgressLevel })
     );
     setTimeout(() => {
       target.style.display = 'hidden';
@@ -179,7 +180,7 @@ const MultiCard: React.FC<Props> = ({
               icon={faCubes}
               style={{ height: '24px', width: '24px' }}
             />
-            <span className={styles.title}>{data.Name}</span>
+            <span className={styles.title}>{data.Name.slice(0, 30)}</span>
             <FontAwesomeIcon
               color={darkColor}
               style={{ height: '20px', cursor: 'pointer' }}
@@ -192,7 +193,7 @@ const MultiCard: React.FC<Props> = ({
           />
           <div className={styles.courseNameContainter}>
             <span>{data.CodedNotation}</span>
-            <span>{data.Description}</span>
+            <span>{data.Description.slice(0, 40)}</span>
           </div>
           <div className={styles.creditSection}>
             <span>Credits: 3</span>
@@ -226,7 +227,7 @@ const MultiCard: React.FC<Props> = ({
                   icon={faCubes}
                   style={{ height: '24px', width: '24px' }}
                 />
-                <span className={styles.title}>{data.Name}</span>
+                <span className={styles.title}>{data.Name.slice(0, 30)}</span>
                 <FontAwesomeIcon
                   color={darkColor}
                   style={{ height: '20px', cursor: 'pointer' }}
@@ -242,7 +243,7 @@ const MultiCard: React.FC<Props> = ({
               />
               <div className={styles.courseNameContainter}>
                 <span>{data.CodedNotation}</span>
-                <span>{data.Description}</span>
+                <span>{data.Description.slice(0, 40)}</span>
               </div>
             </div>
           </>
