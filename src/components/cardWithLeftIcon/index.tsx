@@ -34,7 +34,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     inlineStyles,
     draggable,
     id,
-    type,
     getUpdatedCardArr,
     disabledItem,
     type,
