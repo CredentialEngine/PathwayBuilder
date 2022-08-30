@@ -18,7 +18,7 @@ export function fetchPostsApi(value: any) {
   url.search = new URLSearchParams(params).toString();
   const fetchedProxyResources = fetch(url, {
     method: 'POST',
-    body: JSON.stringify(value),
+    body: value,
   })
     .then((response) => response.json())
     .then((json) => json);
