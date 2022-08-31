@@ -1,4 +1,3 @@
-import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -111,6 +110,7 @@ const LeftPanel: React.FC<any> = () => {
       children: (
         <>
           <div className={Styles.cardwrapper}>
+            {console.log(componentTabCards, 'componentTabCards')}
             {componentTabCards.map((card: any, index: any) => (
               <CardWithLeftIcon
                 draggable={true}
@@ -118,8 +118,7 @@ const LeftPanel: React.FC<any> = () => {
                 data={card}
                 name={card.Name}
                 description={card.Description}
-                IconName={faCubes}
-                uri={card.URI}
+                uri={card?.URI}
                 id={card.Id}
                 type={card?.URI}
                 getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}

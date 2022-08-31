@@ -57,9 +57,9 @@ export const saveDataForPathwayFailure = (payload: any) => ({
   type: SAVE_PATHWAY_DATA_FAILURE,
   payload,
 });
-export const approvePathwayRequest = (payload: any) => ({
+export const approvePathwayRequest = (id: any) => ({
   type: PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
-  payload,
+  id,
 });
 export const approvePathwaySuccess = (payload: any) => ({
   type: PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
