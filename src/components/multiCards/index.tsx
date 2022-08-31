@@ -26,6 +26,8 @@ interface Props {
   CTID?: string;
   id?: number | string;
   inProgressLevel?: string;
+  columnId?: string;
+  destinationComponent?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -41,6 +43,7 @@ const MultiCard: React.FC<Props> = ({
   status,
   id,
   inProgressLevel,
+  destinationComponent,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
@@ -89,7 +92,9 @@ const MultiCard: React.FC<Props> = ({
   return (
     <div
       className={`${styles.multiCardWrapper} ${
-        isAddDestination ? styles.addDestinationCard : ''
+        isAddDestination && destinationComponent
+          ? styles.addDestinationCard
+          : ''
       } ${isDestination ? styles.isDestination : ''} ${
         isCourseCard ? styles?.isCourseCard : ''
       } ${isConditionalCard ? styles.conditionalCard : ''} ${
@@ -104,18 +109,20 @@ const MultiCard: React.FC<Props> = ({
       onMouseOver={() => setIsZoomDisabled(true)}
       id={id?.toString()}
     >
-      {(isAddDestination || data.Type === 'addDestination') && (
-        <div className={styles.addDestinationContent}>
-          <p className={styles.addDestinationTitle}>
-            Add your destination component
-          </p>
-          <FontAwesomeIcon
-            style={{ height: '28px', marginTop: '20px' }}
-            color="#ffffff"
-            icon={faCirclePlus}
-          />
-        </div>
-      )}
+      {destinationComponent &&
+        isAddDestination &&
+        data.Type === 'addDestination' && (
+          <div className={styles.addDestinationContent}>
+            <p className={styles.addDestinationTitle}>
+              Add your destination component
+            </p>
+            <FontAwesomeIcon
+              style={{ height: '28px', marginTop: '20px' }}
+              color="#ffffff"
+              icon={faCirclePlus}
+            />
+          </div>
+        )}
 
       {isDestination && (
         <div className={styles.destinationContentWrapper}>
@@ -205,7 +212,7 @@ const MultiCard: React.FC<Props> = ({
       {isCredentialCard ||
         (data?.Type.includes('credentials') && (
           <>
-            <div className={styles.addIcon}>
+            {/* <div className={styles.addIcon}>
               <FontAwesomeIcon
                 icon={faCirclePlus}
                 fill="#000000"
@@ -220,8 +227,24 @@ const MultiCard: React.FC<Props> = ({
                   e.preventDefault();
                 }}
               />
-            </div>
+            </div> */}
             <div className={styles.courseCredCardWrapper}>
+              <div className={styles.addIcon}>
+                <FontAwesomeIcon
+                  icon={faCirclePlus}
+                  fill="#000000"
+                  style={{
+                    height: '22px',
+                    width: '22px',
+                    color: '#ffd363',
+                    cursor: 'pointer',
+                  }}
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                />
+              </div>
               <div className={styles.topCourseContent}>
                 <FontAwesomeIcon
                   icon={faCubes}

@@ -77,6 +77,8 @@ const initState: RootState = {
     PendingComponent: [],
     ProgressionLevels: [],
     ProgressionModels: [],
+    DeletedComponentConditions: [],
+    DeletedComponents: [],
   },
   approvePathway: {
     loading: false,

@@ -7,6 +7,7 @@ import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import React, { useEffect, useRef, useState } from 'react';
+import { ArcherContainer, ArcherElement } from 'react-archer';
 import { useDispatch, useSelector } from 'react-redux';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
@@ -38,12 +39,25 @@ const HomePage: React.FC<Props> = ({
   const [columnsData, setColumnsData] = useState<any>([]);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
+    if (updatedPathwayWrapper.PathwayComponents?.length > 1) {
+      for (let i = 1; i < updatedPathwayWrapper.PathwayComponents.length; i++) {
+        if (
+          !updatedPathwayWrapper.PathwayComponents[0]?.HasChild?.includes(
+            updatedPathwayWrapper.PathwayComponents[0 + i].CTID
+          )
+        )
+          updatedPathwayWrapper.PathwayComponents[0]?.HasChild.push(
+            updatedPathwayWrapper.PathwayComponents[0 + i].CTID
+          );
+      }
+    }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setDeletedComponentCards([]);
   }, [pathwayComponentCards]);
@@ -65,27 +79,29 @@ const HomePage: React.FC<Props> = ({
           ...tempData,
           {
             destinationComponent: true,
-            name: 'Destination Component',
+            Id: '0101',
+            Name: 'Destination Component',
             semesters: [{ id: 1, name: '' }],
           },
         ]);
+      } else {
+        setColumnsData([
+          { id: 0, name: '' },
+          { id: 1, name: 'Destination Component' },
+        ]);
       }
-      //  else {
-      //   setColumnsData([
-      //     { id: 0, name: '' },
-      //     { id: 1, name: 'Destination Component' },
-      //   ]);
-      // }
     }
   }, [pathwayComponent]);
 
   const columnRef = useRef<any>([]);
 
-  columnRef.current = columnsData?.map((column: any) =>
-    column.semesters.map(
-      (element: any, i: any) => (columnRef.current[i] = React.createRef())
-    )
-  );
+  columnRef.current =
+    columnsData &&
+    columnsData?.map((column: any) =>
+      column?.semesters?.map(
+        (element: any, i: any) => (columnRef.current[i] = React.createRef())
+      )
+    );
 
   const onDropHandler = (
     card: any,
@@ -158,97 +174,172 @@ const HomePage: React.FC<Props> = ({
               <TransformWrapper disabled={isZoomDisabled}>
                 <TransformComponent>
                   <div style={{ display: 'flex' }}>
-                    {columnsData.map((column: any, index: any) => (
-                      <div
-                        key="column.id"
-                        style={{
-                          backgroundColor: `${
-                            index % 2 !== 0 ? '#4EE5E1' : '#f0f0f0'
-                          }`,
-                          textAlign: 'center',
-                        }}
-                      >
-                        <span style={{ color: '#000000' }}>{column.Name}</span>
-                        <div style={{ display: 'flex' }}>
-                          {column?.semesters?.map((child: any, i: any) => (
-                            <DropWrapper
-                              id={`${column.Id} ${child.name}`}
-                              onDrop={onDropHandler}
-                              key={child.id}
-                              column={child.name}
-                              inProgressLevel={`${column.CTID} ${child?.name}`}
-                              HasProgressionLevel={column.CTID}
-                              destinationColumn={!!column?.destinationComponent}
-                              forwardRef={columnRef.current[i]}
-                              width="450px"
-                            >
-                              <div
-                                key={child.title}
-                                className={Styles.container}
-                                style={{
-                                  backgroundColor: `${
-                                    i % 2 !== 0 ? '#ffffff' : '#f0f0f0'
-                                  }`,
-                                }}
+                    {columnsData &&
+                      columnsData?.map((column: any, index: any) => (
+                        <div
+                          key="column.id"
+                          style={{
+                            backgroundColor: `${
+                              index % 2 !== 0 ? '#4EE5E1' : '#f0f0f0'
+                            }`,
+                            textAlign: 'center',
+                          }}
+                        >
+                          <span style={{ color: '#000000' }}>
+                            {column.Name}
+                          </span>
+                          <div style={{ display: 'flex' }}>
+                            {column?.semesters?.map((child: any, i: any) => (
+                              <DropWrapper
+                                id={`${column.Id} ${child.name}`}
+                                onDrop={onDropHandler}
+                                key={child.id}
+                                column={child.name}
+                                inProgressLevel={`${column.CTID} ${child?.name}`}
+                                HasProgressionLevel={column.CTID}
+                                destinationColumn={
+                                  !!column?.destinationComponent
+                                }
+                                forwardRef={columnRef.current[i]}
+                                width="450px"
                               >
                                 <div
+                                  key={child.title}
+                                  className={Styles.container}
                                   style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginBottom: '150px',
+                                    backgroundColor: `${
+                                      i % 2 !== 0 ? '#ffffff' : '#f0f0f0'
+                                    }`,
                                   }}
                                 >
-                                  <span
+                                  <div
                                     style={{
-                                      width: '100%',
-                                      backgroundColor: `${
-                                        child.id % 2 === 0
-                                          ? '#D3F8F7'
-                                          : '#6EFFFF'
-                                      }`,
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                      marginBottom: '150px',
                                     }}
                                   >
-                                    {child.name}
-                                  </span>
-                                  {pathwayComponentCards
-                                    .filter(
-                                      (card: any) =>
-                                        card?.inProgressLevel ==
-                                          `${column?.CTID} ${child?.name}` &&
-                                        card.HasProgressionLevel === column.CTID
-                                    )
-                                    .map((item: any) => (
-                                      <MultiCard
-                                        onClick={() => setShowRightPanel(true)}
-                                        key={item.id}
-                                        id={item.id}
-                                        isCredentialCard={item.Type.toLowerCase().includes(
-                                          'credential'.toLowerCase()
-                                        )}
-                                        isCourseCard={item.Type.toLowerCase().includes(
-                                          'basic'.toLowerCase()
-                                        )}
-                                        isConditionalCard={item.Type.toLowerCase().includes(
-                                          'condition'.toLowerCase()
-                                        )}
-                                        isDestination={item.Type.toLowerCase().includes(
-                                          'destination'.toLowerCase()
-                                        )}
-                                        data={item}
-                                        setIsZoomDisabled={setIsZoomDisabled}
-                                        status={column.Id}
-                                        inProgressLevel={`${column.CTID} ${child?.name}`}
-                                      />
-                                    ))}
+                                    <span
+                                      style={{
+                                        width: '100%',
+                                        backgroundColor: `${
+                                          child.id % 2 === 0
+                                            ? '#D3F8F7'
+                                            : '#6EFFFF'
+                                        }`,
+                                      }}
+                                    >
+                                      {child.name}
+                                    </span>
+                                    <ArcherContainer strokeColor="red">
+                                      {pathwayComponentCards.length > 0 ? (
+                                        pathwayComponentCards
+                                          .filter(
+                                            (card: any) =>
+                                              card?.inProgressLevel ==
+                                                `${column?.CTID} ${child?.name}` &&
+                                              card.HasProgressionLevel ===
+                                                column.CTID
+                                          )
+                                          .map((item: any) => {
+                                            const relations = [] as any;
+                                            if (
+                                              column?.destinationComponent &&
+                                              item?.HasChild?.length > 0
+                                            ) {
+                                              item?.HasChild?.forEach(
+                                                (item: any) =>
+                                                  relations.push({
+                                                    targetId: item,
+                                                    targetAnchor: 'left',
+                                                    sourceAnchor: 'right',
+                                                    style: {
+                                                      strokeColor: 'blue',
+                                                      strokeWidth: 1,
+                                                    },
+                                                  })
+                                              );
+                                            }
+                                            return (
+                                              <ArcherElement
+                                                id={
+                                                  column?.destinationComponent
+                                                    ? item?.CTID
+                                                    : ''
+                                                }
+                                                key={item?.CTID}
+                                                relations={
+                                                  column?.destinationComponent
+                                                    ? relations
+                                                    : []
+                                                }
+                                              >
+                                                <MultiCard
+                                                  onClick={() =>
+                                                    setShowRightPanel(true)
+                                                  }
+                                                  key={item.id}
+                                                  id={item.CTID}
+                                                  isCredentialCard={
+                                                    column?.destinationComponent ||
+                                                    item.Type.toLowerCase().includes(
+                                                      'credential'.toLowerCase()
+                                                    )
+                                                  }
+                                                  isCourseCard={item.Type.toLowerCase().includes(
+                                                    'basic'.toLowerCase()
+                                                  )}
+                                                  isConditionalCard={item.Type.toLowerCase().includes(
+                                                    'condition'.toLowerCase()
+                                                  )}
+                                                  isDestination={item.Type.toLowerCase().includes(
+                                                    'destination'.toLowerCase()
+                                                  )}
+                                                  data={item}
+                                                  setIsZoomDisabled={
+                                                    setIsZoomDisabled
+                                                  }
+                                                  status={column.Id}
+                                                  inProgressLevel={`${column.CTID} ${child?.name}`}
+                                                />
+                                              </ArcherElement>
+                                            );
+                                          })
+                                      ) : (
+                                        <>
+                                          <MultiCard
+                                            onClick={() =>
+                                              setShowRightPanel(true)
+                                            }
+                                            key={0}
+                                            id={0}
+                                            isAddDestination={
+                                              column?.destinationComponent
+                                                ? true
+                                                : false
+                                            }
+                                            data={{ Type: 'addDestination' }}
+                                            destinationComponent={
+                                              column?.destinationComponent
+                                            }
+                                            setIsZoomDisabled={
+                                              setIsZoomDisabled
+                                            }
+                                            status={column.Id}
+                                            inProgressLevel={`${column.CTID} ${child?.name}`}
+                                          />
+                                        </>
+                                      )}
+                                    </ArcherContainer>
+                                  </div>
                                 </div>
-                              </div>
-                            </DropWrapper>
-                          ))}
+                              </DropWrapper>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </TransformComponent>
               </TransformWrapper>
