@@ -24,4 +24,4 @@ export const SEARCH_FOR_LEST_RIGHT_OPERAND =
 export const PATHWAY_COMPONENT_PROXY_FOR =
   'PathwayBuilderApi/Search/Resource/PathwayComponent_ProxyFor';
 export const PATHWAYBUILDERAPI_APPROVE_PATHWAY =
-  'PathwayBuilderApi/Approve/Pathway';
+  'PathwayBuilderApi/Approve/Pathway/';
