@@ -190,7 +190,7 @@ const App = () => {
           width="650px"
           footer={[
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex' }}>
                 <Button
                   type={Type.PRIMARY}
                   onClick={onPathwaySaveHandler}
@@ -200,9 +200,9 @@ const App = () => {
                   }
                 />
                 <Button
-                  type={Type.PRIMARY}
+                  type={Type.CANCEL}
                   onClick={onPreSelectResourceCancelHandler}
-                  text="Cancel"
+                  text="Skiping"
                 />
               </div>
             </>,

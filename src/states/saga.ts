@@ -18,6 +18,7 @@ import {
 import {
   GET_CURRENT_USER_REQUEST,
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
+  PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
   SAVE_PATHWAY_DATA_REQUEST,
 } from './actionTypes';
 
@@ -50,10 +51,10 @@ export function* getPathwayAndComponentData(payload: any): Generator {
     yield put(getDataForPathwayAndComponentsFailure(error));
   }
 }
-export function* approvePathway(): Generator {
+export function* approvePathway(payload: any): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}`,
+      url: `${BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}${payload?.id}`,
       method: 'POST',
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
@@ -89,7 +90,7 @@ function* saga() {
     GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
     getPathwayAndComponentData
   );
-  yield takeLatest(PATHWAYBUILDERAPI_APPROVE_PATHWAY, approvePathway);
+  yield takeLatest(PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST, approvePathway);
   yield takeLatest(SAVE_PATHWAY_DATA_REQUEST, getSavePathwayWrapper);
 }
 

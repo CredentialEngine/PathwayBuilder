@@ -8,6 +8,9 @@ import {
   GET_LOGICAL_OPERATOR_FAILURE,
   GET_LOGICAL_OPERATOR_REQUEST,
   GET_LOGICAL_OPERATOR_SUCCESS,
+  GET_CONSTRAINT_OPERAND_REQUEST,
+  GET_CONSTRAINT_OPERAND_SUCCESS,
+  GET_CONSTRAINT_OPERAND_FAILURE,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -23,6 +26,11 @@ const initState: RootState = {
     valid: false,
   },
   arrayOperationData: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
+  constraintOperantData: {
     loading: false,
     data: null,
     valid: false,
@@ -103,6 +111,34 @@ export default (state = initState, action: { type: string; payload: any }) => {
         ...state,
         arrayOperationData: {
           ...state.arrayOperationData,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case GET_CONSTRAINT_OPERAND_REQUEST:
+      return {
+        ...state,
+        constraintOperantData: {
+          ...state.constraintOperantData,
+          loading: true,
+        },
+      };
+    case GET_CONSTRAINT_OPERAND_SUCCESS:
+      return {
+        ...state,
+        constraintOperantData: {
+          ...state.constraintOperantData,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case GET_CONSTRAINT_OPERAND_FAILURE:
+      return {
+        ...state,
+        constraintOperantData: {
+          ...state.constraintOperantData,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,

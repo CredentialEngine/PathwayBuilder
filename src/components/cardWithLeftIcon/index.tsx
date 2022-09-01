@@ -2,7 +2,11 @@ import {
   faCubes,
   faGear,
   faFileCircleCheck,
-  faStar,
+  faIdBadge,
+  faSitemap,
+  faGraduationCap,
+  faCube,
+  faCartShopping,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
@@ -27,9 +31,11 @@ export interface Props {
   CTID?: any;
   data?: any;
   IconName?: any;
+  isComponentTab?: boolean;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
+  const { isComponentTab, data } = props;
   const {
     Name,
     Description,
@@ -59,6 +65,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     e.target.style.visibility = 'visible';
     !!props.getUpdatedCardArr && props.getUpdatedCardArr(CTID);
   };
+
   return (
     <Card
       size="small"
@@ -73,30 +80,76 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       <Row>
         <Col span="5">
           <span className={styles.iconwrapper + ' customicon'}>
-            {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faStar} color={IconColor} />
-            )}
-            {Type?.toLowerCase().includes('course'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faCubes} color={IconColor} />
-            )}
-            {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faCubes} color={IconColor} />
-            )}
-            {Type?.toLowerCase().includes('competency'.toLocaleLowerCase()) && (
-              <FontAwesomeIcon icon={faGear} color={IconColor} />
-            )}
-            {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+            {isComponentTab ? (
+              <>
+                {data?.URI?.toLowerCase().includes(
+                  'AssessmentComponent'.toLowerCase()
+                ) && (
+                  <FontAwesomeIcon icon={faGraduationCap} color={IconColor} />
+                )}
+                {data?.URI?.toLowerCase().includes(
+                  'BasicComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCube} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CocurricularComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CompetencyComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faGear} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CourseComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'ExtracurricularComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'JobComponent'.toLowerCase()
+                ) && (
+                  <FontAwesomeIcon icon={faCartShopping} color={IconColor} />
+                )}
+                {data?.URI?.toLowerCase().includes(
+                  'WorkExperienceComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faIdBadge} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CredentialComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faIdBadge} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'ComonentCondition'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faSitemap} color={IconColor} />}
+              </>
+            ) : (
+              <>
+                {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faIdBadge} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes('course'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faCubes} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faCubes} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes(
+                  'competency'.toLocaleLowerCase()
+                ) && <FontAwesomeIcon icon={faGear} color={IconColor} />}
+                {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+                )}
+              </>
             )}
           </span>
         </Col>
         <Col span="19">
-          <p>{Name}</p>
-          <h5>
-            {(CodedNotation ? CodedNotation : '') +
-              ' ' +
-              Description.slice(0, 30)}
-          </h5>
+          <>
+            <p>{Name}</p>
+            <h5>
+              {(CodedNotation ? CodedNotation : '') +
+                ' ' +
+                Description.slice(0, 30)}
+            </h5>
+          </>
         </Col>
       </Row>
     </Card>

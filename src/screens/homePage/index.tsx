@@ -284,17 +284,17 @@ const HomePage: React.FC<Props> = ({
                                                   id={item.CTID}
                                                   isCredentialCard={
                                                     column?.destinationComponent ||
-                                                    item.Type.toLowerCase().includes(
+                                                    item.Type?.toLowerCase().includes(
                                                       'credential'.toLowerCase()
                                                     )
                                                   }
-                                                  isCourseCard={item.Type.toLowerCase().includes(
+                                                  isCourseCard={item.Type?.toLowerCase().includes(
                                                     'basic'.toLowerCase()
                                                   )}
-                                                  isConditionalCard={item.Type.toLowerCase().includes(
+                                                  isConditionalCard={item.Type?.toLowerCase().includes(
                                                     'condition'.toLowerCase()
                                                   )}
-                                                  isDestination={item.Type.toLowerCase().includes(
+                                                  isDestination={item.Type?.toLowerCase().includes(
                                                     'destination'.toLowerCase()
                                                   )}
                                                   data={item}
