@@ -15,6 +15,7 @@ import Styles from './index.module.scss';
 import {
   getAllArrayConceptsRequest,
   getAllComparatorsRequest,
+  getConstraintOperandRequest,
   getLogicalOperatorsRequest,
 } from './state/actions';
 
@@ -37,6 +38,7 @@ const AddConditionalComponent: React.FC = () => {
   const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
   const [allComparators, setAllComparators] = useState<any>([]);
   const [allArrayConcept, setAllArrayConcept] = useState<any>([]);
+  const [allConstraintOperand, setAllConstraintOperand] = useState<any>([]);
 
   const dispatch = useDispatch();
   // const onFinish = (values: any) => {
@@ -53,6 +55,8 @@ const AddConditionalComponent: React.FC = () => {
   const getAllArrayConcept = useSelector(
     (state: any) => state.addConditionalComponent.arrayOperationData
   );
+
+  const getConstraintOperand = useSelector((state: any) => state);
   useEffect(() => {
     if (getAllLogicalOperator.valid)
       setAllLogicOperators(
@@ -78,12 +82,26 @@ const AddConditionalComponent: React.FC = () => {
           label: dta.Name,
         }))
       );
-  }, [getAllLogicalOperator, getAllComparators, getAllArrayConcept]);
+    if (getConstraintOperand.valid)
+      setAllConstraintOperand(
+        getConstraintOperand.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+  }, [
+    getAllLogicalOperator,
+    getAllComparators,
+    getAllArrayConcept,
+    getConstraintOperand,
+  ]);
 
   useEffect(() => {
     dispatch(getLogicalOperatorsRequest());
     dispatch(getAllComparatorsRequest());
     dispatch(getAllArrayConceptsRequest());
+    dispatch(getConstraintOperandRequest());
   }, []);
 
   return (
@@ -146,14 +164,20 @@ const AddConditionalComponent: React.FC = () => {
               {fields.map((v, i) => (
                 <Row gutter={20} key={i}>
                   <Col span="9">
-                    <Form.Item>
-                      <MultiSelect
-                        placeholder="Left Sources"
-                        options={companyList}
-                        optionLabelProp="label"
-                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                      />
-                    </Form.Item>
+                    <>
+                      {console.log(
+                        { allConstraintOperand, getConstraintOperand },
+                        'allConstraintOperand'
+                      )}
+                      <Form.Item>
+                        <MultiSelect
+                          placeholder="Left Sources"
+                          options={companyList}
+                          optionLabelProp="label"
+                          // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
+                        />
+                      </Form.Item>
+                    </>
                   </Col>
                   <Col span="6">
                     <Form.Item>

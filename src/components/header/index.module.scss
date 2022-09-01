@@ -76,7 +76,7 @@
 .titleDescriptionContainer {
   display: flex;
   flex-direction: row;
-  width: 80%;
+  width: calc(100% - 278px);
   background: #edfcfc 0% 0% no-repeat padding-box;
   justify-content: space-between;
 }

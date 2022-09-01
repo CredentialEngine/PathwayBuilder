@@ -110,9 +110,9 @@ const LeftPanel: React.FC<any> = () => {
       children: (
         <>
           <div className={Styles.cardwrapper}>
-            {console.log(componentTabCards, 'componentTabCards')}
             {componentTabCards.map((card: any, index: any) => (
               <CardWithLeftIcon
+                isComponentTab={true}
                 draggable={true}
                 key={index}
                 data={card}
