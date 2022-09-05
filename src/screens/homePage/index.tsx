@@ -276,34 +276,36 @@ const HomePage: React.FC<Props> = ({
                                                     : []
                                                 }
                                               >
-                                                <MultiCard
-                                                  onClick={() =>
-                                                    setShowRightPanel(true)
-                                                  }
-                                                  key={item.id}
-                                                  id={item.CTID}
-                                                  isCredentialCard={
-                                                    column?.destinationComponent ||
-                                                    item.Type?.toLowerCase().includes(
-                                                      'credential'.toLowerCase()
-                                                    )
-                                                  }
-                                                  isCourseCard={item.Type?.toLowerCase().includes(
-                                                    'basic'.toLowerCase()
-                                                  )}
-                                                  isConditionalCard={item.Type?.toLowerCase().includes(
-                                                    'condition'.toLowerCase()
-                                                  )}
-                                                  isDestination={item.Type?.toLowerCase().includes(
-                                                    'destination'.toLowerCase()
-                                                  )}
-                                                  data={item}
-                                                  setIsZoomDisabled={
-                                                    setIsZoomDisabled
-                                                  }
-                                                  status={column.Id}
-                                                  inProgressLevel={`${column.CTID} ${child?.name}`}
-                                                />
+                                                <>
+                                                  <MultiCard
+                                                    onClick={() =>
+                                                      setShowRightPanel(true)
+                                                    }
+                                                    key={item.id}
+                                                    id={item.CTID}
+                                                    isCredentialCard={
+                                                      column?.destinationComponent ||
+                                                      item.Type?.toLowerCase().includes(
+                                                        'credential'.toLowerCase()
+                                                      )
+                                                    }
+                                                    isCourseCard={item.Type?.toLowerCase().includes(
+                                                      'basic'.toLowerCase()
+                                                    )}
+                                                    isConditionalCard={item.Type?.toLowerCase().includes(
+                                                      'condition'.toLowerCase()
+                                                    )}
+                                                    isDestination={item.Type?.toLowerCase().includes(
+                                                      'destination'.toLowerCase()
+                                                    )}
+                                                    data={item}
+                                                    setIsZoomDisabled={
+                                                      setIsZoomDisabled
+                                                    }
+                                                    status={column.Id}
+                                                    inProgressLevel={`${column.CTID} ${child?.name}`}
+                                                  />
+                                                </>
                                               </ArcherElement>
                                             );
                                           })

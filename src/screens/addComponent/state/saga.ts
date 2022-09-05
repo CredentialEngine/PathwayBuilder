@@ -70,14 +70,15 @@ export function* getArrayConceptData(): Generator {
   }
 }
 
-export function* getAllConstraintOperand(): Generator {
+export function* getAllConstraintOperand(data: any): Generator {
   try {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}`,
-      method: 'GET',
+      method: 'POST',
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
+      body: JSON.stringify(data),
     });
     yield put(getLogicalOperatorsSuccess(result));
   } catch (error) {
