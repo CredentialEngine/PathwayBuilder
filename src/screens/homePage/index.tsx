@@ -201,8 +201,19 @@ const HomePage: React.FC<Props> = ({
                                   !!column?.destinationComponent
                                 }
                                 forwardRef={columnRef.current[i]}
-                                width="450px"
+                                className={Styles.dropWrapper}
                               >
+                                <span
+                                  style={{
+                                    display: 'block',
+                                    width: '100%',
+                                    backgroundColor: `${
+                                      child.id % 2 === 0 ? '#D3F8F7' : '#6EFFFF'
+                                    }`,
+                                  }}
+                                >
+                                  {child.name}
+                                </span>
                                 <div
                                   key={child.title}
                                   className={Styles.container}
@@ -221,19 +232,10 @@ const HomePage: React.FC<Props> = ({
                                       marginBottom: '150px',
                                     }}
                                   >
-                                    <span
-                                      style={{
-                                        width: '100%',
-                                        backgroundColor: `${
-                                          child.id % 2 === 0
-                                            ? '#D3F8F7'
-                                            : '#6EFFFF'
-                                        }`,
-                                      }}
+                                    <ArcherContainer
+                                      strokeColor="red"
+                                      className={Styles.archerContainer}
                                     >
-                                      {child.name}
-                                    </span>
-                                    <ArcherContainer strokeColor="red">
                                       {pathwayComponentCards.length > 0 ? (
                                         pathwayComponentCards
                                           .filter(

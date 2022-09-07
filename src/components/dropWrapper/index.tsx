@@ -12,6 +12,7 @@ interface Props {
   destinationColumn?: boolean;
   HasProgressionLevel?: string;
   inProgressLevel?: string;
+  className?: any;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -24,6 +25,7 @@ const DropWrapper: React.FC<Props> = ({
   destinationColumn,
   HasProgressionLevel,
   inProgressLevel,
+  className,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   // const [updatedWidth, setWidth] = useState(width);
@@ -58,8 +60,9 @@ const DropWrapper: React.FC<Props> = ({
         height: 'auto',
         backgroundColor: '#ffffff',
       }}
+      className={className}
     >
-      {children}
+      <div d-attr="title">{children}</div>
     </div>
   );
 };

@@ -53,3 +53,16 @@
     background-color: #ffffff;
   }
 }
+.archerContainer {
+  & > div {
+    display: block;
+  }
+}
+.dropWrapper {
+  min-width: 450px;
+}
+.flexRow {
+  min-width: 50px;
+  height: 100vh;
+  background: #edfcfc;
+}
