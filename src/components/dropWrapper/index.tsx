@@ -12,6 +12,7 @@ interface Props {
   destinationColumn?: boolean;
   HasProgressionLevel: string;
   index: number;
+  className?: any;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const DropWrapper: React.FC<Props> = ({
   destinationColumn,
   HasProgressionLevel,
   index,
+  className,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
@@ -54,11 +56,12 @@ const DropWrapper: React.FC<Props> = ({
         height: 'auto',
         backgroundColor: '#ffffff',
       }}
+      className={className}
       ref={(element: any) => {
         wrapperRef.current[index] = element;
       }}
     >
-      {children}
+      <div d-attr="title">{children}</div>
     </div>
   );
 };

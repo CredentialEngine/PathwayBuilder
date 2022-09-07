@@ -7,6 +7,9 @@ export default async function fetchProgressionList(data: any) {
       {
         method: 'post', // *GET, POST, PUT, DELETE, etc.
         body: JSON.stringify(data), // body data type must match "Content-Type" header
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
       }
     ).then(async (response) => {
       const json = await response.json();

@@ -212,17 +212,17 @@ const AddPathwayForm: React.FC<Props> = ({
     });
   };
   async function fetchOccupationList(e: string): Promise<any[]> {
-    const data = new FormData();
-    data.append('json', JSON.stringify({ Keywords: e }));
+    // const data = new FormData();
+    // data.append('json', JSON.stringify({ Keywords: e }));
 
     return fetch(
       'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/OccupationType',
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json; charset=utf-8',
         },
-        body: data,
+        body: JSON.stringify({ Keywords: e }),
       }
     )
       .then((response: any) => response.clone().json())
@@ -250,8 +250,10 @@ const AddPathwayForm: React.FC<Props> = ({
       'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/IndustryType',
       {
         method: 'POST',
-
-        body: data,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify({ Keywords: e }),
       }
     )
       .then((response: any) => response.clone().json())
@@ -280,9 +282,9 @@ const AddPathwayForm: React.FC<Props> = ({
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json; charset=utf-8',
         },
-        body: data,
+        body: JSON.stringify({ Keywords: e }),
       }
     )
       .then((response: any) => response.clone().json())
