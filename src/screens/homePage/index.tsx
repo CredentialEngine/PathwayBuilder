@@ -38,6 +38,7 @@ const HomePage: React.FC<Props> = ({
   //   useState<boolean>(false);
   const [columnsData, setColumnsData] = useState<any>([]);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const [rightPanelData, setRightPanelData] = useState({});
   const { mappedData: pathwayComponent } = pathwayWrapper;
 
   const dispatch = useDispatch();
@@ -280,9 +281,10 @@ const HomePage: React.FC<Props> = ({
                                               >
                                                 <>
                                                   <MultiCard
-                                                    onClick={() =>
-                                                      setShowRightPanel(true)
-                                                    }
+                                                    onClick={() => {
+                                                      setShowRightPanel(true);
+                                                      setRightPanelData(item);
+                                                    }}
                                                     key={item.id}
                                                     id={item.CTID}
                                                     isCredentialCard={
@@ -355,6 +357,7 @@ const HomePage: React.FC<Props> = ({
         <RightPanel
           visible={showRightPanel}
           onCloseHandler={(value: boolean) => setShowRightPanel(value)}
+          panelData={rightPanelData}
         />
       )}
       {/* <Modal
