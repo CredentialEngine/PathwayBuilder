@@ -1,9 +1,10 @@
 import { faCaretDown, faCubes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider, Drawer, Row } from 'antd';
+import { Divider, Drawer, Row, Collapse } from 'antd';
 import { noop } from 'lodash';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
+const { Panel } = Collapse;
 import Button from '../button';
 
 import { Type } from '../button/type';
@@ -21,6 +22,12 @@ const RightPanel: React.FC<Props> = ({
   visible,
   panelData,
 }) => {
+  const [destinationText, setDestinationText] = useState(
+    panelData?.Description
+  );
+  const [destinationTextCondition, setDestinationTextCondition] =
+    useState(false);
+
   const ref = useRef(null);
 
   useEffect(() => {
@@ -35,9 +42,20 @@ const RightPanel: React.FC<Props> = ({
       }
     }
   };
+
   const extractComponentType = (type: string) => {
     const typeValue = type.split(':')[1];
     return typeValue;
+  };
+
+  const viewDescription = () => {
+    setDestinationText(panelData?.Description);
+    setDestinationTextCondition(!destinationTextCondition);
+  };
+  const hideDescription = () => {
+    const truncatedDescription = panelData?.Description.substr(0, 300);
+    setDestinationText(truncatedDescription);
+    setDestinationTextCondition(!destinationTextCondition);
   };
 
   return (
@@ -88,25 +106,44 @@ const RightPanel: React.FC<Props> = ({
         </Row>
         <Divider />
         <Row>
-          <p className={styles.content}>{panelData?.Description}</p>
+          <p className={styles.content}>{destinationText}</p>
         </Row>
         <Row className={styles.buttonContainer}>
-          <Button
-            className={styles.button}
-            type={Type.LINK}
-            onClick={noop}
-            text="View less"
-          />
+          {destinationTextCondition ? (
+            <Button
+              className={styles.button}
+              type={Type.LINK}
+              onClick={viewDescription}
+              text="View More"
+            />
+          ) : (
+            <Button
+              className={styles.button}
+              type={Type.LINK}
+              onClick={hideDescription}
+              text="View less"
+            />
+          )}
         </Row>
         <Divider />
         <Row className={styles.requiredBlock}>
-          <FontAwesomeIcon
-            icon={faCaretDown}
-            style={{ height: '20px', alignSelf: 'center' }}
-          />
-          <span className={styles.require}>Requires (1)</span>
+          <Collapse defaultActiveKey={['1']} ghost>
+            <Panel
+              header={
+                <>
+                  <FontAwesomeIcon
+                    icon={faCaretDown}
+                    style={{ height: '20px', alignSelf: 'center' }}
+                  />
+                  <span className={styles.require}>Requires (1)</span>
+                </>
+              }
+              key="1"
+            >
+              <p className={styles.text}>Pass the Business of Retail Exam</p>
+            </Panel>
+          </Collapse>
         </Row>
-        <p className={styles.text}>Pass the Business of Retail Exam</p>
       </div>
     </Drawer>
   );
