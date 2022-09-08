@@ -48,3 +48,20 @@ export default async function fetchProgressionList(data: any) {
     noop;
   }
 }
+export async function getAllConstraintOperand(data: any) {
+  try {
+    const res = await fetch(
+      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Resource/Constraint_Operand?userCreds=tara.mueller%40protiviti.com~ceI$Awesome',
+      {
+        method: 'post', // *GET, POST, PUT, DELETE, etc.
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+      }
+    ).then(async (response) => {
+      const json = await response.json();
+      return json;
+    });
+    return res;
+  } catch (error: any) {
+    noop;
+  }
+}
