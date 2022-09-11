@@ -10,6 +10,7 @@ import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
+import { getAllConstraintOperand } from '../../utils/fetchSearchResponse';
 
 import Styles from './index.module.scss';
 import {
@@ -18,30 +19,30 @@ import {
   getLogicalOperatorsRequest,
 } from './state/actions';
 
-const companyList = [
-  {
-    key: 1,
-    value: 'company',
-    label: 'company',
-    title: 'Company',
-  },
-  {
-    key: 2,
-    title: 'New Company',
-    value: 'Newcompany',
-    label: 'New company',
-  },
-];
+const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
+const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
+const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
 const AddConditionalComponent: React.FC = () => {
   const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
   const [allComparators, setAllComparators] = useState<any>([]);
+  const [selectedComparators, setSelectedComparators] = useState<any>();
   const [allArrayConcept, setAllArrayConcept] = useState<any>([]);
+  const [allConstraintOperand, setAllConstraintOperand] = useState<any>([]);
+  const [leftSourcedata, setleftSourceData] = useState<any>();
+  const [rightSourcedata, setRightSourceData] = useState<any>();
+  const [errorField, setErrorField] = useState<any>([]);
 
   const dispatch = useDispatch();
   // const onFinish = (values: any) => {
   //   console.log('Received values of form:', values);
   // };
+  const searchLeftConstraintOperand = (value: any) => {
+    setleftSourceData(value);
+  };
+  const searchRightConstraintOperand = (value: any) => {
+    setRightSourceData(value);
+  };
   const getAllLogicalOperator = useSelector(
     (state: any) => state.addConditionalComponent.logicalOperatorData
   );
@@ -53,6 +54,30 @@ const AddConditionalComponent: React.FC = () => {
   const getAllArrayConcept = useSelector(
     (state: any) => state.addConditionalComponent.arrayOperationData
   );
+
+  const funcSelectedComparators = (value: any) => {
+    setSelectedComparators(value);
+  };
+
+  const allConstraintOperandfunc = async () => {
+    const data = await getAllConstraintOperand(leftSourcedata);
+    if (data.Data.Results) {
+      setAllConstraintOperand(
+        data.Data.Results.map((value: any) => ({
+          ...value,
+          value: value.Name,
+          label: value.Name,
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (leftSourcedata !== '') {
+      allConstraintOperandfunc();
+    }
+  }, [leftSourcedata]);
+
   useEffect(() => {
     if (getAllLogicalOperator.valid)
       setAllLogicOperators(
@@ -85,6 +110,34 @@ const AddConditionalComponent: React.FC = () => {
     dispatch(getAllComparatorsRequest());
     dispatch(getAllArrayConceptsRequest());
   }, []);
+
+  const saveCondition = () => {
+    if (!leftSourcedata?.length)
+      setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
+    else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
+    else if (!rightSourcedata?.length)
+      setErrorField([PLEASE_SELECT_RIGHT_SOURCE_VALUE]);
+    else {
+      setErrorField(['']);
+      const saveCondition = {
+        rowid: 'asdasdasdasd',
+        leftSource: [
+          {
+            URI: 'ceterms:AdvancedStandingAction',
+            Name: leftSourcedata,
+          },
+        ],
+        comparator: `compare:${selectedComparators}`,
+        rightSource: [
+          {
+            URI: 'ceterms:AdvancedStandingAction',
+            Name: rightSourcedata,
+          },
+        ],
+      };
+      saveCondition;
+    }
+  };
 
   return (
     <div className={Styles.addComponentwrapper}>
@@ -135,25 +188,23 @@ const AddConditionalComponent: React.FC = () => {
         <label>Constraints</label>
         <hr className="min-top" />
       </div>
-      <Form
-        name="dynamic_form_nest_item"
-        // onFinish={onFinish}
-        autoComplete="off"
-      >
+      <Form name="dynamic_form_nest_item" autoComplete="off">
         <Form.List name="users">
           {(fields, { add }) => (
             <>
               {fields.map((v, i) => (
                 <Row gutter={20} key={i}>
                   <Col span="9">
-                    <Form.Item>
-                      <MultiSelect
-                        placeholder="Left Sources"
-                        options={companyList}
-                        optionLabelProp="label"
-                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                      />
-                    </Form.Item>
+                    <>
+                      <Form.Item>
+                        <MultiSelect
+                          placeholder="Left Sources"
+                          options={allConstraintOperand}
+                          optionLabelProp="label"
+                          onChange={(e) => searchLeftConstraintOperand(e)}
+                        />
+                      </Form.Item>
+                    </>
                   </Col>
                   <Col span="6">
                     <Form.Item>
@@ -161,17 +212,29 @@ const AddConditionalComponent: React.FC = () => {
                         options={allComparators}
                         defaultValue="Equals"
                         showSearch={false}
+                        onChange={(e) => funcSelectedComparators(e)}
                       />
                     </Form.Item>
                   </Col>
                   <Col span="9">
                     <Form.Item>
-                      <MultiSelect
-                        placeholder="Right Sources"
-                        options={allArrayConcept}
-                        optionLabelProp="label"
-                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                      />
+                      <>
+                        {rightSourcedata?.length > 1 && (
+                          <Dropdown
+                            options={allArrayConcept}
+                            defaultValue="Any Of"
+                            showSearch={false}
+                          />
+                        )}
+
+                        <MultiSelect
+                          mode="tags"
+                          options={allConstraintOperand}
+                          optionLabelProp="label"
+                          placeholder="Right Sources"
+                          onChange={(e) => searchRightConstraintOperand(e)}
+                        />
+                      </>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -187,11 +250,17 @@ const AddConditionalComponent: React.FC = () => {
       </Form>
 
       <hr />
+      {errorField?.map((error: string) => (
+        <p key={error} className="error">
+          {error}
+        </p>
+      ))}
+      <br />
       <Button
         size="medium"
         text="Save Consition"
         type="primary"
-        onClick={noop}
+        onClick={saveCondition}
       />
     </div>
   );

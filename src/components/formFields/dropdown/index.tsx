@@ -11,19 +11,22 @@ export type DropdownProps = {
   placeholder?: string;
   showSearch?: boolean;
   options?: any;
+  onChange?: (event: any) => void;
+  onSearch?: (event: any) => void;
 };
 
 export const Dropdown = (props: DropdownProps) => {
-  const { children, placeholder, defaultValue, style, showSearch, options } =
-    props;
+  const {
+    children,
+    placeholder,
+    defaultValue,
+    style,
+    showSearch,
+    options,
+    onChange,
+    onSearch,
+  } = props;
 
-  // const onChange = (value: string) => {
-  //   console.log(`selected ${value}`);
-  // };
-
-  // const onSearch = (value: string) => {
-  //   console.log('search:', value);
-  // };
   return (
     <>
       {showSearch ? (
@@ -46,8 +49,8 @@ export const Dropdown = (props: DropdownProps) => {
         </Select>
       ) : (
         <Select
-          // onChange={onChange}
-          // onSearch={onSearch}
+          onChange={onChange}
+          onSearch={onSearch}
           options={options}
           defaultValue={defaultValue}
           placeholder={placeholder}

@@ -6,7 +6,10 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
-import { saveDataForPathwayRequest } from '../../states/actions';
+import {
+  approvePathwayRequest,
+  saveDataForPathwayRequest,
+} from '../../states/actions';
 
 import Button from '../button';
 import { Type } from '../button/type';
@@ -24,26 +27,8 @@ const Header = (props: Props) => {
   const dispatch = useDispatch();
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
 
-  async function approvePathway(id: string): Promise<any[]> {
-    return fetch(
-      `https://sandbox.credentialengine.org/publisher//PathwayBuilderApi/Approve/Pathway/${id}?userCreds=tara.mueller@protiviti.com~ceI$Awesome`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: JSON.stringify({ id }),
-      }
-    )
-      .then((response: any) => response.clone().json())
-      .then((body: any) => {
-        console.log(body, 'body');
-        return body;
-      });
-  }
-
   useEffect(() => {
-    if (!hasPublishVisible) approvePathway('9');
+    if (!hasPublishVisible) dispatch(approvePathwayRequest('9'));
   }, [hasPublishVisible]);
 
   const ApprovedComponent = (

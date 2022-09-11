@@ -77,6 +77,8 @@ const initState: RootState = {
     PendingComponent: [],
     ProgressionLevels: [],
     ProgressionModels: [],
+    DeletedComponentConditions: [],
+    DeletedComponents: [],
   },
   approvePathway: {
     loading: false,
@@ -141,9 +143,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
     case UPDATE_MAPPED_DATA_TO_SEND:
       return {
         ...state,
-        mappedData: {
-          ...action.payload,
-        },
+        mappedData: action.payload,
       };
     case PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST:
       return {

@@ -65,6 +65,31 @@ const App = () => {
     }
   }, [userData]);
 
+  const twoSum = function (nums: any, target: number) {
+    const arr: any = [];
+
+    nums.reduce((acc: any, curr: any) => {
+      if (acc + curr === target) {
+        if (acc === curr) {
+          arr.push(
+            nums.indexOf(acc),
+            nums.indexOf(curr, nums.indexOf(acc) + 1)
+          );
+        } else {
+          arr.push(nums.indexOf(acc), nums.indexOf(curr));
+        }
+        return curr;
+      } else {
+        return curr;
+      }
+    });
+    return arr;
+  };
+
+  useEffect(() => {
+    twoSum([3, 3], 6);
+  }, []);
+
   const oncreatePathwayOkHandler = () => {
     setIsAddPathwayFormVisible(true);
     setIsCreatePathwayVisible(false);
@@ -72,11 +97,6 @@ const App = () => {
 
   const onCreatePathwayCancelHandler = () => {
     setIsCreatePathwayVisible(false);
-  };
-
-  const onAddPathwayOkHandler = () => {
-    setIsAddPathwayFormVisible(false);
-    setIsPreSelectedCreateResourceVisible(true);
   };
 
   const onCloseHandler = () => {
@@ -114,6 +134,7 @@ const App = () => {
       />
     </div>
   );
+
   const onPreSelectResourceOkHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
     setIsAddPathwayDestinationVisible(true);
@@ -128,8 +149,15 @@ const App = () => {
 
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
+    setIsAddPathwayDestinationVisible(true);
     dispatch(updateMappedDataRequest(addPathwayWrapperFields));
   };
+
+  const onAddPathwayOkHandler = () => {
+    setIsAddPathwayFormVisible(false);
+    setIsPreSelectedCreateResourceVisible(true);
+  };
+
   return (
     <div>
       <MainContainer>
@@ -178,6 +206,8 @@ const App = () => {
             setIsAddPathwayFormNextButtonDisable={
               setIsAddPathwayFormNextButtonDisable
             }
+            addPathwayWrapperFields={addPathwayWrapperFields}
+            setAddPathwayWrapeprFields={setAddPathwayWrapeprFields}
           />
         </Modal>
         <Modal
@@ -187,7 +217,7 @@ const App = () => {
           width="650px"
           footer={[
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex' }}>
                 <Button
                   type={Type.PRIMARY}
                   onClick={onPathwaySaveHandler}
@@ -197,9 +227,9 @@ const App = () => {
                   }
                 />
                 <Button
-                  type={Type.PRIMARY}
+                  type={Type.CANCEL}
                   onClick={onPreSelectResourceCancelHandler}
-                  text="Cancel"
+                  text="Skiping"
                 />
               </div>
             </>,
@@ -268,3 +298,71 @@ const App = () => {
 };
 
 export default App;
+
+// import React from 'react';
+// import { ArcherContainer, ArcherElement } from 'react-archer';
+
+// const rootStyle = { display: 'flex', justifyContent: 'center' };
+// const rowStyle = {
+//   margin: '200px 0',
+//   display: 'flex',
+//   justifyContent: 'space-between',
+// };
+// const boxStyle = { padding: '10px', border: '1px solid black' };
+// const App = () => (
+//   <div style={{ height: '500px', margin: '50px' }}>
+//     <ArcherContainer strokeColor="red">
+//       <div style={rootStyle}>
+//         <ArcherElement
+//           id="root"
+//           relations={[
+//             {
+//               targetId: 'element2',
+//               targetAnchor: 'top',
+//               sourceAnchor: 'bottom',
+//               style: { strokeDasharray: '5,5' },
+//             },
+//           ]}
+//         >
+//           <div style={boxStyle}>Root</div>
+//         </ArcherElement>
+//       </div>
+
+//       <div style={rowStyle}>
+//         <ArcherElement
+//           id="element2"
+//           relations={[
+//             {
+//               targetId: 'element3',
+//               targetAnchor: 'left',
+//               sourceAnchor: 'right',
+//               style: { strokeColor: 'blue', strokeWidth: 1 },
+//               label: <div style={{ marginTop: '-20px' }}>Arrow 2</div>,
+//             },
+//           ]}
+//         >
+//           <div style={boxStyle}>Element 2</div>
+//         </ArcherElement>
+
+//         <ArcherElement id="element3">
+//           <div style={boxStyle}>Element 3</div>
+//         </ArcherElement>
+
+//         <ArcherElement
+//           id="element4"
+//           relations={[
+//             {
+//               targetId: 'root',
+//               targetAnchor: 'right',
+//               sourceAnchor: 'left',
+//               label: 'Arrow 3',
+//             },
+//           ]}
+//         >
+//           <div style={boxStyle}>Element 4</div>
+//         </ArcherElement>
+//       </div>
+//     </ArcherContainer>
+//   </div>
+// );
+// export default App;

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { updateMappedDataRequest } from '../../states/actions';
 
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
@@ -18,30 +20,41 @@ const LeftPanel: React.FC<any> = () => {
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  const [updatedCardArr, setUpdatedCardArr] = useState<any>();
   const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
+  const dispatch = useDispatch();
+
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
   useEffect(() => {
     if (selectedTabCardData) {
       setSelectedtabCards(selectedTabCardData);
     }
   }, [selectedTabCardData]);
-  useEffect(() => {
-    if (updatedCardArr?.length > 0) {
-      const temp = selectedTabCards?.filter(
-        (item: any) => item?.id !== updatedCardArr
-      );
-      setSelectedtabCards(temp);
-    }
-  }, [updatedCardArr]);
+
+  const filteredSelectedCards = (val: any) => {
+    const filteredSelectedCards = selectedTabCards?.filter(
+      (item: any) => item.CTID !== val
+    );
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    updatedPathwayWrapper.PendingComponent = filteredSelectedCards;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setSelectedtabCards(filteredSelectedCards);
+  };
 
   useEffect(() => {
     if (allComponentTabCards.valid)
-      setComponentTabCards(allComponentTabCards.data);
+      setComponentTabCards(
+        allComponentTabCards.data.map((comp_data: any) => ({
+          ...comp_data,
+          Type: comp_data.URI,
+        }))
+      );
   }, [allComponentTabCards]);
+
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
   };
@@ -78,6 +91,7 @@ const LeftPanel: React.FC<any> = () => {
               .map((v: any, i: any) => (
                 <CardWithLeftIcon
                   draggable={true}
+                  data={v}
                   key={i}
                   name={v?.Name}
                   type={v?.Type}
@@ -85,7 +99,10 @@ const LeftPanel: React.FC<any> = () => {
                   codedNotation={v?.CodedNotation}
                   IconColor="black"
                   id={v?.Id}
-                  getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                  CTID={v?.CTID}
+                  getUpdatedCardArr={(value: any) =>
+                    filteredSelectedCards(value)
+                  }
                 />
               ))}
           </div>
@@ -100,14 +117,16 @@ const LeftPanel: React.FC<any> = () => {
           <div className={Styles.cardwrapper}>
             {componentTabCards.map((card: any, index: any) => (
               <CardWithLeftIcon
+                isComponentTab={true}
                 draggable={true}
                 key={index}
+                data={card}
                 name={card.Name}
-                description={card.description}
-                uri={card.URI}
-                id={card.id}
+                description={card.Description}
+                uri={card?.URI}
+                id={card.Id}
                 type={card?.URI}
-                getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
               />
             ))}
           </div>

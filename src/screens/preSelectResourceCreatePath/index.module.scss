@@ -11,7 +11,7 @@
   :global {
     .customacardstyle {
       min-height: 460px;
-      max-height: 530px;
+      max-height: 510px;
       overflow-y: auto;
     }
     .customicon {
@@ -71,6 +71,12 @@
         box-shadow: none;
         border-color: $inactive3;
       }
+    }
+  }
+  :global {
+    label span {
+      font-weight: 400;
+      font-size: 12px;
     }
   }
 }

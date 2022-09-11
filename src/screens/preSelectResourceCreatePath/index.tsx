@@ -169,6 +169,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                 (filteredResources: any, i: number) => (
                   <div className={Styles.flexGrowCenter} key={i}>
                     <CardWithLeftIcon
+                      data={filteredResources}
                       draggable={true}
                       key={i}
                       name={filteredResources.Name}
@@ -199,6 +200,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                 <div className={Styles.flexGrowCenter} key={i}>
                   <CardWithLeftIcon
                     draggable={true}
+                    data={select_resource}
                     key={i}
                     name={select_resource.Name}
                     type={select_resource.Type}

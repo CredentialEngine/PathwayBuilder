@@ -2,7 +2,11 @@ import {
   faCubes,
   faGear,
   faFileCircleCheck,
-  faStar,
+  faIdBadge,
+  faSitemap,
+  faGraduationCap,
+  faCube,
+  faCartShopping,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
@@ -24,26 +28,29 @@ export interface Props {
   uri?: string;
   getUpdatedCardArr?: (value: any) => void;
   disabledItem?: any;
+  CTID?: any;
+  data?: any;
+  IconName?: any;
+  isComponentTab?: boolean;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
+  const { isComponentTab, data } = props;
   const {
-    name,
-    codedNotation,
+    Name,
+    Description,
+    CodedNotation,
     IconColor,
     inlineStyles,
-    draggable,
     id,
-    getUpdatedCardArr,
     disabledItem,
-    type,
-  } = props;
-
-  const componentName = type?.split(':');
+    CTID,
+    Type,
+  } = props.data;
   const onDragStart = (e: any) => {
     const target = e.target;
-    e.dataTransfer.setData('card_id', JSON.stringify(props));
-    getUpdatedCardArr && getUpdatedCardArr(props.id);
+    e.dataTransfer.setData('card_id', JSON.stringify(props.data));
+
     setTimeout(() => {
       target.style.display = 'hidden';
     }, 0);
@@ -55,13 +62,15 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
 
   const onDragEnd = (e: any) => {
     e.target.style.visibility = 'visible';
+    !!props.getUpdatedCardArr && props.getUpdatedCardArr(CTID);
   };
+
   return (
     <Card
       size="small"
       className={styles.cardwrapper + ' ' + disabledItem}
       style={inlineStyles}
-      draggable={draggable}
+      draggable={true}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
@@ -70,33 +79,76 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       <Row>
         <Col span="5">
           <span className={styles.iconwrapper + ' customicon'}>
-            {type?.toLowerCase().includes('credential'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faStar} color={IconColor} />
-            )}
-            {type?.toLowerCase().includes('course'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faCubes} color={IconColor} />
-            )}
-            {type?.toLowerCase().includes('Basic'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faCubes} color={IconColor} />
-            )}
-            {type?.toLowerCase().includes('competency'.toLocaleLowerCase()) && (
-              <FontAwesomeIcon icon={faGear} color={IconColor} />
-            )}
-            {type?.toLowerCase().includes('assessment'.toLowerCase()) && (
-              <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+            {isComponentTab ? (
+              <>
+                {data?.URI?.toLowerCase().includes(
+                  'AssessmentComponent'.toLowerCase()
+                ) && (
+                  <FontAwesomeIcon icon={faGraduationCap} color={IconColor} />
+                )}
+                {data?.URI?.toLowerCase().includes(
+                  'BasicComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCube} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CocurricularComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CompetencyComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faGear} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CourseComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'ExtracurricularComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'JobComponent'.toLowerCase()
+                ) && (
+                  <FontAwesomeIcon icon={faCartShopping} color={IconColor} />
+                )}
+                {data?.URI?.toLowerCase().includes(
+                  'WorkExperienceComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faIdBadge} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'CredentialComponent'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faIdBadge} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'ComonentCondition'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faSitemap} color={IconColor} />}
+              </>
+            ) : (
+              <>
+                {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faIdBadge} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes('course'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faCubes} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faCubes} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes(
+                  'competency'.toLocaleLowerCase()
+                ) && <FontAwesomeIcon icon={faGear} color={IconColor} />}
+                {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+                )}
+              </>
             )}
           </span>
         </Col>
-        <Col
-          span="19"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
-          }}
-        >
-          <p>{!!componentName && componentName[1]}</p>
-          <h5>{(codedNotation ? codedNotation : '') + ' ' + name ?? 'Test'}</h5>
+        <Col span="19">
+          <>
+            <p>{Name}</p>
+            <h5>
+              {(CodedNotation ? CodedNotation : '') +
+                ' ' +
+                Description.slice(0, 30)}
+            </h5>
+          </>
         </Col>
       </Row>
     </Card>

@@ -7,6 +7,7 @@ import {
   GET_ALL_ARRAY_OPERATION,
   GET_ALL_COMPARATORS,
   GET_ALL_LOGICAL_OPERATOR,
+  SEARCH_FOR_LEST_RIGHT_OPERAND,
 } from '../../../apiConfig/endpoint';
 
 import {
@@ -20,6 +21,7 @@ import {
 import {
   GET_ALL_COMPARATORS_REQUEST,
   GET_ARRAY_CONCEPT_REQUEST,
+  GET_CONSTRAINT_OPERAND_REQUEST,
   GET_LOGICAL_OPERATOR_REQUEST,
 } from './actionTypes';
 
@@ -68,10 +70,27 @@ export function* getArrayConceptData(): Generator {
   }
 }
 
+export function* getAllConstraintOperand(data: any): Generator {
+  try {
+    const result: any = yield call(request, {
+      url: `${BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}`,
+      method: 'POST',
+      params: {
+        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+      },
+      body: JSON.stringify(data),
+    });
+    yield put(getLogicalOperatorsSuccess(result));
+  } catch (error) {
+    yield put(getLogicalOperatorsFailure(error));
+  }
+}
+
 function* addConditionalComponentSaga() {
   yield takeLatest(GET_LOGICAL_OPERATOR_REQUEST, getAllLogicalOperators);
   yield takeLatest(GET_ALL_COMPARATORS_REQUEST, getComparatorsData);
   yield takeLatest(GET_ARRAY_CONCEPT_REQUEST, getArrayConceptData);
+  yield takeLatest(GET_CONSTRAINT_OPERAND_REQUEST, getAllConstraintOperand);
 }
 
 export default addConditionalComponentSaga;
