@@ -174,7 +174,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                       key={i}
                       name={filteredResources.Name}
                       type={filteredResources.Type}
-                      description={filteredResources.Description.slice(0, 30)}
+                      description={filteredResources.Description?.slice(0, 30)}
                       IconName={faGear}
                       IconColor="black"
                     />
