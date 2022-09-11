@@ -22,16 +22,15 @@ const RightPanel: React.FC<Props> = ({
   visible,
   panelData,
 }) => {
-  const [destinationText, setDestinationText] = useState(
-    panelData?.Description
-  );
+  const [destinationText, setDestinationText] = useState('');
   const [destinationTextCondition, setDestinationTextCondition] =
-    useState(false);
+    useState(true);
 
   const ref = useRef(null);
 
   useEffect(() => {
     document?.addEventListener('click', handleOutsideClick, true);
+    destinationTextCondition && hideDescription();
   }, []);
 
   const handleOutsideClick = (e: any) => {
@@ -50,14 +49,13 @@ const RightPanel: React.FC<Props> = ({
 
   const viewDescription = () => {
     setDestinationText(panelData?.Description);
-    setDestinationTextCondition(!destinationTextCondition);
+    setDestinationTextCondition(false);
   };
   const hideDescription = () => {
     const truncatedDescription = panelData?.Description.substr(0, 300);
     setDestinationText(truncatedDescription);
-    setDestinationTextCondition(!destinationTextCondition);
+    setDestinationTextCondition(true);
   };
-
   return (
     <Drawer visible={visible} closable={false}>
       <div ref={ref} className={styles.rightPanelContainer}>
