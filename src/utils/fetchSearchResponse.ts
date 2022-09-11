@@ -24,6 +24,7 @@ export default async function fetchProgressionList(data: any) {
         created: dta.created,
         lastUpdated: dta.lastUpdated,
         LastUpdatedById: dta.LastUpdatedById,
+        HasTopConcept: dta.HasTopConcept,
       }));
 
       const updatedProgressionLevel = res.Data.RelatedResources.map(
@@ -40,6 +41,7 @@ export default async function fetchProgressionList(data: any) {
           CTID: dta.CTID,
           InProgressionModel: dta.InProgressionModel,
           hasChild: dta.hasChild,
+          Narrower: dta.Narrower,
         })
       );
       return { updatedProgressionModel, updatedProgressionLevel };

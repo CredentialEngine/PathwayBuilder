@@ -41,7 +41,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     CTID,
     Type,
   } = props.data;
-
   const onDragStart = (e: any) => {
     const target = e.target;
     e.dataTransfer.setData('card_id', JSON.stringify(props.data));
@@ -59,6 +58,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     e.target.style.visibility = 'visible';
     !!props.getUpdatedCardArr && props.getUpdatedCardArr(CTID);
   };
+
   return (
     <Card
       size="small"

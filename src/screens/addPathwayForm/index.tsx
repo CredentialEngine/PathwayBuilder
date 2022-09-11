@@ -201,7 +201,6 @@ const AddPathwayForm: React.FC<Props> = ({
     const selectedProgressionLevel = allProgressionLevel.filter(
       (level: any) => level.InProgressionModel === selectedProgressionModelCTID
     );
-
     const updatedAddPathwayWrapperFields = { ...addPathwayWrapperFields };
     updatedAddPathwayWrapperFields.ProgressionModels = selectedProgressionModel;
     updatedAddPathwayWrapperFields.ProgressionLevels = selectedProgressionLevel;
