@@ -47,7 +47,6 @@ const MultiCard: React.FC<Props> = ({
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
-
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
@@ -109,20 +108,18 @@ const MultiCard: React.FC<Props> = ({
       onMouseOver={() => setIsZoomDisabled(true)}
       id={id?.toString()}
     >
-      {destinationComponent &&
-        isAddDestination &&
-        data.Type === 'addDestination' && (
-          <div className={styles.addDestinationContent}>
-            <p className={styles.addDestinationTitle}>
-              Add your destination component
-            </p>
-            <FontAwesomeIcon
-              style={{ height: '28px', marginTop: '20px' }}
-              color="#ffffff"
-              icon={faCirclePlus}
-            />
-          </div>
-        )}
+      {destinationComponent && isAddDestination && (
+        <div className={styles.addDestinationContent}>
+          <p className={styles.addDestinationTitle}>
+            Add your destination component
+          </p>
+          <FontAwesomeIcon
+            style={{ height: '28px', marginTop: '20px' }}
+            color="#ffffff"
+            icon={faCirclePlus}
+          />
+        </div>
+      )}
 
       {isDestination && (
         <div className={styles.destinationContentWrapper}>

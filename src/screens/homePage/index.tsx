@@ -122,7 +122,11 @@ const HomePage: React.FC<Props> = ({
           if (levelLength - 1 === index) {
             const updatedSem = semesters?.map((sem: any, i: any) =>
               semesters.length - 1 === i
-                ? { ...sem, id: 'destinationColumn' }
+                ? {
+                    ...sem,
+                    id: 'destinationColumn',
+                    isDestinationColumnSelected,
+                  }
                 : sem
             );
             updatedPathwayLevel2.push({
@@ -158,7 +162,7 @@ const HomePage: React.FC<Props> = ({
         ]);
       }
     }
-  }, [pathwayComponent]);
+  }, [pathwayComponent, isDestinationColumnSelected]);
 
   const onDropHandler = (
     card: any,
@@ -196,7 +200,6 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
-
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       return (
@@ -250,12 +253,9 @@ const HomePage: React.FC<Props> = ({
                           onClick={() => setShowRightPanel(true)}
                           key={item.id}
                           id={item.CTID}
-                          isCredentialCard={
-                            column?.destinationComponent ||
-                            item.Type.toLowerCase().includes(
-                              'credential'.toLowerCase()
-                            )
-                          }
+                          isCredentialCard={item.Type.toLowerCase().includes(
+                            'credential'.toLowerCase()
+                          )}
                           isCourseCard={
                             item.Type.toLowerCase().includes(
                               'basic'.toLowerCase()
@@ -373,11 +373,7 @@ const HomePage: React.FC<Props> = ({
                       columnsData?.map((column: any, index: any) => (
                         <div
                           id={column.Id}
-                          key={
-                            column?.destinationComponent
-                              ? 'destinationColumn'
-                              : column.id
-                          }
+                          key={column.id}
                           style={{
                             textAlign: 'center',
                             width: 'auto',
