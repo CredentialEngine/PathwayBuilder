@@ -8,13 +8,16 @@ import Button from '../../components/button';
 
 export interface Props {
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
+  setIsDestinationColumnSelected: (a: boolean) => void;
 }
 
 const SelectDestination: React.FC<Props> = ({
   setIsAddPathwayDestinationVisible,
+  setIsDestinationColumnSelected,
 }) => {
   const selectDestinationColumn = () => {
     setIsAddPathwayDestinationVisible(false);
+    setIsDestinationColumnSelected(true);
     const destinationElemenet = document.getElementById('destinationColumn');
     if (!_.isNull(destinationElemenet)) {
       !_.isNull(destinationElemenet) &&

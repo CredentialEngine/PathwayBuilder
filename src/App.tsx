@@ -28,6 +28,8 @@ const App = () => {
   const [addPathwayWrapperFields, setAddPathwayWrapeprFields] = useState<any>(
     new PathwayWrapperEntity()
   );
+  const [isDestinationColumnSelected, setIsDestinationColumnSelected] =
+    useState<boolean>(false);
 
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
@@ -149,6 +151,7 @@ const App = () => {
               : false
           }
           setIsEditPathwayFormVisible={setIsAddPathwayFormVisible}
+          isDestinationColumnSelected={isDestinationColumnSelected}
         />
         <Modal visible={false} title="" footer={[]} width={650}>
           <AddConditionalComponent />
@@ -233,6 +236,7 @@ const App = () => {
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
             }
+            setIsDestinationColumnSelected={setIsDestinationColumnSelected}
           />
         </Modal>
         <Modal

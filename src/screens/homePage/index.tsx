@@ -24,10 +24,12 @@ import Styles from './index.module.scss';
 interface Props {
   isLeftPanelVisible: boolean;
   setIsEditPathwayFormVisible: (a: boolean) => void;
+  isDestinationColumnSelected: boolean;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
   setIsEditPathwayFormVisible,
+  isDestinationColumnSelected,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
@@ -127,6 +129,7 @@ const HomePage: React.FC<Props> = ({
               ...upd_level,
               Name: 'Destination Column',
               id: 'destinationColumn',
+              isDestinationColumnSelected,
               semesters: updatedSem,
             });
           } else if (index === 0) {
@@ -217,59 +220,79 @@ const HomePage: React.FC<Props> = ({
                 flexDirection: 'column',
               }}
             >
-              {pathwayComponentCards
-                .filter((card: any) => card.HasProgressionLevel === column.CTID)
-                .map((item: any) => {
-                  const relations = [] as any;
-                  if (
-                    column?.destinationComponent &&
-                    item?.HasChild?.length > 0
-                  ) {
-                    item?.HasChild?.forEach((child_item: any) =>
-                      relations.push({
-                        targetId: child_item,
-                        targetAnchor: 'bottom',
-                        sourceAnchor: 'top',
-                        style: {
-                          strokeColor: 'blue',
-                          strokeWidth: 1,
-                        },
-                      })
-                    );
-                  }
+              <>
+                {pathwayComponentCards.length > 0 ? (
+                  pathwayComponentCards
+                    .filter(
+                      (card: any) => card.HasProgressionLevel === column.CTID
+                    )
+                    .map((item: any) => {
+                      const relations = [] as any;
+                      if (
+                        column?.destinationComponent &&
+                        item?.HasChild?.length > 0
+                      ) {
+                        item?.HasChild?.forEach((child_item: any) =>
+                          relations.push({
+                            targetId: child_item,
+                            targetAnchor: 'bottom',
+                            sourceAnchor: 'top',
+                            style: {
+                              strokeColor: 'blue',
+                              strokeWidth: 1,
+                            },
+                          })
+                        );
+                      }
 
-                  return (
-                    <MultiCard
-                      onClick={() => setShowRightPanel(true)}
-                      key={item.id}
-                      id={item.CTID}
-                      isCredentialCard={
-                        column?.destinationComponent ||
-                        item.Type.toLowerCase().includes(
-                          'credential'.toLowerCase()
-                        )
-                      }
-                      isCourseCard={
-                        item.Type.toLowerCase().includes(
-                          'basic'.toLowerCase()
-                        ) ||
-                        item.Type.toLowerCase().includes(
-                          'AssessmentComponent'.toLowerCase()
-                        )
-                      }
-                      isConditionalCard={item.Type.toLowerCase().includes(
-                        'condition'.toLowerCase()
-                      )}
-                      isDestination={item.Type.toLowerCase().includes(
-                        'destination'.toLowerCase()
-                      )}
-                      data={item}
-                      setIsZoomDisabled={setIsZoomDisabled}
-                      status={column.Id}
-                      inProgressLevel={column.CTID}
-                    />
-                  );
-                })}
+                      return (
+                        <MultiCard
+                          onClick={() => setShowRightPanel(true)}
+                          key={item.id}
+                          id={item.CTID}
+                          isCredentialCard={
+                            column?.destinationComponent ||
+                            item.Type.toLowerCase().includes(
+                              'credential'.toLowerCase()
+                            )
+                          }
+                          isCourseCard={
+                            item.Type.toLowerCase().includes(
+                              'basic'.toLowerCase()
+                            ) ||
+                            item.Type.toLowerCase().includes(
+                              'AssessmentComponent'.toLowerCase()
+                            )
+                          }
+                          isConditionalCard={item.Type.toLowerCase().includes(
+                            'condition'.toLowerCase()
+                          )}
+                          isDestination={item.Type.toLowerCase().includes(
+                            'destination'.toLowerCase()
+                          )}
+                          data={item}
+                          setIsZoomDisabled={setIsZoomDisabled}
+                          status={column.Id}
+                          inProgressLevel={column.CTID}
+                        />
+                      );
+                    })
+                ) : (
+                  <MultiCard
+                    onClick={() => setShowRightPanel(true)}
+                    key={0}
+                    id={0}
+                    isAddDestination={
+                      column?.isDestinationColumnSelected ? true : false
+                    }
+                    data={{ Type: 'addDestination' }}
+                    destinationComponent={column?.isDestinationColumnSelected}
+                    setIsZoomDisabled={setIsZoomDisabled}
+                    status={column.Id}
+                    inProgressLevel={column.CTID}
+                  />
+                )}
+              </>
             </div>
           </DropWrapper>
         </div>
