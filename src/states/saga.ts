@@ -77,7 +77,6 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       data: payload.payload,
     });
-
     yield put(getDataForPathwayAndComponentsSuccess(result));
   } catch (error) {
     yield put(getDataForPathwayAndComponentsFailure(error));

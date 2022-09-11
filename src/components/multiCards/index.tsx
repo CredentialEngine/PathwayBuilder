@@ -89,25 +89,6 @@ const MultiCard: React.FC<Props> = ({
 
   const darkColor = '#0A2942';
 
-  console.log(
-    {
-      isAddDestination,
-      isDestination,
-      isCourseCard,
-      isConditionalCard,
-      isCredentialCard,
-      isAddComponentCard,
-      data,
-      onClick,
-      setIsZoomDisabled,
-      status,
-      id,
-      inProgressLevel,
-      destinationComponent,
-    },
-    '323423423423423'
-  );
-
   return (
     <div
       className={`${styles.multiCardWrapper} ${

@@ -47,7 +47,12 @@ const LeftPanel: React.FC<any> = () => {
 
   useEffect(() => {
     if (allComponentTabCards.valid)
-      setComponentTabCards(allComponentTabCards.data);
+      setComponentTabCards(
+        allComponentTabCards.data.map((comp_data: any) => ({
+          ...comp_data,
+          Type: comp_data.URI,
+        }))
+      );
   }, [allComponentTabCards]);
 
   const searchComponent = (value: any) => {

@@ -1,62 +1,61 @@
-import React, { useEffect } from 'react';
+import _ from 'lodash';
+import React, { useEffect, useRef } from 'react';
 
 interface Props {
-  onDrop: (a: any, b: any, c: any, d: any, e: any) => void;
+  onDrop: (a: any, b: any, c: any, d: any) => void;
   children: any;
   key: string;
   column: string;
-  forwardRef?: any;
   width?: any;
   CTID?: string;
   id?: number | string;
   destinationColumn?: boolean;
-  HasProgressionLevel?: string;
-  inProgressLevel?: string;
+  HasProgressionLevel: string;
+  index: number;
 }
 
 const DropWrapper: React.FC<Props> = ({
   id,
   onDrop,
   children,
-  forwardRef,
   width,
   CTID,
   destinationColumn,
   HasProgressionLevel,
-  inProgressLevel,
+  index,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
-  // const [updatedWidth, setWidth] = useState(width);
+  const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
 
   const handleDrop = (e: any) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
-    onDrop(data, CTID, destinationColumn, HasProgressionLevel, inProgressLevel);
+    e.stopPropagation();
+
+    onDrop(data, CTID, destinationColumn, HasProgressionLevel);
   };
 
   useEffect(() => {
-    /* 
-    Will try this method to increase speccific width of a div 
-
-    const element = forwardRef.current.getBoundingClientRect();
-    element.width = '600px';
-    setWidth('600px');
-
-    */
-  }, []);
+    // Will try this method to increase speccific width of a div
+    if (!_.isNull(wrapperRef)) {
+      wrapperRef.current = wrapperRef.current.slice(0, index);
+    }
+  }, [wrapperRef]);
 
   return (
     <div
       id={id?.toString()}
       onDragOver={allowDrop}
       onDrop={handleDrop}
-      ref={forwardRef}
       style={{
         display: 'flex',
         width: `${width}`,
         flexDirection: 'column',
         height: 'auto',
         backgroundColor: '#ffffff',
+      }}
+      ref={(element: any) => {
+        wrapperRef.current[index] = element;
       }}
     >
       {children}

@@ -47,7 +47,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     CTID,
     Type,
   } = props.data;
-
   const onDragStart = (e: any) => {
     const target = e.target;
     e.dataTransfer.setData('card_id', JSON.stringify(props.data));
