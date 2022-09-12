@@ -207,7 +207,7 @@ const App = () => {
                 <Button
                   type={Type.CANCEL}
                   onClick={onPreSelectResourceCancelHandler}
-                  text="Skiping"
+                  text="Skip"
                 />
               </div>
             </>,
