@@ -53,3 +53,14 @@ body {
 .error {
   color: red;
 }
+.archerContainer div {
+  display: block;
+}
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}

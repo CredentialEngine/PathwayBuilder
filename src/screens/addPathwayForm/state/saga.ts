@@ -66,9 +66,9 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json; charset=utf-8',
       },
-      data: payload.payload,
+      data: JSON.stringify(payload.payload),
     });
     yield put(getDataForOccupationTypeCodeSuccess(result));
   } catch (error) {
