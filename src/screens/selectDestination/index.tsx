@@ -19,13 +19,18 @@ const SelectDestination: React.FC<Props> = ({
     setIsAddPathwayDestinationVisible(false);
     setIsDestinationColumnSelected(true);
     const destinationElemenet = document.getElementById('destinationColumn');
-    if (!_.isNull(destinationElemenet)) {
-      !_.isNull(destinationElemenet) &&
-        destinationElemenet.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'start',
-        });
+    const header = document.getElementById('header');
+    if (!_.isNull(destinationElemenet) && !_.isNull(header)) {
+      const pos = destinationElemenet.style.position;
+      const top = destinationElemenet.style.top;
+      destinationElemenet.style.position = 'relative';
+      destinationElemenet.style.top = '-80px';
+      destinationElemenet.style.top = top;
+      destinationElemenet.style.position = pos;
+
+      destinationElemenet.scrollIntoView(true);
+
+      // window.scrollTo(0, destinationElemenet.getBoundingClientRect().left);
     }
   };
 

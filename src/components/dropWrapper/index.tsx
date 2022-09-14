@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { useEffect, useRef } from 'react';
 
 interface Props {
-  onDrop: (a: any, b: any, c: any, d: any) => void;
+  onDrop: (a: any, b: any, c: any, d: any, e: any) => void;
   children: any;
   key: string;
   column: string;
@@ -13,6 +13,7 @@ interface Props {
   HasProgressionLevel: string;
   index: number;
   className?: any;
+  isDestinationColumnSelected?: any;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -25,6 +26,7 @@ const DropWrapper: React.FC<Props> = ({
   HasProgressionLevel,
   index,
   className,
+  isDestinationColumnSelected,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
@@ -34,7 +36,13 @@ const DropWrapper: React.FC<Props> = ({
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
     e.stopPropagation();
 
-    onDrop(data, CTID, destinationColumn, HasProgressionLevel);
+    onDrop(
+      data,
+      CTID,
+      destinationColumn,
+      HasProgressionLevel,
+      isDestinationColumnSelected
+    );
   };
 
   useEffect(() => {

@@ -53,7 +53,7 @@ const Header = (props: Props) => {
   };
 
   return (
-    <div className={styles.container + ' header-container'}>
+    <div id="header" className={styles.container + ' header-container'}>
       <div className={styles.productImgLayout + ' logowrapper'}>
         <Row align="middle" style={{ width: '100%' }}>
           <Col span={4}>

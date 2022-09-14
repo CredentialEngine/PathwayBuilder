@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { ArcherContainer, ArcherElement } from 'react-archer';
 import { useDispatch, useSelector } from 'react-redux';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import { v4 as uuidv4 } from 'uuid';
 
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
@@ -43,6 +44,17 @@ const HomePage: React.FC<Props> = ({
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
   const { mappedData: pathwayComponent } = pathwayWrapper;
+  const [generatedUuid, setGeneratedUuid] = useState<any>({
+    destinationCTID: '',
+    firstStageCTID: '',
+  });
+  useEffect(() => {
+    setGeneratedUuid({
+      ...generatedUuid,
+      destinationCTID: uuidv4(),
+      firstStageCTID: uuidv4(),
+    });
+  }, []);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -111,34 +123,13 @@ const HomePage: React.FC<Props> = ({
             });
           })
         );
-
-        const levelLength = updatedPathwayLevel?.length;
-
         updatedPathwayLevel.forEach((upd_level: any, index: any) => {
           let semesters = [] as any;
           if (upd_level?.Narrower?.length > 0) {
             const result = getSemester(upd_level);
             semesters = result;
           }
-
-          if (levelLength - 1 === index) {
-            const updatedSem = semesters?.map((sem: any, i: any) =>
-              semesters.length - 1 === i
-                ? {
-                    ...sem,
-                    id: 'destinationColumn',
-                    isDestinationColumnSelected,
-                  }
-                : sem
-            );
-            updatedPathwayLevel2.push({
-              ...upd_level,
-              Name: 'Destination Column',
-              id: 'destinationColumn',
-              isDestinationColumnSelected,
-              semesters: updatedSem,
-            });
-          } else if (index === 0) {
+          if (index === 0) {
             const updatedSem = semesters?.map((sem: any, i: any) =>
               0 === i ? { ...sem, id: 'firstColumn' } : sem
             );
@@ -156,11 +147,29 @@ const HomePage: React.FC<Props> = ({
           }
         });
 
-        setColumnsData(updatedPathwayLevel2);
+        // setColumnsData(updatedPathwayLevel2);
+
+        setColumnsData([
+          ...updatedPathwayLevel2,
+          {
+            isDestinationColumnSelected,
+            id: 'destinationColumn',
+            CTID: generatedUuid.destinationCTID,
+            Name: 'Destination Component',
+            Narrower: null,
+          },
+        ]);
       } else {
         setColumnsData([
-          { id: 0, name: 'Stage 1' },
-          { id: 1, name: 'Destination Component' },
+          { Id: 0, Name: 'Stage 1', CTID: generatedUuid.firstStageCTID },
+          {
+            isDestinationColumnSelected,
+            Id: 1,
+            id: 'destinationColumn',
+            Name: 'Destination Component',
+            Narrower: null,
+            CTID: generatedUuid.destinationCTID,
+          },
         ]);
       }
     }
@@ -170,7 +179,8 @@ const HomePage: React.FC<Props> = ({
     card: any,
     isComponentTabCards: string,
     destinationColumn: boolean,
-    HasProgressionLevel: string
+    HasProgressionLevel: string,
+    isDestinationColumnSelected: boolean
   ) => {
     /* Need to write a logic where same card should not be added
       Need to filter accorrding to column type like which card should be display where
@@ -182,6 +192,13 @@ const HomePage: React.FC<Props> = ({
     */
     if (card.HasProgressionLevel === HasProgressionLevel) {
       return;
+    }
+    if (isDestinationColumnSelected) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+      const updatedPathwayComponent = { ...updatedPathwayWrapper.Pathway };
+      updatedPathwayComponent.HasDestinationComponent = card.CTID;
+      updatedPathwayWrapper.Pathway = updatedPathwayComponent;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
 
     pathwayComponentCards.length === 0
@@ -202,6 +219,7 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
+
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       return (
@@ -213,6 +231,7 @@ const HomePage: React.FC<Props> = ({
             index={index}
             column={column.Name}
             HasProgressionLevel={column.CTID}
+            isDestinationColumnSelected={column?.isDestinationColumnSelected}
             destinationColumn={!!column?.destinationComponent}
             width="450px"
           >

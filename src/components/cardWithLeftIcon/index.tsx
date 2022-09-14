@@ -146,7 +146,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
             <h5>
               {(CodedNotation ? CodedNotation : '') +
                 ' ' +
-                Description.slice(0, 30)}
+                Description?.slice(0, 30)}
             </h5>
           </>
         </Col>

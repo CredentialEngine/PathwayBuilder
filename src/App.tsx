@@ -112,14 +112,10 @@ const App = () => {
     </div>
   );
 
-  const onPreSelectResourceOkHandler = () => {
+  const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
-    setIsAddPathwayDestinationVisible(true);
   };
 
-  const onPreSelectResourceCancelHandler = () => {
-    setIsCreatePathwayVisible(false);
-  };
   const getAllPathwayFormFields = (value: any, name: string) => {
     setAddPathwayWrapeprFields({ ...addPathwayWrapperFields, [name]: value });
   };
@@ -167,7 +163,6 @@ const App = () => {
         <Modal
           visible={isAddPathwayFormVisible}
           title="Add a Pathway"
-          onCancel={() => setIsAddPathwayFormVisible(false)}
           footer={[
             <>
               <Button
@@ -190,8 +185,6 @@ const App = () => {
         </Modal>
         <Modal
           visible={isPreSelectedCreateResourceVisible}
-          onOk={onPreSelectResourceOkHandler}
-          onCancel={onPreSelectResourceCancelHandler}
           width="650px"
           footer={[
             <>
