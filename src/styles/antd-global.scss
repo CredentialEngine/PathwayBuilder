@@ -351,4 +351,9 @@ body {
     padding: 0 10px;
     border: 1px solid $inactive1;
   }
+  .ant-drawer-content-wrapper {
+    position: absolute;
+    z-index: 1000;
+    transition: all 0.3s;
+  }
 }

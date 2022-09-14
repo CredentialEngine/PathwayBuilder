@@ -15,17 +15,20 @@
     .ant-layout-sider {
       background-color: #ffffff !important;
       min-width: 278px !important;
+      width: auto !important;
       padding: 20px 20px;
       position: fixed;
       z-index: 9;
       box-shadow: 2px 0px #ced2d4;
+      transform: translateX(0px);
+      transition: all 0.3s ease;
     }
 
     .ant-layout-sider-collapsed {
-      width: 198px !important;
-      min-width: 198px !important;
-      display: none;
-      transition: fade 0.2s;
+      width: auto !important;
+      min-width: 278px !important;
+      transition: all 0.3s ease;
+      transform: translateX(-278px);
     }
 
     .ant-layout-content {
