@@ -43,6 +43,8 @@ const HomePage: React.FC<Props> = ({
   const [columnsData, setColumnsData] = useState<any>([]);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
+  const [dragElem, setDragElem] = useState<any>();
+
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const [generatedUuid, setGeneratedUuid] = useState<any>({
     destinationCTID: '',
@@ -174,6 +176,27 @@ const HomePage: React.FC<Props> = ({
       }
     }
   }, [pathwayComponent, isDestinationColumnSelected]);
+
+  const onSelectDragElemenet = (elem: HTMLElement) => {
+    setDragElem(elem);
+  };
+
+  const onMoveItem = (elem: any) => {
+    setPathwayComponentCards((prevState: any) => {
+      const itemIndex = prevState.findIndex(
+        (i: any) => i.CTID === dragElem.CTID
+      );
+      const hoverIndex = prevState.findIndex((i: any) =>
+        i.Description.toLowerCase().trim().includes(elem.toLowerCase().trim())
+      );
+
+      const newState = [...prevState];
+
+      newState.splice(itemIndex, 1);
+      newState.splice(hoverIndex, 0, dragElem);
+      return [...newState];
+    });
+  };
 
   const onDropHandler = (
     card: any,
@@ -308,6 +331,8 @@ const HomePage: React.FC<Props> = ({
                               setIsZoomDisabled={setIsZoomDisabled}
                               status={column.Id}
                               inProgressLevel={column.CTID}
+                              onSelectDragElemenet={onSelectDragElemenet}
+                              onMoveItem={onMoveItem}
                             />
                           </ArcherElement>
                         );
@@ -325,6 +350,8 @@ const HomePage: React.FC<Props> = ({
                       setIsZoomDisabled={setIsZoomDisabled}
                       status={column.Id}
                       inProgressLevel={column.CTID}
+                      onSelectDragElemenet={onSelectDragElemenet}
+                      onMoveItem={onMoveItem}
                     />
                   )}
                 </ArcherContainer>

@@ -28,6 +28,8 @@ interface Props {
   inProgressLevel?: string;
   columnId?: string;
   destinationComponent?: boolean;
+  onSelectDragElemenet: (a: any) => void;
+  onMoveItem: (a: any) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -44,9 +46,12 @@ const MultiCard: React.FC<Props> = ({
   id,
   inProgressLevel,
   destinationComponent,
+  onSelectDragElemenet,
+  onMoveItem,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const ref = useRef(null);
+
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
@@ -54,13 +59,16 @@ const MultiCard: React.FC<Props> = ({
       'card_id',
       JSON.stringify({ ...data, status, inProgressLevel })
     );
+    onSelectDragElemenet(data);
     setTimeout(() => {
-      target.style.display = 'hidden';
+      target.style.visibility = 'hidden';
     }, 0);
   };
 
   const onDragOver = (e: any) => {
+    onMoveItem(e.target.innerText);
     e.preventDefault();
+    e.stopPropagation();
   };
 
   const onDragEnd = (e: any) => {
@@ -68,9 +76,9 @@ const MultiCard: React.FC<Props> = ({
 
     e.target.style.visibility = 'visible';
 
-    e.target.style.position = 'absolute';
-    e.target.style.left = `${e.pageX + 75} px`;
-    e.target.style.top = `${e.pageY - 75}px`;
+    e.target.style.position = 'relative';
+    // e.target.style.left = `${e.pageX + 75}px`;
+    // e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {

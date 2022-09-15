@@ -57,12 +57,19 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   };
 
   const onDragOver = (e: any) => {
+    e.preventDefault();
     e.stopPropagation();
   };
 
   const onDragEnd = (e: any) => {
     e.target.style.visibility = 'visible';
     !!props.getUpdatedCardArr && props.getUpdatedCardArr(CTID);
+
+    // e.target.style.visibility = 'visible';
+
+    // e.target.style.position = 'absolute';
+    // e.target.style.left = `${e.pageX + 75} px`;
+    // e.target.style.top = `${e.pageY - 75}px`;
   };
 
   return (
