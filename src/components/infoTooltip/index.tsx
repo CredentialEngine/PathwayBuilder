@@ -14,7 +14,11 @@ const InfoTooltip: React.FC<Props> = ({ title, content, onClose }) => (
   <div className={styles.infoTooltipContainer}>
     <div className={styles.arrow}></div>
     <div className={styles.buttonContainer}>
-      <FontAwesomeIcon icon={faXmark} onClick={onClose} />
+      <FontAwesomeIcon
+        icon={faXmark}
+        style={{ height: '16px' }}
+        onClick={onClose}
+      />
     </div>
     <div className={styles.tooltipContent}>
       <p className={styles.title}>{title}</p>
