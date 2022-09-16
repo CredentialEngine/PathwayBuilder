@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ArcherContainer, ArcherElement } from 'react-archer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,6 +39,7 @@ const HomePage: React.FC<Props> = ({
   const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
+  const [showAddDestination, setShowAddDestination] = useState(false);
   // const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
   //   useState<boolean>(false);
   const [columnsData, setColumnsData] = useState<any>([]);
@@ -77,6 +79,10 @@ const HomePage: React.FC<Props> = ({
     }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setDeletedComponentCards([]);
+    pathwayComponentCards?.some(
+      (item: any) =>
+        item?.isDestinationColumnSelected && setShowAddDestination(true)
+    );
   }, [pathwayComponentCards]);
 
   const getSemester = (level: any) => {
@@ -149,8 +155,6 @@ const HomePage: React.FC<Props> = ({
           }
         });
 
-        // setColumnsData(updatedPathwayLevel2);
-
         setColumnsData([
           ...updatedPathwayLevel2,
           {
@@ -182,20 +186,24 @@ const HomePage: React.FC<Props> = ({
   };
 
   const onMoveItem = (elem: any) => {
-    setPathwayComponentCards((prevState: any) => {
-      const itemIndex = prevState.findIndex(
-        (i: any) => i.CTID === dragElem.CTID
-      );
-      const hoverIndex = prevState.findIndex((i: any) =>
-        i.Description.toLowerCase().trim().includes(elem.toLowerCase().trim())
-      );
+    if (!_.isNull(dragElem) && !_.isUndefined(dragElem)) {
+      setPathwayComponentCards((prevState: any) => {
+        const itemIndex = prevState.findIndex(
+          (i: any) => i?.CTID === dragElem?.CTID
+        );
 
-      const newState = [...prevState];
+        const hoverIndex = prevState.findIndex((i: any) =>
+          i?.Description?.toLowerCase()
+            .trim()
+            .includes(elem?.toLowerCase().trim())
+        );
+        const newState = [...prevState];
+        newState.splice(itemIndex, 1);
+        newState.splice(hoverIndex, 0, dragElem);
 
-      newState.splice(itemIndex, 1);
-      newState.splice(hoverIndex, 0, dragElem);
-      return [...newState];
-    });
+        return [...newState];
+      });
+    }
   };
 
   const onDropHandler = (
@@ -227,12 +235,25 @@ const HomePage: React.FC<Props> = ({
     pathwayComponentCards.length === 0
       ? setPathwayComponentCards([
           ...pathwayComponentCards,
-          { ...card, destinationColumn, HasProgressionLevel },
+          {
+            ...card,
+            destinationColumn,
+            HasProgressionLevel,
+            isDestinationColumnSelected: isDestinationColumnSelected
+              ? true
+              : false,
+          },
         ])
       : setPathwayComponentCards(
           pathwayComponentCards
             .filter((item: any) => item.CTID !== card.CTID)
-            .concat({ ...card, HasProgressionLevel })
+            .concat({
+              ...card,
+              HasProgressionLevel,
+              isDestinationColumnSelected: isDestinationColumnSelected
+                ? true
+                : false,
+            })
         );
   };
 
@@ -248,7 +269,7 @@ const HomePage: React.FC<Props> = ({
       return (
         <div key={index} style={{ display: 'flex' }}>
           <DropWrapper
-            id={`${column.id}`}
+            id={`${column.CTID}`}
             onDrop={onDropHandler}
             key={column.Id}
             index={index}
@@ -269,7 +290,7 @@ const HomePage: React.FC<Props> = ({
             >
               <>
                 <ArcherContainer strokeColor="red">
-                  {pathwayComponentCards.length > 0 ? (
+                  {pathwayComponentCards.length > 0 &&
                     pathwayComponentCards
                       .filter(
                         (card: any) => card.HasProgressionLevel === column.CTID
@@ -324,9 +345,12 @@ const HomePage: React.FC<Props> = ({
                               isConditionalCard={item.Type.toLowerCase().includes(
                                 'condition'.toLowerCase()
                               )}
-                              isDestination={item.Type.toLowerCase().includes(
-                                'destination'.toLowerCase()
-                              )}
+                              isDestination={
+                                item?.isDestinationColumnSelected ||
+                                item.Type.toLowerCase().includes(
+                                  'destination'.toLowerCase()
+                                )
+                              }
                               data={item}
                               setIsZoomDisabled={setIsZoomDisabled}
                               status={column.Id}
@@ -336,8 +360,8 @@ const HomePage: React.FC<Props> = ({
                             />
                           </ArcherElement>
                         );
-                      })
-                  ) : (
+                      })}
+                  {!showAddDestination && (
                     <MultiCard
                       onClick={() => setShowRightPanel(true)}
                       key={0}
@@ -354,6 +378,30 @@ const HomePage: React.FC<Props> = ({
                       onMoveItem={onMoveItem}
                     />
                   )}
+                  {showAddDestination &&
+                    column?.CTID === getLastColumn() &&
+                    pathwayComponentCards?.length <= 1 && (
+                      <MultiCard
+                        onClick={() => setShowRightPanel(true)}
+                        key={0}
+                        id={0}
+                        firstComponent={
+                          column?.CTID === getLastColumn() ? true : false
+                        }
+                        isAddFirst={
+                          column?.CTID === getLastColumn() ? true : false
+                        }
+                        data={{ Type: 'addDestination' }}
+                        destinationComponent={
+                          column?.isDestinationColumnSelected
+                        }
+                        setIsZoomDisabled={setIsZoomDisabled}
+                        status={column.Id}
+                        inProgressLevel={column.CTID}
+                        onSelectDragElemenet={onSelectDragElemenet}
+                        onMoveItem={onMoveItem}
+                      />
+                    )}
                 </ArcherContainer>
               </>
             </div>
@@ -396,6 +444,30 @@ const HomePage: React.FC<Props> = ({
           ))}
       </div>
     );
+  };
+
+  const getLastColumn = () => {
+    const ids = [] as any;
+    columnsData?.map((column: any) => {
+      if (!column.semesters || !column.semesters.length) {
+        ids?.push(column?.CTID);
+      } else {
+        ids.push(...renderSemester(column?.semesters));
+      }
+    });
+    return ids[ids?.length - 2];
+  };
+
+  const renderSemester = (semesters: any) => {
+    const ids = [] as any;
+    if (!semesters || !semesters.length) {
+      return null;
+    }
+    semesters.map((sem: any) => {
+      ids?.push(sem?.CTID);
+      sem?.semesters && renderSemester(sem?.semesters);
+    });
+    return ids;
   };
 
   return (

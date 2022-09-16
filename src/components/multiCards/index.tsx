@@ -1,4 +1,4 @@
-import { faStar } from '@fortawesome/free-regular-svg-icons';
+// import { faStar } from '@fortawesome/free-regular-svg-icons';
 import {
   faCirclePlus,
   faCubes,
@@ -6,9 +6,11 @@ import {
   faSitemap,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider, Popover } from 'antd';
+import { Divider } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
+
+import InfoTooltip from '../infoTooltip';
 
 import styles from './index.module.scss';
 
@@ -30,6 +32,8 @@ interface Props {
   destinationComponent?: boolean;
   onSelectDragElemenet: (a: any) => void;
   onMoveItem: (a: any) => void;
+  isAddFirst?: boolean;
+  firstComponent?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -48,8 +52,11 @@ const MultiCard: React.FC<Props> = ({
   destinationComponent,
   onSelectDragElemenet,
   onMoveItem,
+  isAddFirst,
+  firstComponent,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
+  showPopover;
   const ref = useRef(null);
 
   const onDragStart = (e: any) => {
@@ -99,7 +106,8 @@ const MultiCard: React.FC<Props> = ({
   return (
     <div
       className={`${styles.multiCardWrapper} ${
-        isAddDestination && destinationComponent
+        (isAddDestination && destinationComponent) ||
+        (isAddFirst && firstComponent)
           ? styles.addDestinationCard
           : ''
       } ${isDestination ? styles.isDestination : ''} ${
@@ -117,19 +125,46 @@ const MultiCard: React.FC<Props> = ({
       id={id?.toString()}
     >
       {destinationComponent && isAddDestination && (
-        <div className={styles.addDestinationContent}>
-          <p className={styles.addDestinationTitle}>
-            Add your destination component
-          </p>
-          <FontAwesomeIcon
-            style={{ height: '28px', marginTop: '20px' }}
-            color="#ffffff"
-            icon={faCirclePlus}
+        <>
+          <InfoTooltip
+            title="Add your destination component"
+            content="Drag your pre-selected destination component into the space provided, or search for a component to add."
+            onClose={noop}
           />
-        </div>
+          <div className={styles.addDestinationContent}>
+            <p className={styles.addDestinationTitle}>
+              Add your destination component
+            </p>
+            <FontAwesomeIcon
+              style={{ height: '28px', marginTop: '20px' }}
+              color="#ffffff"
+              icon={faCirclePlus}
+            />
+          </div>
+        </>
       )}
 
-      {isDestination && (
+      {isAddFirst && firstComponent && (
+        <>
+          <InfoTooltip
+            title="Great! Add  another component"
+            content="Drag your next component into the Pathway by dragging it to a hotspot on the component you just placed."
+            onClose={noop}
+          />
+          <div className={styles.addDestinationContent}>
+            <p className={styles.addDestinationTitle}>
+              Add your next component
+            </p>
+            <FontAwesomeIcon
+              style={{ height: '28px', marginTop: '20px' }}
+              color="#ffffff"
+              icon={faCirclePlus}
+            />
+          </div>
+        </>
+      )}
+
+      {/* {isDestination && !isCourseCard &&(
         <div className={styles.destinationContentWrapper}>
           <div className={styles.topDestinationContent}>
             <FontAwesomeIcon
@@ -184,7 +219,7 @@ const MultiCard: React.FC<Props> = ({
             </p>
           </div>
         </div>
-      )}
+      )} */}
 
       {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
         <div className={styles.credentialsCardWrapeer}>
