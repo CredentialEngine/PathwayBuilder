@@ -19,7 +19,7 @@ export function fetchPostsApi(value: any) {
   const fetchedProxyResources = fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(value),
   })

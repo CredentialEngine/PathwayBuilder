@@ -72,3 +72,16 @@
 .divider {
   border-top: 1px solid $inactive1;
 }
+.right_drawer {
+  :global {
+    .ant-drawer-header-close-only {
+      position: absolute;
+      right: 10px;
+      padding: 16px 10px;
+    }
+
+    .ant-drawer-header-close-only button.ant-drawer-close {
+      margin-right: 0;
+    }
+  }
+}

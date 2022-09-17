@@ -1,4 +1,5 @@
-import { faCaretDown, faCubes } from '@fortawesome/free-solid-svg-icons';
+import { CaretRightOutlined } from '@ant-design/icons';
+import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Drawer, Row, Collapse } from 'antd';
 import { noop } from 'lodash';
@@ -43,7 +44,7 @@ const RightPanel: React.FC<Props> = ({
   };
 
   const extractComponentType = (type: string) => {
-    const typeValue = type.split(':')[1];
+    const typeValue = type?.split(':')[1];
     return typeValue;
   };
 
@@ -52,12 +53,12 @@ const RightPanel: React.FC<Props> = ({
     setDestinationTextCondition(false);
   };
   const hideDescription = () => {
-    const truncatedDescription = panelData?.Description.substr(0, 300);
+    const truncatedDescription = panelData.Description?.substr(0, 300);
     setDestinationText(truncatedDescription);
     setDestinationTextCondition(true);
   };
   return (
-    <Drawer visible={visible} closable={false}>
+    <Drawer visible={visible} closable={true} className={styles.right_drawer}>
       <div ref={ref} className={styles.rightPanelContainer}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Row style={{ fontSize: 22, fontWeight: 700 }}>
@@ -125,14 +126,16 @@ const RightPanel: React.FC<Props> = ({
         </Row>
         <Divider />
         <Row className={styles.requiredBlock}>
-          <Collapse defaultActiveKey={['1']} ghost>
+          <Collapse
+            defaultActiveKey={['1']}
+            ghost
+            expandIcon={({ isActive }) => (
+              <CaretRightOutlined rotate={isActive ? 90 : 0} />
+            )}
+          >
             <Panel
               header={
                 <>
-                  <FontAwesomeIcon
-                    icon={faCaretDown}
-                    style={{ height: '20px', alignSelf: 'center' }}
-                  />
                   <span className={styles.require}>Requires (1)</span>
                 </>
               }
