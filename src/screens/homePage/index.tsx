@@ -326,19 +326,17 @@ const HomePage: React.FC<Props> = ({
             HasProgressionLevel={column.CTID}
             isDestinationColumnSelected={column?.isDestinationColumnSelected}
             destinationColumn={!!column?.destinationComponent}
-            width="450px"
+            width="900px"
           >
             <div
               style={{
                 height: '100vh',
                 backgroundColor: `${index % 2 !== 0 ? '#f0f0f0' : '#ffffff'}`,
                 display: 'flex',
-                alignItems: 'center',
                 flexDirection: 'column',
               }}
             >
               <Xwrapper>
-                {/* </Xwrapper> */}
                 {pathwayComponentCards.length > 0 &&
                   pathwayComponentCards
                     .filter(
