@@ -258,7 +258,7 @@ const AddConditionalComponent: React.FC = () => {
       <br />
       <Button
         size="medium"
-        text="Save Consition"
+        text="Save Condition"
         type="primary"
         onClick={saveCondition}
       />

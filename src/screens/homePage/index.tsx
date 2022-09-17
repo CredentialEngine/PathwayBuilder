@@ -1,6 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
@@ -16,9 +17,11 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
+import AddConditionalComponent from '../addComponent';
 
 // import AddPathwayForm from '../addPathwayForm';
 
@@ -39,6 +42,8 @@ const HomePage: React.FC<Props> = ({
   const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
+  const [visibleConstraintCondition, setVisibleConstraintCondition] =
+    useState(false);
   const [showAddDestination, setShowAddDestination] = useState(false);
   // const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
   //   useState<boolean>(false);
@@ -305,12 +310,14 @@ const HomePage: React.FC<Props> = ({
   }, [point]);
 
   const removeConnection = (item: any) => {
-    const newarray = connection;
-    const index = newarray.findIndex((items: any) => items === item);
-    newarray.splice(index, 1);
-    setConnection([...newarray]);
-    document.getElementById(item?.start)?.classList?.remove('active');
-    document.getElementById(item?.end)?.classList?.remove('active');
+    // const newarray = connection;
+    // const index = newarray.findIndex((items: any) => items === item);
+    // newarray.splice(index, 1);
+    // setConnection([...newarray]);
+    // document.getElementById(item?.start)?.classList?.remove('active');
+    // document.getElementById(item?.end)?.classList?.remove('active');
+    console.log(item);
+    setVisibleConstraintCondition(true);
   };
 
   const getDropWrapperLayout = (column: any, index: any = 0) => {
@@ -430,12 +437,13 @@ const HomePage: React.FC<Props> = ({
                         end={items?.end}
                         key={idx}
                         labels={
-                          <i
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => removeConnection(items)}
-                          >
-                            x
-                          </i>
+                          <span className={Styles.addConditionIcon}>
+                            <FontAwesomeIcon
+                              icon={faCirclePlus}
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => removeConnection(items)}
+                            />
+                          </span>
                         }
                         startAnchor="auto"
                         endAnchor="auto"
@@ -590,6 +598,14 @@ const HomePage: React.FC<Props> = ({
           panelData={rightPanelData}
         />
       )}
+      <Modal
+        visible={visibleConstraintCondition}
+        title=""
+        footer={[]}
+        onCancel={() => setVisibleConstraintCondition(false)}
+      >
+        <AddConditionalComponent />
+      </Modal>
       {/* <Modal
         visible={isEditPathwayFormVisible}
         onOk={onEditPathwayOkHandler}

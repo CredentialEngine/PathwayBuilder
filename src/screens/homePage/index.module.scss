@@ -72,3 +72,14 @@
 .DropWrapperWith {
   min-width: 450px;
 }
+.addConditionIcon {
+  display: inline-block;
+  background: black;
+  border-radius: 50%;
+  line-height: 1;
+  svg {
+    font-size: 25px;
+    fill: #ffb90b;
+    color: #ffb90b;
+  }
+}
