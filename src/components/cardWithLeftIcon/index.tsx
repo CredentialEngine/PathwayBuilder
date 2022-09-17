@@ -27,6 +27,7 @@ export interface Props {
   id?: number | string;
   uri?: string;
   getUpdatedCardArr?: (value: any) => void;
+  isDraggableCardVisibleMethod?: (value: any) => any;
   disabledItem?: any;
   CTID?: any;
   data?: any;
@@ -35,7 +36,7 @@ export interface Props {
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
-  const { isComponentTab, data } = props;
+  const { isComponentTab, data, isDraggableCardVisibleMethod } = props;
   const {
     Name,
     Description,
@@ -50,7 +51,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const onDragStart = (e: any) => {
     const target = e.target;
     e.dataTransfer.setData('card_id', JSON.stringify(props.data));
-
+    if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(true);
     setTimeout(() => {
       target.style.display = 'hidden';
     }, 0);
@@ -64,7 +65,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const onDragEnd = (e: any) => {
     e.target.style.visibility = 'visible';
     !!props.getUpdatedCardArr && props.getUpdatedCardArr(CTID);
-
+    if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(false);
     // e.target.style.visibility = 'visible';
 
     // e.target.style.position = 'absolute';

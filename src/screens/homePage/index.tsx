@@ -45,8 +45,7 @@ const HomePage: React.FC<Props> = ({
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
   const [showAddDestination, setShowAddDestination] = useState(false);
-  // const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
-  //   useState<boolean>(false);
+  const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [columnsData, setColumnsData] = useState<any>([]);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
@@ -351,6 +350,7 @@ const HomePage: React.FC<Props> = ({
                     )
                     .map((item: any) => (
                       <MultiCard
+                        isDraggableCardVisible={isDraggableCardVisible}
                         onClick={() => {
                           setRightPanelData(item);
                           setShowRightPanel(true);
@@ -523,7 +523,12 @@ const HomePage: React.FC<Props> = ({
       {!!isLeftPanelVisible && (
         <Layout style={{ display: 'flex', flexDirection: 'row' }}>
           <Sider trigger={null} collapsible collapsed={collapsed}>
-            <LeftPanel onCloseHandler={() => onCloseHandler} />
+            <LeftPanel
+              onCloseHandler={() => onCloseHandler}
+              isDraggableCardVisibleMethod={(isDragTure: boolean) =>
+                setDraggableCardVisible(isDragTure)
+              }
+            />
           </Sider>
           <Layout
             className="site-layout"

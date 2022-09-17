@@ -34,6 +34,7 @@ interface Props {
   isAddFirst?: boolean;
   firstComponent?: boolean;
   getEndPoints?: any;
+  isDraggableCardVisible?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -54,15 +55,14 @@ const MultiCard: React.FC<Props> = ({
   isAddFirst,
   firstComponent,
   getEndPoints,
+  isDraggableCardVisible,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
-  const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   showPopover;
   const ref = useRef(null);
 
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
-    setDraggableCardVisible(true);
     const target = e.target;
     e.dataTransfer.setData(
       'card_id',
@@ -83,7 +83,6 @@ const MultiCard: React.FC<Props> = ({
 
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
-    setDraggableCardVisible(false);
     e.target.style.visibility = 'visible';
 
     e.target.style.position = 'absolute';
@@ -108,7 +107,6 @@ const MultiCard: React.FC<Props> = ({
 
   return (
     <>
-      {console.log(isDraggableCardVisible, 'isDraggableCardVisible')}
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
           <div className={styles.draggableAreaBox}></div>
