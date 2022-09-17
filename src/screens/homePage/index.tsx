@@ -75,7 +75,7 @@ const HomePage: React.FC<Props> = ({
       for (let i = 1; i < updatedPathwayWrapper.PathwayComponents.length; i++) {
         if (
           !updatedPathwayWrapper.PathwayComponents[0]?.HasChild?.includes(
-            updatedPathwayWrapper.PathwayComponents[0 + i].CTID
+            updatedPathwayWrapper.PathwayComponents[0 + i]?.CTID
           )
         )
           updatedPathwayWrapper.PathwayComponents[0]?.HasChild.push(

@@ -75,9 +75,13 @@ export function* getAllConstraintOperand(data: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}`,
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
+
       body: JSON.stringify(data),
     });
     yield put(getLogicalOperatorsSuccess(result));

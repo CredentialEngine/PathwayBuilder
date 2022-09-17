@@ -220,7 +220,7 @@ const AddPathwayForm: React.FC<Props> = ({
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ Keywords: e }),
       }
@@ -251,7 +251,7 @@ const AddPathwayForm: React.FC<Props> = ({
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ Keywords: e }),
       }
@@ -282,7 +282,7 @@ const AddPathwayForm: React.FC<Props> = ({
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ Keywords: e }),
       }

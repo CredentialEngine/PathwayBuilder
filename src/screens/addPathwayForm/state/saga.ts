@@ -27,9 +27,9 @@ export function* getAllProgressionModelData(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`,
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/x-www-form-urlencoded',
-      // },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
@@ -46,6 +46,9 @@ export function* getAllIndustryTypeCodeData(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SEARCH_FOR_INDUSTRY_TYPE}`,
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       params: {
         search: payload.payload,
       },
@@ -66,7 +69,7 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json',
       },
       data: JSON.stringify(payload.payload),
     });

@@ -27,6 +27,9 @@ export function* getCurrentUserData(): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
       method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
@@ -42,6 +45,9 @@ export function* getPathwayAndComponentData(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${GET_DATA_FOR_PATHWAY}${payload?.id}`,
       method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
@@ -56,6 +62,9 @@ export function* approvePathway(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}${payload?.id}`,
       method: 'POST',
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
@@ -71,10 +80,12 @@ export function* getSavePathwayWrapper(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${BASE_URL}${SAVE_DATA_FOR_PATHWAY}`,
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
-      // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       data: payload.payload,
     });
     yield put(getDataForPathwayAndComponentsSuccess(result));
