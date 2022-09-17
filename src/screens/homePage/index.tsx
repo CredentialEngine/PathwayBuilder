@@ -9,6 +9,7 @@ import Sider from 'antd/lib/layout/Sider';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Xarrow, { Xwrapper } from 'react-xarrows';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -45,6 +46,12 @@ const HomePage: React.FC<Props> = ({
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
   const [dragElem, setDragElem] = useState<any>();
+
+  const [point, setPoint] = useState({
+    start: '',
+    end: '',
+  });
+  const [connection, setConnection] = useState<any>([]);
 
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const [generatedUuid, setGeneratedUuid] = useState<any>({
@@ -263,6 +270,49 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
+  const setEndpoints = (e: any, id: any) => {
+    e.stopPropagation();
+    if (point.start && point.start !== id) {
+      setPoint({
+        ...point,
+        end: id,
+      });
+      e?.target?.classList?.add('active');
+      setConnection([
+        ...connection,
+        {
+          start: point.start,
+          end: id,
+        },
+      ]);
+    } else {
+      setPoint({
+        ...point,
+        start: id,
+        end: point?.end,
+      });
+      e?.target?.classList?.add('active');
+    }
+  };
+
+  useEffect(() => {
+    if (point && point?.start?.length > 0 && point?.end?.length > 0) {
+      setPoint({
+        start: '',
+        end: '',
+      });
+    }
+  }, [point]);
+
+  const removeConnection = (item: any) => {
+    const newarray = connection;
+    const index = newarray.findIndex((items: any) => items === item);
+    newarray.splice(index, 1);
+    setConnection([...newarray]);
+    document.getElementById(item?.start)?.classList?.remove('active');
+    document.getElementById(item?.end)?.classList?.remove('active');
+  };
+
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       return (
@@ -276,7 +326,7 @@ const HomePage: React.FC<Props> = ({
             HasProgressionLevel={column.CTID}
             isDestinationColumnSelected={column?.isDestinationColumnSelected}
             destinationColumn={!!column?.destinationComponent}
-            width="900px"
+            width="450px"
           >
             <div
               style={{
@@ -287,75 +337,58 @@ const HomePage: React.FC<Props> = ({
                 flexDirection: 'column',
               }}
             >
-              {pathwayComponentCards.length > 0 &&
-                pathwayComponentCards
-                  .filter(
-                    (card: any) => card.HasProgressionLevel === column.CTID
-                  )
-                  .map((item: any) => (
-                    <MultiCard
-                      onClick={() => {
-                        setRightPanelData(item);
-                        setShowRightPanel(true);
-                      }}
-                      key={item.id}
-                      id={item.CTID}
-                      isCredentialCard={item.Type.toLowerCase().includes(
-                        'credential'.toLowerCase()
-                      )}
-                      isCourseCard={
-                        item.Type.toLowerCase().includes(
-                          'basic'.toLowerCase()
-                        ) ||
-                        item.Type.toLowerCase().includes(
-                          'AssessmentComponent'.toLowerCase()
-                        )
-                      }
-                      isConditionalCard={item.Type.toLowerCase().includes(
-                        'condition'.toLowerCase()
-                      )}
-                      isDestination={
-                        item?.isDestinationColumnSelected ||
-                        item.Type.toLowerCase().includes(
-                          'destination'.toLowerCase()
-                        )
-                      }
-                      data={item}
-                      setIsZoomDisabled={setIsZoomDisabled}
-                      status={column.Id}
-                      inProgressLevel={column.CTID}
-                      onSelectDragElemenet={onSelectDragElemenet}
-                      onMoveItem={onMoveItem}
-                    />
-                  ))}
-              {!showAddDestination && (
-                <MultiCard
-                  onClick={() => setShowRightPanel(true)}
-                  key={0}
-                  id={0}
-                  isAddDestination={
-                    column?.isDestinationColumnSelected ? true : false
-                  }
-                  data={{ Type: 'addDestination' }}
-                  destinationComponent={column?.isDestinationColumnSelected}
-                  setIsZoomDisabled={setIsZoomDisabled}
-                  status={column.Id}
-                  inProgressLevel={column.CTID}
-                  onSelectDragElemenet={onSelectDragElemenet}
-                  onMoveItem={onMoveItem}
-                />
-              )}
-              {showAddDestination &&
-                column?.CTID === getLastColumn() &&
-                pathwayComponentCards?.length <= 1 && (
+              <Xwrapper>
+                {/* </Xwrapper> */}
+                {pathwayComponentCards.length > 0 &&
+                  pathwayComponentCards
+                    .filter(
+                      (card: any) => card.HasProgressionLevel === column.CTID
+                    )
+                    .map((item: any) => (
+                      <MultiCard
+                        onClick={() => {
+                          setRightPanelData(item);
+                          setShowRightPanel(true);
+                        }}
+                        getEndPoints={setEndpoints}
+                        key={item.id}
+                        id={item.CTID}
+                        isCredentialCard={item.Type.toLowerCase().includes(
+                          'credential'.toLowerCase()
+                        )}
+                        isCourseCard={
+                          item.Type.toLowerCase().includes(
+                            'basic'.toLowerCase()
+                          ) ||
+                          item.Type.toLowerCase().includes(
+                            'AssessmentComponent'.toLowerCase()
+                          )
+                        }
+                        isConditionalCard={item.Type.toLowerCase().includes(
+                          'condition'.toLowerCase()
+                        )}
+                        isDestination={
+                          item?.isDestinationColumnSelected ||
+                          item.Type.toLowerCase().includes(
+                            'destination'.toLowerCase()
+                          )
+                        }
+                        data={item}
+                        setIsZoomDisabled={setIsZoomDisabled}
+                        status={column.Id}
+                        inProgressLevel={column.CTID}
+                        onSelectDragElemenet={onSelectDragElemenet}
+                        onMoveItem={onMoveItem}
+                      />
+                    ))}
+                {!showAddDestination && (
                   <MultiCard
                     onClick={() => setShowRightPanel(true)}
                     key={0}
                     id={0}
-                    firstComponent={
-                      column?.CTID === getLastColumn() ? true : false
+                    isAddDestination={
+                      column?.isDestinationColumnSelected ? true : false
                     }
-                    isAddFirst={column?.CTID === getLastColumn() ? true : false}
                     data={{ Type: 'addDestination' }}
                     destinationComponent={column?.isDestinationColumnSelected}
                     setIsZoomDisabled={setIsZoomDisabled}
@@ -365,6 +398,54 @@ const HomePage: React.FC<Props> = ({
                     onMoveItem={onMoveItem}
                   />
                 )}
+                {showAddDestination &&
+                  column?.CTID === getLastColumn() &&
+                  pathwayComponentCards?.length <= 1 && (
+                    <MultiCard
+                      onClick={() => setShowRightPanel(true)}
+                      key={0}
+                      id={0}
+                      firstComponent={
+                        column?.CTID === getLastColumn() ? true : false
+                      }
+                      isAddFirst={
+                        column?.CTID === getLastColumn() ? true : false
+                      }
+                      data={{ Type: 'addDestination' }}
+                      destinationComponent={column?.isDestinationColumnSelected}
+                      setIsZoomDisabled={setIsZoomDisabled}
+                      status={column.Id}
+                      inProgressLevel={column.CTID}
+                      onSelectDragElemenet={onSelectDragElemenet}
+                      onMoveItem={onMoveItem}
+                    />
+                  )}
+                {connection.length
+                  ? connection.map((items: any, idx: number) => (
+                      <Xarrow
+                        path="grid"
+                        strokeWidth={1}
+                        zIndex={1000}
+                        headSize={16}
+                        color="black"
+                        start={items?.start}
+                        end={items?.end}
+                        key={idx}
+                        labels={
+                          <i
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => removeConnection(items)}
+                          >
+                            x
+                          </i>
+                        }
+                        startAnchor="auto"
+                        endAnchor="auto"
+                        // gridBreak="20%"
+                      />
+                    ))
+                  : ''}
+              </Xwrapper>
             </div>
           </DropWrapper>
         </div>

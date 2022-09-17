@@ -33,6 +33,7 @@ interface Props {
   onMoveItem: (a: any) => void;
   isAddFirst?: boolean;
   firstComponent?: boolean;
+  getEndPoints?: any;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -52,6 +53,7 @@ const MultiCard: React.FC<Props> = ({
   onSelectDragElemenet,
   isAddFirst,
   firstComponent,
+  getEndPoints,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
@@ -118,7 +120,10 @@ const MultiCard: React.FC<Props> = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
-      onClick={onClick}
+      onClick={(e) => {
+        onClick;
+        getEndPoints(e, id);
+      }}
       onMouseLeave={() => setIsZoomDisabled(false)}
       onMouseOver={() => setIsZoomDisabled(true)}
       id={id?.toString()}
@@ -129,6 +134,7 @@ const MultiCard: React.FC<Props> = ({
             title="Add your destination component"
             content="Drag your pre-selected destination component into the space provided, or search for a component to add."
             onClose={noop}
+            isDestination={isAddDestination}
           />
           <div className={styles.addDestinationContent}>
             <p className={styles.addDestinationTitle}>

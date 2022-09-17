@@ -5,8 +5,9 @@
   font-family: $app-font-primary;
   width: 260px;
   position: absolute;
-  right: 360px;
-  top: 50px;
+  right: 874px;
+  top: 48px;
+
   .arrow {
     width: 40px;
     height: 20px;
@@ -52,3 +53,12 @@
     margin-right: 10px;
   }
 }
+
+.isDestination {
+  right: 424px;
+  top: 50px;
+}
+// .isFirst {
+//   right: 874px;
+// top: 66px;
+// }

@@ -8,10 +8,20 @@ interface Props {
   title: string;
   content: string;
   onClose: () => void;
+  isDestination?: boolean;
 }
 
-const InfoTooltip: React.FC<Props> = ({ title, content, onClose }) => (
-  <div className={styles.infoTooltipContainer}>
+const InfoTooltip: React.FC<Props> = ({
+  title,
+  content,
+  onClose,
+  isDestination,
+}) => (
+  <div
+    className={`${styles.infoTooltipContainer} ${
+      isDestination ? styles?.isDestination : ''
+    }`}
+  >
     <div className={styles.arrow}></div>
     <div className={styles.buttonContainer}>
       <FontAwesomeIcon
