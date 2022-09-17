@@ -1,4 +1,3 @@
-// import { faStar } from '@fortawesome/free-regular-svg-icons';
 import {
   faCirclePlus,
   faCubes,
@@ -51,7 +50,6 @@ const MultiCard: React.FC<Props> = ({
   inProgressLevel,
   destinationComponent,
   onSelectDragElemenet,
-  onMoveItem,
   isAddFirst,
   firstComponent,
 }) => {
@@ -73,7 +71,8 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragOver = (e: any) => {
-    onMoveItem(e.target.innerText);
+    // onMoveItem(e.target.innerText);
+
     e.preventDefault();
     e.stopPropagation();
   };
@@ -83,9 +82,9 @@ const MultiCard: React.FC<Props> = ({
 
     e.target.style.visibility = 'visible';
 
-    e.target.style.position = 'relative';
-    // e.target.style.left = `${e.pageX + 75}px`;
-    // e.target.style.top = `${e.pageY - 75}px`;
+    e.target.style.position = 'absolute';
+    e.target.style.left = `${e.pageX + 75} px`;
+    e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {
@@ -143,7 +142,6 @@ const MultiCard: React.FC<Props> = ({
           </div>
         </>
       )}
-
       {isAddFirst && firstComponent && (
         <>
           <InfoTooltip
@@ -164,7 +162,7 @@ const MultiCard: React.FC<Props> = ({
         </>
       )}
 
-      {/* {isDestination && !isCourseCard &&(
+      {/* {isDestination && (
         <div className={styles.destinationContentWrapper}>
           <div className={styles.topDestinationContent}>
             <FontAwesomeIcon
@@ -172,7 +170,6 @@ const MultiCard: React.FC<Props> = ({
               style={{ height: '20px' }}
               icon={faStar}
             />
-
             <p className={styles.credentials}>Credential Component</p>
             <FontAwesomeIcon
               color={darkColor}
@@ -251,49 +248,65 @@ const MultiCard: React.FC<Props> = ({
       )}
 
       {isCredentialCard && (
-        <div className={styles.courseCredCardWrapper}>
-          {/* add icon start */}
-          <div className={styles.addIcon}>
-            <FontAwesomeIcon
-              icon={faCirclePlus}
-              fill="#000000"
+        <>
+          {/* <div className={styles.addIcon}>
+              <FontAwesomeIcon
+                icon={faCirclePlus}
+                fill="#000000"
+                style={{
+                  height: '22px',
+                  width: '22px',
+                  color: '#ffd363',
+                  cursor: 'pointer',
+                }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              />
+            </div> */}
+          <div className={styles.courseCredCardWrapper}>
+            <div className={styles.addIcon}>
+              <FontAwesomeIcon
+                icon={faCirclePlus}
+                fill="#000000"
+                style={{
+                  height: '22px',
+                  width: '22px',
+                  color: '#ffd363',
+                  cursor: 'pointer',
+                }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              />
+            </div>
+            <div className={styles.topCourseContent}>
+              <FontAwesomeIcon
+                icon={faCubes}
+                style={{ height: '24px', width: '24px' }}
+              />
+              <span className={styles.title}>{data.Name.slice(0, 30)}</span>
+              <FontAwesomeIcon
+                color={darkColor}
+                style={{ height: '20px', cursor: 'pointer' }}
+                icon={faEllipsis}
+                onClick={noop}
+              />
+            </div>
+            <Divider
               style={{
-                height: '22px',
-                width: '22px',
-                color: '#ffd363',
-                cursor: 'pointer',
-              }}
-              onClick={(e: any) => {
-                e.stopPropagation();
-                e.preventDefault();
+                backgroundColor: '#6EFFFF',
+                margin: '8px 0px 4px 0px',
               }}
             />
+            <div className={styles.courseNameContainter}>
+              <span>{data.CodedNotation}</span>
+              <span>{data.Description.slice(0, 40)}</span>
+            </div>
           </div>
-          {/* add icon end */}
-          <div className={styles.topCourseContent}>
-            <FontAwesomeIcon
-              icon={faCubes}
-              style={{ height: '24px', width: '24px' }}
-            />
-            <span className={styles.title}>{data.Name.slice(0, 30)}</span>
-            <FontAwesomeIcon
-              color={darkColor}
-              style={{ height: '20px', cursor: 'pointer' }}
-              icon={faEllipsis}
-              onClick={noop}
-            />
-          </div>
-          <Divider
-            style={{
-              backgroundColor: '#6EFFFF',
-              margin: '8px 0px 4px 0px',
-            }}
-          />
-          <div className={styles.courseNameContainter}>
-            <span>{data.CodedNotation}</span>
-            <span>{data.Description.slice(0, 40)}</span>
-          </div>
-        </div>
+        </>
       )}
 
       {isConditionalCard && (

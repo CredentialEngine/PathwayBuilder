@@ -8,7 +8,6 @@ import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { ArcherContainer, ArcherElement } from 'react-archer';
 import { useDispatch, useSelector } from 'react-redux';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { v4 as uuidv4 } from 'uuid';
@@ -277,7 +276,7 @@ const HomePage: React.FC<Props> = ({
             HasProgressionLevel={column.CTID}
             isDestinationColumnSelected={column?.isDestinationColumnSelected}
             destinationColumn={!!column?.destinationComponent}
-            width="450px"
+            width="900px"
           >
             <div
               style={{
@@ -288,122 +287,84 @@ const HomePage: React.FC<Props> = ({
                 flexDirection: 'column',
               }}
             >
-              <>
-                <ArcherContainer strokeColor="red">
-                  {pathwayComponentCards.length > 0 &&
-                    pathwayComponentCards
-                      .filter(
-                        (card: any) => card.HasProgressionLevel === column.CTID
-                      )
-                      .map((item: any) => {
-                        const relations = [] as any;
-                        if (
-                          column?.isDestinationColumnSelected &&
-                          item?.HasChild?.length > 0
-                        ) {
-                          item?.HasChild?.forEach((child_item: any) =>
-                            relations.push({
-                              targetId: child_item,
-                              targetAnchor: 'bottom',
-                              sourceAnchor: 'top',
-                              style: {
-                                strokeColor: 'blue',
-                                strokeWidth: 1,
-                              },
-                            })
-                          );
-                        }
-
-                        return (
-                          <ArcherElement
-                            id={item?.CTID}
-                            key={item?.CTID}
-                            relations={
-                              column?.isDestinationColumnSelected
-                                ? relations
-                                : []
-                            }
-                          >
-                            <MultiCard
-                              onClick={() => {
-                                setRightPanelData(item);
-                                setShowRightPanel(true);
-                              }}
-                              key={item.id}
-                              id={item.CTID}
-                              isCredentialCard={item.Type.toLowerCase().includes(
-                                'credential'.toLowerCase()
-                              )}
-                              isCourseCard={
-                                item.Type.toLowerCase().includes(
-                                  'basic'.toLowerCase()
-                                ) ||
-                                item.Type.toLowerCase().includes(
-                                  'AssessmentComponent'.toLowerCase()
-                                )
-                              }
-                              isConditionalCard={item.Type.toLowerCase().includes(
-                                'condition'.toLowerCase()
-                              )}
-                              isDestination={
-                                item?.isDestinationColumnSelected ||
-                                item.Type.toLowerCase().includes(
-                                  'destination'.toLowerCase()
-                                )
-                              }
-                              data={item}
-                              setIsZoomDisabled={setIsZoomDisabled}
-                              status={column.Id}
-                              inProgressLevel={column.CTID}
-                              onSelectDragElemenet={onSelectDragElemenet}
-                              onMoveItem={onMoveItem}
-                            />
-                          </ArcherElement>
-                        );
-                      })}
-                  {!showAddDestination && (
+              {pathwayComponentCards.length > 0 &&
+                pathwayComponentCards
+                  .filter(
+                    (card: any) => card.HasProgressionLevel === column.CTID
+                  )
+                  .map((item: any) => (
                     <MultiCard
-                      onClick={() => setShowRightPanel(true)}
-                      key={0}
-                      id={0}
-                      isAddDestination={
-                        column?.isDestinationColumnSelected ? true : false
+                      onClick={() => {
+                        setRightPanelData(item);
+                        setShowRightPanel(true);
+                      }}
+                      key={item.id}
+                      id={item.CTID}
+                      isCredentialCard={item.Type.toLowerCase().includes(
+                        'credential'.toLowerCase()
+                      )}
+                      isCourseCard={
+                        item.Type.toLowerCase().includes(
+                          'basic'.toLowerCase()
+                        ) ||
+                        item.Type.toLowerCase().includes(
+                          'AssessmentComponent'.toLowerCase()
+                        )
                       }
-                      data={{ Type: 'addDestination' }}
-                      destinationComponent={column?.isDestinationColumnSelected}
+                      isConditionalCard={item.Type.toLowerCase().includes(
+                        'condition'.toLowerCase()
+                      )}
+                      isDestination={
+                        item?.isDestinationColumnSelected ||
+                        item.Type.toLowerCase().includes(
+                          'destination'.toLowerCase()
+                        )
+                      }
+                      data={item}
                       setIsZoomDisabled={setIsZoomDisabled}
                       status={column.Id}
                       inProgressLevel={column.CTID}
                       onSelectDragElemenet={onSelectDragElemenet}
                       onMoveItem={onMoveItem}
                     />
-                  )}
-                  {showAddDestination &&
-                    column?.CTID === getLastColumn() &&
-                    pathwayComponentCards?.length <= 1 && (
-                      <MultiCard
-                        onClick={() => setShowRightPanel(true)}
-                        key={0}
-                        id={0}
-                        firstComponent={
-                          column?.CTID === getLastColumn() ? true : false
-                        }
-                        isAddFirst={
-                          column?.CTID === getLastColumn() ? true : false
-                        }
-                        data={{ Type: 'addDestination' }}
-                        destinationComponent={
-                          column?.isDestinationColumnSelected
-                        }
-                        setIsZoomDisabled={setIsZoomDisabled}
-                        status={column.Id}
-                        inProgressLevel={column.CTID}
-                        onSelectDragElemenet={onSelectDragElemenet}
-                        onMoveItem={onMoveItem}
-                      />
-                    )}
-                </ArcherContainer>
-              </>
+                  ))}
+              {!showAddDestination && (
+                <MultiCard
+                  onClick={() => setShowRightPanel(true)}
+                  key={0}
+                  id={0}
+                  isAddDestination={
+                    column?.isDestinationColumnSelected ? true : false
+                  }
+                  data={{ Type: 'addDestination' }}
+                  destinationComponent={column?.isDestinationColumnSelected}
+                  setIsZoomDisabled={setIsZoomDisabled}
+                  status={column.Id}
+                  inProgressLevel={column.CTID}
+                  onSelectDragElemenet={onSelectDragElemenet}
+                  onMoveItem={onMoveItem}
+                />
+              )}
+              {showAddDestination &&
+                column?.CTID === getLastColumn() &&
+                pathwayComponentCards?.length <= 1 && (
+                  <MultiCard
+                    onClick={() => setShowRightPanel(true)}
+                    key={0}
+                    id={0}
+                    firstComponent={
+                      column?.CTID === getLastColumn() ? true : false
+                    }
+                    isAddFirst={column?.CTID === getLastColumn() ? true : false}
+                    data={{ Type: 'addDestination' }}
+                    destinationComponent={column?.isDestinationColumnSelected}
+                    setIsZoomDisabled={setIsZoomDisabled}
+                    status={column.Id}
+                    inProgressLevel={column.CTID}
+                    onSelectDragElemenet={onSelectDragElemenet}
+                    onMoveItem={onMoveItem}
+                  />
+                )}
             </div>
           </DropWrapper>
         </div>
@@ -457,7 +418,6 @@ const HomePage: React.FC<Props> = ({
     });
     return ids[ids?.length - 2];
   };
-
   const renderSemester = (semesters: any) => {
     const ids = [] as any;
     if (!semesters || !semesters.length) {
