@@ -336,8 +336,9 @@ const HomePage: React.FC<Props> = ({
               style={{
                 height: '100vh',
                 backgroundColor: `${index % 2 !== 0 ? '#f0f0f0' : '#ffffff'}`,
-                display: 'flex',
-                flexDirection: 'column',
+                // display: 'flex',
+                // flexDirection: 'column',
+                position: 'relative',
               }}
             >
               <Xwrapper>

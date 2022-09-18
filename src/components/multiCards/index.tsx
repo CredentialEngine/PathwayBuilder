@@ -91,10 +91,9 @@ const MultiCard: React.FC<Props> = ({
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
-
     e.target.style.position = 'absolute';
-    e.target.style.left = `${e.pageX + 75} px`;
-    e.target.style.top = `${e.pageY - 75}px`;
+    e.target.style.left = `${e.pageY}px`;
+    e.target.style.top = `${e.pageY}px`;
   };
 
   useEffect(() => {
