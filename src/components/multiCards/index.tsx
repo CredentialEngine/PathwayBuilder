@@ -9,7 +9,10 @@ import { Divider } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 
+import AddConditionalComponent from '../../screens/addComponent';
+
 import InfoTooltip from '../infoTooltip';
+import Modal from '../modal';
 
 import styles from './index.module.scss';
 
@@ -35,6 +38,7 @@ interface Props {
   firstComponent?: boolean;
   getEndPoints?: any;
   isDraggableCardVisible?: boolean;
+  constraintIcon?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -56,10 +60,13 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
+  constraintIcon,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
   const ref = useRef(null);
+  const [visibleConstraintCondition, setVisibleConstraintCondition] =
+    useState(false);
 
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
@@ -84,10 +91,9 @@ const MultiCard: React.FC<Props> = ({
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
-
     e.target.style.position = 'absolute';
-    e.target.style.left = `${e.pageX + 75} px`;
-    e.target.style.top = `${e.pageY - 75}px`;
+    e.target.style.left = `${e.pageY - 100}px`;
+    e.target.style.top = `${e.pageY - 100}px`;
   };
 
   useEffect(() => {
@@ -107,6 +113,7 @@ const MultiCard: React.FC<Props> = ({
 
   return (
     <>
+      {console.log(constraintIcon, 'constraintIcon')}
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
           <div className={styles.draggableAreaBox}></div>
@@ -176,60 +183,60 @@ const MultiCard: React.FC<Props> = ({
               )}
 
               {/* {isDestination && (
-<div className={styles.destinationContentWrapper}>
-  <div className={styles.topDestinationContent}>
-    <FontAwesomeIcon
-      color={darkColor}
-      style={{ height: '20px' }}
-      icon={faStar}
-    />
-    <p className={styles.credentials}>Credential Component</p>
-    <FontAwesomeIcon
-      color={darkColor}
-      style={{ height: '20px', cursor: 'pointer' }}
-      icon={faEllipsis}
-      onClick={(e: any) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setShowPopover(!showPopover);
-      }}
-    />
-    {showPopover && (
-      <Popover
-        visible={showPopover}
-        arrowPointAtCenter
-        placement="bottomRight"
-        content={
-          <div className={styles.popoverMenu} ref={ref}>
-            <span
-              onClick={(e: any) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            >
-              View
-            </span>
-            <span
-              onClick={(e: any) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            >
-              Delete
-            </span>
-          </div>
-        }
-      ></Popover>
-    )}
-  </div>
-  <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
-  <div className={styles.bottomDestinationContent}>
-    <p className={styles.title}>
-      F291-COS BSCH - Bachlor of Science Honours
-    </p>
-  </div>
-</div>
-)} */}
+                <div className={styles.destinationContentWrapper}>
+                  <div className={styles.topDestinationContent}>
+                    <FontAwesomeIcon
+                      color={darkColor}
+                      style={{ height: '20px' }}
+                      icon={faStar}
+                    />
+                    <p className={styles.credentials}>Credential Component</p>
+                    <FontAwesomeIcon
+                      color={darkColor}
+                      style={{ height: '20px', cursor: 'pointer' }}
+                      icon={faEllipsis}
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setShowPopover(!showPopover);
+                      }}
+                    />
+                    {showPopover && (
+                      <Popover
+                        visible={showPopover}
+                        arrowPointAtCenter
+                        placement="bottomRight"
+                        content={
+                          <div className={styles.popoverMenu} ref={ref}>
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                            >
+                              View
+                            </span>
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                            >
+                              Delete
+                            </span>
+                          </div>
+                        }
+                      ></Popover>
+                    )}
+                  </div>
+                  <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
+                  <div className={styles.bottomDestinationContent}>
+                    <p className={styles.title}>
+                      F291-COS BSCH - Bachlor of Science Honours
+                    </p>
+                  </div>
+                </div>
+                )} */}
 
               {((isCourseCard && !isCredentialCard) ||
                 data.Type === 'course') && (
@@ -401,7 +408,9 @@ const MultiCard: React.FC<Props> = ({
             isCourseCard ? styles?.isCourseCard : ''
           } ${isConditionalCard ? styles.conditionalCard : ''} ${
             isAddComponentCard ? styles.addComponentCard : ''
-          } ${isCredentialCard ? styles.isCredentialCard : ''}`}
+          } ${isCredentialCard ? styles.isCredentialCard : ''} ${
+            isDestination && isCourseCard ? styles.onDestinationLeft : ''
+          }`}
           draggable={true}
           onDragStart={onDragStart}
           onDragOver={onDragOver}
@@ -455,112 +464,64 @@ const MultiCard: React.FC<Props> = ({
           )}
 
           {/* {isDestination && (
-<div className={styles.destinationContentWrapper}>
-  <div className={styles.topDestinationContent}>
-    <FontAwesomeIcon
-      color={darkColor}
-      style={{ height: '20px' }}
-      icon={faStar}
-    />
-    <p className={styles.credentials}>Credential Component</p>
-    <FontAwesomeIcon
-      color={darkColor}
-      style={{ height: '20px', cursor: 'pointer' }}
-      icon={faEllipsis}
-      onClick={(e: any) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setShowPopover(!showPopover);
-      }}
-    />
-    {showPopover && (
-      <Popover
-        visible={showPopover}
-        arrowPointAtCenter
-        placement="bottomRight"
-        content={
-          <div className={styles.popoverMenu} ref={ref}>
-            <span
-              onClick={(e: any) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            >
-              View
-            </span>
-            <span
-              onClick={(e: any) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            >
-              Delete
-            </span>
-          </div>
-        }
-      ></Popover>
-    )}
-  </div>
-  <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
-  <div className={styles.bottomDestinationContent}>
-    <p className={styles.title}>
-      F291-COS BSCH - Bachlor of Science Honours
-    </p>
-  </div>
-</div>
-)} */}
+              <div className={styles.destinationContentWrapper}>
+                <div className={styles.topDestinationContent}>
+                  <FontAwesomeIcon
+                    color={darkColor}
+                    style={{ height: '20px' }}
+                    icon={faStar}
+                  />
+                  <p className={styles.credentials}>Credential Component</p>
+                  <FontAwesomeIcon
+                    color={darkColor}
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faEllipsis}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowPopover(!showPopover);
+                    }}
+                  />
+                  {showPopover && (
+                    <Popover
+                      visible={showPopover}
+                      arrowPointAtCenter
+                      placement="bottomRight"
+                      content={
+                        <div className={styles.popoverMenu} ref={ref}>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                            }}
+                          >
+                            View
+                          </span>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                            }}
+                          >
+                            Delete
+                          </span>
+                        </div>
+                      }
+                    ></Popover>
+                  )}
+                </div>
+                <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
+                <div className={styles.bottomDestinationContent}>
+                  <p className={styles.title}>
+                    F291-COS BSCH - Bachlor of Science Honours
+                  </p>
+                </div>
+              </div>
+              )} */}
 
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
-            <div className={styles.credentialsCardWrapeer}>
-              <div className={styles.topCourseContent}>
-                <FontAwesomeIcon
-                  icon={faCubes}
-                  style={{ height: '24px', width: '24px' }}
-                />
-                <span className={styles.title}>{data.Name.slice(0, 30)}</span>
-                <FontAwesomeIcon
-                  color={darkColor}
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faEllipsis}
-                  onClick={noop}
-                />
-              </div>
-              <Divider
-                style={{
-                  backgroundColor: '#F3F4F6',
-                  margin: '8px 0px 4px 0px',
-                }}
-              />
-              <div className={styles.courseNameContainter}>
-                <span>{data.CodedNotation}</span>
-                <span>{data.Description.slice(0, 40)}</span>
-              </div>
-              <div className={styles.creditSection}>
-                <span>Credits: 3</span>
-                <span>Level 10</span>
-              </div>
-            </div>
-          )}
-
-          {isCredentialCard && (
             <>
-              {/* <div className={styles.addIcon}>
-      <FontAwesomeIcon
-        icon={faCirclePlus}
-        fill="#000000"
-        style={{
-          height: '22px',
-          width: '22px',
-          color: '#ffd363',
-          cursor: 'pointer',
-        }}
-        onClick={(e: any) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-      />
-    </div> */}
-              <div className={styles.courseCredCardWrapper}>
+              {isDestination && (
                 <div className={styles.addIcon}>
                   <FontAwesomeIcon
                     icon={faCirclePlus}
@@ -568,15 +529,74 @@ const MultiCard: React.FC<Props> = ({
                     style={{
                       height: '22px',
                       width: '22px',
-                      color: '#ffd363',
+                      color: '#ffb90b',
                       cursor: 'pointer',
                     }}
-                    onClick={(e: any) => {
-                      e.stopPropagation();
-                      e.preventDefault();
+                    onClick={() => {
+                      setVisibleConstraintCondition(true);
                     }}
                   />
                 </div>
+              )}
+
+              <div
+                className={
+                  isDestination
+                    ? styles.onDestinationPanel
+                    : styles.credentialsCardWrapeer
+                }
+              >
+                <div className={styles.topCourseContent}>
+                  <FontAwesomeIcon
+                    icon={faCubes}
+                    style={{ height: '24px', width: '24px' }}
+                  />
+                  <span className={styles.title}>{data.Name.slice(0, 30)}</span>
+                  <FontAwesomeIcon
+                    color={darkColor}
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faEllipsis}
+                    onClick={noop}
+                  />
+                </div>
+                <Divider
+                  style={{
+                    backgroundColor: '#F3F4F6',
+                    margin: '8px 0px 4px 0px',
+                  }}
+                />
+                <div className={styles.courseNameContainter}>
+                  <span>{data.CodedNotation}</span>
+                  <span>{data.Description.slice(0, 40)}</span>
+                </div>
+                <div className={styles.creditSection}>
+                  <span>Credits: 3</span>
+                  <span>Level 10</span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {isCredentialCard && (
+            <>
+              <div className={styles.courseCredCardWrapper}>
+                {isDestination && (
+                  <div className={styles.addIcon}>
+                    <FontAwesomeIcon
+                      icon={faCirclePlus}
+                      fill="#000000"
+                      style={{
+                        height: '22px',
+                        width: '22px',
+                        color: '#ffb90b',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        setVisibleConstraintCondition(true);
+                      }}
+                    />
+                  </div>
+                )}
                 <div className={styles.topCourseContent}>
                   <FontAwesomeIcon
                     icon={faCubes}
@@ -606,6 +626,21 @@ const MultiCard: React.FC<Props> = ({
 
           {isConditionalCard && (
             <React.Fragment>
+              <div className={styles.addIcon}>
+                <FontAwesomeIcon
+                  icon={faCirclePlus}
+                  fill="#000000"
+                  style={{
+                    height: '22px',
+                    width: '22px',
+                    color: '#ffb90b',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    setVisibleConstraintCondition(true);
+                  }}
+                />
+              </div>
               <div className={styles.conditionalCardContent}>
                 <FontAwesomeIcon
                   color="#ffffff"
@@ -629,6 +664,21 @@ const MultiCard: React.FC<Props> = ({
 
           {isAddComponentCard && (
             <div className={styles.addComponentContent}>
+              <div className={styles.addIcon}>
+                <FontAwesomeIcon
+                  icon={faCirclePlus}
+                  fill="#000000"
+                  style={{
+                    height: '22px',
+                    width: '22px',
+                    color: '#ffb90b',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    setVisibleConstraintCondition(true);
+                  }}
+                />
+              </div>
               <div className={styles.topContent}>
                 <span className={styles.circle}>
                   <FontAwesomeIcon
@@ -661,6 +711,16 @@ const MultiCard: React.FC<Props> = ({
           )}
         </div>
       )}
+      <Modal
+        visible={visibleConstraintCondition}
+        title=""
+        footer={[]}
+        onCancel={() => setVisibleConstraintCondition(false)}
+      >
+        <AddConditionalComponent
+          visibleConstraintCondition={visibleConstraintCondition}
+        />
+      </Modal>
     </>
   );
 };

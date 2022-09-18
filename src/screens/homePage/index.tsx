@@ -1,7 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faCirclePlus,
+  faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
@@ -17,11 +17,9 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
-import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
-import AddConditionalComponent from '../addComponent';
 
 // import AddPathwayForm from '../addPathwayForm';
 
@@ -42,8 +40,7 @@ const HomePage: React.FC<Props> = ({
   const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
-  const [visibleConstraintCondition, setVisibleConstraintCondition] =
-    useState(false);
+
   const [showAddDestination, setShowAddDestination] = useState(false);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [columnsData, setColumnsData] = useState<any>([]);
@@ -56,6 +53,7 @@ const HomePage: React.FC<Props> = ({
     end: '',
   });
   const [connection, setConnection] = useState<any>([]);
+  const [constraintIcon, setConstraintIcon] = useState<boolean>(false);
 
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const [generatedUuid, setGeneratedUuid] = useState<any>({
@@ -289,6 +287,7 @@ const HomePage: React.FC<Props> = ({
           end: id,
         },
       ]);
+      setConstraintIcon(true);
     } else {
       setPoint({
         ...point,
@@ -309,14 +308,13 @@ const HomePage: React.FC<Props> = ({
   }, [point]);
 
   const removeConnection = (item: any) => {
-    // const newarray = connection;
-    // const index = newarray.findIndex((items: any) => items === item);
-    // newarray.splice(index, 1);
-    // setConnection([...newarray]);
-    // document.getElementById(item?.start)?.classList?.remove('active');
-    // document.getElementById(item?.end)?.classList?.remove('active');
-    console.log(item);
-    setVisibleConstraintCondition(true);
+    const newarray = connection;
+    const index = newarray.findIndex((items: any) => items === item);
+    newarray.splice(index, 1);
+    setConnection([...newarray]);
+    document.getElementById(item?.start)?.classList?.remove('active');
+    document.getElementById(item?.end)?.classList?.remove('active');
+    setConstraintIcon(false);
   };
 
   const getDropWrapperLayout = (column: any, index: any = 0) => {
@@ -338,8 +336,9 @@ const HomePage: React.FC<Props> = ({
               style={{
                 height: '100vh',
                 backgroundColor: `${index % 2 !== 0 ? '#f0f0f0' : '#ffffff'}`,
-                display: 'flex',
-                flexDirection: 'column',
+                // display: 'flex',
+                // flexDirection: 'column',
+                position: 'relative',
               }}
             >
               <Xwrapper>
@@ -351,6 +350,7 @@ const HomePage: React.FC<Props> = ({
                     .map((item: any) => (
                       <MultiCard
                         isDraggableCardVisible={isDraggableCardVisible}
+                        constraintIcon={constraintIcon}
                         onClick={() => {
                           setRightPanelData(item);
                           setShowRightPanel(true);
@@ -439,7 +439,7 @@ const HomePage: React.FC<Props> = ({
                         labels={
                           <span className={Styles.addConditionIcon}>
                             <FontAwesomeIcon
-                              icon={faCirclePlus}
+                              icon={faXmarkCircle}
                               style={{ cursor: 'pointer' }}
                               onClick={() => removeConnection(items)}
                             />
@@ -603,14 +603,7 @@ const HomePage: React.FC<Props> = ({
           panelData={rightPanelData}
         />
       )}
-      <Modal
-        visible={visibleConstraintCondition}
-        title=""
-        footer={[]}
-        onCancel={() => setVisibleConstraintCondition(false)}
-      >
-        <AddConditionalComponent />
-      </Modal>
+
       {/* <Modal
         visible={isEditPathwayFormVisible}
         onOk={onEditPathwayOkHandler}

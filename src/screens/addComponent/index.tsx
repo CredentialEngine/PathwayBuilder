@@ -2,7 +2,6 @@ import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Form, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { noop } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -23,7 +22,12 @@ const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
 const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
 const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
-const AddConditionalComponent: React.FC = () => {
+interface Props {
+  visibleConstraintCondition: boolean;
+}
+
+const AddConditionalComponent: React.FC<Props> = (Props) => {
+  const { visibleConstraintCondition } = Props;
   const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
   const [allComparators, setAllComparators] = useState<any>([]);
   const [selectedComparators, setSelectedComparators] = useState<any>();
@@ -32,6 +36,11 @@ const AddConditionalComponent: React.FC = () => {
   const [leftSourcedata, setleftSourceData] = useState<any>();
   const [rightSourcedata, setRightSourceData] = useState<any>();
   const [errorField, setErrorField] = useState<any>([]);
+  const [parentComponent, setParentComponent] = useState<string>('');
+  const [conditionDescription, setConditionDescription] = useState<string>('');
+  const [requiredNumber, setRequiredNumber] = useState<string>('');
+  const [visibleConstraintConditionModal, setvisibleConstraintConditionModal] =
+    useState<boolean>(visibleConstraintCondition);
 
   const dispatch = useDispatch();
   // const onFinish = (values: any) => {
@@ -112,6 +121,7 @@ const AddConditionalComponent: React.FC = () => {
   }, []);
 
   const saveCondition = () => {
+    setvisibleConstraintConditionModal(!visibleConstraintConditionModal);
     if (!leftSourcedata?.length)
       setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
     else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
@@ -154,11 +164,22 @@ const AddConditionalComponent: React.FC = () => {
       </div>
       <Form.Item>
         <label>Parent Component</label>
-        <InputBox onChange={noop} placeholder="" maxLength={0} value="" />
+        <InputBox
+          onChange={(e) => setParentComponent(e.target.value)}
+          placeholder=""
+          maxLength={0}
+          value={parentComponent}
+        />
       </Form.Item>
       <Form.Item>
         <label>Condition Description</label>
-        <TextArea onChange={noop} placeholder="" maxLength={0} rows={3} />
+        <TextArea
+          onChange={(e) => setConditionDescription(e.target.value)}
+          placeholder=""
+          maxLength={0}
+          rows={3}
+          value={conditionDescription}
+        />
       </Form.Item>
       <Row gutter={20}>
         <Col span="12">
@@ -166,10 +187,10 @@ const AddConditionalComponent: React.FC = () => {
             <label>Required Number</label>
             <InputBox
               type="number"
-              onChange={noop}
+              onChange={(e) => setRequiredNumber(e.target.value)}
               placeholder=""
               maxLength={0}
-              value=""
+              value={requiredNumber}
             />
           </Form.Item>
         </Col>
