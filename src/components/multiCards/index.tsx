@@ -92,8 +92,8 @@ const MultiCard: React.FC<Props> = ({
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
     e.target.style.position = 'absolute';
-    e.target.style.left = `${e.pageY}px`;
-    e.target.style.top = `${e.pageY}px`;
+    e.target.style.left = `${e.pageY - 100}px`;
+    e.target.style.top = `${e.pageY - 100}px`;
   };
 
   useEffect(() => {
