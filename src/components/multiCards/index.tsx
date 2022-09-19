@@ -60,7 +60,6 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
-  constraintIcon,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
@@ -87,13 +86,12 @@ const MultiCard: React.FC<Props> = ({
     e.preventDefault();
     e.stopPropagation();
   };
-
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
     e.target.style.position = 'absolute';
-    e.target.style.left = `${e.pageY - 100}px`;
-    e.target.style.top = `${e.pageY - 100}px`;
+    e.target.style.left = `${e.screenX - 150}px`;
+    e.target.style.top = `${e.screenY - 120}px`;
   };
 
   useEffect(() => {
@@ -113,7 +111,6 @@ const MultiCard: React.FC<Props> = ({
 
   return (
     <>
-      {console.log(constraintIcon, 'constraintIcon')}
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
           <div className={styles.draggableAreaBox}></div>

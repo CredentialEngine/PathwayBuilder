@@ -330,7 +330,7 @@ const HomePage: React.FC<Props> = ({
             HasProgressionLevel={column.CTID}
             isDestinationColumnSelected={column?.isDestinationColumnSelected}
             destinationColumn={!!column?.destinationComponent}
-            width="900px"
+            width="450px"
           >
             <div
               style={{
