@@ -1,7 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faXmarkCircle,
+  faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
@@ -17,9 +17,11 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
+import AddConditionalComponent from '../addComponent';
 
 // import AddPathwayForm from '../addPathwayForm';
 
@@ -47,6 +49,8 @@ const HomePage: React.FC<Props> = ({
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
   const [dragElem, setDragElem] = useState<any>();
+  const [visibleConstraintCondition, setVisibleConstraintCondition] =
+    useState(false);
 
   const [point, setPoint] = useState({
     start: '',
@@ -308,13 +312,15 @@ const HomePage: React.FC<Props> = ({
   }, [point]);
 
   const removeConnection = (item: any) => {
-    const newarray = connection;
-    const index = newarray.findIndex((items: any) => items === item);
-    newarray.splice(index, 1);
-    setConnection([...newarray]);
-    document.getElementById(item?.start)?.classList?.remove('active');
-    document.getElementById(item?.end)?.classList?.remove('active');
-    setConstraintIcon(false);
+    // const newarray = connection;
+    // const index = newarray.findIndex((items: any) => items === item);
+    // newarray.splice(index, 1);
+    // setConnection([...newarray]);
+    // document.getElementById(item?.start)?.classList?.remove('active');
+    // document.getElementById(item?.end)?.classList?.remove('active');
+    // setConstraintIcon(false);
+    console.log(item);
+    setVisibleConstraintCondition(true);
   };
 
   const getDropWrapperLayout = (column: any, index: any = 0) => {
@@ -439,7 +445,7 @@ const HomePage: React.FC<Props> = ({
                         labels={
                           <span className={Styles.addConditionIcon}>
                             <FontAwesomeIcon
-                              icon={faXmarkCircle}
+                              icon={faCirclePlus}
                               style={{ cursor: 'pointer' }}
                               onClick={() => removeConnection(items)}
                             />
@@ -554,43 +560,52 @@ const HomePage: React.FC<Props> = ({
 
             <Content className="site-layout-background">
               <TransformWrapper disabled={isZoomDisabled}>
-                <TransformComponent>
-                  <div style={{ display: 'flex' }}>
-                    {columnsData &&
-                      columnsData?.map((column: any, index: any) => (
-                        <div
-                          id={column.Id}
-                          key={column.id}
-                          style={{
-                            textAlign: 'center',
-                            width: 'auto',
-                          }}
-                        >
-                          <div
-                            style={{
-                              backgroundColor: `${
-                                index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
-                              }`,
-                            }}
-                          >
-                            <span
+                {({ zoomIn, zoomOut, resetTransform }) => (
+                  <React.Fragment>
+                    <div className="zoom-tools">
+                      <button onClick={() => zoomIn()}>+</button>
+                      <button onClick={() => zoomOut()}>-</button>
+                      <button onClick={() => resetTransform()}>x</button>
+                    </div>
+                    <TransformComponent>
+                      <div style={{ display: 'flex' }}>
+                        {columnsData &&
+                          columnsData?.map((column: any, index: any) => (
+                            <div
+                              id={column.Id}
+                              key={column.id}
                               style={{
-                                color: '#000000',
-                                backgroundColor: `${
-                                  index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
-                                }`,
+                                textAlign: 'center',
+                                width: 'auto',
                               }}
                             >
-                              {column.Name}
-                            </span>
-                          </div>
-                          <div style={{ display: 'flex' }}>
-                            {getDropWrapperLayout(column, index)}
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </TransformComponent>
+                              <div
+                                style={{
+                                  backgroundColor: `${
+                                    index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
+                                  }`,
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    color: '#000000',
+                                    backgroundColor: `${
+                                      index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
+                                    }`,
+                                  }}
+                                >
+                                  {column.Name}
+                                </span>
+                              </div>
+                              <div style={{ display: 'flex' }}>
+                                {getDropWrapperLayout(column, index)}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </TransformComponent>
+                  </React.Fragment>
+                )}
               </TransformWrapper>
             </Content>
           </Layout>
@@ -603,7 +618,16 @@ const HomePage: React.FC<Props> = ({
           panelData={rightPanelData}
         />
       )}
-
+      <Modal
+        visible={visibleConstraintCondition}
+        title=""
+        footer={[]}
+        onCancel={() => setVisibleConstraintCondition(false)}
+      >
+        <AddConditionalComponent
+          visibleConstraintCondition={visibleConstraintCondition}
+        />
+      </Modal>
       {/* <Modal
         visible={isEditPathwayFormVisible}
         onOk={onEditPathwayOkHandler}

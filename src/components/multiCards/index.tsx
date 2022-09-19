@@ -9,10 +9,7 @@ import { Divider } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 
-import AddConditionalComponent from '../../screens/addComponent';
-
 import InfoTooltip from '../infoTooltip';
-import Modal from '../modal';
 
 import styles from './index.module.scss';
 
@@ -60,13 +57,10 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
-  constraintIcon,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
   const ref = useRef(null);
-  const [visibleConstraintCondition, setVisibleConstraintCondition] =
-    useState(false);
 
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
@@ -113,7 +107,6 @@ const MultiCard: React.FC<Props> = ({
 
   return (
     <>
-      {console.log(constraintIcon, 'constraintIcon')}
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
           <div className={styles.draggableAreaBox}></div>
@@ -292,7 +285,7 @@ const MultiCard: React.FC<Props> = ({
       />
     </div> */}
                   <div className={styles.courseCredCardWrapper}>
-                    <div className={styles.addIcon}>
+                    {/* <div className={styles.addIcon}>
                       <FontAwesomeIcon
                         icon={faCirclePlus}
                         fill="#000000"
@@ -307,7 +300,7 @@ const MultiCard: React.FC<Props> = ({
                           e.preventDefault();
                         }}
                       />
-                    </div>
+                    </div> */}
                     <div className={styles.topCourseContent}>
                       <FontAwesomeIcon
                         icon={faCubes}
@@ -521,7 +514,7 @@ const MultiCard: React.FC<Props> = ({
 
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
             <>
-              {isDestination && (
+              {/* {isDestination && (
                 <div className={styles.addIcon}>
                   <FontAwesomeIcon
                     icon={faCirclePlus}
@@ -537,7 +530,7 @@ const MultiCard: React.FC<Props> = ({
                     }}
                   />
                 </div>
-              )}
+              )} */}
 
               <div
                 className={
@@ -580,7 +573,7 @@ const MultiCard: React.FC<Props> = ({
           {isCredentialCard && (
             <>
               <div className={styles.courseCredCardWrapper}>
-                {isDestination && (
+                {/* {isDestination && (
                   <div className={styles.addIcon}>
                     <FontAwesomeIcon
                       icon={faCirclePlus}
@@ -596,7 +589,7 @@ const MultiCard: React.FC<Props> = ({
                       }}
                     />
                   </div>
-                )}
+                )} */}
                 <div className={styles.topCourseContent}>
                   <FontAwesomeIcon
                     icon={faCubes}
@@ -626,7 +619,7 @@ const MultiCard: React.FC<Props> = ({
 
           {isConditionalCard && (
             <React.Fragment>
-              <div className={styles.addIcon}>
+              {/* <div className={styles.addIcon}>
                 <FontAwesomeIcon
                   icon={faCirclePlus}
                   fill="#000000"
@@ -640,7 +633,7 @@ const MultiCard: React.FC<Props> = ({
                     setVisibleConstraintCondition(true);
                   }}
                 />
-              </div>
+              </div> */}
               <div className={styles.conditionalCardContent}>
                 <FontAwesomeIcon
                   color="#ffffff"
@@ -664,7 +657,7 @@ const MultiCard: React.FC<Props> = ({
 
           {isAddComponentCard && (
             <div className={styles.addComponentContent}>
-              <div className={styles.addIcon}>
+              {/* <div className={styles.addIcon}>
                 <FontAwesomeIcon
                   icon={faCirclePlus}
                   fill="#000000"
@@ -678,7 +671,7 @@ const MultiCard: React.FC<Props> = ({
                     setVisibleConstraintCondition(true);
                   }}
                 />
-              </div>
+              </div> */}
               <div className={styles.topContent}>
                 <span className={styles.circle}>
                   <FontAwesomeIcon
@@ -711,16 +704,6 @@ const MultiCard: React.FC<Props> = ({
           )}
         </div>
       )}
-      <Modal
-        visible={visibleConstraintCondition}
-        title=""
-        footer={[]}
-        onCancel={() => setVisibleConstraintCondition(false)}
-      >
-        <AddConditionalComponent
-          visibleConstraintCondition={visibleConstraintCondition}
-        />
-      </Modal>
     </>
   );
 };
