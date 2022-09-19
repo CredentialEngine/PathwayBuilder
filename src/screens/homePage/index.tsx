@@ -49,8 +49,11 @@ const HomePage: React.FC<Props> = ({
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
   const [dragElem, setDragElem] = useState<any>();
+<<<<<<< HEAD
   const [leftpanelSelectedElem, setLeftpanelSelectedElem] =
     useState<HTMLElement>();
+=======
+>>>>>>> 2dba137 (zoom button and constraint icon)
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
 
