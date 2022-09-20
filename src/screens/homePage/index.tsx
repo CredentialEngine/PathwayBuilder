@@ -1,7 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faCirclePlus,
+  faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
@@ -49,11 +49,8 @@ const HomePage: React.FC<Props> = ({
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
   const [dragElem, setDragElem] = useState<any>();
-<<<<<<< HEAD
   const [leftpanelSelectedElem, setLeftpanelSelectedElem] =
     useState<HTMLElement>();
-=======
->>>>>>> 2dba137 (zoom button and constraint icon)
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
 
@@ -329,15 +326,14 @@ const HomePage: React.FC<Props> = ({
   }, [point]);
 
   const removeConnection = (item: any) => {
-    // const newarray = connection;
-    // const index = newarray.findIndex((items: any) => items === item);
-    // newarray.splice(index, 1);
-    // setConnection([...newarray]);
-    // document.getElementById(item?.start)?.classList?.remove('active');
-    // document.getElementById(item?.end)?.classList?.remove('active');
-    // setConstraintIcon(false);
-    console.log(item);
-    setVisibleConstraintCondition(true);
+    const newarray = connection;
+    const index = newarray.findIndex((items: any) => items === item);
+    newarray.splice(index, 1);
+    setConnection([...newarray]);
+    document.getElementById(item?.start)?.classList?.remove('active');
+    document.getElementById(item?.end)?.classList?.remove('active');
+    setConstraintIcon(false);
+    // setVisibleConstraintCondition(true);
   };
 
   const getDropWrapperLayout = (column: any, index: any = 0) => {
@@ -476,7 +472,7 @@ const HomePage: React.FC<Props> = ({
                         labels={
                           <span className={Styles.addConditionIcon}>
                             <FontAwesomeIcon
-                              icon={faCirclePlus}
+                              icon={faXmarkCircle}
                               style={{ cursor: 'pointer' }}
                               onClick={() => removeConnection(items)}
                             />

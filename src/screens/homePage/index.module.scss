@@ -74,12 +74,23 @@
 }
 .addConditionIcon {
   display: inline-block;
-  background: black;
   border-radius: 50%;
   line-height: 1;
+  &:before {
+    content: '';
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    background: black;
+    border-radius: 50%;
+    z-index: 0;
+  }
   svg {
     font-size: 23px;
     fill: #ffb90b;
     color: #ffb90b;
+    position: relative;
   }
 }
