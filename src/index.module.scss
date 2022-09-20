@@ -22,7 +22,12 @@
     font-size: 22px;
   }
 }
-
+.zoom-tools {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
+}
 :global {
   .leftPanel {
     top: 30px;
