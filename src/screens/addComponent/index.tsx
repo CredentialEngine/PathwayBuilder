@@ -2,36 +2,153 @@ import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Form, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { noop } from 'lodash';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
-import Options from '../../components/formFields/dropdown/lib/options';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
+import { getAllConstraintOperand } from '../../utils/fetchSearchResponse';
 
 import Styles from './index.module.scss';
+import {
+  getAllArrayConceptsRequest,
+  getAllComparatorsRequest,
+  getLogicalOperatorsRequest,
+} from './state/actions';
 
-const companyList = [
-  {
-    key: 1,
-    value: 'company',
-    label: 'company',
-    title: 'Company',
-  },
-  {
-    key: 2,
-    title: 'New Company',
-    value: 'Newcompany',
-    label: 'New company',
-  },
-];
+const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
+const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
+const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
-const AddComponent: React.FC = () => {
-  const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
+interface Props {
+  visibleConstraintCondition: boolean;
+}
+
+const AddConditionalComponent: React.FC<Props> = (Props) => {
+  const { visibleConstraintCondition } = Props;
+  const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
+  const [allComparators, setAllComparators] = useState<any>([]);
+  const [selectedComparators, setSelectedComparators] = useState<any>();
+  const [allArrayConcept, setAllArrayConcept] = useState<any>([]);
+  const [allConstraintOperand, setAllConstraintOperand] = useState<any>([]);
+  const [leftSourcedata, setleftSourceData] = useState<any>();
+  const [rightSourcedata, setRightSourceData] = useState<any>();
+  const [errorField, setErrorField] = useState<any>([]);
+  const [parentComponent, setParentComponent] = useState<string>('');
+  const [conditionDescription, setConditionDescription] = useState<string>('');
+  const [requiredNumber, setRequiredNumber] = useState<string>('');
+  const [visibleConstraintConditionModal, setvisibleConstraintConditionModal] =
+    useState<boolean>(visibleConstraintCondition);
+
+  const dispatch = useDispatch();
+  // const onFinish = (values: any) => {
+  //   console.log('Received values of form:', values);
+  // };
+  const searchLeftConstraintOperand = (value: any) => {
+    setleftSourceData(value);
   };
+  const searchRightConstraintOperand = (value: any) => {
+    setRightSourceData(value);
+  };
+  const getAllLogicalOperator = useSelector(
+    (state: any) => state.addConditionalComponent.logicalOperatorData
+  );
+
+  const getAllComparators = useSelector(
+    (state: any) => state.addConditionalComponent.comparatorsData
+  );
+
+  const getAllArrayConcept = useSelector(
+    (state: any) => state.addConditionalComponent.arrayOperationData
+  );
+
+  const funcSelectedComparators = (value: any) => {
+    setSelectedComparators(value);
+  };
+
+  const allConstraintOperandfunc = async () => {
+    const data = await getAllConstraintOperand(leftSourcedata);
+    if (data.Data.Results) {
+      setAllConstraintOperand(
+        data.Data.Results.map((value: any) => ({
+          ...value,
+          value: value.Name,
+          label: value.Name,
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (leftSourcedata !== '') {
+      allConstraintOperandfunc();
+    }
+  }, [leftSourcedata]);
+
+  useEffect(() => {
+    if (getAllLogicalOperator.valid)
+      setAllLogicOperators(
+        getAllLogicalOperator.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+    if (getAllComparators.valid)
+      setAllComparators(
+        getAllComparators.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+    if (getAllArrayConcept.valid)
+      setAllArrayConcept(
+        getAllArrayConcept.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        }))
+      );
+  }, [getAllLogicalOperator, getAllComparators, getAllArrayConcept]);
+
+  useEffect(() => {
+    dispatch(getLogicalOperatorsRequest());
+    dispatch(getAllComparatorsRequest());
+    dispatch(getAllArrayConceptsRequest());
+  }, []);
+
+  const saveCondition = () => {
+    setvisibleConstraintConditionModal(!visibleConstraintConditionModal);
+    if (!leftSourcedata?.length)
+      setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
+    else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
+    else if (!rightSourcedata?.length)
+      setErrorField([PLEASE_SELECT_RIGHT_SOURCE_VALUE]);
+    else {
+      setErrorField(['']);
+      const saveCondition = {
+        rowid: 'asdasdasdasd',
+        leftSource: [
+          {
+            URI: 'ceterms:AdvancedStandingAction',
+            Name: leftSourcedata,
+          },
+        ],
+        comparator: `compare:${selectedComparators}`,
+        rightSource: [
+          {
+            URI: 'ceterms:AdvancedStandingAction',
+            Name: rightSourcedata,
+          },
+        ],
+      };
+      saveCondition;
+    }
+  };
+
   return (
     <div className={Styles.addComponentwrapper}>
       <h2>Add Component</h2>
@@ -47,11 +164,22 @@ const AddComponent: React.FC = () => {
       </div>
       <Form.Item>
         <label>Parent Component</label>
-        <InputBox onChange={undefined} placeholder="" maxLength={0} value="" />
+        <InputBox
+          onChange={(e) => setParentComponent(e.target.value)}
+          placeholder=""
+          maxLength={0}
+          value={parentComponent}
+        />
       </Form.Item>
       <Form.Item>
         <label>Condition Description</label>
-        <TextArea onChange={noop} placeholder="" maxLength={0} rows={3} />
+        <TextArea
+          onChange={(e) => setConditionDescription(e.target.value)}
+          placeholder=""
+          maxLength={0}
+          rows={3}
+          value={conditionDescription}
+        />
       </Form.Item>
       <Row gutter={20}>
         <Col span="12">
@@ -59,20 +187,21 @@ const AddComponent: React.FC = () => {
             <label>Required Number</label>
             <InputBox
               type="number"
-              onChange={undefined}
+              onChange={(e) => setRequiredNumber(e.target.value)}
               placeholder=""
               maxLength={0}
-              value=""
+              value={requiredNumber}
             />
           </Form.Item>
         </Col>
         <Col span="12">
           <Form.Item>
             <label>Logical Operator</label>
-            <Dropdown defaultValue="And" showSearch={false}>
-              <Options value="And">And</Options>
-              <Options value="OR">OR</Options>
-            </Dropdown>
+            <Dropdown
+              options={allLogicalOperators}
+              defaultValue="And"
+              showSearch={false}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -80,72 +209,53 @@ const AddComponent: React.FC = () => {
         <label>Constraints</label>
         <hr className="min-top" />
       </div>
-      <Form
-        name="dynamic_form_nest_item"
-        onFinish={onFinish}
-        autoComplete="off"
-      >
+      <Form name="dynamic_form_nest_item" autoComplete="off">
         <Form.List name="users">
           {(fields, { add }) => (
             <>
-              <Row gutter={20}>
-                <Col span="9">
-                  <Form.Item>
-                    <MultiSelect
-                      placeholder="Select Industry Types"
-                      options={companyList}
-                      optionLabelProp="label"
-                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span="6">
-                  <Form.Item>
-                    <Dropdown defaultValue="Equals" showSearch={false}>
-                      <Options value="Equals">Equals</Options>
-                      <Options value="Greaterthan">Greater than</Options>
-                    </Dropdown>
-                  </Form.Item>
-                </Col>
-                <Col span="9">
-                  <Form.Item>
-                    <MultiSelect
-                      placeholder="Select Industry Types"
-                      options={companyList}
-                      optionLabelProp="label"
-                      // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
               {fields.map((v, i) => (
                 <Row gutter={20} key={i}>
                   <Col span="9">
-                    <Form.Item>
-                      <MultiSelect
-                        placeholder="Select Industry Types"
-                        options={companyList}
-                        optionLabelProp="label"
-                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                      />
-                    </Form.Item>
+                    <>
+                      <Form.Item>
+                        <MultiSelect
+                          placeholder="Left Sources"
+                          options={allConstraintOperand}
+                          optionLabelProp="label"
+                          onChange={(e) => searchLeftConstraintOperand(e)}
+                        />
+                      </Form.Item>
+                    </>
                   </Col>
                   <Col span="6">
                     <Form.Item>
-                      <Dropdown defaultValue="Equals" showSearch={false}>
-                        <Options value="Equals">Equals</Options>
-                        <Options value="Greaterthan">Greater than</Options>
-                      </Dropdown>
+                      <Dropdown
+                        options={allComparators}
+                        defaultValue="Equals"
+                        showSearch={false}
+                        onChange={(e) => funcSelectedComparators(e)}
+                      />
                     </Form.Item>
                   </Col>
                   <Col span="9">
                     <Form.Item>
-                      <MultiSelect
-                        placeholder="Select Industry Types"
-                        options={companyList}
-                        optionLabelProp="label"
-                        // onChange={(e) => onSelectChangeHandler(e, 'industryType')}
-                      />
+                      <>
+                        {rightSourcedata?.length > 1 && (
+                          <Dropdown
+                            options={allArrayConcept}
+                            defaultValue="Any Of"
+                            showSearch={false}
+                          />
+                        )}
+
+                        <MultiSelect
+                          mode="tags"
+                          options={allConstraintOperand}
+                          optionLabelProp="label"
+                          placeholder="Right Sources"
+                          onChange={(e) => searchRightConstraintOperand(e)}
+                        />
+                      </>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -161,9 +271,20 @@ const AddComponent: React.FC = () => {
       </Form>
 
       <hr />
-      <Button size="medium" text="Save Consition" type="primary" />
+      {errorField?.map((error: string) => (
+        <p key={error} className="error">
+          {error}
+        </p>
+      ))}
+      <br />
+      <Button
+        size="medium"
+        text="Save Condition"
+        type="primary"
+        onClick={saveCondition}
+      />
     </div>
   );
 };
 
-export default AddComponent;
+export default AddConditionalComponent;

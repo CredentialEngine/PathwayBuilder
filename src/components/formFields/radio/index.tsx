@@ -25,6 +25,7 @@ const RadioButton: React.FC<Props> = ({
   value,
   key,
   disabled,
+  className,
 }) => {
   const handleChange = (e: any) => {
     onChange && onChange(e);
@@ -37,6 +38,7 @@ const RadioButton: React.FC<Props> = ({
       checked={checked}
       key={key}
       disabled={disabled}
+      className={className}
     >
       {label}
     </Radio>

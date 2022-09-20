@@ -39,8 +39,8 @@ const SelectOrganisation: React.FC<Props> = ({
             }}
           >
             {organisationList?.map((item: any) => (
-              <Option value={item?.id} key={item.id}>
-                {item.name}
+              <Option value={item?.Id} key={item.Id}>
+                {item.Name}
               </Option>
             ))}
           </Select>

@@ -1,9 +1,11 @@
-import { faCaretDown, faCubes } from '@fortawesome/free-solid-svg-icons';
+import { CaretRightOutlined } from '@ant-design/icons';
+import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider, Drawer, Row } from 'antd';
+import { Divider, Drawer, Row, Collapse } from 'antd';
 import { noop } from 'lodash';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
+const { Panel } = Collapse;
 import Button from '../button';
 
 import { Type } from '../button/type';
@@ -13,13 +15,23 @@ import styles from './index.module.scss';
 interface Props {
   visible?: boolean;
   onCloseHandler: (value: boolean) => void;
+  panelData?: any;
 }
 
-const RightPanel: React.FC<Props> = ({ onCloseHandler, visible }) => {
+const RightPanel: React.FC<Props> = ({
+  onCloseHandler,
+  visible,
+  panelData,
+}) => {
+  const [destinationText, setDestinationText] = useState('');
+  const [destinationTextCondition, setDestinationTextCondition] =
+    useState(true);
+
   const ref = useRef(null);
 
   useEffect(() => {
     document?.addEventListener('click', handleOutsideClick, true);
+    destinationTextCondition && hideDescription();
   }, []);
 
   const handleOutsideClick = (e: any) => {
@@ -31,8 +43,22 @@ const RightPanel: React.FC<Props> = ({ onCloseHandler, visible }) => {
     }
   };
 
+  const extractComponentType = (type: string) => {
+    const typeValue = type?.split(':')[1];
+    return typeValue;
+  };
+
+  const viewDescription = () => {
+    setDestinationText(panelData?.Description);
+    setDestinationTextCondition(false);
+  };
+  const hideDescription = () => {
+    const truncatedDescription = panelData.Description?.substr(0, 300);
+    setDestinationText(truncatedDescription);
+    setDestinationTextCondition(true);
+  };
   return (
-    <Drawer visible={visible} closable={false}>
+    <Drawer visible={visible} closable={true} className={styles.right_drawer}>
       <div ref={ref} className={styles.rightPanelContainer}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Row style={{ fontSize: 22, fontWeight: 700 }}>
@@ -43,7 +69,9 @@ const RightPanel: React.FC<Props> = ({ onCloseHandler, visible }) => {
         <Row className={styles.topRow}>
           <Row>
             <FontAwesomeIcon icon={faCubes} style={{ height: '30px' }} />
-            <span className={styles.name}>Credential Component</span>
+            <span className={styles.name}>
+              {extractComponentType(panelData?.Type)}
+            </span>
           </Row>
           <Row>
             <Button className={styles.button} onClick={noop} text="Replace" />
@@ -51,17 +79,17 @@ const RightPanel: React.FC<Props> = ({ onCloseHandler, visible }) => {
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>References Resource:</p>
-          <p className={styles.value}>Business of Retail</p>
+          <p className={styles.value}>{panelData?.Name}</p>
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Owned and Offered by</p>
-          <p className={styles.value}>
-            NRF Foundation (National Retail Federation)
-          </p>
+          <p className={styles.value}>{panelData?.ProxyForLabel}</p>
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Credential Type</p>
-          <p className={styles.value}>Certification</p>
+          <p className={styles.value}>
+            {extractComponentType(panelData?.Type)}
+          </p>
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Credential Status</p>
@@ -77,34 +105,46 @@ const RightPanel: React.FC<Props> = ({ onCloseHandler, visible }) => {
         </Row>
         <Divider />
         <Row>
-          <p className={styles.content}>
-            Business of Retail: Operations & Profit, is perfect for students who
-            are interested in advancing a career or need to better understand
-            how a business is run. Students will further their customer service
-            skills and understand merchandising, marketing, store operations,
-            inventory management, loss prevention and workplace safety. They
-            will master math concepts, including determining pricing strategies
-            and calculating profit and discounts. They will also learn best
-            practices for how to plan for a career and get promoted.
-          </p>
+          <p className={styles.content}>{destinationText}</p>
         </Row>
         <Row className={styles.buttonContainer}>
-          <Button
-            className={styles.button}
-            type={Type.LINK}
-            onClick={noop}
-            text="View less"
-          />
+          {destinationTextCondition ? (
+            <Button
+              className={styles.button}
+              type={Type.LINK}
+              onClick={viewDescription}
+              text="View More"
+            />
+          ) : (
+            <Button
+              className={styles.button}
+              type={Type.LINK}
+              onClick={hideDescription}
+              text="View less"
+            />
+          )}
         </Row>
         <Divider />
         <Row className={styles.requiredBlock}>
-          <FontAwesomeIcon
-            icon={faCaretDown}
-            style={{ height: '20px', alignSelf: 'center' }}
-          />
-          <span className={styles.require}>Requires (1)</span>
+          <Collapse
+            defaultActiveKey={['1']}
+            ghost
+            expandIcon={({ isActive }) => (
+              <CaretRightOutlined rotate={isActive ? 90 : 0} />
+            )}
+          >
+            <Panel
+              header={
+                <>
+                  <span className={styles.require}>Requires (1)</span>
+                </>
+              }
+              key="1"
+            >
+              <p className={styles.text}>Pass the Business of Retail Exam</p>
+            </Panel>
+          </Collapse>
         </Row>
-        <p className={styles.text}>Pass the Business of Retail Exam</p>
       </div>
     </Drawer>
   );

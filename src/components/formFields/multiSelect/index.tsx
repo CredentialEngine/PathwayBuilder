@@ -8,6 +8,9 @@ export interface MultiSelectProps {
   defaultValue?: React.MouseEvent<HTMLElement, MouseEvent>;
   placeholder?: string;
   optionLabelProp?: string;
+  onSearch?: (a: any) => void;
+  onSelect?: (a: any) => void;
+  value?: any;
   mode?: 'multiple' | 'tags';
 }
 
@@ -18,6 +21,9 @@ const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
     defaultValue,
     placeholder,
     optionLabelProp,
+    onSearch,
+    onSelect,
+    value,
     mode,
   } = props;
   return (
@@ -29,6 +35,9 @@ const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
       onChange={onChange}
       options={options}
       optionLabelProp={optionLabelProp}
+      onSearch={onSearch}
+      onSelect={onSelect}
+      value={value}
     />
   );
 };

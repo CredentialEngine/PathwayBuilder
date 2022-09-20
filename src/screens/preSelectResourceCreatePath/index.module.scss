@@ -11,6 +11,8 @@
   :global {
     .customacardstyle {
       min-height: 460px;
+      max-height: 510px;
+      overflow-y: auto;
     }
     .customicon {
       padding: 8px;
@@ -38,11 +40,18 @@
     .ant-card-bordered {
       border-color: $inactive1;
       border-radius: 4px;
-      height: 100%;
     }
     .ant-card-body {
       padding: 10px;
       box-shadow: none;
+    }
+    .ant-typography {
+      color: #1f2123;
+      font-weight: 600;
+      :hover {
+        color: #1f2123;
+        font-weight: 600;
+      }
     }
   }
   .infoCard {
@@ -55,11 +64,19 @@
     border: 2px solid $selection;
     border-radius: 6px;
     padding: 15px;
+    max-height: 418px;
+    overflow-y: auto;
     :global {
       .ant-card-bordered {
         box-shadow: none;
         border-color: $inactive3;
       }
+    }
+  }
+  :global {
+    label span {
+      font-weight: 400;
+      font-size: 12px;
     }
   }
 }
@@ -75,4 +92,19 @@
   & > div {
     flex-grow: 1;
   }
+}
+.dropDownRef {
+  color: $selection;
+}
+.iconCircle {
+  border: 2px solid $selection;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $selection;
+  margin-left: 10px;
+  cursor: pointer;
 }

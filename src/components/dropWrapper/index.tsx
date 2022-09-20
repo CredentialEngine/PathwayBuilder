@@ -1,52 +1,56 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface Props {
-  onDrop: (a: any, b: any, c: any) => void;
+  onDrop: (a: any, b: any, c: any, d: any, e: any) => void;
   children: any;
   key: string;
   column: string;
-  forwardRef?: any;
   width?: any;
-  status?: any;
   CTID?: string;
   id?: number | string;
+  destinationColumn?: boolean;
+  HasProgressionLevel: string;
+  index: number;
+  className?: any;
+  isDestinationColumnSelected?: any;
+  number: number;
+  forwardRef: any;
 }
 
 const DropWrapper: React.FC<Props> = ({
   id,
   onDrop,
   children,
-  forwardRef,
   width,
-  status,
   CTID,
+  destinationColumn,
+  HasProgressionLevel,
+  className,
+  number,
+  isDestinationColumnSelected,
+  forwardRef,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
-  // const [updatedWidth, setWidth] = useState(width);
 
   const handleDrop = (e: any) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
-    onDrop(data, status, CTID);
+    e.stopPropagation();
+
+    onDrop(
+      data,
+      CTID,
+      destinationColumn,
+      HasProgressionLevel,
+      isDestinationColumnSelected
+    );
   };
-
-  useEffect(() => {
-    /* 
-    Will try this method to increase speccific width of a div 
-
-    const element = forwardRef.current.getBoundingClientRect();
-    element.width = '600px';
-    setWidth('600px');
-
-    */
-  }, []);
 
   return (
     <div
       id={id?.toString()}
       onDragOver={allowDrop}
       onDrop={handleDrop}
-      ref={forwardRef}
       style={{
         display: 'flex',
         width: `${width}`,
@@ -54,8 +58,12 @@ const DropWrapper: React.FC<Props> = ({
         height: 'auto',
         backgroundColor: '#ffffff',
       }}
+      className={className}
+      ref={(element: any) => {
+        forwardRef.current[number] = element;
+      }}
     >
-      {children}
+      <div d-attr="title">{children}</div>
     </div>
   );
 };

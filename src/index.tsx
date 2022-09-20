@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import store from './states/store';
+import store from './store';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>

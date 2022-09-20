@@ -1,7 +1,8 @@
-import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { ComponentsCards } from '../../assets/modal/constant';
+import { updateMappedDataRequest } from '../../states/actions';
+
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
 import Tab, { TabPane } from '../tab';
@@ -12,23 +13,55 @@ export enum LeftPanelTabKey {
   Selected = 'Selected',
   Components = 'Components',
 }
-
-const LeftPanel: React.FC<any> = () => {
+const LeftPanel: React.FC<any> = ({
+  isDraggableCardVisibleMethod,
+  setLeftpanelSelectedElem,
+}) => {
+  const result = useSelector((state: any) => state?.initalReducer);
+  const {
+    mappedData: { PendingComponent: selectedTabCardData },
+  } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  const [updatedCardArr, setUpdatedCardArr] = useState<any>();
-  const [componentCardsData, setComponentCardsData] = useState<any>([
-    ...ComponentsCards,
-  ]);
+  const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
+  const [componentTabCards, setComponentTabCards] = useState<any>([]);
+  const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (updatedCardArr?.length > 0) {
-      const temp = componentCardsData?.filter(
-        (item: any) => item?.id !== updatedCardArr
-      );
-      setComponentCardsData(temp);
+    isDraggableCardVisibleMethod(isDraggableCardVisible);
+  }, [isDraggableCardVisible]);
+
+  const allComponentTabCards = useSelector(
+    (state: any) => state.leftPanelReducer.allLeftPathwayComponent
+  );
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
+  useEffect(() => {
+    if (selectedTabCardData) {
+      setSelectedtabCards(selectedTabCardData);
     }
-  }, [updatedCardArr]);
+  }, [selectedTabCardData]);
+
+  const filteredSelectedCards = (val: any) => {
+    const filteredSelectedCards = selectedTabCards?.filter(
+      (item: any) => item.CTID !== val
+    );
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    updatedPathwayWrapper.PendingComponent = filteredSelectedCards;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setSelectedtabCards(filteredSelectedCards);
+  };
+
+  useEffect(() => {
+    if (allComponentTabCards.valid)
+      setComponentTabCards(
+        allComponentTabCards.data.map((comp_data: any) => ({
+          ...comp_data,
+          Type: comp_data.URI,
+        }))
+      );
+  }, [allComponentTabCards]);
 
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
@@ -44,7 +77,6 @@ const LeftPanel: React.FC<any> = () => {
       name: LeftPanelTabKey.Components,
     },
   ];
-
   const propsChildren = [
     {
       key: LeftPanelTabKey.Selected,
@@ -58,24 +90,31 @@ const LeftPanel: React.FC<any> = () => {
             onKeyUp={searchComponent}
           />
           <div className={Styles.cardwrapper}>
-            {componentCardsData
+            {selectedTabCards
               .filter((v: any) =>
-                v.description
-                  .toLocaleLowerCase()
-                  .includes(searchValue.toLocaleLowerCase())
+                v?.Description.toLocaleLowerCase().includes(
+                  searchValue.toLocaleLowerCase()
+                )
               )
               .map((v: any, i: any) => (
                 <CardWithLeftIcon
                   draggable={true}
+                  data={v}
                   key={i}
-                  name={v.name}
-                  type={v.type}
-                  description={v.description}
-                  codedNotation={v.codedNotation}
-                  IconName={faCubes}
+                  name={v?.Name}
+                  type={v?.Type}
+                  description={v?.Description.slice(0, 30)}
+                  codedNotation={v?.CodedNotation}
                   IconColor="black"
-                  id={v.id}
-                  getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
+                  id={v?.Id}
+                  CTID={v?.CTID}
+                  isDraggableCardVisibleMethod={(isDragTure: boolean) =>
+                    setDraggableCardVisible(isDragTure)
+                  }
+                  getUpdatedCardArr={(value: any) =>
+                    filteredSelectedCards(value)
+                  }
+                  setLeftpanelSelectedElem={setLeftpanelSelectedElem}
                 />
               ))}
           </div>
@@ -88,26 +127,22 @@ const LeftPanel: React.FC<any> = () => {
       children: (
         <>
           <div className={Styles.cardwrapper}>
-            {componentCardsData
-              .filter((v: any) =>
-                v.description
-                  .toLocaleLowerCase()
-                  .includes(searchValue.toLocaleLowerCase())
-              )
-              .map((v: any, i: any) => (
-                <CardWithLeftIcon
-                  draggable={true}
-                  key={i}
-                  name="Course"
-                  description="Course"
-                  IconName={faCubes}
-                  id={v.id}
-                  getUpdatedCardArr={(value: any) => setUpdatedCardArr(value)}
-                />
-              ))}
-            ,
+            {componentTabCards.map((card: any, index: any) => (
+              <CardWithLeftIcon
+                isComponentTab={true}
+                draggable={true}
+                key={index}
+                data={card}
+                name={card.Name}
+                description={card.Description}
+                uri={card?.URI}
+                id={card.Id}
+                type={card?.URI}
+                getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
+                setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+              />
+            ))}
           </div>
-          ,
         </>
       ),
     },
@@ -119,7 +154,6 @@ const LeftPanel: React.FC<any> = () => {
       </TabPane>
     );
   }
-
   const tabVal = {
     showTabBar: true,
     activeKey: LeftPanelTabKey.Selected,
@@ -127,7 +161,6 @@ const LeftPanel: React.FC<any> = () => {
     children: propsChildrenData,
     className: Styles.leftPanelDrawer,
   };
-
   return (
     <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
@@ -139,5 +172,4 @@ const LeftPanel: React.FC<any> = () => {
     </div>
   );
 };
-
 export default LeftPanel;

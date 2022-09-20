@@ -73,7 +73,7 @@ body {
     min-width: 50px;
   }
   .ant-input-search-button {
-    height: 40px;
+    height: 38px;
   }
   .ant-modal-close-icon {
     font-size: 13px;
@@ -88,7 +88,7 @@ body {
     opacity: 1 !important;
     line-height: 32px !important;
     display: block;
-    padding-left: 18px !important;
+    padding-left: 8px !important;
   }
 
   .ant-input {
@@ -124,9 +124,9 @@ body {
 
   .ant-form-item-explain {
     position: absolute;
-    z-index: 3;
-    border: 1px solid $gold;
-    background-color: $gold;
+    z-index: 1;
+    border: 1px solid $red3;
+    background-color: $red1;
     padding: 8px;
     box-shadow: 0 3px 6px -4px rgba($black, 0.12),
       0 6px 16px 0 rgba($black, 0.08), 0 9px 28px 8px rgba($black, 0.05);
@@ -134,7 +134,7 @@ body {
     top: 38px;
 
     & div {
-      color: $gold;
+      color: $red4;
       font-size: 10px;
     }
 
@@ -145,7 +145,7 @@ body {
       left: 20px;
       width: 6px;
       height: 6px;
-      background-color: $gold;
+      background-color: $red3;
       box-shadow: -3px 3px 7px rgba($black, 0.07);
       transform: translateY(6px) rotate(45deg);
     }
@@ -305,7 +305,7 @@ body {
     border-right: 0;
   }
   .ant-select-selection-item {
-    padding-left: 18px !important;
+    padding-left: 8px !important;
     font: normal normal normal 14px/18px IBM Plex Sans;
     letter-spacing: 0px;
     color: #0a2942;
@@ -350,5 +350,10 @@ body {
     border-radius: 6px;
     padding: 0 10px;
     border: 1px solid $inactive1;
+  }
+  .ant-drawer-content-wrapper {
+    position: absolute;
+    z-index: 1000;
+    transition: all 0.3s;
   }
 }

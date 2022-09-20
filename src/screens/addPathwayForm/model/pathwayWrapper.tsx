@@ -4,30 +4,32 @@ export interface data {
 }
 
 export interface PathwayWrapper {
-  pathway: pathway;
-  pathwayComponents?: PathwayComponent[];
-  progressionModels?: ProgressionModels[];
-  progressionLevels: [progressionLevels];
-  componentConditions: [ComponentConditions];
-  constraints: [Constraints];
-  pendingComponent: [PathwayComponent];
+  Pathway: pathway;
+  PathwayComponents: PathwayComponent[];
+  ProgressionModels: ProgressionModels[];
+  ProgressionLevels: ProgressionLevels[];
+  ComponentConditions: ComponentConditions[];
+  Constraints: Constraints[];
+  PendingComponent: PathwayComponent[];
+  DeletedComponents: [];
+  DeletedComponentConditions: [];
 }
 
 export interface pathway {
-  id: number;
-  uri: string;
-  name: string;
-  organization: ResourceSummary;
-  description: string;
-  cTID: string;
-  hasDestinationComponent: []; //URI for Pathway Component
-  hasProgressionModel: []; //URI for Progression Model
-  industryType: [ResourceSummary];
-  occupationType: [ResourceSummary];
-  subjectWebpage: 'test';
-  keyword: [];
-  subject: [];
-  lastUpdated: '22-02-2022';
+  Id: number;
+  Uri: string;
+  Name: string;
+  Organization: ResourceSummary;
+  Description: string;
+  CTID: string;
+  HasDestinationComponent: string[]; //URI for Pathway Component
+  HasProgressionModel: string[]; //URI for Progression Model
+  IndustryType: [ResourceSummary];
+  OccupationType: [ResourceSummary];
+  SubjectWebpage: '';
+  Keyword: string[];
+  Subject: string[];
+  LastUpdated: '';
 }
 export interface Constraints {
   id: number;
@@ -54,7 +56,7 @@ export interface ComponentConditions {
   targetComponent: ['x', 'y', 'z'];
 }
 
-export interface progressionLevels {
+export interface ProgressionLevels {
   id: number;
   rowId: number;
   name: string;
