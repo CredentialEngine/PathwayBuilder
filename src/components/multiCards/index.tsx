@@ -9,7 +9,10 @@ import { Divider } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 
+import AddConditionalComponent from '../../screens/addComponent';
+
 import InfoTooltip from '../infoTooltip';
+import Modal from '../modal';
 
 import styles from './index.module.scss';
 
@@ -60,6 +63,7 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
+  constraintIcon,
   // onMoveItem,
   // number,
   // forwardRef,
@@ -68,7 +72,12 @@ const MultiCard: React.FC<Props> = ({
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
   const ref = useRef(null);
+  const [visibleConstraintCondition, setVisibleConstraintCondition] =
+    useState(false);
 
+  const handledConstraintsModal = (bool: boolean) => {
+    setVisibleConstraintCondition(bool);
+  };
   // useEffect(() => {
   //   const dragElement = leftpanelSelectedElem;
   //   if (!_.isNull(dragElement) && !_.isUndefined(dragElement)) {
@@ -545,7 +554,7 @@ const MultiCard: React.FC<Props> = ({
 
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
             <>
-              {/* {isDestination && (
+              {isDestination && constraintIcon && (
                 <div className={styles.addIcon}>
                   <FontAwesomeIcon
                     icon={faCirclePlus}
@@ -561,7 +570,7 @@ const MultiCard: React.FC<Props> = ({
                     }}
                   />
                 </div>
-              )} */}
+              )}
 
               <div
                 className={
@@ -735,6 +744,16 @@ const MultiCard: React.FC<Props> = ({
           )}
         </div>
       )}
+      <Modal
+        visible={visibleConstraintCondition}
+        title=""
+        footer={[]}
+        onCancel={() => setVisibleConstraintCondition(false)}
+      >
+        <AddConditionalComponent
+          visibleConstraintConditionProp={handledConstraintsModal}
+        />
+      </Modal>
     </>
   );
 };

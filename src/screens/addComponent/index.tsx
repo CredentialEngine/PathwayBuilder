@@ -18,16 +18,16 @@ import {
   getLogicalOperatorsRequest,
 } from './state/actions';
 
-const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
-const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
-const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
+// const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
+// const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
+// const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
 interface Props {
-  visibleConstraintCondition: boolean;
+  visibleConstraintConditionProp: (bool: boolean) => void;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
-  const { visibleConstraintCondition } = Props;
+  const { visibleConstraintConditionProp } = Props;
   const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
   const [allComparators, setAllComparators] = useState<any>([]);
   const [selectedComparators, setSelectedComparators] = useState<any>();
@@ -39,8 +39,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const [parentComponent, setParentComponent] = useState<string>('');
   const [conditionDescription, setConditionDescription] = useState<string>('');
   const [requiredNumber, setRequiredNumber] = useState<string>('');
-  const [visibleConstraintConditionModal, setvisibleConstraintConditionModal] =
-    useState<boolean>(visibleConstraintCondition);
 
   const dispatch = useDispatch();
   // const onFinish = (values: any) => {
@@ -121,32 +119,33 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, []);
 
   const saveCondition = () => {
-    setvisibleConstraintConditionModal(!visibleConstraintConditionModal);
-    if (!leftSourcedata?.length)
-      setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
-    else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
-    else if (!rightSourcedata?.length)
-      setErrorField([PLEASE_SELECT_RIGHT_SOURCE_VALUE]);
-    else {
-      setErrorField(['']);
-      const saveCondition = {
-        rowid: 'asdasdasdasd',
-        leftSource: [
-          {
-            URI: 'ceterms:AdvancedStandingAction',
-            Name: leftSourcedata,
-          },
-        ],
-        comparator: `compare:${selectedComparators}`,
-        rightSource: [
-          {
-            URI: 'ceterms:AdvancedStandingAction',
-            Name: rightSourcedata,
-          },
-        ],
-      };
-      saveCondition;
-    }
+    visibleConstraintConditionProp(false);
+
+    // if (!leftSourcedata?.length)
+    //   setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
+    // else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
+    // else if (!rightSourcedata?.length)
+    //   setErrorField([PLEASE_SELECT_RIGHT_SOURCE_VALUE]);
+    // else {
+    setErrorField(['']);
+    const saveCondition = {
+      rowid: 'asdasdasdasd',
+      leftSource: [
+        {
+          URI: 'ceterms:AdvancedStandingAction',
+          Name: leftSourcedata,
+        },
+      ],
+      comparator: `compare:${selectedComparators}`,
+      rightSource: [
+        {
+          URI: 'ceterms:AdvancedStandingAction',
+          Name: rightSourcedata,
+        },
+      ],
+    };
+    saveCondition;
+    // }
   };
 
   return (
