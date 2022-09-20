@@ -8,7 +8,7 @@ import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Xarrow, { Xwrapper } from 'react-xarrows';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
@@ -47,6 +47,8 @@ const HomePage: React.FC<Props> = ({
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
   const [dragElem, setDragElem] = useState<any>();
+  const [leftpanelSelectedElem, setLeftpanelSelectedElem] =
+    useState<HTMLElement>();
 
   const [point, setPoint] = useState({
     start: '',
@@ -60,6 +62,8 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
+
+  const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
   useEffect(() => {
     setGeneratedUuid({
       ...generatedUuid,
@@ -67,6 +71,8 @@ const HomePage: React.FC<Props> = ({
       firstStageCTID: uuidv4(),
     });
   }, []);
+
+  let count = 0;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -96,8 +102,8 @@ const HomePage: React.FC<Props> = ({
   const getSemester = (level: any) => {
     if (level?.Narrower?.length > 0) {
       const semesters = [] as any;
-
       level?.Narrower?.forEach((narrow: any) => {
+        count = Math.floor(Math.random() * (99 - 10) + 10);
         pathwayComponent?.ProgressionLevels.forEach((level1: any) => {
           if (narrow === level1.CTID) {
             let result = [] as any;
@@ -108,7 +114,7 @@ const HomePage: React.FC<Props> = ({
                 semesters: result?.length > 0 && narrow !== null ? result : [],
               });
             } else {
-              semesters.push(level1);
+              semesters.push({ ...level1, number: count });
             }
           }
         });
@@ -122,6 +128,8 @@ const HomePage: React.FC<Props> = ({
     if (pathwayComponent) {
       const pathwayModel =
         pathwayComponent?.Pathway?.HasProgressionModel?.length > 0;
+
+      let count = 0;
       if (pathwayModel) {
         const updatedPathwayLevel = [] as any;
         const updatedPathwayLevel2 = [] as any;
@@ -139,29 +147,35 @@ const HomePage: React.FC<Props> = ({
             });
           })
         );
-        updatedPathwayLevel.forEach((upd_level: any, index: any) => {
-          let semesters = [] as any;
-          if (upd_level?.Narrower?.length > 0) {
-            const result = getSemester(upd_level);
-            semesters = result;
-          }
-          if (index === 0) {
-            const updatedSem = semesters?.map((sem: any, i: any) =>
-              0 === i ? { ...sem, id: 'firstColumn' } : sem
-            );
-            updatedPathwayLevel2.push({
-              ...upd_level,
-              id: 'firstColumn',
-              semesters: updatedSem,
-            });
-          } else {
-            updatedPathwayLevel2.push({
-              ...upd_level,
-              id: index,
-              semesters,
-            });
-          }
-        });
+
+        updatedPathwayLevel
+          .map((level: any) => {
+            count++;
+            return { ...level, number: count };
+          })
+          .forEach((upd_level: any, index: any) => {
+            let semesters = [] as any;
+            if (upd_level?.Narrower?.length > 0) {
+              const result = getSemester(upd_level);
+              semesters = result;
+            }
+            if (index === 0) {
+              const updatedSem = semesters?.map((sem: any, i: any) =>
+                0 === i ? { ...sem, id: 'firstColumn' } : sem
+              );
+              updatedPathwayLevel2.push({
+                ...upd_level,
+                id: 'firstColumn',
+                semesters: updatedSem,
+              });
+            } else {
+              updatedPathwayLevel2.push({
+                ...upd_level,
+                id: index,
+                semesters,
+              });
+            }
+          });
 
         setColumnsData([
           ...updatedPathwayLevel2,
@@ -322,11 +336,13 @@ const HomePage: React.FC<Props> = ({
       return (
         <div key={index} style={{ display: 'flex' }}>
           <DropWrapper
-            id={`${column.CTID}`}
+            id={column.id}
             onDrop={onDropHandler}
             key={column.Id}
             index={index}
             column={column.Name}
+            number={column.number}
+            forwardRef={wrapperRef}
             HasProgressionLevel={column.CTID}
             isDestinationColumnSelected={column?.isDestinationColumnSelected}
             destinationColumn={!!column?.destinationComponent}
@@ -336,8 +352,9 @@ const HomePage: React.FC<Props> = ({
               style={{
                 height: '100vh',
                 backgroundColor: `${index % 2 !== 0 ? '#f0f0f0' : '#ffffff'}`,
-                // display: 'flex',
-                // flexDirection: 'column',
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
                 position: 'relative',
               }}
             >
@@ -351,6 +368,8 @@ const HomePage: React.FC<Props> = ({
                       <MultiCard
                         isDraggableCardVisible={isDraggableCardVisible}
                         constraintIcon={constraintIcon}
+                        number={column.number}
+                        forwardRef={wrapperRef}
                         onClick={() => {
                           setRightPanelData(item);
                           setShowRightPanel(true);
@@ -382,6 +401,7 @@ const HomePage: React.FC<Props> = ({
                         setIsZoomDisabled={setIsZoomDisabled}
                         status={column.Id}
                         inProgressLevel={column.CTID}
+                        leftpanelSelectedElem={leftpanelSelectedElem}
                         onSelectDragElemenet={onSelectDragElemenet}
                         onMoveItem={onMoveItem}
                       />
@@ -394,6 +414,7 @@ const HomePage: React.FC<Props> = ({
                     isAddDestination={
                       column?.isDestinationColumnSelected ? true : false
                     }
+                    getEndPoints={setEndpoints}
                     data={{ Type: 'addDestination' }}
                     destinationComponent={column?.isDestinationColumnSelected}
                     setIsZoomDisabled={setIsZoomDisabled}
@@ -401,6 +422,9 @@ const HomePage: React.FC<Props> = ({
                     inProgressLevel={column.CTID}
                     onSelectDragElemenet={onSelectDragElemenet}
                     onMoveItem={onMoveItem}
+                    number={column.number}
+                    forwardRef={wrapperRef}
+                    leftpanelSelectedElem={leftpanelSelectedElem}
                   />
                 )}
                 {showAddDestination &&
@@ -413,6 +437,7 @@ const HomePage: React.FC<Props> = ({
                       firstComponent={
                         column?.CTID === getLastColumn() ? true : false
                       }
+                      getEndPoints={setEndpoints}
                       isAddFirst={
                         column?.CTID === getLastColumn() ? true : false
                       }
@@ -423,6 +448,9 @@ const HomePage: React.FC<Props> = ({
                       inProgressLevel={column.CTID}
                       onSelectDragElemenet={onSelectDragElemenet}
                       onMoveItem={onMoveItem}
+                      number={column.number}
+                      forwardRef={wrapperRef}
+                      leftpanelSelectedElem={leftpanelSelectedElem}
                     />
                   )}
                 {connection.length
@@ -528,6 +556,7 @@ const HomePage: React.FC<Props> = ({
               isDraggableCardVisibleMethod={(isDragTure: boolean) =>
                 setDraggableCardVisible(isDragTure)
               }
+              setLeftpanelSelectedElem={setLeftpanelSelectedElem}
             />
           </Sider>
           <Layout

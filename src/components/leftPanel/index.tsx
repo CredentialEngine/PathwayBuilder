@@ -13,7 +13,10 @@ export enum LeftPanelTabKey {
   Selected = 'Selected',
   Components = 'Components',
 }
-const LeftPanel: React.FC<any> = ({ isDraggableCardVisibleMethod }) => {
+const LeftPanel: React.FC<any> = ({
+  isDraggableCardVisibleMethod,
+  setLeftpanelSelectedElem,
+}) => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
     mappedData: { PendingComponent: selectedTabCardData },
@@ -111,6 +114,7 @@ const LeftPanel: React.FC<any> = ({ isDraggableCardVisibleMethod }) => {
                   getUpdatedCardArr={(value: any) =>
                     filteredSelectedCards(value)
                   }
+                  setLeftpanelSelectedElem={setLeftpanelSelectedElem}
                 />
               ))}
           </div>
@@ -135,6 +139,7 @@ const LeftPanel: React.FC<any> = ({ isDraggableCardVisibleMethod }) => {
                 id={card.Id}
                 type={card?.URI}
                 getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
+                setLeftpanelSelectedElem={setLeftpanelSelectedElem}
               />
             ))}
           </div>

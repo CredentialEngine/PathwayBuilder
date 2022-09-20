@@ -36,9 +36,12 @@ interface Props {
   onMoveItem: (a: any) => void;
   isAddFirst?: boolean;
   firstComponent?: boolean;
-  getEndPoints?: any;
+  getEndPoints: any;
   isDraggableCardVisible?: boolean;
   constraintIcon?: boolean;
+  number: number;
+  forwardRef: any;
+  leftpanelSelectedElem: any;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -60,6 +63,10 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
+  // onMoveItem,
+  // number,
+  // forwardRef,
+  // leftpanelSelectedElem,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
@@ -67,6 +74,28 @@ const MultiCard: React.FC<Props> = ({
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
 
+  // useEffect(() => {
+  //   const dragElement = leftpanelSelectedElem;
+  //   if (!_.isNull(dragElement) && !_.isUndefined(dragElement)) {
+  //     const element = dragElement.getBoundingClientRect();
+  //   }
+  // }, [leftpanelSelectedElem]);
+
+  const getOnClick = (e: any) => {
+    /* 
+    Below commented code is for increasing width for dropWrapper
+
+    const getElement = forwardRef.current[number];
+    if (!_.isNull(getElement)) {
+      const rect = getElement.getBoundingClientRect();
+      getElement.style.width = `${rect.width * 2}px`;
+    }
+
+    */
+
+    onClick;
+    getEndPoints(e, id);
+  };
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
@@ -86,12 +115,13 @@ const MultiCard: React.FC<Props> = ({
     e.preventDefault();
     e.stopPropagation();
   };
+
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
     e.target.style.position = 'absolute';
-    e.target.style.left = `${e.screenX - 150}px`;
-    e.target.style.top = `${e.screenY - 120}px`;
+    // e.target.style.left = `${e.pageX - 75}px`;
+    e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {
@@ -113,7 +143,7 @@ const MultiCard: React.FC<Props> = ({
     <>
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
-          <div className={styles.draggableAreaBox}></div>
+          <div id="verticalBorder" className={styles.draggableAreaBox}></div>
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
@@ -131,9 +161,8 @@ const MultiCard: React.FC<Props> = ({
               onDragStart={onDragStart}
               onDragOver={onDragOver}
               onDragEnd={onDragEnd}
-              onClick={(e) => {
-                onClick;
-                getEndPoints(e, id);
+              onClick={(e: any) => {
+                getOnClick(e);
               }}
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
@@ -412,9 +441,12 @@ const MultiCard: React.FC<Props> = ({
           onDragStart={onDragStart}
           onDragOver={onDragOver}
           onDragEnd={onDragEnd}
-          onClick={(e) => {
-            onClick;
-            getEndPoints(e, id);
+          // onClick={(e) => {
+          //   onClick;
+          //   getEndPoints(e, id);
+          // }}
+          onClick={(e: any) => {
+            getOnClick(e);
           }}
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}

@@ -86,7 +86,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
-      data: payload.payload,
+      data: JSON.stringify(payload.payload),
     });
     yield put(getDataForPathwayAndComponentsSuccess(result));
   } catch (error) {

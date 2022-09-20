@@ -1,5 +1,4 @@
-import _ from 'lodash';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 interface Props {
   onDrop: (a: any, b: any, c: any, d: any, e: any) => void;
@@ -14,6 +13,8 @@ interface Props {
   index: number;
   className?: any;
   isDestinationColumnSelected?: any;
+  number: number;
+  forwardRef: any;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -24,12 +25,12 @@ const DropWrapper: React.FC<Props> = ({
   CTID,
   destinationColumn,
   HasProgressionLevel,
-  index,
   className,
+  number,
   isDestinationColumnSelected,
+  forwardRef,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
-  const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
 
   const handleDrop = (e: any) => {
     e.preventDefault();
@@ -45,13 +46,6 @@ const DropWrapper: React.FC<Props> = ({
     );
   };
 
-  useEffect(() => {
-    // Will try this method to increase speccific width of a div
-    if (!_.isNull(wrapperRef)) {
-      wrapperRef.current = wrapperRef.current.slice(0, index);
-    }
-  }, [wrapperRef]);
-
   return (
     <div
       id={id?.toString()}
@@ -66,7 +60,7 @@ const DropWrapper: React.FC<Props> = ({
       }}
       className={className}
       ref={(element: any) => {
-        wrapperRef.current[index] = element;
+        forwardRef.current[number] = element;
       }}
     >
       <div d-attr="title">{children}</div>
