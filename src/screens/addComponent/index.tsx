@@ -19,20 +19,16 @@ import {
   getLogicalOperatorsRequest,
 } from './state/actions';
 
-const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
-const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
-const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
+// const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
+// const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
+// const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
 interface Props {
-  visibleConstraintConditionProp: boolean;
+  visibleConstraintConditionProp: (bool: boolean) => void;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
   const { visibleConstraintConditionProp } = Props;
-  // const [allConstraintComponent, setAllConstraintComponent] = useState<any>(
-  //   new ContraintComponent()
-  // );
-
   const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
   const [allComparators, setAllComparators] = useState<any>([]);
   const [selectedComparators, setSelectedComparators] = useState<any>();
@@ -125,31 +121,32 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   const saveCondition = () => {
     visibleConstraintConditionProp(false);
-    if (!leftSourcedata?.length)
-      setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
-    else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
-    else if (!rightSourcedata?.length)
-      setErrorField([PLEASE_SELECT_RIGHT_SOURCE_VALUE]);
-    else {
-      setErrorField(['']);
-      const saveCondition = {
-        rowid: 'asdasdasdasd',
-        leftSource: [
-          {
-            URI: 'ceterms:AdvancedStandingAction',
-            Name: leftSourcedata,
-          },
-        ],
-        comparator: `compare:${selectedComparators}`,
-        rightSource: [
-          {
-            URI: 'ceterms:AdvancedStandingAction',
-            Name: rightSourcedata,
-          },
-        ],
-      };
-      saveCondition;
-    }
+
+    // if (!leftSourcedata?.length)
+    //   setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
+    // else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
+    // else if (!rightSourcedata?.length)
+    //   setErrorField([PLEASE_SELECT_RIGHT_SOURCE_VALUE]);
+    // else {
+    setErrorField(['']);
+    const saveCondition = {
+      rowid: 'asdasdasdasd',
+      leftSource: [
+        {
+          URI: 'ceterms:AdvancedStandingAction',
+          Name: leftSourcedata,
+        },
+      ],
+      comparator: `compare:${selectedComparators}`,
+      rightSource: [
+        {
+          URI: 'ceterms:AdvancedStandingAction',
+          Name: rightSourcedata,
+        },
+      ],
+    };
+    saveCondition;
+    // }
   };
 
   return (
