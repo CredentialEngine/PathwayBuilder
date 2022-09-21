@@ -48,10 +48,9 @@ const App = () => {
     useState('');
 
   const [organisationList, setOrganisationList] = useState<any>([]);
-  const [
-    isAddPathwayFormNextButtonDisable,
-    setIsAddPathwayFormNextButtonDisable,
-  ] = useState<boolean>(false);
+
+  const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
+    useState<boolean>(false);
   const {
     currentUserData: { data: userData },
   } = appState || {};
@@ -114,20 +113,17 @@ const App = () => {
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
   };
-
   const getAllPathwayFormFields = (value: any, name: string) => {
     setAddPathwayWrapeprFields({ ...addPathwayWrapperFields, [name]: value });
+    setIsAddPathwayFormVisible(false);
+    setIsEditPathwayFormVisible(false);
+    setIsPreSelectedCreateResourceVisible(true);
   };
 
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
     setIsAddPathwayDestinationVisible(true);
     dispatch(updateMappedDataRequest(addPathwayWrapperFields));
-  };
-
-  const onAddPathwayOkHandler = () => {
-    setIsAddPathwayFormVisible(false);
-    setIsPreSelectedCreateResourceVisible(true);
   };
 
   return (
@@ -145,8 +141,9 @@ const App = () => {
               ? true
               : false
           }
-          setIsEditPathwayFormVisible={setIsAddPathwayFormVisible}
+          setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
+          // setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
         />
         <Modal visible={false} title="" footer={[]} width={650}>
           <AddConditionalComponent />
@@ -160,26 +157,21 @@ const App = () => {
           <CreatePathway />
         </Modal>
         <Modal
-          visible={isAddPathwayFormVisible}
+          visible={isAddPathwayFormVisible || isEditPathwayFormVisible}
           title="Add a Pathway"
-          footer={[
-            <>
-              <Button
-                type={Type.PRIMARY}
-                onClick={onAddPathwayOkHandler}
-                text="Next"
-                disabled={!isAddPathwayFormNextButtonDisable}
-              />
-            </>,
-          ]}
+          onCancel={() => {
+            setIsAddPathwayFormVisible(false);
+            setIsEditPathwayFormVisible(false);
+          }}
+          maskClosable={false}
+          footer={[]}
         >
           <AddPathwayForm
             getAllPathwayFormFields={getAllPathwayFormFields}
-            setIsAddPathwayFormNextButtonDisable={
-              setIsAddPathwayFormNextButtonDisable
-            }
+            isEditPathwayFormVisible={isEditPathwayFormVisible}
             addPathwayWrapperFields={addPathwayWrapperFields}
             setAddPathwayWrapeprFields={setAddPathwayWrapeprFields}
+            isAddPathwayFormVisible={isAddPathwayFormVisible}
           />
         </Modal>
         <Modal

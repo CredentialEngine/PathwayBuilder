@@ -33,7 +33,7 @@ export interface Props {
   data?: any;
   IconName?: any;
   isComponentTab?: boolean;
-  setLeftpanelSelectedElem: (a: HTMLElement) => void;
+  setLeftpanelSelectedElem?: (a: HTMLElement) => void;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
@@ -57,7 +57,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
 
   const onDragStart = (e: any) => {
     const target = e.target;
-    setLeftpanelSelectedElem(e.target);
+    !!setLeftpanelSelectedElem && setLeftpanelSelectedElem(e.target);
     e.dataTransfer.setData('card_id', JSON.stringify(props.data));
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(true);
     setTimeout(() => {

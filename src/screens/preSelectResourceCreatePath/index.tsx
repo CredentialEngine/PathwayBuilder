@@ -34,6 +34,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
   const [dropDownRef, setDropDownRef] = useState<string>('');
 
+  const appState = useSelector((state: any) => state?.initalReducer);
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
     Keywords: '',
     Skip: 0,
@@ -46,6 +47,17 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       },
     ],
   });
+
+  const {
+    mappedData: { PendingComponent },
+  } = appState || {};
+
+  useEffect(() => {
+    if (PendingComponent.length > 0) {
+      setSelectedResource(PendingComponent);
+    }
+  }, [PendingComponent]);
+
   const searchComponent = (e: any) => {
     setSearchFilterValue({ ...searchFilterValue, Keywords: e.target.value });
     setDisplaySearchContainer(true);
@@ -108,6 +120,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       setAllComponentTypes(allTypesOfComponentCards);
     }
   }, [selectedResource, allComponentTabCards]);
+
   const addResource = (itemId: string, itemIndex: number) => {
     const filteredItem = allProxyResourcesCard.filter(
       (item: any) => item.id === itemId
@@ -118,6 +131,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       setDisplaySearchContainer(false);
     }
   };
+
   const UnSelectSelectedItem = (itemId: string, itemIndex: number) => {
     const filteredItem = selectedResource.filter(
       (item: any) => item.id === itemId
