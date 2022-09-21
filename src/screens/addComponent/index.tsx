@@ -4,6 +4,7 @@ import { Col, Form, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+// import { ContraintComponent } from './constants';
 
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
@@ -23,11 +24,15 @@ const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
 const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
 interface Props {
-  visibleConstraintCondition: boolean;
+  visibleConstraintConditionProp: boolean;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
-  const { visibleConstraintCondition } = Props;
+  const { visibleConstraintConditionProp } = Props;
+  // const [allConstraintComponent, setAllConstraintComponent] = useState<any>(
+  //   new ContraintComponent()
+  // );
+
   const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
   const [allComparators, setAllComparators] = useState<any>([]);
   const [selectedComparators, setSelectedComparators] = useState<any>();
@@ -39,8 +44,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const [parentComponent, setParentComponent] = useState<string>('');
   const [conditionDescription, setConditionDescription] = useState<string>('');
   const [requiredNumber, setRequiredNumber] = useState<string>('');
-  const [visibleConstraintConditionModal, setvisibleConstraintConditionModal] =
-    useState<boolean>(visibleConstraintCondition);
 
   const dispatch = useDispatch();
   // const onFinish = (values: any) => {
@@ -121,7 +124,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, []);
 
   const saveCondition = () => {
-    setvisibleConstraintConditionModal(!visibleConstraintConditionModal);
+    visibleConstraintConditionProp(false);
     if (!leftSourcedata?.length)
       setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
     else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
