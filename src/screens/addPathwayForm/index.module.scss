@@ -9,6 +9,16 @@
         color: $primary-dark;
       }
     }
+    .ant-select-selection-overflow-item {
+      white-space: nowrap;
+      overflow: hidden;
+      .ant-tag {
+        background-color: $selection;
+        border-radius: 15px;
+        color: $black;
+        margin: 1px;
+      }
+    }
   }
   .divider {
     border-top: 1px solid $inactive1;

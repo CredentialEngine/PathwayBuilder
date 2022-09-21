@@ -1,5 +1,7 @@
-import { Row, Col, Form, Divider } from 'antd';
+import { Row, Col, Form, Divider, Tag } from 'antd';
+
 import _ from 'lodash';
+import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,10 +13,10 @@ import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
 import Textarea from '../../components/formFields/textarea';
 import fetchProgressionList from '../../utils/fetchSearchResponse';
+import { isValidUrl } from '../../utils/object';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
 
 import DebounceSelect from './debounceSelect';
-
 import styles from './index.module.scss';
 import { PathwayEntity } from './model';
 import {
@@ -39,6 +41,25 @@ export interface Props {
   addPathwayWrapperFields?: any;
   setAddPathwayWrapeprFields: (a: any) => void;
 }
+
+const tagRender = (props: CustomTagProps) => {
+  const { label, value, closable, onClose } = props;
+  const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+  return (
+    <Tag
+      color={value}
+      onMouseDown={onPreventMouseDown}
+      closable={closable}
+      onClose={onClose}
+      style={{ marginRight: 3 }}
+    >
+      {label}
+    </Tag>
+  );
+};
 
 const AddPathwayForm: React.FC<Props> = ({
   getAllPathwayFormFields,
@@ -108,7 +129,8 @@ const AddPathwayForm: React.FC<Props> = ({
     setIsAddPathwayFormNextButtonDisable(
       !_.isEmpty(addPathwayFormFields.Name) &&
         !_.isEmpty(addPathwayFormFields.Description) &&
-        !_.isEmpty(addPathwayFormFields.SubjectWebpage)
+        !_.isEmpty(addPathwayFormFields.SubjectWebpage) &&
+        isValidUrl(addPathwayFormFields.SubjectWebpage)
     );
   }, [addPathwayFormFields]);
 
@@ -120,6 +142,9 @@ const AddPathwayForm: React.FC<Props> = ({
     }
     if (industrySelectedValue.length > 0) {
       updatedData.IndustryType = industrySelectedValue;
+    }
+    if (instructionalProgramSelectedValue.length > 0) {
+      updatedData.InstructionalType = industrySelectedValue;
     }
     setAddPathwayFormFields(updatedData);
   }, [occupationSelectedValue, industrySelectedValue]);
@@ -336,6 +361,7 @@ const AddPathwayForm: React.FC<Props> = ({
       ]);
     }
   };
+
   return (
     <>
       <Form className={styles.addPathwayForm}>
@@ -406,10 +432,11 @@ const AddPathwayForm: React.FC<Props> = ({
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
+              tooltip="This is a required field"
             >
               <DebounceSelect
                 mode="multiple"
-                value={industrySelectedValue}
+                tagRender={tagRender}
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
@@ -426,6 +453,7 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               <MultiSelect
                 mode="tags"
+                tagRender={tagRender}
                 placeholder="Add Keywords"
                 optionLabelProp="label"
                 onChange={(e) => onSelectChangeHandler(e, 'Keyword')}
@@ -442,7 +470,7 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               <DebounceSelect
                 mode="multiple"
-                value={occupationSelectedValue}
+                tagRender={tagRender}
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
@@ -459,7 +487,7 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               <DebounceSelect
                 mode="multiple"
-                value={instructionalProgramSelectedValue}
+                tagRender={tagRender}
                 placeholder="Select Instructional Program"
                 fetchOptions={fetchInstructionalProgramList}
                 onSelect={(e: any) =>
@@ -478,6 +506,7 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               <MultiSelect
                 mode="tags"
+                tagRender={tagRender}
                 placeholder="Select Subjects"
                 optionLabelProp="label"
                 onChange={(e) => onSelectChangeHandler(e, 'Subject')}
@@ -493,10 +522,11 @@ const AddPathwayForm: React.FC<Props> = ({
               required={true}
               validateTrigger="onBlur"
               help={
-                (_.isNil(addPathwayFormFields.SubjectWebpage) ||
-                  addPathwayFormFields.SubjectWebpage === '') &&
+                (!_.isNil(addPathwayFormFields.SubjectWebpage) ||
+                  addPathwayFormFields.SubjectWebpage !== '') &&
+                !isValidUrl(addPathwayFormFields.SubjectWebpage) &&
                 isTouched.SubjectWebpage
-                  ? 'Subject Webpage is Required'
+                  ? 'Subject Webpage is Required in Correct Format'
                   : null
               }
             >
