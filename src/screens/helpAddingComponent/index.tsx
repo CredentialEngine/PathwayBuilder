@@ -13,18 +13,19 @@ const HelpAddingComponent: React.FC = () => (
     <Row gutter={20}>
       <Col span="8">
         <SearchBox placeholder="Search your Components" styleType="outline" />
-        <h3>Adding First Component</h3>
+        <h4>Adding First Component</h4>
         <p>Adding a condition</p>
         <p>Approving Pathway</p>
       </Col>
       <Col span="16">
-        <h1>Adding First Component</h1>
+        <h2>Adding First Component</h2>
         <p>
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint nostrum
           accusamus placeat cum eligendi accusantium recusandae mollitia, amet
           quidem quibusdam sunt rerum dicta odio perferendis dolor at asperiores
           repudiandae omnis?
         </p>
+        <br />
         <ReactPlayer
           className={Styles.player}
           url="https://www.youtube.com/watch?v=u2RgGv8WPN0&list=PL37ZVnwpeshGHrl2h_1hm9a03b-GXH0td"

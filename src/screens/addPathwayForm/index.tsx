@@ -111,7 +111,7 @@ const AddPathwayForm: React.FC<Props> = ({
     filters: [
       {
         URI: 'meta:pathwayComponentType',
-        ItemsText: [],
+        ItemTexts: [],
       },
     ],
   });
