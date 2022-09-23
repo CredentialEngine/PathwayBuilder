@@ -12,6 +12,7 @@ export interface MultiSelectProps {
   onSelect?: (a: any) => void;
   value?: any;
   mode?: 'multiple' | 'tags';
+  tagRender?: any;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
@@ -25,6 +26,7 @@ const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
     onSelect,
     value,
     mode,
+    tagRender,
   } = props;
   return (
     <Select
@@ -33,6 +35,7 @@ const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
       placeholder={placeholder}
       defaultValue={defaultValue}
       onChange={onChange}
+      tagRender={tagRender}
       options={options}
       optionLabelProp={optionLabelProp}
       onSearch={onSearch}
