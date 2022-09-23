@@ -33,6 +33,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [selectedResource, setSelectedResource] = useState<any>([]);
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
   const [dropDownRef, setDropDownRef] = useState<string>('');
+  const [checkboxForOrganisation, setCheckboxForOrganisation] =
+    useState<boolean>(false);
 
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
     Keywords: '',
@@ -42,7 +44,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     Filters: [
       {
         URI: 'meta:pathwayComponentType',
-        ItemsText: [],
+        ItemTexts: [],
       },
     ],
   });
@@ -91,7 +93,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     updatedSearchValue.Filters = [
       {
         URI: 'meta:pathwayComponentType',
-        ItemsText: [_.get(selectedCardType, '0').label],
+        ItemTexts: [_.get(selectedCardType, '0').label],
       },
     ];
     setSearchFilterValue(updatedSearchValue);
@@ -108,6 +110,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       setAllComponentTypes(allTypesOfComponentCards);
     }
   }, [selectedResource, allComponentTabCards]);
+
   const addResource = (itemId: string, itemIndex: number) => {
     const filteredItem = allProxyResourcesCard.filter(
       (item: any) => item.id === itemId
@@ -133,15 +136,15 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
       <Row gutter={20}>
         <Col span="12">
-          <div className={Styles.flexCenter}>
+          <div className={Styles.dropDownRefDiv}>
             <h5>Select Resources</h5>
 
-            <Dropdown overlay={menu}>
+            <Dropdown overlay={menu} trigger={['click']}>
               <Typography.Link>
                 <Space>
                   {dropDownRef ? (
                     <span className={Styles.dropDownRef}>
-                      All resources types
+                      {allComponentTypes[Number(dropDownRef)]?.label}
                     </span>
                   ) : (
                     'All resources types'
@@ -158,8 +161,13 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
           />
           <CheckBox
             name="progressionModel"
-            label="Only components uploaded by my organisation"
+            label="Only resources published by my organization"
             className=" fontweightlight checkboxlabel"
+            value={checkboxForOrganisation}
+            onChange={() =>
+              setCheckboxForOrganisation(!checkboxForOrganisation)
+            }
+            checked={checkboxForOrganisation ? true : false}
           />
           <br />
           <br />
@@ -217,18 +225,22 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                 </div>
               ))}
             </div>
-            <p className={Styles.infoCard}>
-              Search for resources that you have uploaded to the Registry to add
-              them now as pre-selected options. This provides a smaller set of
-              resources to create the components you’ll ned work with while you
-              are building your Pathway.
-              <br />
-              <i>
-                Any resource that you have uploaded to the Registry will be
-                availble to you when creating your pathway so you can skip this
-                step.
-              </i>
-            </p>
+            {selectedResource.length ? (
+              ''
+            ) : (
+              <p className={Styles.infoCard}>
+                Search for resources that you have uploaded to the Registry to
+                add them now as pre-selected options. This provides a smaller
+                set of resources to create the components you’ll ned work with
+                while you are building your Pathway.
+                <br />
+                <i>
+                  Any resource that you have uploaded to the Registry will be
+                  availble to you when creating your pathway so you can skip
+                  this step.
+                </i>
+              </p>
+            )}
           </Card>
         </Col>
       </Row>
