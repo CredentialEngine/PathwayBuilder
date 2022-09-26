@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g id="Dispatch" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Dispatch/timecard" transform="translate(-579.000000, -324.000000)">
+            <g id="icon/clock" transform="translate(579.000000, 324.000000)">
+                <g id="Group">
+                    <polygon id="Path" points="0 0 18 0 18 18 0 18"></polygon>
+                    <path d="M9,18 C4.0293,18 0,13.9707 0,9 C0,4.0293 4.0293,0 9,0 C13.9707,0 18,4.0293 18,9 C18,13.9707 13.9707,18 9,18 Z M9,16.2 C12.9764502,16.2 16.2,12.9764502 16.2,9 C16.2,5.0235498 12.9764502,1.8 9,1.8 C5.0235498,1.8 1.8,5.0235498 1.8,9 C1.8,12.9764502 5.0235498,16.2 9,16.2 Z M9.9,9 L13.5,9 L13.5,10.8 L8.1,10.8 L8.1,4.5 L9.9,4.5 L9.9,9 Z"
+                          id="Shape" fill="#1D3BE6"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

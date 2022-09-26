@@ -2,8 +2,13 @@ import { message as antMessage } from 'antd';
 import classNames from 'classnames';
 import React from 'react';
 
+import SVG from 'react-inlinesvg';
+
+import Close from '../../assets/images/icons/close.svg';
+import Reminder from '../../assets/images/icons/reminder.svg';
+import Right from '../../assets/images/icons/right.svg';
+import CloseLine from '../../assets/images/remix/close-line.svg';
 import Button from '../button';
-import Icon from '../icon';
 
 import styles from './index.module.scss';
 
@@ -52,7 +57,7 @@ export const Message = ({
         onClose={onClose}
       />
     ),
-    duration: linkText ? 7 : 5,
+    duration: 0 /* linkText ? 7 : 5 */,
     icon: <span />,
   });
 };
@@ -67,10 +72,30 @@ export const MessageContent = ({
   onClose,
 }: MessageProps) => {
   const icons = {
-    success: <Icon name="right" size={24} />,
-    error: <Icon name="close" size={24} />,
-    warning: <Icon name="reminder" size={24} className={styles.warningIcon} />,
-    notice: <Icon name="reminder" size={24} className={styles.noticeIcon} />,
+    success: (
+      <SVG
+        src={Right}
+        style={{ width: 24, height: 24, fill: 'currentColor' }}
+      />
+    ),
+    error: (
+      <SVG
+        src={Close}
+        style={{ width: 24, height: 24, fill: 'currentColor' }}
+      />
+    ),
+    warning: (
+      <SVG
+        src={Reminder}
+        style={{ width: 24, height: 24, fill: 'currentColor' }}
+      />
+    ),
+    notice: (
+      <SVG
+        src={Reminder}
+        style={{ width: 24, height: 24, fill: 'currentColor' }}
+      />
+    ),
   };
 
   const height = (): string => {
@@ -102,11 +127,15 @@ export const MessageContent = ({
             />
           )}
         </div>
-        <Icon
-          name="close-line"
-          size={18}
+        <SVG
+          src={CloseLine}
+          style={{
+            width: 24,
+            height: 24,
+            fill: 'currentColor',
+            cursor: 'pointer',
+          }}
           onClick={onClose}
-          className={styles.close}
         />
       </div>
     </div>

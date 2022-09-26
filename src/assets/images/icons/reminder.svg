@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <desc>Created with Sketch.</desc>
+    <g id="icon/reminder" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(-2.000000, -2.000000)">
+            <polygon id="Path" points="0 0 28 0 28 28 0 28"></polygon>
+            <path d="M14,25.6666667 C7.5565,25.6666667 2.33333333,20.4435 2.33333333,14 C2.33333333,7.5565 7.5565,2.33333333 14,2.33333333 C20.4435,2.33333333 25.6666667,7.5565 25.6666667,14 C25.6666667,20.4435 20.4435,25.6666667 14,25.6666667 Z M12.8333333,17.5 L12.8333333,19.8333333 L15.1666667,19.8333333 L15.1666667,17.5 L12.8333333,17.5 Z M12.8333333,8.16666667 L12.8333333,15.1666667 L15.1666667,15.1666667 L15.1666667,8.16666667 L12.8333333,8.16666667 Z"
+                  id="Shape" fill="currentColor"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <desc>Created with sketchtool.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/edit">
+            <g id="Group">
+                <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
+                <path d="M7,18 L8.18624161,18 L16,10.1862416 L14.8137584,9 L7,16.8137584 L7,18 Z M20,20 L5,20 L5,16.4584188 L16.1958333,5.24438534 C16.5212499,4.91853822 17.0487501,4.91853822 17.3741667,5.24438534 L19.7316667,7.60571773 C20.0569849,7.93166327 20.0569849,8.46002103 19.7316667,8.78596657 L10.2025,18.330624 L20,18.330624 L20,20 Z M16,8 L17,9 L18,8 L17,7 L16,8 L16,8 Z"
+                      id="Shape" fill="currentColor"></path>
+            </g>
+        </g>
+    </g>
+</svg>
