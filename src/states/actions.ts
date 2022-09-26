@@ -14,6 +14,7 @@ import {
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
   SAVE_PATHWAY_SUCCESS,
   SAVE_PATHWAY_FAILURE,
+  ADD_COMPONENT_FROM_PATHWAY_MODAL,
 } from './actionTypes';
 
 export const getCurrentUserDataRequest = () => ({
@@ -84,5 +85,9 @@ export const savePathwaySuccess = (payload: any) => ({
 
 export const savePathwayFailure = (payload: any) => ({
   type: SAVE_PATHWAY_FAILURE,
+  payload,
+});
+export const addComponentFromPathwayModal = (payload: any) => ({
+  type: ADD_COMPONENT_FROM_PATHWAY_MODAL,
   payload,
 });

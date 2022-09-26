@@ -11,6 +11,7 @@ import {
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
   SAVE_PATHWAY_SUCCESS,
   SAVE_PATHWAY_FAILURE,
+  ADD_COMPONENT_FROM_PATHWAY_MODAL,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -152,6 +153,18 @@ export default (state = initState, action: { type: string; payload: any }) => {
       return {
         ...state,
         mappedData: action.payload,
+      };
+
+    case ADD_COMPONENT_FROM_PATHWAY_MODAL:
+      return {
+        ...state,
+        mappedData: {
+          ...state?.mappedData,
+          PendingComponent: [
+            ...state?.mappedData?.PendingComponent,
+            ...action?.payload,
+          ],
+        },
       };
     case PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST:
       return {

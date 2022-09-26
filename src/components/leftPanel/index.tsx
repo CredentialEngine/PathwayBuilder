@@ -186,7 +186,9 @@ const LeftPanel: React.FC<any> = ({
         closable
         footer={null}
       >
-        <AddComponentToPathway />
+        <AddComponentToPathway
+          isVisible={(value: any) => setShowAddComponentToPathway(value)}
+        />
       </Modal>
     </div>
   );
