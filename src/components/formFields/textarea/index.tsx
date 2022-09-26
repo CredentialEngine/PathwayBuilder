@@ -11,6 +11,7 @@ export type InputProps = {
   onBlur?: any;
   required?: boolean;
   rows?: number;
+  showCount?: boolean;
 };
 const Textarea: React.FC<InputProps> = (props: InputProps) => {
   const {
@@ -23,13 +24,14 @@ const Textarea: React.FC<InputProps> = (props: InputProps) => {
     required,
     onBlur,
     rows,
+    showCount,
   } = props;
   const handleChange = (e: any) => {
     onChange && onChange(e);
   };
   return (
     <TextArea
-      showCount
+      showCount={showCount}
       placeholder={placeholder}
       maxLength={maxLength}
       name={name}

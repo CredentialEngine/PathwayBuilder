@@ -99,8 +99,8 @@
 .iconCircle {
   border: 2px solid $selection;
   border-radius: 50%;
-  height: 20px;
-  width: 20px;
+  height: 21px;
+  min-width: 21px;
   display: flex;
   justify-content: center;
   align-items: center;

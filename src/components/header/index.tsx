@@ -1,6 +1,6 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Col, Row } from 'antd';
+import { Alert, Col, Row, Button as AntdButton } from 'antd';
 import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +10,6 @@ import {
   approvePathwayRequest,
   saveDataForPathwayRequest,
 } from '../../states/actions';
-
 import Button from '../button';
 import { Type } from '../button/type';
 
@@ -32,6 +31,19 @@ const Header = (props: Props) => {
   const [hasConflicts, setHasConflicts] = useState<boolean>(false);
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
 
+  const [loadings, setLoadings] = useState<boolean>(false);
+  const pathwayComponentData = useSelector(
+    (state: any) => state.initalReducer.pathwayComponentData
+  );
+
+  useEffect(() => {
+    if (pathwayComponentData.valid) {
+      setLoadings(false);
+    } else if (!pathwayComponentData.valid) {
+      setLoadings(false);
+    }
+  }, [pathwayComponentData]);
+
   useEffect(() => {
     if (savePathwayResult.error) {
       setHasConflicts(true);
@@ -51,6 +63,7 @@ const Header = (props: Props) => {
       showIcon
     />;
   };
+
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -83,6 +96,7 @@ const Header = (props: Props) => {
   }, [pathwayWrapper]);
 
   const savePathwayWrapper = () => {
+    setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
 
@@ -126,24 +140,32 @@ const Header = (props: Props) => {
               onClick={noop}
               text="Exit Without Saving"
             />
-            <Button
+            {/* <Button
               className={styles.saveButtonSpecification}
               key="save"
               onClick={savePathwayWrapper}
               text="save"
+              loadings={loadings}
               type="selection"
-            />
-
+            /> */}
+            <AntdButton
+              className={styles.saveButtonSpecification}
+              type="primary"
+              size="small"
+              loading={loadings}
+              onClick={savePathwayWrapper}
+              key="save"
+            >
+              Save
+            </AntdButton>
             {/*
             Commenting this code for now,
             may be in future we need this
-            
             <Button
               className={styles.publishButtonSpecification}
               text="Publish Pathway"
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
-            /> 
-
+            />
             */}
           </div>
         </div>

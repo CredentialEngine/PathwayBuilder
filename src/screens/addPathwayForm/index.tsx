@@ -14,6 +14,7 @@ import CheckBox from '../../components/formFields/checkbox';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
 import Textarea from '../../components/formFields/textarea';
+import Message from '../../components/message';
 import { saveDataForPathwayRequest } from '../../states/actions';
 import fetchProgressionList from '../../utils/fetchSearchResponse';
 import { isValidUrl } from '../../utils/object';
@@ -119,7 +120,7 @@ const AddPathwayForm: React.FC<Props> = ({
     filters: [
       {
         URI: 'meta:pathwayComponentType',
-        ItemsText: [],
+        ItemTexts: [],
       },
     ],
   });
@@ -134,8 +135,10 @@ const AddPathwayForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (savePathwayResult.error) {
-      if (!_.isEmpty(addPathwayFormFields))
-        getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
+      Message({
+        description: savePathwayResult?.data[0],
+        type: 'error',
+      });
     } else if (savePathwayResult.Valid) {
       if (!_.isEmpty(addPathwayFormFields))
         getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
