@@ -104,12 +104,21 @@ const App = () => {
         type={Type.PRIMARY}
       />
       <Button
-        onClick={onCreatePathwayCancelHandler}
+        onClick={closeCreatePathwayModal}
         text="Cancel"
         type={Type.CANCEL}
       />
     </div>
   );
+
+  const closeCreatePathwayModal = () => {
+    Modal.confirm({
+      cancelText: 'Cancel',
+      okText: 'Ok',
+      title: 'Are you sure you want to cancel.',
+      onOk: () => onCreatePathwayCancelHandler(),
+    });
+  };
 
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);

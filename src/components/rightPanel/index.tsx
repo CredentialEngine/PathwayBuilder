@@ -68,7 +68,11 @@ const RightPanel: React.FC<Props> = ({
         <Divider className={styles.divider} />
         <Row className={styles.topRow}>
           <Row>
-            <FontAwesomeIcon icon={faCubes} style={{ height: '30px' }} />
+            <FontAwesomeIcon
+              icon={faCubes}
+              style={{ height: '30px' }}
+              onClick={() => onCloseHandler(false)}
+            />
             <span className={styles.name}>
               {extractComponentType(panelData?.Type)}
             </span>
