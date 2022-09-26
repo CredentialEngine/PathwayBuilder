@@ -60,6 +60,7 @@ const Header = (props: Props) => {
     setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
+
   return (
     <div id="header" className={styles.container + ' header-container'}>
       <div className={styles.productImgLayout + ' logowrapper'}>
@@ -85,6 +86,7 @@ const Header = (props: Props) => {
             <span className={styles.title}>
               National Retail Federation Foundation RISE Up Pathway
             </span>
+
             <span
               className={styles.editPathway}
               onClick={() => setIsEditPathwayFormVisible(true)}
