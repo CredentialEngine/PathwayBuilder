@@ -1,6 +1,6 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Row } from 'antd';
+import { Col, Row, Button as AntdButton } from 'antd';
 import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,9 +10,9 @@ import {
   approvePathwayRequest,
   saveDataForPathwayRequest,
 } from '../../states/actions';
-
 import Button from '../button';
 import { Type } from '../button/type';
+import Message from '../message';
 
 import styles from './index.module.scss';
 
@@ -24,31 +24,89 @@ const Header = (props: Props) => {
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
   );
+  const savePathwayResult = useSelector(
+    (state: any) => state?.initalReducer?.pathwayComponentData
+  );
+
   const dispatch = useDispatch();
-  const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
+  const [hasConflicts, setHasConflicts] = useState<boolean>(false);
+  const [conflictMessages, setConflictMessages] = useState<[]>([]);
+
+  const [loadings, setLoadings] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!hasPublishVisible) dispatch(approvePathwayRequest('9'));
-  }, [hasPublishVisible]);
+    if (savePathwayResult?.valid) {
+      setLoadings(false);
+      Message({
+        description: savePathwayResult?.data,
+        type: 'success',
+      });
+    } else if (savePathwayResult?.error) {
+      setLoadings(false);
+      savePathwayResult?.data?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
+    }
+  }, [savePathwayResult]);
+
+  useEffect(() => {
+    if (savePathwayResult.error) {
+      setHasConflicts(true);
+      setConflictMessages(savePathwayResult.data);
+    }
+  }, [savePathwayResult]);
+
+  const onApproverHandler = () => {
+    dispatch(approvePathwayRequest('9'));
+  };
+
+  const conflictHandler = () => {
+    conflictMessages?.map((message: any) =>
+      Message({
+        description: message,
+        type: 'error',
+      })
+    );
+  };
 
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Button type={Type.LINK} onClick={noop} text="Show 1 Conflict" />
+        <Button
+          type={Type.LINK}
+          onClick={() => conflictHandler()}
+          text={`show ${conflictMessages.length} conflicts`}
+          disabled={!hasConflicts}
+        />
       </div>
       <div style={{ display: 'flex', position: 'relative' }}>
         <Button
           type={Type.PRIMARY}
           className={styles.approveButtonSpecification}
-          onClick={() => setHasPublishVisible(!hasPublishVisible)}
+          onClick={onApproverHandler}
           iconOnTop={true}
+          disabled={conflictMessages.length > 0}
           text="Approve"
         />
       </div>
     </div>
   );
 
+  useEffect(() => {
+    const intervalId = setTimeout(() => {
+      if (pathwayWrapper.Pathway.Name !== '') {
+        dispatch(saveDataForPathwayRequest(pathwayWrapper));
+      }
+    }, 30000);
+
+    return () => clearTimeout(intervalId);
+  }, [pathwayWrapper]);
+
   const savePathwayWrapper = () => {
+    setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
 
@@ -65,7 +123,9 @@ const Header = (props: Props) => {
                 <span className={styles.newPathway}>Create a New Pathway</span>
               </Col>
               <Col span={24}>
-                <span className={styles.foundation}>NRF Foundation</span>
+                <span className={styles.foundation}>
+                  {pathwayWrapper?.Pathway?.Organization?.Name}
+                </span>
               </Col>
             </Row>
           </Col>
@@ -75,8 +135,9 @@ const Header = (props: Props) => {
         <div className={styles.headerCenter}>
           <div className={styles.titleContainer}>
             <span className={styles.title}>
-              National Retail Federation Foundation RISE Up Pathway
+              {pathwayWrapper?.Pathway?.Name}
             </span>
+
             <span
               className={styles.editPathway}
               onClick={() => setIsEditPathwayFormVisible(true)}
@@ -90,30 +151,37 @@ const Header = (props: Props) => {
               onClick={noop}
               text="Exit Without Saving"
             />
-            <Button
+            {/* <Button
               className={styles.saveButtonSpecification}
               key="save"
               onClick={savePathwayWrapper}
               text="save"
+              loadings={loadings}
               type="selection"
-            />
-
+            /> */}
+            <AntdButton
+              className={styles.saveButtonSpecification}
+              type="primary"
+              size="small"
+              loading={loadings}
+              onClick={() => savePathwayWrapper()}
+              key="save"
+            >
+              Save
+            </AntdButton>
             {/*
             Commenting this code for now,
             may be in future we need this
-            
             <Button
               className={styles.publishButtonSpecification}
               text="Publish Pathway"
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
-            /> 
-
+            />
             */}
           </div>
         </div>
-        {hasPublishVisible && (
-          <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
-        )}
+
+        <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
       </div>
       <div className={styles.helpContainer + ' headerright'}>
         <FontAwesomeIcon

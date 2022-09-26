@@ -19,4 +19,5 @@ export type RootState = {
     data: any;
     valid: boolean;
   };
+  allFormFields: any;
 };

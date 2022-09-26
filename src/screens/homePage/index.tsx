@@ -23,8 +23,6 @@ import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
 import AddConditionalComponent from '../addComponent';
 
-// import AddPathwayForm from '../addPathwayForm';
-
 import Styles from './index.module.scss';
 
 interface Props {
@@ -60,7 +58,6 @@ const HomePage: React.FC<Props> = ({
   });
   const [connection, setConnection] = useState<any>([]);
   const [constraintIcon, setConstraintIcon] = useState<boolean>(false);
-
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const [generatedUuid, setGeneratedUuid] = useState<any>({
     destinationCTID: '',
@@ -333,7 +330,6 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.start)?.classList?.remove('active');
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
-    // setVisibleConstraintCondition(true);
   };
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
@@ -655,14 +651,6 @@ const HomePage: React.FC<Props> = ({
           visibleConstraintCondition={visibleConstraintCondition}
         />
       </Modal>
-      {/* <Modal
-        visible={isEditPathwayFormVisible}
-        onOk={onEditPathwayOkHandler}
-        onCancel={onEditPathwayCancelHandler}
-        title="Add a Pathway"
-      >
-        <AddPathwayForm />
-      </Modal> */}
     </Layout>
   );
 };

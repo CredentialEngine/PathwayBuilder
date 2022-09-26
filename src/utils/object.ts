@@ -1,4 +1,4 @@
-import { isEqual, isNil, isNull, isUndefined, omitBy, trim } from 'lodash';
+import _, { isEqual, isNil, isNull, isUndefined, omitBy, trim } from 'lodash';
 
 export const isEmptyValue = (v: any): v is null | undefined =>
   isNil(v) || trim(v) === '' || isEqual(v, {});
@@ -54,4 +54,24 @@ export const isValidUrl = (urlString: string) => {
     'i'
   ); // validate fragment locator
   return !!urlPattern.test(urlString);
+};
+
+export const getErrorMessage = (error: any): string => {
+  if (_.isArray(error?.errors) && !_.isEmpty(error?.errors)) {
+    if (!_.isEmpty(error?.errors[0]?.extensions?.content?.error?.data))
+      return _.replace(
+        _.toString(
+          _.values(error?.errors[0]?.extensions?.content?.error?.data)
+        ),
+        ',',
+        '\n'
+      );
+    else if (!_.isEmpty(error?.errors[0]?.extensions?.content?.error?.message))
+      return error?.errors[0]?.extensions?.content?.error?.message;
+    else return error?.errors[0]?.message;
+  } else {
+    if (!_.isEmpty(error?.data))
+      return _.replace(_.toString(_.values(error?.data)), ',', '\n');
+    else return error?.message;
+  }
 };
