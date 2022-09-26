@@ -1,20 +1,17 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Row } from 'antd';
+import { Col, Row, Button as AntdButton } from 'antd';
 import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
-import HelpAddingComponent from '../../screens/helpAddingComponent';
 import {
   approvePathwayRequest,
   saveDataForPathwayRequest,
 } from '../../states/actions';
-
 import Button from '../button';
 import { Type } from '../button/type';
-import Modal from '../modal';
 
 import styles from './index.module.scss';
 
@@ -28,9 +25,17 @@ const Header = (props: Props) => {
   );
   const dispatch = useDispatch();
   const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
-  const [visibleHelpAddingComponent, setHelpAddingComponent] =
-    useState<boolean>(false);
-
+  const [loadings, setLoadings] = useState<boolean>(false);
+  const pathwayComponentData = useSelector(
+    (state: any) => state.initalReducer.pathwayComponentData
+  );
+  useEffect(() => {
+    if (pathwayComponentData.valid) {
+      setLoadings(false);
+    } else if (!pathwayComponentData.valid) {
+      setLoadings(false);
+    }
+  }, [pathwayComponentData]);
   useEffect(() => {
     if (!hasPublishVisible) dispatch(approvePathwayRequest('9'));
   }, [hasPublishVisible]);
@@ -51,98 +56,88 @@ const Header = (props: Props) => {
       </div>
     </div>
   );
-
   const savePathwayWrapper = () => {
+    setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
-
   return (
-    <>
-      <div id="header" className={styles.container + ' header-container'}>
-        <div className={styles.productImgLayout + ' logowrapper'}>
-          <Row align="middle" style={{ width: '100%' }}>
-            <Col span={4}>
-              <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
-            </Col>
-            <Col span={20}>
-              <Row className={styles.createNewContainer}>
-                <Col span={24}>
-                  <span className={styles.newPathway}>
-                    Create a New Pathway
-                  </span>
-                </Col>
-                <Col span={24}>
-                  <span className={styles.foundation}>NRF Foundation</span>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </div>
-        <div className={styles.titleDescriptionContainer + ' headermiddle'}>
-          <div className={styles.headerCenter}>
-            <div className={styles.titleContainer}>
-              <span className={styles.title}>
-                National Retail Federation Foundation RISE Up Pathway
-              </span>
-              <span
-                className={styles.editPathway}
-                onClick={() => setIsEditPathwayFormVisible(true)}
-              >
-                Edit Pathway Details
-              </span>
-            </div>
-            <div className={styles.saveButtonWrapper}>
-              <Button
-                type={Type.LINK}
-                onClick={noop}
-                text="Exit Without Saving"
-              />
-              <Button
-                className={styles.saveButtonSpecification}
-                key="save"
-                onClick={savePathwayWrapper}
-                text="save"
-                type="selection"
-              />
-
-              {/*
+    <div id="header" className={styles.container + ' header-container'}>
+      <div className={styles.productImgLayout + ' logowrapper'}>
+        <Row align="middle" style={{ width: '100%' }}>
+          <Col span={4}>
+            <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
+          </Col>
+          <Col span={20}>
+            <Row className={styles.createNewContainer}>
+              <Col span={24}>
+                <span className={styles.newPathway}>Create a New Pathway</span>
+              </Col>
+              <Col span={24}>
+                <span className={styles.foundation}>NRF Foundation</span>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </div>
+      <div className={styles.titleDescriptionContainer + ' headermiddle'}>
+        <div className={styles.headerCenter}>
+          <div className={styles.titleContainer}>
+            <span className={styles.title}>
+              National Retail Federation Foundation RISE Up Pathway
+            </span>
+            <span
+              className={styles.editPathway}
+              onClick={() => setIsEditPathwayFormVisible(true)}
+            >
+              Edit Pathway Details
+            </span>
+          </div>
+          <div className={styles.saveButtonWrapper}>
+            <Button
+              type={Type.LINK}
+              onClick={noop}
+              text="Exit Without Saving"
+            />
+            {/* <Button
+              className={styles.saveButtonSpecification}
+              key="save"
+              onClick={savePathwayWrapper}
+              text="save"
+              loadings={loadings}
+              type="selection"
+            /> */}
+            <AntdButton
+              className={styles.saveButtonSpecification}
+              type="primary"
+              size="small"
+              loading={loadings}
+              onClick={savePathwayWrapper}
+              key="save"
+            >
+              Save
+            </AntdButton>
+            {/*
             Commenting this code for now,
             may be in future we need this
-            
             <Button
               className={styles.publishButtonSpecification}
               text="Publish Pathway"
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
-            /> 
-
+            />
             */}
-            </div>
           </div>
-          {hasPublishVisible && (
-            <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
-          )}
         </div>
-        <div
-          className={styles.helpContainer + ' headerright'}
-          onClick={() => setHelpAddingComponent(true)}
-        >
-          <FontAwesomeIcon
-            icon={faCircleQuestion}
-            className={styles.imgDimensions}
-          />
-        </div>
+        {hasPublishVisible && (
+          <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
+        )}
       </div>
-      <Modal
-        visible={visibleHelpAddingComponent}
-        title=""
-        footer={[]}
-        width={750}
-        onCancel={() => setHelpAddingComponent(false)}
-      >
-        <HelpAddingComponent />
-      </Modal>
-    </>
+      <div className={styles.helpContainer + ' headerright'}>
+        <FontAwesomeIcon
+          icon={faCircleQuestion}
+          className={styles.imgDimensions}
+        />
+      </div>
+    </div>
   );
 };
-
 export default Header;
