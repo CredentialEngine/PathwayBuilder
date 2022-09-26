@@ -5,7 +5,7 @@ import {
   faSitemap,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider } from 'antd';
+import { Divider, Popover } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -13,6 +13,7 @@ import AddConditionalComponent from '../../screens/addComponent';
 
 import InfoTooltip from '../infoTooltip';
 import Modal from '../modal';
+import RightPanel from '../rightPanel';
 
 import styles from './index.module.scss';
 
@@ -74,6 +75,7 @@ const MultiCard: React.FC<Props> = ({
   const ref = useRef(null);
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
+  const [showRightPenal, setShowRightPenal] = useState(false);
 
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
@@ -283,8 +285,40 @@ const MultiCard: React.FC<Props> = ({
                       color={darkColor}
                       style={{ height: '20px', cursor: 'pointer' }}
                       icon={faEllipsis}
-                      onClick={noop}
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setShowPopover(true);
+                      }}
                     />
+                    {showPopover && !showRightPenal && (
+                      <Popover
+                        visible={showPopover}
+                        arrowPointAtCenter
+                        placement="bottomRight"
+                        content={
+                          <div className={styles.popoverMenu} ref={ref}>
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setShowRightPenal(true);
+                              }}
+                            >
+                              View
+                            </span>
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                            >
+                              Delete
+                            </span>
+                          </div>
+                        }
+                      ></Popover>
+                    )}
                   </div>
                   <Divider
                     style={{
@@ -305,39 +339,7 @@ const MultiCard: React.FC<Props> = ({
 
               {isCredentialCard && (
                 <>
-                  {/* <div className={styles.addIcon}>
-      <FontAwesomeIcon
-        icon={faCirclePlus}
-        fill="#000000"
-        style={{
-          height: '22px',
-          width: '22px',
-          color: '#ffd363',
-          cursor: 'pointer',
-        }}
-        onClick={(e: any) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-      />
-    </div> */}
                   <div className={styles.courseCredCardWrapper}>
-                    {/* <div className={styles.addIcon}>
-                      <FontAwesomeIcon
-                        icon={faCirclePlus}
-                        fill="#000000"
-                        style={{
-                          height: '22px',
-                          width: '22px',
-                          color: '#ffd363',
-                          cursor: 'pointer',
-                        }}
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                        }}
-                      />
-                    </div> */}
                     <div className={styles.topCourseContent}>
                       <FontAwesomeIcon
                         icon={faCubes}
@@ -589,8 +591,40 @@ const MultiCard: React.FC<Props> = ({
                     color={darkColor}
                     style={{ height: '20px', cursor: 'pointer' }}
                     icon={faEllipsis}
-                    onClick={noop}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowPopover(true);
+                    }}
                   />
+                  {showPopover && !showRightPenal && (
+                    <Popover
+                      visible={showPopover}
+                      arrowPointAtCenter
+                      placement="bottomRight"
+                      content={
+                        <div className={styles.popoverMenu} ref={ref}>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setShowRightPenal(true);
+                            }}
+                          >
+                            View
+                          </span>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                            }}
+                          >
+                            Delete
+                          </span>
+                        </div>
+                      }
+                    ></Popover>
+                  )}
                 </div>
                 <Divider
                   style={{
@@ -613,23 +647,6 @@ const MultiCard: React.FC<Props> = ({
           {isCredentialCard && (
             <>
               <div className={styles.courseCredCardWrapper}>
-                {/* {isDestination && (
-                  <div className={styles.addIcon}>
-                    <FontAwesomeIcon
-                      icon={faCirclePlus}
-                      fill="#000000"
-                      style={{
-                        height: '22px',
-                        width: '22px',
-                        color: '#ffb90b',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        setVisibleConstraintCondition(true);
-                      }}
-                    />
-                  </div>
-                )} */}
                 <div className={styles.topCourseContent}>
                   <FontAwesomeIcon
                     icon={faCubes}
@@ -659,21 +676,6 @@ const MultiCard: React.FC<Props> = ({
 
           {isConditionalCard && (
             <React.Fragment>
-              {/* <div className={styles.addIcon}>
-                <FontAwesomeIcon
-                  icon={faCirclePlus}
-                  fill="#000000"
-                  style={{
-                    height: '22px',
-                    width: '22px',
-                    color: '#ffb90b',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    setVisibleConstraintCondition(true);
-                  }}
-                />
-              </div> */}
               <div className={styles.conditionalCardContent}>
                 <FontAwesomeIcon
                   color="#ffffff"
@@ -697,21 +699,6 @@ const MultiCard: React.FC<Props> = ({
 
           {isAddComponentCard && (
             <div className={styles.addComponentContent}>
-              {/* <div className={styles.addIcon}>
-                <FontAwesomeIcon
-                  icon={faCirclePlus}
-                  fill="#000000"
-                  style={{
-                    height: '22px',
-                    width: '22px',
-                    color: '#ffb90b',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    setVisibleConstraintCondition(true);
-                  }}
-                />
-              </div> */}
               <div className={styles.topContent}>
                 <span className={styles.circle}>
                   <FontAwesomeIcon
@@ -754,6 +741,11 @@ const MultiCard: React.FC<Props> = ({
           visibleConstraintConditionProp={handledConstraintsModal}
         />
       </Modal>
+      <RightPanel
+        visible={showRightPenal}
+        onCloseHandler={(val: boolean) => setShowRightPenal(val)}
+        panelData={data}
+      />
     </>
   );
 };
