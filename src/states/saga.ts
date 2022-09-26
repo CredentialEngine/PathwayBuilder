@@ -14,6 +14,8 @@ import {
   getCurrentUserDataSuccess,
   getDataForPathwayAndComponentsFailure,
   getDataForPathwayAndComponentsSuccess,
+  savePathwayFailure,
+  savePathwaySuccess,
 } from './actions';
 import {
   GET_CURRENT_USER_REQUEST,
@@ -89,9 +91,11 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       data: JSON.stringify(payload.payload),
     });
     if (result.Valid) {
-      yield put(getDataForPathwayAndComponentsSuccess(result));
+      yield put(savePathwaySuccess(result));
+      // yield put(getDataForPathwayAndComponentsSuccess(result));
     } else if (!result.Valid && result?.Messages?.length > 0) {
-      yield put(getDataForPathwayAndComponentsFailure(result));
+      // yield put(getDataForPathwayAndComponentsFailure(result));
+      yield put(savePathwayFailure(result));
     }
   } catch (error) {
     yield put(getDataForPathwayAndComponentsFailure(error));

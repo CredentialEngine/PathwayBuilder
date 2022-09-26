@@ -25,7 +25,7 @@ const Header = (props: Props) => {
     (state: any) => state?.initalReducer?.mappedData
   );
   const savePathwayResult = useSelector(
-    (state: any) => state?.initalReducer?.pathwayComponentData
+    (state: any) => state?.initalReducer?.savePathway
   );
 
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const Header = (props: Props) => {
     if (savePathwayResult?.valid) {
       setLoadings(false);
       Message({
-        description: savePathwayResult?.data,
+        description: 'The Pathway has been saved successfully',
         type: 'success',
       });
     } else if (savePathwayResult?.error) {
@@ -49,11 +49,6 @@ const Header = (props: Props) => {
           type: 'error',
         })
       );
-    }
-  }, [savePathwayResult]);
-
-  useEffect(() => {
-    if (savePathwayResult.error) {
       setHasConflicts(true);
       setConflictMessages(savePathwayResult.data);
     }
@@ -151,14 +146,6 @@ const Header = (props: Props) => {
               onClick={noop}
               text="Exit Without Saving"
             />
-            {/* <Button
-              className={styles.saveButtonSpecification}
-              key="save"
-              onClick={savePathwayWrapper}
-              text="save"
-              loadings={loadings}
-              type="selection"
-            /> */}
             <AntdButton
               className={styles.saveButtonSpecification}
               type="primary"

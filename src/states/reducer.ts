@@ -9,6 +9,8 @@ import {
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
+  SAVE_PATHWAY_SUCCESS,
+  SAVE_PATHWAY_FAILURE,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -81,6 +83,11 @@ const initState: RootState = {
     DeletedComponents: [],
   },
   approvePathway: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
+  savePathway: {
     loading: false,
     data: null,
     valid: false,
@@ -172,6 +179,27 @@ export default (state = initState, action: { type: string; payload: any }) => {
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
+        },
+      };
+    case SAVE_PATHWAY_SUCCESS:
+      return {
+        ...state,
+        savePathway: {
+          ...state.savePathway,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case SAVE_PATHWAY_FAILURE:
+      return {
+        ...state,
+        savePathway: {
+          ...state.savePathway,
+          loading: false,
+          data: action.payload.Messages,
+          valid: action?.payload?.Valid,
+          error: true,
         },
       };
     default:
