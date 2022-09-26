@@ -14,6 +14,7 @@ import CheckBox from '../../components/formFields/checkbox';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
 import Textarea from '../../components/formFields/textarea';
+import { saveDataForPathwayRequest } from '../../states/actions';
 import fetchProgressionList from '../../utils/fetchSearchResponse';
 import { isValidUrl } from '../../utils/object';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
@@ -127,6 +128,19 @@ const AddPathwayForm: React.FC<Props> = ({
   const addPathwayFormFieldsValue = useSelector(
     (state: any) => state.addPathwayFormReducer.allFormFields
   );
+  const savePathwayResult = useSelector(
+    (state: any) => state?.initalReducer?.pathwayComponentData
+  );
+
+  useEffect(() => {
+    if (savePathwayResult.error) {
+      if (!_.isEmpty(addPathwayFormFields))
+        getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
+    } else if (savePathwayResult.Valid) {
+      if (!_.isEmpty(addPathwayFormFields))
+        getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
+    }
+  }, [savePathwayResult]);
 
   const { mappedData: ProgressionModels } = pathwayWrapper;
 
@@ -421,8 +435,7 @@ const AddPathwayForm: React.FC<Props> = ({
   };
 
   const onAddPathwayOkHandler = () => {
-    if (!_.isEmpty(addPathwayFormFields))
-      getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
+    dispatch(saveDataForPathwayRequest({ Pathway: addPathwayFormFields }));
 
     dispatch(saveAddPAthWayFormFields(addPathwayFormFields));
   };

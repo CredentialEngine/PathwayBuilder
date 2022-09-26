@@ -18,6 +18,7 @@ import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
 import {
   getCurrentUserDataRequest,
+  saveDataForPathwayRequest,
   updateMappedDataRequest,
 } from './states/actions';
 
@@ -113,6 +114,7 @@ const App = () => {
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
   };
+
   const getAllPathwayFormFields = (value: any, name: string) => {
     setAddPathwayWrapeprFields({ ...addPathwayWrapperFields, [name]: value });
     setIsAddPathwayFormVisible(false);
@@ -123,9 +125,9 @@ const App = () => {
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
     setIsAddPathwayDestinationVisible(true);
+    dispatch(saveDataForPathwayRequest(addPathwayWrapperFields));
     dispatch(updateMappedDataRequest(addPathwayWrapperFields));
   };
-
   return (
     <div>
       <MainContainer>

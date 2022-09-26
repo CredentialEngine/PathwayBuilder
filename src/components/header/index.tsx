@@ -1,6 +1,6 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Row } from 'antd';
+import { Alert, Col, Row } from 'antd';
 import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,29 +24,63 @@ const Header = (props: Props) => {
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
   );
+  const savePathwayResult = useSelector(
+    (state: any) => state?.initalReducer?.pathwayComponentData
+  );
+
   const dispatch = useDispatch();
-  const [hasPublishVisible, setHasPublishVisible] = useState<boolean>(true);
+  const [hasConflicts, setHasConflicts] = useState<boolean>(false);
+  const [conflictMessages, setConflictMessages] = useState<[]>([]);
 
   useEffect(() => {
-    if (!hasPublishVisible) dispatch(approvePathwayRequest('9'));
-  }, [hasPublishVisible]);
+    if (savePathwayResult.error) {
+      setHasConflicts(true);
+      setConflictMessages(savePathwayResult.data);
+    }
+  }, [savePathwayResult]);
 
+  const onApproverHandler = () => {
+    dispatch(approvePathwayRequest('9'));
+  };
+
+  const conflictHandler = () => {
+    <Alert
+      message="Error"
+      description={conflictMessages}
+      type="error"
+      showIcon
+    />;
+  };
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Button type={Type.LINK} onClick={noop} text="Show 1 Conflict" />
+        <Button
+          type={Type.LINK}
+          onClick={() => conflictHandler()}
+          text={`show ${conflictMessages.length} conflicts`}
+          disabled={!hasConflicts}
+        />
       </div>
       <div style={{ display: 'flex', position: 'relative' }}>
         <Button
           type={Type.PRIMARY}
           className={styles.approveButtonSpecification}
-          onClick={() => setHasPublishVisible(!hasPublishVisible)}
+          onClick={onApproverHandler}
           iconOnTop={true}
+          disabled={conflictMessages.length > 0}
           text="Approve"
         />
       </div>
     </div>
   );
+
+  useEffect(() => {
+    const intervalId = setTimeout(() => {
+      dispatch(saveDataForPathwayRequest(pathwayWrapper));
+    }, 30000);
+
+    return () => clearTimeout(intervalId);
+  }, [pathwayWrapper]);
 
   const savePathwayWrapper = () => {
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
@@ -65,7 +99,9 @@ const Header = (props: Props) => {
                 <span className={styles.newPathway}>Create a New Pathway</span>
               </Col>
               <Col span={24}>
-                <span className={styles.foundation}>NRF Foundation</span>
+                <span className={styles.foundation}>
+                  {pathwayWrapper?.Pathway?.Organization?.Name}
+                </span>
               </Col>
             </Row>
           </Col>
@@ -75,7 +111,7 @@ const Header = (props: Props) => {
         <div className={styles.headerCenter}>
           <div className={styles.titleContainer}>
             <span className={styles.title}>
-              National Retail Federation Foundation RISE Up Pathway
+              {pathwayWrapper?.Pathway?.Name}
             </span>
             <span
               className={styles.editPathway}
@@ -111,9 +147,8 @@ const Header = (props: Props) => {
             */}
           </div>
         </div>
-        {hasPublishVisible && (
-          <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
-        )}
+
+        <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
       </div>
       <div className={styles.helpContainer + ' headerright'}>
         <FontAwesomeIcon

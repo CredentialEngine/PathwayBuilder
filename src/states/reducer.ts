@@ -136,8 +136,9 @@ export default (state = initState, action: { type: string; payload: any }) => {
         pathwayComponentData: {
           ...state.pathwayComponentData,
           loading: false,
-          data: action.payload.Data,
+          data: action.payload.Messages,
           valid: action?.payload?.Valid,
+          error: true,
         },
       };
     case UPDATE_MAPPED_DATA_TO_SEND:
