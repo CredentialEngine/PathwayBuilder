@@ -184,7 +184,7 @@ const App = () => {
               <div style={{ display: 'flex' }}>
                 <Button
                   type={Type.PRIMARY}
-                  onClick={onPathwaySaveHandler}
+                  onClick={() => onPathwaySaveHandler()}
                   text="Done Adding"
                   disabled={
                     addPathwayWrapperFields.PendingComponent?.length === 0

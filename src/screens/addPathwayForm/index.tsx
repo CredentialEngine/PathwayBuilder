@@ -135,10 +135,16 @@ const AddPathwayForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (savePathwayResult.error) {
-      Message({
-        description: savePathwayResult?.data[0],
-        type: 'error',
-      });
+      // Need to remove below two lines when all the issue through the endPoint resolved
+      if (!_.isEmpty(addPathwayFormFields))
+        getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
+
+      savePathwayResult?.data?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
     } else if (savePathwayResult.Valid) {
       if (!_.isEmpty(addPathwayFormFields))
         getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
@@ -196,7 +202,8 @@ const AddPathwayForm: React.FC<Props> = ({
       !_.isEmpty(addPathwayFormFields.Name) &&
         !_.isEmpty(addPathwayFormFields.Description) &&
         !_.isEmpty(addPathwayFormFields.SubjectWebpage) &&
-        isValidUrl(addPathwayFormFields.SubjectWebpage)
+        isValidUrl(addPathwayFormFields.SubjectWebpage) &&
+        addPathwayFormFields?.SubjectWebpage?.includes('http')
     );
   }, [addPathwayFormFields]);
 
@@ -442,7 +449,6 @@ const AddPathwayForm: React.FC<Props> = ({
 
     dispatch(saveAddPAthWayFormFields(addPathwayFormFields));
   };
-
   return (
     <>
       <Form className={styles.addPathwayForm}>
@@ -611,6 +617,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 (!_.isNil(addPathwayFormFields.SubjectWebpage) ||
                   addPathwayFormFields.SubjectWebpage !== '') &&
                 !isValidUrl(addPathwayFormFields.SubjectWebpage) &&
+                !addPathwayFormFields?.SubjectWebpage?.includes('http') &&
                 isTouched.SubjectWebpage
                   ? 'Subject Webpage is Required in Correct Format'
                   : null
@@ -689,7 +696,7 @@ const AddPathwayForm: React.FC<Props> = ({
           <Col span={24}>
             <Button
               type={Type.PRIMARY}
-              onClick={onAddPathwayOkHandler}
+              onClick={() => onAddPathwayOkHandler()}
               text="Next"
               disabled={!isAddPathwayFormNextButtonDisable}
             />

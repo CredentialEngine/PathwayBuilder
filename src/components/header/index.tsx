@@ -1,6 +1,6 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Col, Row, Button as AntdButton } from 'antd';
+import { Col, Row, Button as AntdButton } from 'antd';
 import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +12,7 @@ import {
 } from '../../states/actions';
 import Button from '../button';
 import { Type } from '../button/type';
+import Message from '../message';
 
 import styles from './index.module.scss';
 
@@ -32,17 +33,24 @@ const Header = (props: Props) => {
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
 
   const [loadings, setLoadings] = useState<boolean>(false);
-  const pathwayComponentData = useSelector(
-    (state: any) => state.initalReducer.pathwayComponentData
-  );
 
   useEffect(() => {
-    if (pathwayComponentData.valid) {
+    if (savePathwayResult?.valid) {
       setLoadings(false);
-    } else if (!pathwayComponentData.valid) {
+      Message({
+        description: savePathwayResult?.data,
+        type: 'success',
+      });
+    } else if (savePathwayResult?.error) {
       setLoadings(false);
+      savePathwayResult?.data?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
     }
-  }, [pathwayComponentData]);
+  }, [savePathwayResult]);
 
   useEffect(() => {
     if (savePathwayResult.error) {
@@ -56,12 +64,12 @@ const Header = (props: Props) => {
   };
 
   const conflictHandler = () => {
-    <Alert
-      message="Error"
-      description={conflictMessages}
-      type="error"
-      showIcon
-    />;
+    conflictMessages?.map((message: any) =>
+      Message({
+        description: message,
+        type: 'error',
+      })
+    );
   };
 
   const ApprovedComponent = (
@@ -89,7 +97,9 @@ const Header = (props: Props) => {
 
   useEffect(() => {
     const intervalId = setTimeout(() => {
-      dispatch(saveDataForPathwayRequest(pathwayWrapper));
+      if (pathwayWrapper.Pathway.Name !== '') {
+        dispatch(saveDataForPathwayRequest(pathwayWrapper));
+      }
     }, 30000);
 
     return () => clearTimeout(intervalId);
@@ -154,7 +164,7 @@ const Header = (props: Props) => {
               type="primary"
               size="small"
               loading={loadings}
-              onClick={savePathwayWrapper}
+              onClick={() => savePathwayWrapper()}
               key="save"
             >
               Save
