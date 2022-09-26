@@ -356,4 +356,12 @@ body {
     z-index: 1000;
     transition: all 0.3s;
   }
+  .ant-modal-confirm-content {
+    color: $primary;
+  }
+  .ant-modal-confirm-btns {
+    .ant-btn .ant-btn-primary ::before {
+      background-color: $primary;
+    }
+  }
 }
