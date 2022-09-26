@@ -14,7 +14,6 @@ import CheckBox from '../../components/formFields/checkbox';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
 import Textarea from '../../components/formFields/textarea';
-import Message from '../../components/message';
 import { saveDataForPathwayRequest } from '../../states/actions';
 import fetchProgressionList from '../../utils/fetchSearchResponse';
 import { isValidUrl } from '../../utils/object';
@@ -129,23 +128,18 @@ const AddPathwayForm: React.FC<Props> = ({
   const addPathwayFormFieldsValue = useSelector(
     (state: any) => state.addPathwayFormReducer.allFormFields
   );
+
   const savePathwayResult = useSelector(
-    (state: any) => state?.initalReducer?.pathwayComponentData
+    (state: any) => state?.initalReducer?.savePathway
   );
 
   useEffect(() => {
-    if (savePathwayResult.error) {
-      // Need to remove below two lines when all the issue through the endPoint resolved
-      if (!_.isEmpty(addPathwayFormFields))
-        getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
-
-      savePathwayResult?.data?.map((message: any) =>
-        Message({
-          description: message,
-          type: 'error',
-        })
-      );
-    } else if (savePathwayResult.Valid) {
+    // if (savePathwayResult.error) {
+    //   // Need to remove below two lines when all the issue through the endPoint resolved we only need else if part
+    //   if (!_.isEmpty(addPathwayFormFields))
+    //     getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
+    // } else
+    if (savePathwayResult.Valid) {
       if (!_.isEmpty(addPathwayFormFields))
         getAllPathwayFormFields(addPathwayFormFields, 'Pathway');
     }
@@ -203,7 +197,8 @@ const AddPathwayForm: React.FC<Props> = ({
         !_.isEmpty(addPathwayFormFields.Description) &&
         !_.isEmpty(addPathwayFormFields.SubjectWebpage) &&
         isValidUrl(addPathwayFormFields.SubjectWebpage) &&
-        addPathwayFormFields?.SubjectWebpage?.includes('http')
+        (addPathwayFormFields?.SubjectWebpage?.includes('http://') ||
+          addPathwayFormFields?.SubjectWebpage?.includes('https://'))
     );
   }, [addPathwayFormFields]);
 

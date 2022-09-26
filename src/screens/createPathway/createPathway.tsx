@@ -13,7 +13,6 @@ import styles from './createPathway.module.scss';
 
 const CreatePathway: React.FC<any> = () => {
   const dispatch = useDispatch();
-  // const result = useSelector((state: any) => state.app);
   useEffect(() => {
     dispatch(getDataForPathwayAndComponentsRequest(35));
   }, []);
