@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="4px" viewBox="0 0 16 4" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <desc>Created with Sketch.</desc>
+    <g id="Product-Catalog" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="table-list-image-handle-loading-failed-&amp;-no-image" transform="translate(-347.000000, -366.000000)">
+            <g id="icon/loading-dots" transform="translate(347.000000, 366.000000)">
+                <g id="Group-3">
+                    <circle id="Oval" fill="#9E9E9E" cx="2" cy="2" r="2"></circle>
+                    <circle id="Oval" fill="#C5C5C5" cx="8" cy="2" r="2"></circle>
+                    <circle id="Oval" fill="#E0E0E0" cx="14" cy="2" r="2"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

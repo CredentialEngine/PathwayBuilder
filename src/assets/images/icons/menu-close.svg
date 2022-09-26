@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <desc>Created with sketchtool.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/hamburger-copy">
+            <g id="Group">
+                <polygon id="Path" points="0 0 40 0 40 40 0 40"></polygon>
+            </g>
+            <g id="Group" transform="translate(4.000000, 4.000000)">
+                <polygon id="Path" points="0 0 31 0 31 31 0 31"></polygon>
+                <polygon id="Path" fill="currentColor"
+                         points="16.5 14.6114079 23.1114079 8 25 9.88859208 18.3885921 16.5 25 23.1114079 23.1114079 25 16.5 18.3885921 9.88859208 25 8 23.1114079 14.6114079 16.5 8 9.88859208 9.88859208 8"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

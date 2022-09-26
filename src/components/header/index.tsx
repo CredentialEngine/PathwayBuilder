@@ -127,6 +127,7 @@ const Header = (props: Props) => {
             <span className={styles.title}>
               {pathwayWrapper?.Pathway?.Name}
             </span>
+
             <span
               className={styles.editPathway}
               onClick={() => setIsEditPathwayFormVisible(true)}
