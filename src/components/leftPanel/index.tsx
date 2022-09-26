@@ -1,5 +1,8 @@
+import Modal from 'antd/lib/modal/Modal';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import AddComponentToPathway from '../../screens/addComponentToPathway';
 
 import { updateMappedDataRequest } from '../../states/actions';
 
@@ -26,6 +29,9 @@ const LeftPanel: React.FC<any> = ({
   const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
+  const [showAddComponentToPathway, setShowAddComponentToPathway] =
+    useState(false);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -166,9 +172,24 @@ const LeftPanel: React.FC<any> = ({
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
-        <u>Select</u>
+        <u
+          style={{ cursor: 'pointer' }}
+          onClick={() => setShowAddComponentToPathway(true)}
+        >
+          Select
+        </u>
       </div>
       <Tab {...tabVal} />
+      <Modal
+        visible={showAddComponentToPathway}
+        onCancel={() => setShowAddComponentToPathway(false)}
+        closable
+        footer={null}
+      >
+        <AddComponentToPathway
+          isVisible={(value: any) => setShowAddComponentToPathway(value)}
+        />
+      </Modal>
     </div>
   );
 };

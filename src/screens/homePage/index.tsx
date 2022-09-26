@@ -23,8 +23,6 @@ import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
 import AddConditionalComponent from '../addComponent';
 
-// import AddPathwayForm from '../addPathwayForm';
-
 import Styles from './index.module.scss';
 
 interface Props {
@@ -60,7 +58,6 @@ const HomePage: React.FC<Props> = ({
   });
   const [connection, setConnection] = useState<any>([]);
   const [constraintIcon, setConstraintIcon] = useState<boolean>(false);
-
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const [generatedUuid, setGeneratedUuid] = useState<any>({
     destinationCTID: '',
@@ -83,18 +80,18 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
-    if (updatedPathwayWrapper.PathwayComponents?.length > 1) {
-      for (let i = 1; i < updatedPathwayWrapper.PathwayComponents.length; i++) {
-        if (
-          !updatedPathwayWrapper.PathwayComponents[0]?.HasChild?.includes(
-            updatedPathwayWrapper.PathwayComponents[0 + i]?.CTID
-          )
-        )
-          updatedPathwayWrapper.PathwayComponents[0]?.HasChild.push(
-            updatedPathwayWrapper.PathwayComponents[0 + i].CTID
-          );
-      }
-    }
+    // if (updatedPathwayWrapper.PathwayComponents?.length > 1) {
+    //   for (let i = 1; i < updatedPathwayWrapper.PathwayComponents.length; i++) {
+    //     if (
+    //       !updatedPathwayWrapper.PathwayComponents[0]?.HasChild?.includes(
+    //         updatedPathwayWrapper.PathwayComponents[0 + i]?.CTID
+    //       )
+    //     )
+    //       updatedPathwayWrapper.PathwayComponents[0]?.HasChild.push(
+    //         updatedPathwayWrapper.PathwayComponents[0 + i].CTID
+    //       );
+    //   }
+    // }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setDeletedComponentCards([]);
     pathwayComponentCards?.some(
@@ -234,7 +231,7 @@ const HomePage: React.FC<Props> = ({
 
   const onDropHandler = (
     card: any,
-    isComponentTabCards: string,
+    CTID: string,
     destinationColumn: boolean,
     HasProgressionLevel: string,
     isDestinationColumnSelected: boolean
@@ -333,9 +330,7 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.start)?.classList?.remove('active');
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
-    // setVisibleConstraintCondition(true);
   };
-
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       return (
@@ -656,14 +651,6 @@ const HomePage: React.FC<Props> = ({
           visibleConstraintCondition={visibleConstraintCondition}
         />
       </Modal>
-      {/* <Modal
-        visible={isEditPathwayFormVisible}
-        onOk={onEditPathwayOkHandler}
-        onCancel={onEditPathwayCancelHandler}
-        title="Add a Pathway"
-      >
-        <AddPathwayForm />
-      </Modal> */}
     </Layout>
   );
 };

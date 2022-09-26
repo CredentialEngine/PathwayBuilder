@@ -12,6 +12,9 @@ import {
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
+  SAVE_PATHWAY_SUCCESS,
+  SAVE_PATHWAY_FAILURE,
+  ADD_COMPONENT_FROM_PATHWAY_MODAL,
 } from './actionTypes';
 
 export const getCurrentUserDataRequest = () => ({
@@ -72,5 +75,19 @@ export const approvePathwayFailure = (payload: any) => ({
 
 export const updateMappedDataRequest = (payload: any) => ({
   type: UPDATE_MAPPED_DATA_TO_SEND,
+  payload,
+});
+
+export const savePathwaySuccess = (payload: any) => ({
+  type: SAVE_PATHWAY_SUCCESS,
+  payload,
+});
+
+export const savePathwayFailure = (payload: any) => ({
+  type: SAVE_PATHWAY_FAILURE,
+  payload,
+});
+export const addComponentFromPathwayModal = (payload: any) => ({
+  type: ADD_COMPONENT_FROM_PATHWAY_MODAL,
   payload,
 });

@@ -1,4 +1,5 @@
 import {
+  SAVE_ADD_PATH_WAY_FORM_FIELDS,
   SEARCH_FOR_INDUSTRY_TYPE_CODE_FAILURE,
   SEARCH_FOR_INDUSTRY_TYPE_CODE_REQUEST,
   SEARCH_FOR_INDUSTRY_TYPE_CODE_SUCCESS,
@@ -57,5 +58,10 @@ export const getDataForOccupationTypeCodeSuccess = (payload: any) => ({
 
 export const getDataForOccupationTypeCodeFailure = (payload: any) => ({
   type: SEARCH_FOR_OCCUPATION_TYPE_CODE_FAILURE,
+  payload,
+});
+
+export const saveAddPAthWayFormFields = (payload: any) => ({
+  type: SAVE_ADD_PATH_WAY_FORM_FIELDS,
   payload,
 });

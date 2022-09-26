@@ -1,10 +1,9 @@
 import classNames from 'classnames';
 import React from 'react';
+import SVG from 'react-inlinesvg';
 
 import styles from './index.module.scss';
 import { IconNameType as IconNames } from './types';
-
-/* global HTMLElement */
 
 export type Color = 'blue' | 'grey' | 'red' | 'white';
 
@@ -16,7 +15,7 @@ export const COLOR_MAP: Record<Color, string> = {
 };
 
 interface Props {
-  name?: IconNameType;
+  name: IconNameType;
   size?: number | string;
   className?: string;
   style?: React.CSSProperties;
@@ -41,10 +40,12 @@ export const Icon: React.FC<Props> = ({
   );
   const svgSize = size || '1em';
   const svgStyle = { width: svgSize, height: svgSize, verticalAlign: 'middle' };
-  // const isRemix = (iconName: string) => ['fill', 'line'].some((status) => iconName.indexOf(status) !== -1);
-  // const iconSrc = isRemix(name)
-  //   ? require(`src/assets/remix/${name}.svg`).default
-  //   : require(`src/assets/icons/${name}.svg`).default;
+  const isRemix = (iconName: string) =>
+    ['fill', 'line'].some((status) => iconName.indexOf(status) !== -1);
+  const iconSrc = isRemix(name)
+    ? // ? require(`src/assets/images/remix/${name}.svg`).default
+      require(`../../assets/images/remix/${name}.svg`).default
+    : require(`../../assets/images/remix/${name}.svg`).default;
   return (
     <i
       className={combinedClassNames}
@@ -53,8 +54,10 @@ export const Icon: React.FC<Props> = ({
       title={tooltipMessage}
       onClick={onClick}
     >
-      {/* <SVG src={iconSrc} style={{ width: svgSize, height: svgSize, fill: 'currentColor' }} /> */}
-      <span>{name}</span>
+      <SVG
+        src={iconSrc}
+        style={{ width: svgSize, height: svgSize, fill: 'currentColor' }}
+      />
     </i>
   );
 };
