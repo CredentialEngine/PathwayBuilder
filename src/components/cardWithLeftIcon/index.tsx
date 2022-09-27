@@ -165,6 +165,9 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                 {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
                   <FontAwesomeIcon icon={faHandPointer} color={IconColor} />
                 )}
+                {Type?.toLowerCase().includes(
+                  'Extracurricular'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faSolarPanel} color={IconColor} />}
               </>
             )}
           </span>
