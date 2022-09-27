@@ -93,9 +93,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
 
     if (result.Valid) {
       yield put(savePathwaySuccess(result));
-      // yield put(getDataForPathwayAndComponentsSuccess(result));
     } else if (!result.Valid && result?.Messages?.length > 0) {
-      // yield put(getDataForPathwayAndComponentsFailure(result));
       yield put(savePathwayFailure(result));
     }
   } catch (error) {

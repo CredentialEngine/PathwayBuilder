@@ -190,6 +190,11 @@ const AddPathwayForm: React.FC<Props> = ({
       });
     }
 
+    setCheckboxvalues({
+      ...checkboxValues,
+      progressionModel: PathwayWrapper?.ProgressionModels?.length,
+    });
+
     if (PathwayWrapper?.ProgressionModels?.length > 0) {
       setSelectedProgressionModelValue(
         _.get(PathwayWrapper?.ProgressionModels, '0').Name
@@ -248,6 +253,17 @@ const AddPathwayForm: React.FC<Props> = ({
   const onCheckBoxChangeHandler = (e: any) => {
     const { name, checked } = e.target;
     setCheckboxvalues({ ...checkboxValues, [name]: checked });
+    if (name === 'progressionModel' && !checked) {
+      setAddPathwayWrapeprFields({
+        ...addPathwayWrapperFields,
+        ProgressionModels: [],
+        ProgressionLevels: [],
+      });
+      setAddPathwayFormFields({
+        ...addPathwayFormFields,
+        HasProgressionModel: [],
+      });
+    }
   };
 
   const onInputChangeHandler = (e: any) => {
@@ -310,9 +326,12 @@ const AddPathwayForm: React.FC<Props> = ({
       (level: any) => level.InProgressionModel === selectedProgressionModelCTID
     );
     const updatedAddPathwayWrapperFields = { ...addPathwayWrapperFields };
-    updatedAddPathwayWrapperFields.ProgressionModels = selectedProgressionModel;
-    updatedAddPathwayWrapperFields.ProgressionLevels = selectedProgressionLevel;
+    updatedAddPathwayWrapperFields.ProgressionModels =
+      checkboxValues.progressionModel ? selectedProgressionModel : [];
+    updatedAddPathwayWrapperFields.ProgressionLevels =
+      checkboxValues.progressionModel ? selectedProgressionLevel : [];
     setAddPathwayWrapeprFields(updatedAddPathwayWrapperFields);
+
     setSelectedProgressionModelValue(_.get(selectedProgressionModel, '0').Name);
     setAddPathwayFormFields({
       ...addPathwayFormFields,
@@ -446,6 +465,7 @@ const AddPathwayForm: React.FC<Props> = ({
       ]);
     }
   };
+
   const onAddPathwayOkHandler = () => {
     dispatch(
       saveDataForPathwayRequest({
@@ -653,10 +673,7 @@ const AddPathwayForm: React.FC<Props> = ({
           <Col span={24}>
             <CheckBox
               onChange={onCheckBoxChangeHandler}
-              checked={
-                checkboxValues.progressionModel ||
-                addPathwayFormFields?.HasProgressionModel?.length > 0
-              }
+              checked={checkboxValues.progressionModel}
               name="progressionModel"
               label="This Pathway Contains a Progression Model"
             />

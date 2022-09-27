@@ -67,9 +67,11 @@ const Header = (props: Props) => {
       setConflictMessages(savePathwayResult.data);
     }
   }, [savePathwayResult]);
+
   const onApproverHandler = () => {
-    dispatch(approvePathwayRequest('9'));
+    dispatch(approvePathwayRequest(pathwayWrapper?.Pathway?.Id));
   };
+
   const conflictHandler = () => {
     conflictMessages?.map((message: any) =>
       Message({
