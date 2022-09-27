@@ -57,7 +57,7 @@ export const Message = ({
         onClose={onClose}
       />
     ),
-    duration: linkText ? 7 : 5,
+    duration: 0 /* linkText ? 7 : 5 */,
     icon: <span />,
   });
 };
