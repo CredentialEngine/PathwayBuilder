@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="13px" height="12px" viewBox="0 0 13 12" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Group</title>
+    <g id="Dispatch" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Dispatch/CustomerRecord/Job-History" transform="translate(-353.000000, -532.000000)">
+            <g id="Group-3" transform="translate(9.000000, 503.000000)">
+                <g id="Group-8" transform="translate(344.000000, 28.000000)">
+                    <g id="Group" transform="translate(0.000000, 1.000000)">
+                        <polygon id="Path" points="0 0 13 0 13 11.1428571 0 11.1428571"></polygon>
+                        <path d="M5.41666667,1.39285714 L5.41666667,2.32142857 L2.70833333,2.32142857 L2.70833333,8.82142857 L10.2916667,8.82142857 L10.2916667,6.5 L11.375,6.5 L11.375,9.28571429 C11.375,9.54213221 11.1324876,9.75 10.8333333,9.75 L2.16666667,9.75 C1.86751243,9.75 1.625,9.54213221 1.625,9.28571429 L1.625,1.85714286 C1.625,1.60072494 1.86751243,1.39285714 2.16666667,1.39285714 L5.41666667,1.39285714 Z M9.52575,2.32142857 L7.04166667,2.32142857 L7.04166667,1.39285714 L11.375,1.39285714 L11.375,5.10714286 L10.2916667,5.10714286 L10.2916667,2.97792857 L6.5,6.22792857 L5.73408333,5.57142857 L9.52575,2.32142857 Z"
+                              id="Shape" fill="#1D3BE6" fill-rule="nonzero"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

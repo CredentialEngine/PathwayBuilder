@@ -8,7 +8,7 @@ import { Color, COLOR_MAP } from '../icon';
 
 import styles from './index.module.scss';
 
-type Type =
+export type Type =
   | 'primary'
   | 'secondary'
   | 'outline'

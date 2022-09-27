@@ -11,6 +11,7 @@ import InputBox from '../../components/formFields/inputBox';
 import RadioButton from '../../components/formFields/radio';
 import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
 import Tab, { TabPane } from '../../components/tab';
+import { addComponentFromPathwayModal } from '../../states/actions';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
 import { getAllProxyForResourcesRequest } from '../preSelectResourceCreatePath/state/actions';
 
@@ -21,24 +22,16 @@ export enum ComponentToPathway {
   AddPlaceholder = 'Add a Placeholder',
 }
 
-const AddComponentToPathway = () => {
-  const propsChildrenData = [];
-  const tab = [
-    {
-      key: ComponentToPathway.DefineComponent,
-      name: ComponentToPathway.DefineComponent,
-    },
-    {
-      key: ComponentToPathway.AddPlaceholder,
-      name: ComponentToPathway.AddPlaceholder,
-    },
-  ];
+const AddComponentToPathway = (props: any) => {
+  const { isVisible } = props;
+
+  const dispatch = useDispatch();
+
   const allProxyForResourcesComponent = useSelector(
     (state: any) => state.preSelectProxyResources.allProxyForResourcesComponent
   );
-  const dispatch = useDispatch();
-  const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
-    new Array<any>([])
+  const allComponentTabCards = useSelector(
+    (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
 
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
@@ -53,21 +46,22 @@ const AddComponentToPathway = () => {
       },
     ],
   });
-
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
   const [selectedResource, setSelectedResource] = useState<any>([]);
-
-  const allComponentTabCards = useSelector(
-    (state: any) => state.leftPanelReducer.allLeftPathwayComponent
+  const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
+    new Array<any>([])
   );
-
-  useEffect(() => {
-    dispatch(getAllProxyForResourcesRequest(searchFilterValue));
-  }, [searchFilterValue]);
+  const [selectedComponent, setSelectedComponent] = useState(
+    allComponentTypes[0]?.label ?? ''
+  );
 
   useEffect(() => {
     dispatch(getLeftPanelPathwayComponentRequest());
   }, []);
+
+  useEffect(() => {
+    dispatch(getAllProxyForResourcesRequest(searchFilterValue));
+  }, [searchFilterValue]);
 
   useEffect(() => {
     if (allComponentTabCards?.data?.length > 0) {
@@ -94,6 +88,25 @@ const AddComponentToPathway = () => {
     setSelectedResource(tempSelectedResource);
   };
 
+  const onClick = () => {
+    dispatch(addComponentFromPathwayModal(selectedResource));
+    setSelectedResource([]);
+    setSelectedComponent('');
+    isVisible(false);
+  };
+
+  const propsChildrenData = [];
+  const tab = [
+    {
+      key: ComponentToPathway.DefineComponent,
+      name: ComponentToPathway.DefineComponent,
+    },
+    {
+      key: ComponentToPathway.AddPlaceholder,
+      name: ComponentToPathway.AddPlaceholder,
+    },
+  ];
+
   const propsChildren = [
     {
       key: ComponentToPathway.DefineComponent,
@@ -101,7 +114,10 @@ const AddComponentToPathway = () => {
       children: (
         <div className={Styles.addComponentToPathway}>
           <Form.Item label="Component Type" name="Component Type">
-            <Dropdown defaultValue="Course Component">
+            <Dropdown
+              onChange={(e: any) => setSelectedComponent(e)}
+              defaultValue={selectedComponent}
+            >
               {allComponentTypes?.map((item: any, idx: number) => (
                 <Options key={idx} value={item?.label}>
                   {item?.label}
@@ -115,11 +131,6 @@ const AddComponentToPathway = () => {
               <RadioButton label="All my resource" />
               <RadioButton label="All resource" />
             </p>
-            {/* <Dropdown placeholder="Start typing to find a component">
-              <Options value="item1">item1</Options>
-              <Options value="item2">item2</Options>
-              <Options value="item3">item3</Options>
-            </Dropdown> */}
             <AutoCompleteBox
               {...SelectAutoCompleteProps(
                 allProxyResourcesCard,
@@ -138,7 +149,7 @@ const AddComponentToPathway = () => {
           <br />
           <br />
           <hr />
-          <Button text="Add New Component" type="primary" />
+          <Button onClick={onClick} text="Add New Component" type="primary" />
         </div>
       ),
     },

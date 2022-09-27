@@ -7,6 +7,8 @@ import {
   faGraduationCap,
   faCube,
   faCartShopping,
+  faAtom,
+  faSolarPanel,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
@@ -33,7 +35,7 @@ export interface Props {
   data?: any;
   IconName?: any;
   isComponentTab?: boolean;
-  setLeftpanelSelectedElem: (a: HTMLElement) => void;
+  setLeftpanelSelectedElem?: (a: HTMLElement) => void;
 }
 
 const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
@@ -57,7 +59,8 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
 
   const onDragStart = (e: any) => {
     const target = e.target;
-    setLeftpanelSelectedElem(e.target);
+    !!setLeftpanelSelectedElem && setLeftpanelSelectedElem(e.target);
+
     e.dataTransfer.setData('card_id', JSON.stringify(props.data));
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(true);
     setTimeout(() => {
@@ -107,7 +110,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                 ) && <FontAwesomeIcon icon={faCube} color={IconColor} />}
                 {data?.URI?.toLowerCase().includes(
                   'CocurricularComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                ) && <FontAwesomeIcon icon={faAtom} color={IconColor} />}
                 {data?.URI?.toLowerCase().includes(
                   'CompetencyComponent'.toLowerCase()
                 ) && <FontAwesomeIcon icon={faGear} color={IconColor} />}
@@ -116,7 +119,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                 ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
                 {data?.URI?.toLowerCase().includes(
                   'ExtracurricularComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                ) && <FontAwesomeIcon icon={faSolarPanel} color={IconColor} />}
                 {data?.URI?.toLowerCase().includes(
                   'JobComponent'.toLowerCase()
                 ) && (
@@ -141,7 +144,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   <FontAwesomeIcon icon={faCubes} color={IconColor} />
                 )}
                 {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faCubes} color={IconColor} />
+                  <FontAwesomeIcon icon={faCube} color={IconColor} />
                 )}
                 {Type?.toLowerCase().includes(
                   'competency'.toLocaleLowerCase()
@@ -150,8 +153,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
                 )}
                 {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+                  <FontAwesomeIcon icon={faAtom} color={IconColor} />
                 )}
+                {Type?.toLowerCase().includes(
+                  'Extracurricular'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faSolarPanel} color={IconColor} />}
               </>
             )}
           </span>

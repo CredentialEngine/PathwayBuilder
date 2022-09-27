@@ -9,6 +9,9 @@ import {
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_SUCCESS,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
+  SAVE_PATHWAY_SUCCESS,
+  SAVE_PATHWAY_FAILURE,
+  ADD_COMPONENT_FROM_PATHWAY_MODAL,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -85,6 +88,11 @@ const initState: RootState = {
     data: null,
     valid: false,
   },
+  savePathway: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
 };
 
 export default (state = initState, action: { type: string; payload: any }) => {
@@ -136,14 +144,27 @@ export default (state = initState, action: { type: string; payload: any }) => {
         pathwayComponentData: {
           ...state.pathwayComponentData,
           loading: false,
-          data: action.payload.Data,
+          data: action.payload.Messages,
           valid: action?.payload?.Valid,
+          error: true,
         },
       };
     case UPDATE_MAPPED_DATA_TO_SEND:
       return {
         ...state,
         mappedData: action.payload,
+      };
+
+    case ADD_COMPONENT_FROM_PATHWAY_MODAL:
+      return {
+        ...state,
+        mappedData: {
+          ...state?.mappedData,
+          PendingComponent: [
+            ...state?.mappedData?.PendingComponent,
+            ...action?.payload,
+          ],
+        },
       };
     case PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST:
       return {
@@ -171,6 +192,27 @@ export default (state = initState, action: { type: string; payload: any }) => {
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
+        },
+      };
+    case SAVE_PATHWAY_SUCCESS:
+      return {
+        ...state,
+        savePathway: {
+          ...state.savePathway,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case SAVE_PATHWAY_FAILURE:
+      return {
+        ...state,
+        savePathway: {
+          ...state.savePathway,
+          loading: false,
+          data: action.payload.Messages,
+          valid: action?.payload?.Valid,
+          error: true,
         },
       };
     default:

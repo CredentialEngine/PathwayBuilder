@@ -1,4 +1,5 @@
 import {
+  SAVE_ADD_PATH_WAY_FORM_FIELDS,
   SEARCH_FOR_INDUSTRY_TYPE_CODE_FAILURE,
   SEARCH_FOR_INDUSTRY_TYPE_CODE_REQUEST,
   SEARCH_FOR_OCCUPATION_TYPE_CODE_FAILURE,
@@ -32,6 +33,7 @@ const initState: RootState = {
     data: null,
     valid: false,
   },
+  allFormFields: null,
 };
 
 export default (state = initState, action: { type: string; payload: any }) => {
@@ -131,6 +133,11 @@ export default (state = initState, action: { type: string; payload: any }) => {
           data: action.payload,
           valid: action?.payload?.Valid,
         },
+      };
+    case SAVE_ADD_PATH_WAY_FORM_FIELDS:
+      return {
+        ...state,
+        allFormFields: action.payload,
       };
     default:
       return {

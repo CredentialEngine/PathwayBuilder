@@ -19,4 +19,9 @@ export type RootState = {
     data: any;
     valid: boolean;
   };
+  savePathway: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
 };
