@@ -90,6 +90,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       },
       data: JSON.stringify(payload.payload),
     });
+
     if (result.Valid) {
       yield put(savePathwaySuccess(result));
       // yield put(getDataForPathwayAndComponentsSuccess(result));

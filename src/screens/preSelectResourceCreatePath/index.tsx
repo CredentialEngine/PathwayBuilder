@@ -11,19 +11,28 @@ import _, { noop } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Button from '../../components/button';
+
+import { Type } from '../../components/button/type';
+
 import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import CheckBox from '../../components/formFields/checkbox';
 import SearchBox from '../../components/formFields/searchBox';
 import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
+import { updateMappedDataRequest } from '../../states/actions';
 
 import Styles from './index.module.scss';
 import { getAllProxyForResourcesRequest } from './state/actions';
 
 export interface Props {
-  getAllPathwayFormFields: (a: any, b: string) => void;
+  setIsPreSelectedCreateResourceVisible: (a: boolean) => void;
+  addPathwayWrapperFields: any;
+  setIsAddPathwayDestinationVisible: (a: boolean) => void;
 }
 const PreSelectResourceCreatePath: React.FC<Props> = ({
-  getAllPathwayFormFields,
+  setIsPreSelectedCreateResourceVisible,
+  addPathwayWrapperFields,
+  setIsAddPathwayDestinationVisible,
 }) => {
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
@@ -55,7 +64,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   } = appState || {};
 
   useEffect(() => {
-    if (PendingComponent.length > 0) {
+    if (PendingComponent?.length > 0) {
       setSelectedResource(PendingComponent);
     }
   }, [PendingComponent]);
@@ -110,11 +119,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     ];
     setSearchFilterValue(updatedSearchValue);
   };
-
   useEffect(() => {
-    if (selectedResource.length > 0)
-      getAllPathwayFormFields(selectedResource, 'PendingComponent');
-
     if (allComponentTabCards?.data?.length > 0) {
       const allTypesOfComponentCards = allComponentTabCards.data.map(
         (card: any, index: any) => ({ key: index, label: card.URI })
@@ -143,6 +148,21 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     if (allProxyResourcesCard.length > 0) {
       setDisplaySearchContainer(true);
     }
+  };
+
+  const onPathwaySaveHandler = () => {
+    setIsPreSelectedCreateResourceVisible(false);
+    setIsAddPathwayDestinationVisible(true);
+    dispatch(
+      updateMappedDataRequest({
+        ...addPathwayWrapperFields,
+        PendingComponent: selectedResource,
+      })
+    );
+  };
+
+  const onPreSelectResourceCancelHandler = () => {
+    setIsPreSelectedCreateResourceVisible(false);
   };
 
   return (
@@ -256,6 +276,21 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
             )}
           </Card>
         </Col>
+        <Row>
+          <div style={{ display: 'flex', margin: '40px 0px 10px 10px' }}>
+            <Button
+              type={Type.PRIMARY}
+              onClick={() => onPathwaySaveHandler()}
+              text="Done Adding"
+              disabled={selectedResource?.length === 0}
+            />
+            <Button
+              type={Type.CANCEL}
+              onClick={onPreSelectResourceCancelHandler}
+              text="Skip"
+            />
+          </div>
+        </Row>
       </Row>
     </Form>
   );

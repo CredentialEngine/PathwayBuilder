@@ -80,18 +80,6 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
-    // if (updatedPathwayWrapper.PathwayComponents?.length > 1) {
-    //   for (let i = 1; i < updatedPathwayWrapper.PathwayComponents.length; i++) {
-    //     if (
-    //       !updatedPathwayWrapper.PathwayComponents[0]?.HasChild?.includes(
-    //         updatedPathwayWrapper.PathwayComponents[0 + i]?.CTID
-    //       )
-    //     )
-    //       updatedPathwayWrapper.PathwayComponents[0]?.HasChild.push(
-    //         updatedPathwayWrapper.PathwayComponents[0 + i].CTID
-    //       );
-    //   }
-    // }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setDeletedComponentCards([]);
     pathwayComponentCards?.some(
@@ -547,7 +535,10 @@ const HomePage: React.FC<Props> = ({
 
   return (
     <Layout className={Styles.centralPannel}>
-      <Header setIsEditPathwayFormVisible={setIsEditPathwayFormVisible} />
+      <Header
+        setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
+        isLeftPanelVisible={isLeftPanelVisible}
+      />
       {!!isLeftPanelVisible && (
         <Layout style={{ display: 'flex', flexDirection: 'row' }}>
           <Sider trigger={null} collapsible collapsed={collapsed}>

@@ -9,6 +9,7 @@ import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 import {
   approvePathwayRequest,
   saveDataForPathwayRequest,
+  savePathwaySuccess,
 } from '../../states/actions';
 import Button from '../button';
 import { Type } from '../button/type';
@@ -18,6 +19,7 @@ import styles from './index.module.scss';
 
 interface Props {
   setIsEditPathwayFormVisible: (a: boolean) => void;
+  isLeftPanelVisible: boolean;
 }
 const Header = (props: Props) => {
   const { setIsEditPathwayFormVisible } = props;
@@ -41,6 +43,17 @@ const Header = (props: Props) => {
         description: 'The Pathway has been saved successfully',
         type: 'success',
       });
+      setHasConflicts(false);
+      setConflictMessages(savePathwayResult.data);
+      dispatch(
+        savePathwaySuccess({
+          loading: false,
+          data: [],
+          PathwayId: savePathwayResult?.PathwayId,
+          valid: false,
+          error: false,
+        })
+      );
     } else if (savePathwayResult?.error) {
       setLoadings(false);
       savePathwayResult?.data?.map((message: any) =>
@@ -90,15 +103,19 @@ const Header = (props: Props) => {
     </div>
   );
 
-  useEffect(() => {
-    const intervalId = setTimeout(() => {
-      if (pathwayWrapper.Pathway.Name !== '') {
-        dispatch(saveDataForPathwayRequest(pathwayWrapper));
-      }
-    }, 30000);
+  // useEffect(() => {
+  //   if (pathwayWrapper.Pathway.Name !== '' && isLeftPanelVisible) {
+  //     const intervalId = setTimeout(() => {
+  //       console.log('hit the api ');
+  //       dispatch(saveDataForPathwayRequest(pathwayWrapper));
+  //     }, 30000);
 
-    return () => clearTimeout(intervalId);
-  }, [pathwayWrapper]);
+  //     if (isLeftPanelVisible) {
+  //       return () => clearTimeout(intervalId);
+  //     }
+  //     return () => clearTimeout(intervalId);
+  //   }
+  // }, [pathwayWrapper]);
 
   const savePathwayWrapper = () => {
     setLoadings(true);

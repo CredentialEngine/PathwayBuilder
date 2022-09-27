@@ -16,15 +16,11 @@ import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
-import {
-  getCurrentUserDataRequest,
-  saveDataForPathwayRequest,
-  updateMappedDataRequest,
-} from './states/actions';
+import { getCurrentUserDataRequest } from './states/actions';
 
 const App = () => {
   const dispatch = useDispatch();
-  const appState = useSelector((state: any) => state?.initalReducer);
+  const pathwayWrapper = useSelector((state: any) => state?.initalReducer);
   const [addPathwayWrapperFields, setAddPathwayWrapeprFields] = useState<any>(
     new PathwayWrapperEntity()
   );
@@ -52,9 +48,28 @@ const App = () => {
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
     useState<boolean>(false);
+
   const {
     currentUserData: { data: userData },
-  } = appState || {};
+    mappedData: pathwayWrapperData,
+  } = pathwayWrapper || {};
+
+  const savePathwayResult = useSelector(
+    (state: any) => state?.initalReducer?.savePathway
+  );
+
+  useEffect(() => {
+    /* On Save Pathway We are getting PathwayId as a response so here we are set PathwayId in dataModel so 
+     we can hit save endPoint on this same PathwayId */
+
+    if (savePathwayResult.valid) {
+      const updatedPathwayWrapperData = { ...pathwayWrapperData };
+      const updatedPathwayData = { ...updatedPathwayWrapperData.Pathway };
+      updatedPathwayData.Id = savePathwayResult.PathwayId;
+      updatedPathwayWrapperData.Pathway = updatedPathwayData;
+      setAddPathwayWrapeprFields(updatedPathwayWrapperData);
+    }
+  }, [savePathwayResult]);
 
   useEffect(() => {
     dispatch(getCurrentUserDataRequest());
@@ -120,41 +135,22 @@ const App = () => {
     });
   };
 
-  const onPreSelectResourceCancelHandler = () => {
-    setIsPreSelectedCreateResourceVisible(false);
-  };
-
-  const getAllPathwayFormFields = (value: any, name: string) => {
-    setAddPathwayWrapeprFields({ ...addPathwayWrapperFields, [name]: value });
-    setIsAddPathwayFormVisible(false);
-    setIsEditPathwayFormVisible(false);
-    setIsPreSelectedCreateResourceVisible(true);
-  };
-
-  const onPathwaySaveHandler = () => {
-    setIsPreSelectedCreateResourceVisible(false);
-    setIsAddPathwayDestinationVisible(true);
-    dispatch(saveDataForPathwayRequest(addPathwayWrapperFields));
-    dispatch(updateMappedDataRequest(addPathwayWrapperFields));
-  };
   return (
     <div>
       <MainContainer>
         <HomePage
           isLeftPanelVisible={
-            // true
             !isrightPanelDrawerVisible &&
             !isCreatePathwayVisible &&
             !isAddPathwayFormVisible &&
-            // !isAddPathwayDestinationVisible &&
             !isSelectOrganizationsVisble &&
-            !isPreSelectedCreateResourceVisible
+            !isPreSelectedCreateResourceVisible &&
+            !isEditPathwayFormVisible
               ? true
               : false
           }
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
-          // setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
         />
         <Modal visible={false} title="" footer={[]} width={650}>
           <AddConditionalComponent />
@@ -178,39 +174,30 @@ const App = () => {
           footer={[]}
         >
           <AddPathwayForm
-            getAllPathwayFormFields={getAllPathwayFormFields}
             isEditPathwayFormVisible={isEditPathwayFormVisible}
             addPathwayWrapperFields={addPathwayWrapperFields}
             setAddPathwayWrapeprFields={setAddPathwayWrapeprFields}
-            isAddPathwayFormVisible={isAddPathwayFormVisible}
+            setIsPreSelectedCreateResourceVisible={
+              setIsPreSelectedCreateResourceVisible
+            }
+            setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
+            setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           />
         </Modal>
         <Modal
           visible={isPreSelectedCreateResourceVisible}
           width="650px"
-          footer={[
-            <>
-              <div style={{ display: 'flex' }}>
-                <Button
-                  type={Type.PRIMARY}
-                  onClick={() => onPathwaySaveHandler()}
-                  text="Done Adding"
-                  disabled={
-                    addPathwayWrapperFields.PendingComponent?.length === 0
-                  }
-                />
-                <Button
-                  type={Type.CANCEL}
-                  onClick={onPreSelectResourceCancelHandler}
-                  text="Skip"
-                />
-              </div>
-            </>,
-          ]}
+          footer={[]}
           title="Pre-Select Resources to Create Your Pathway"
         >
           <PreSelectResourceCreatePath
-            getAllPathwayFormFields={getAllPathwayFormFields}
+            setIsPreSelectedCreateResourceVisible={
+              setIsPreSelectedCreateResourceVisible
+            }
+            addPathwayWrapperFields={addPathwayWrapperFields}
+            setIsAddPathwayDestinationVisible={
+              setIsAddPathwayDestinationVisible
+            }
           />
         </Modal>
         <CustomDrawer
