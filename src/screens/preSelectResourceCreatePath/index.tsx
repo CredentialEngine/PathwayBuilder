@@ -194,7 +194,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
           />
           <CheckBox
             name="progressionModel"
-            label="Only resources published by my organization"
+            label="Only components published by my organization"
             className=" fontweightlight checkboxlabel"
             value={checkboxForOrganisation}
             onChange={() =>
