@@ -17,18 +17,18 @@
 }
 
 .success {
-  background-color: $green1;
-  border: 1px solid $green2;
+  background-color: $white-color;
+  border: 1px solid $selection;
 }
 
 .error {
-  background-color: $red1;
-  border: 1px solid $red3;
+  background-color: $white-color;
+  border: 1px solid $red4;
 }
 
 .warning {
-  background-color: $orange1;
-  border: 1px solid $orange2;
+  background-color: $white-color;
+  border: 1px solid $orange;
 }
 
 .warningIcon {
