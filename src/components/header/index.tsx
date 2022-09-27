@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
+import HelpAddingComponent from '../../screens/helpAddingComponent';
 import {
   approvePathwayRequest,
   saveDataForPathwayRequest,
@@ -14,6 +15,7 @@ import {
 import Button from '../button';
 import { Type } from '../button/type';
 import Message from '../message';
+import Modal from '../modal';
 
 import styles from './index.module.scss';
 
@@ -35,6 +37,8 @@ const Header = (props: Props) => {
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
 
   const [loadings, setLoadings] = useState<boolean>(false);
+  const [visibleHelpAddingComponent, setHelpAddingComponent] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (savePathwayResult?.valid) {
@@ -123,57 +127,60 @@ const Header = (props: Props) => {
   };
 
   return (
-    <div id="header" className={styles.container + ' header-container'}>
-      <div className={styles.productImgLayout + ' logowrapper'}>
-        <Row align="middle" style={{ width: '100%' }}>
-          <Col span={4}>
-            <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
-          </Col>
-          <Col span={20}>
-            <Row className={styles.createNewContainer}>
-              <Col span={24}>
-                <span className={styles.newPathway}>Create a New Pathway</span>
-              </Col>
-              <Col span={24}>
-                <span className={styles.foundation}>
-                  {pathwayWrapper?.Pathway?.Organization?.Name}
-                </span>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </div>
-      <div className={styles.titleDescriptionContainer + ' headermiddle'}>
-        <div className={styles.headerCenter}>
-          <div className={styles.titleContainer}>
-            <span className={styles.title}>
-              {pathwayWrapper?.Pathway?.Name}
-            </span>
+    <>
+      <div id="header" className={styles.container + ' header-container'}>
+        <div className={styles.productImgLayout + ' logowrapper'}>
+          <Row align="middle" style={{ width: '100%' }}>
+            <Col span={4}>
+              <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
+            </Col>
+            <Col span={20}>
+              <Row className={styles.createNewContainer}>
+                <Col span={24}>
+                  <span className={styles.newPathway}>
+                    Create a New Pathway
+                  </span>
+                </Col>
+                <Col span={24}>
+                  <span className={styles.foundation}>
+                    {pathwayWrapper?.Pathway?.Organization?.Name}
+                  </span>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
+        <div className={styles.titleDescriptionContainer + ' headermiddle'}>
+          <div className={styles.headerCenter}>
+            <div className={styles.titleContainer}>
+              <span className={styles.title}>
+                {pathwayWrapper?.Pathway?.Name}
+              </span>
 
-            <span
-              className={styles.editPathway}
-              onClick={() => setIsEditPathwayFormVisible(true)}
-            >
-              Edit Pathway Details
-            </span>
-          </div>
-          <div className={styles.saveButtonWrapper}>
-            <Button
-              type={Type.LINK}
-              onClick={noop}
-              text="Exit Without Saving"
-            />
-            <AntdButton
-              className={styles.saveButtonSpecification}
-              type="primary"
-              size="small"
-              loading={loadings}
-              onClick={() => savePathwayWrapper()}
-              key="save"
-            >
-              Save
-            </AntdButton>
-            {/*
+              <span
+                className={styles.editPathway}
+                onClick={() => setIsEditPathwayFormVisible(true)}
+              >
+                Edit Pathway Details
+              </span>
+            </div>
+            <div className={styles.saveButtonWrapper}>
+              <Button
+                type={Type.LINK}
+                onClick={noop}
+                text="Exit Without Saving"
+              />
+              <AntdButton
+                className={styles.saveButtonSpecification}
+                type="primary"
+                size="small"
+                loading={loadings}
+                onClick={() => savePathwayWrapper()}
+                key="save"
+              >
+                Save
+              </AntdButton>
+              {/*
             Commenting this code for now,
             may be in future we need this
             <Button
@@ -182,7 +189,17 @@ const Header = (props: Props) => {
               onClick={() => setHasPublishVisible(!hasPublishVisible)}
             />
             */}
+            </div>
           </div>
+        </div>
+        <div
+          className={styles.helpContainer + ' headerright'}
+          onClick={() => setHelpAddingComponent(true)}
+        >
+          <FontAwesomeIcon
+            icon={faCircleQuestion}
+            className={styles.imgDimensions}
+          />
         </div>
 
         <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
@@ -193,7 +210,16 @@ const Header = (props: Props) => {
           className={styles.imgDimensions}
         />
       </div>
-    </div>
+      <Modal
+        visible={visibleHelpAddingComponent}
+        title=""
+        footer={[]}
+        width={750}
+        onCancel={() => setHelpAddingComponent(false)}
+      >
+        <HelpAddingComponent />
+      </Modal>
+    </>
   );
 };
 
