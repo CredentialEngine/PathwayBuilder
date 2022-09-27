@@ -113,7 +113,6 @@ const Header = (props: Props) => {
     setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
-
   return (
     <>
       <div id="header" className={styles.container + ' header-container'}>
