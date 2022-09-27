@@ -267,6 +267,9 @@ const AddPathwayForm: React.FC<Props> = ({
   const onProgressionModelSearchHandler = (e: any) => {
     setSearchFilterValue({ ...searchFilterValue, keywords: e });
   };
+  const onProgressionModelHandler = (e: any) => {
+    setSelectedProgressionModelValue(e);
+  };
 
   useEffect(() => {
     if (searchFilterValue.keywords !== '') {
@@ -661,10 +664,12 @@ const AddPathwayForm: React.FC<Props> = ({
                     'Name',
                     'Name'
                   )}
+                  allowClear
                   value={selectedProgressionModelValue}
                   placeholder="Start typing to choose a Progression Model"
                   onSearch={onProgressionModelSearchHandler}
                   onSelect={(e: any) => onProgressionModelSelectHandler(e)}
+                  onChange={(e: any) => onProgressionModelHandler(e)}
                 />
               </Form.Item>
             </Col>
