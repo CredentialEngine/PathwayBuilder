@@ -78,7 +78,12 @@ const RightPanel: React.FC<Props> = ({
             </span>
           </Row>
           <Row>
-            <Button className={styles.button} onClick={noop} text="Replace" />
+            <Button
+              style={{ display: 'none' }}
+              className={styles.button}
+              onClick={noop}
+              text="Replace"
+            />
           </Row>
         </Row>
         <Row className={styles.infoContainer}>

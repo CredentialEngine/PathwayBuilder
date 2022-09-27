@@ -31,15 +31,12 @@ const Header = (props: Props) => {
   const savePathwayResult = useSelector(
     (state: any) => state?.initalReducer?.savePathway
   );
-
   const dispatch = useDispatch();
   const [hasConflicts, setHasConflicts] = useState<boolean>(false);
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
-
   const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
-
   useEffect(() => {
     if (savePathwayResult?.valid) {
       setLoadings(false);
@@ -70,11 +67,9 @@ const Header = (props: Props) => {
       setConflictMessages(savePathwayResult.data);
     }
   }, [savePathwayResult]);
-
   const onApproverHandler = () => {
     dispatch(approvePathwayRequest('9'));
   };
-
   const conflictHandler = () => {
     conflictMessages?.map((message: any) =>
       Message({
@@ -83,7 +78,6 @@ const Header = (props: Props) => {
       })
     );
   };
-
   const ApprovedComponent = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -106,26 +100,19 @@ const Header = (props: Props) => {
       </div>
     </div>
   );
-
   // useEffect(() => {
   //   if (pathwayWrapper.Pathway.Name !== '' && isLeftPanelVisible) {
   //     const intervalId = setTimeout(() => {
   //       console.log('hit the api ');
   //       dispatch(saveDataForPathwayRequest(pathwayWrapper));
   //     }, 30000);
-
-  //     if (isLeftPanelVisible) {
   //       return () => clearTimeout(intervalId);
-  //     }
-  //     return () => clearTimeout(intervalId);
   //   }
   // }, [pathwayWrapper]);
-
   const savePathwayWrapper = () => {
     setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
-
   return (
     <>
       <div id="header" className={styles.container + ' header-container'}>
@@ -156,7 +143,6 @@ const Header = (props: Props) => {
               <span className={styles.title}>
                 {pathwayWrapper?.Pathway?.Name}
               </span>
-
               <span
                 className={styles.editPathway}
                 onClick={() => setIsEditPathwayFormVisible(true)}
@@ -191,6 +177,8 @@ const Header = (props: Props) => {
             */}
             </div>
           </div>
+
+          <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
         </div>
         <div
           className={styles.helpContainer + ' headerright'}
@@ -201,14 +189,6 @@ const Header = (props: Props) => {
             className={styles.imgDimensions}
           />
         </div>
-
-        <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
-      </div>
-      <div className={styles.helpContainer + ' headerright'}>
-        <FontAwesomeIcon
-          icon={faCircleQuestion}
-          className={styles.imgDimensions}
-        />
       </div>
       <Modal
         visible={visibleHelpAddingComponent}
@@ -222,5 +202,4 @@ const Header = (props: Props) => {
     </>
   );
 };
-
 export default Header;
