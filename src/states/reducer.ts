@@ -200,8 +200,10 @@ export default (state = initState, action: { type: string; payload: any }) => {
         savePathway: {
           ...state.savePathway,
           loading: false,
-          data: action.payload.Data,
+          data: action.payload.Messages,
+          PathwayId: action.payload.PathwayId,
           valid: action?.payload?.Valid,
+          error: false,
         },
       };
     case SAVE_PATHWAY_FAILURE:

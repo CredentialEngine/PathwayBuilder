@@ -4,7 +4,6 @@ import { Col, Form, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { ContraintComponent } from './constants';
 
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
@@ -24,7 +23,7 @@ import {
 // const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
 interface Props {
-  visibleConstraintConditionProp: (bool: boolean) => void;
+  visibleConstraintConditionProp?: (bool: boolean) => void;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
@@ -42,9 +41,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const [requiredNumber, setRequiredNumber] = useState<string>('');
 
   const dispatch = useDispatch();
-  // const onFinish = (values: any) => {
-  //   console.log('Received values of form:', values);
-  // };
+
   const searchLeftConstraintOperand = (value: any) => {
     setleftSourceData(value);
   };
@@ -120,14 +117,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, []);
 
   const saveCondition = () => {
-    visibleConstraintConditionProp(false);
-
-    // if (!leftSourcedata?.length)
-    //   setErrorField([PLEASE_SELECT_LEFT_SOURCE_VALUE]);
-    // else if (!selectedComparators) setErrorField([PLEASE_SELECT_COMPARATOR]);
-    // else if (!rightSourcedata?.length)
-    //   setErrorField([PLEASE_SELECT_RIGHT_SOURCE_VALUE]);
-    // else {
+    !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
     setErrorField(['']);
     const saveCondition = {
       rowid: 'asdasdasdasd',
@@ -146,7 +136,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       ],
     };
     saveCondition;
-    // }
   };
 
   return (

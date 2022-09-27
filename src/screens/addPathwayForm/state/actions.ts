@@ -60,7 +60,7 @@ export const getDataForOccupationTypeCodeFailure = (payload: any) => ({
   type: SEARCH_FOR_OCCUPATION_TYPE_CODE_FAILURE,
   payload,
 });
-
+// Need to remove this method
 export const saveAddPAthWayFormFields = (payload: any) => ({
   type: SAVE_ADD_PATH_WAY_FORM_FIELDS,
   payload,
