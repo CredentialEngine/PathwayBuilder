@@ -93,7 +93,7 @@ const Header = (props: Props) => {
           type={Type.PRIMARY}
           className={styles.approveButtonSpecification}
           onClick={onApproverHandler}
-          iconOnTop={true}
+          iconOnTop={conflictMessages.length > 0 ? true : false}
           disabled={conflictMessages.length > 0}
           text="Approve"
         />

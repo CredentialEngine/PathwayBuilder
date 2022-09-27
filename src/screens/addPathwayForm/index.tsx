@@ -688,25 +688,7 @@ const AddPathwayForm: React.FC<Props> = ({
               </Form.Item>
             </Col>
           )}
-          <Divider className={styles.divider} />
-          <Col span={24}>
-            <CheckBox
-              onChange={onCheckBoxChangeHandler}
-              checked={checkboxValues.conceptSchema}
-              name="conceptSchema"
-              label="This Pathway Contains a Concept Schemes"
-            />
-          </Col>
-          <Divider className={styles.divider} />
-          <Col span={24}>
-            <CheckBox
-              onChange={onCheckBoxChangeHandler}
-              checked={checkboxValues.furtherDetails}
-              name="furtherDetails"
-              label="This Pathway Contains further Details"
-            />
-          </Col>
-          <Divider className={styles.divider} />
+
           <Col span={24}>
             <Button
               type={Type.PRIMARY}
