@@ -40,8 +40,10 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [displaySearchContainer, setDisplaySearchContainer] =
     React.useState(false);
   const [selectedResource, setSelectedResource] = useState<any>([]);
+  const [selectedAlphaResource, setSelectedAlphaResource] = useState<any>([]);
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
   const [dropDownRef, setDropDownRef] = useState<string>('');
+  const [alphabetical, setAlphabetical] = useState<string>('');
   const [checkboxForOrganisation, setCheckboxForOrganisation] =
     useState<boolean>(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -106,6 +108,16 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       items={allComponentTypes}
     />
   );
+  const alphabeticalMenu = [
+    {
+      label: 'Alphabetical',
+      key: '0',
+    },
+    {
+      label: 'Recently Added',
+      key: '1',
+    },
+  ];
 
   const onMenuClickHandler = (e: any) => {
     const selectedCardType = allComponentTypes.filter(
@@ -191,6 +203,25 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     }
   }, [checkboxForOrganisation]);
 
+  const arrangeAlphabetically = (value: string) => {
+    const clonedSelectedResource = _.cloneDeep(selectedResource);
+    if (value == 'alphabetical') {
+      clonedSelectedResource?.sort((a: any, b: any) =>
+        a.Name.localeCompare(b.Name)
+      );
+      setSelectedAlphaResource(clonedSelectedResource);
+    } else {
+      setSelectedResource(selectedResource);
+      setSelectedAlphaResource([]);
+    }
+  };
+
+  useEffect(() => {
+    Number(alphabetical) === 0
+      ? arrangeAlphabetically('alphabetical')
+      : arrangeAlphabetically('recentAdded');
+  }, [alphabetical]);
+
   return (
     <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
       <Row gutter={20}>
@@ -254,14 +285,33 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         </Col>
         <Col span="12">
           <div className={Styles.flexCenter}>
-            <h5>{selectedResource.length} Resource Selected</h5>
-            <p className="dropdown-title">
-              Alphabetical <FontAwesomeIcon icon={faCaretDown} color="black" />
-            </p>
+            <>
+              <h5>{selectedResource.length} Resource Selected</h5>
+              <Dropdown
+                overlay={
+                  <Menu
+                    items={alphabeticalMenu}
+                    selectable
+                    onClick={(e) => {
+                      setAlphabetical(e.key);
+                    }}
+                  />
+                }
+                trigger={['click']}
+              >
+                <p className="dropdown-title d-flex">
+                  {alphabeticalMenu[Number(alphabetical)]?.label}&nbsp;
+                  <FontAwesomeIcon icon={faCaretDown} color="black" />
+                </p>
+              </Dropdown>
+            </>
           </div>
           <Card className="customacardstyle">
             <div className={Styles.cardwrapper}>
-              {selectedResource?.map((select_resource: any, i: number) => (
+              {(_.isEmpty(selectedAlphaResource)
+                ? selectedResource
+                : selectedAlphaResource
+              )?.map((select_resource: any, i: number) => (
                 <div className={Styles.flexGrowCenter} key={i}>
                   <CardWithLeftIcon
                     draggable={true}

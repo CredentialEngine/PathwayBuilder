@@ -59,6 +59,18 @@ const initState: RootState = {
           type: '',
         },
       ],
+      InstructionalProgram: [
+        {
+          id: 0,
+          name: '',
+          cTID: '',
+          codedNotation: '',
+          rowId: '',
+          description: '',
+          uri: '',
+          type: '',
+        },
+      ],
       OccupationType: [
         {
           id: 0,
