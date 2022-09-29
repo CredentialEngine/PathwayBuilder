@@ -44,6 +44,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [dropDownRef, setDropDownRef] = useState<string>('');
   const [checkboxForOrganisation, setCheckboxForOrganisation] =
     useState<boolean>(false);
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
 
   const appState = useSelector((state: any) => state?.initalReducer);
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
@@ -164,6 +165,31 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
   };
+  const handleCheckBox = () => {
+    setCheckboxForOrganisation(!checkboxForOrganisation);
+  };
+
+  useEffect(() => {
+    const updatedSearchValue = { ...searchFilterValue };
+    if (!_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)) {
+      if (checkboxForOrganisation) {
+        updatedSearchValue.Filters = [
+          ...updatedSearchValue.Filters,
+          {
+            URI: 'search:recordOwnedBy',
+            ItemTexts: [pathwayWrapper.mappedData.Pathway.Organization.CTID],
+          },
+        ];
+        setSearchFilterValue(updatedSearchValue);
+      } else {
+        _.remove(
+          updatedSearchValue.Filters,
+          (item: any) => item.URI == 'search:recordOwnedBy'
+        );
+        setSearchFilterValue(updatedSearchValue);
+      }
+    }
+  }, [checkboxForOrganisation]);
 
   return (
     <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
@@ -197,9 +223,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
             label="Only components published by my organization"
             className=" fontweightlight checkboxlabel"
             value={checkboxForOrganisation}
-            onChange={() =>
-              setCheckboxForOrganisation(!checkboxForOrganisation)
-            }
+            onChange={handleCheckBox}
             checked={checkboxForOrganisation ? true : false}
           />
           <br />
