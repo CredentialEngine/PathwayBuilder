@@ -102,6 +102,7 @@ const Header = (props: Props) => {
       </div>
     </div>
   );
+
   // useEffect(() => {
   //   if (pathwayWrapper.Pathway.Name !== '' && isLeftPanelVisible) {
   //     const intervalId = setTimeout(() => {
@@ -111,6 +112,7 @@ const Header = (props: Props) => {
   //       return () => clearTimeout(intervalId);
   //   }
   // }, [pathwayWrapper]);
+
   const savePathwayWrapper = () => {
     setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));

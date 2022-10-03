@@ -76,7 +76,26 @@ export function* approvePathway(payload: any): Generator {
     yield put(getDataForPathwayAndComponentsFailure(error));
   }
 }
-
+// export async function savePathwayWrapper(data: any) {
+//   try {
+//     const res = await fetch(
+//       'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/PathwayBuilderApi/Save/Pathway',
+//       {
+//         method: 'post', // *GET, POST, PUT, DELETE, etc.
+//         body: JSON.stringify(data), // body data type must match "Content-Type" header
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       }
+//     ).then(async (response) => {
+//       const json = await response.json();
+//       return json;
+//     });
+//     return res;
+//   } catch (error: any) {
+//     noop;
+//   }
+// }
 export function* getSavePathwayWrapper(payload: any): Generator {
   try {
     const result: any = yield call(request, {
@@ -90,7 +109,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       },
       data: JSON.stringify(payload.payload),
     });
-
+    // const result = savePathwayWrapper(payload.payload);
     if (result.Valid) {
       yield put(savePathwaySuccess(result));
     } else if (!result.Valid && result?.Messages?.length > 0) {

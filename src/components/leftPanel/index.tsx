@@ -98,7 +98,7 @@ const LeftPanel: React.FC<any> = ({
           <div className={Styles.cardwrapper}>
             {selectedTabCards
               .filter((v: any) =>
-                v?.Description.toLocaleLowerCase().includes(
+                v?.Description?.toLocaleLowerCase().includes(
                   searchValue.toLocaleLowerCase()
                 )
               )
