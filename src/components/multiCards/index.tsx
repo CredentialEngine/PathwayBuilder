@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Popover } from 'antd';
 import { noop } from 'lodash';
+
 import React, { useEffect, useRef, useState } from 'react';
 
 import AddConditionalComponent from '../../screens/addComponent';
@@ -43,6 +44,8 @@ interface Props {
   number: number;
   forwardRef: any;
   leftpanelSelectedElem: any;
+  rowNumber: number;
+  columnNumber: number;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -69,6 +72,8 @@ const MultiCard: React.FC<Props> = ({
   // number,
   // forwardRef,
   // leftpanelSelectedElem,
+  rowNumber,
+  columnNumber,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
@@ -102,12 +107,25 @@ const MultiCard: React.FC<Props> = ({
     onClick;
     getEndPoints(e, id);
   };
+
+  // const onDragEnterHandler = () => {
+  //   const getElement = forwardRef.current[number];
+  //   if (!_.isNull(getElement)) {
+  //     const rect = getElement.getBoundingClientRect();
+  //     getElement.style.width = `${rect.width * 2}px`;
+  //   }
+  // };
+
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
     e.dataTransfer.setData(
       'card_id',
-      JSON.stringify({ ...data, status, inProgressLevel })
+      JSON.stringify({
+        ...data,
+        status,
+        inProgressLevel,
+      })
     );
     onSelectDragElemenet(data);
     setTimeout(() => {
@@ -125,9 +143,9 @@ const MultiCard: React.FC<Props> = ({
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
-    e.target.style.position = 'absolute';
-    // e.target.style.left = `${e.pageX - 75}px`;
-    e.target.style.top = `${e.pageY - 75}px`;
+    // e.target.style.position = 'absolute';
+    // // e.target.style.left = `${e.pageX - 75}px`;
+    // e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {
@@ -149,7 +167,12 @@ const MultiCard: React.FC<Props> = ({
     <>
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
-          <div id="verticalBorder" className={styles.draggableAreaBox}></div>
+          <div
+            id="verticalBorder"
+            draggable={true}
+            // onDragEnter={onDragEnterHandler}
+            className={styles.draggableAreaBox}
+          ></div>
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
@@ -173,6 +196,9 @@ const MultiCard: React.FC<Props> = ({
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
               id={id?.toString()}
+              data-ticket="1223887"
+              data-columnNumber={columnNumber}
+              data-rowNumber={rowNumber}
             >
               {destinationComponent && isAddDestination && (
                 <>
@@ -477,6 +503,9 @@ const MultiCard: React.FC<Props> = ({
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
           id={id?.toString()}
+          data-ticket="1223887"
+          data-columnNumber={columnNumber}
+          data-rowNumber={rowNumber}
         >
           {destinationComponent && isAddDestination && (
             <>
