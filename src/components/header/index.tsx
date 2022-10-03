@@ -24,7 +24,7 @@ interface Props {
   isLeftPanelVisible: boolean;
 }
 const Header = (props: Props) => {
-  const { setIsEditPathwayFormVisible } = props;
+  const { setIsEditPathwayFormVisible, isLeftPanelVisible } = props;
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
   );
@@ -102,15 +102,18 @@ const Header = (props: Props) => {
       </div>
     </div>
   );
-  // useEffect(() => {
-  //   if (pathwayWrapper.Pathway.Name !== '' && isLeftPanelVisible) {
-  //     const intervalId = setTimeout(() => {
-  //       console.log('hit the api ');
-  //       dispatch(saveDataForPathwayRequest(pathwayWrapper));
-  //     }, 30000);
-  //       return () => clearTimeout(intervalId);
-  //   }
-  // }, [pathwayWrapper]);
+
+  useEffect(() => {
+    let interval: any;
+    const counter = 30000;
+    if (pathwayWrapper.Pathway.Name !== '' && isLeftPanelVisible) {
+      interval = setTimeout(() => {
+        dispatch(saveDataForPathwayRequest(pathwayWrapper));
+      }, counter);
+    }
+    return () => clearTimeout(interval);
+  }, [JSON.stringify(pathwayWrapper)]);
+
   const savePathwayWrapper = () => {
     setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));

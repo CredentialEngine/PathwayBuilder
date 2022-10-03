@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
-import _ from 'lodash';
+import _, { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Xarrow, { Xwrapper } from 'react-xarrows';
@@ -35,6 +35,7 @@ const HomePage: React.FC<Props> = ({
   setIsEditPathwayFormVisible,
   isDestinationColumnSelected,
 }) => {
+  const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
   const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
   const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
@@ -64,6 +65,8 @@ const HomePage: React.FC<Props> = ({
     firstStageCTID: '',
   });
 
+  const { isDestinationSelected } = pathwayWrapper;
+
   const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
   useEffect(() => {
     setGeneratedUuid({
@@ -75,7 +78,6 @@ const HomePage: React.FC<Props> = ({
 
   let count = 0;
 
-  const dispatch = useDispatch();
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
@@ -416,20 +418,47 @@ const HomePage: React.FC<Props> = ({
                   />
                 )}
                 {showAddDestination &&
-                  column?.CTID === getLastColumn() &&
+                  column?.CTID === getLastColumn('last') &&
                   pathwayComponentCards?.length <= 1 && (
                     <MultiCard
                       onClick={() => setShowRightPanel(true)}
                       key={0}
                       id={0}
                       firstComponent={
-                        column?.CTID === getLastColumn() ? true : false
+                        column?.CTID === getLastColumn('last') ? true : false
                       }
                       getEndPoints={setEndpoints}
                       isAddFirst={
-                        column?.CTID === getLastColumn() ? true : false
+                        column?.CTID === getLastColumn('last') ? true : false
                       }
                       data={{ Type: 'addDestination' }}
+                      destinationComponent={column?.isDestinationColumnSelected}
+                      setIsZoomDisabled={setIsZoomDisabled}
+                      status={column.Id}
+                      inProgressLevel={column.CTID}
+                      onSelectDragElemenet={onSelectDragElemenet}
+                      onMoveItem={onMoveItem}
+                      number={column.number}
+                      forwardRef={wrapperRef}
+                      leftpanelSelectedElem={leftpanelSelectedElem}
+                    />
+                  )}
+                {!isDestinationSelected &&
+                  !showAddDestination &&
+                  pathwayComponentCards?.length < 1 &&
+                  column?.CTID === getLastColumn('first') && (
+                    <MultiCard
+                      onClick={() => noop}
+                      key={1000}
+                      id={1000}
+                      firstComponent={
+                        column?.CTID === getLastColumn('first') ? true : false
+                      }
+                      getEndPoints={setEndpoints}
+                      isAddFirst={
+                        column?.CTID === getLastColumn('first') ? true : false
+                      }
+                      data={{ Type: 'addFirst' }}
                       destinationComponent={column?.isDestinationColumnSelected}
                       setIsZoomDisabled={setIsZoomDisabled}
                       status={column.Id}
@@ -510,7 +539,7 @@ const HomePage: React.FC<Props> = ({
     );
   };
 
-  const getLastColumn = () => {
+  const getLastColumn = (type: string) => {
     const ids = [] as any;
     columnsData?.map((column: any) => {
       if (!column.semesters || !column.semesters.length) {
@@ -519,7 +548,11 @@ const HomePage: React.FC<Props> = ({
         ids.push(...renderSemester(column?.semesters));
       }
     });
-    return ids[ids?.length - 2];
+    if (type === 'last') {
+      return ids[ids?.length - 2];
+    } else if (type === 'first') {
+      return ids[0];
+    }
   };
   const renderSemester = (semesters: any) => {
     const ids = [] as any;
