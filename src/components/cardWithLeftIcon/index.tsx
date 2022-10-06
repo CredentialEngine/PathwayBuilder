@@ -62,7 +62,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     const target = e.target;
     !!setLeftpanelSelectedElem && setLeftpanelSelectedElem(e.target);
 
-    e.dataTransfer.setData('card_id', JSON.stringify(props.data));
+    e.dataTransfer.setData(
+      'card_id',
+      JSON.stringify({ ...props.data, isPendingCards: true })
+    );
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(true);
     setTimeout(() => {
       target.style.display = 'hidden';
