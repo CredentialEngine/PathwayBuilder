@@ -478,7 +478,7 @@ const HomePage: React.FC<Props> = ({
                                   />
                                 ))}
 
-                            {!showAddDestination && (
+                            {!showAddDestination && index === 1 && (
                               <MultiCard
                                 onClick={() => setShowRightPanel(true)}
                                 key={uuidv4()}
