@@ -372,15 +372,24 @@ const HomePage: React.FC<Props> = ({
 
       {
         return (
-          <div key={index} style={{ display: 'flex', flexDirection: 'row' }}>
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
             {Array.from(Array(columnNumber || 1).keys()).map(
-              (column_num: any, i: any) => (
+              (column_num: any) => (
                 <div
                   key={index}
                   style={{
                     display: 'flex',
+                    height: '100vh',
                     flexDirection: 'column',
-                    backgroundColor: `${i % 2 !== 0 ? '#f0f0f0' : '#ffffff'}`,
+                    backgroundColor: `${
+                      index % 2 !== 0 ? '#f3f4f6' : '#e1e5e8'
+                    }`,
                   }}
                 >
                   {Array.from(Array(numberOfDropWrapper).keys()).map(
@@ -410,9 +419,6 @@ const HomePage: React.FC<Props> = ({
                         <div
                           style={{
                             height: '100vh',
-                            backgroundColor: `${
-                              index % 2 !== 0 ? '#f0f0f0' : '#ffffff'
-                            }`,
                             display: 'flex',
                             alignItems: 'center',
                             flexDirection: 'column',

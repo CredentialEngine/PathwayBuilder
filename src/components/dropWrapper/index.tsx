@@ -121,7 +121,6 @@ const DropWrapper: React.FC<Props> = ({
         width: `${width}`,
         flexDirection: 'column',
         height: '200px',
-        backgroundColor: '#ffffff',
       }}
       className={className}
       ref={(element: any) => {
