@@ -15,6 +15,7 @@ import {
   SAVE_PATHWAY_SUCCESS,
   SAVE_PATHWAY_FAILURE,
   ADD_COMPONENT_FROM_PATHWAY_MODAL,
+  SELECT_DESTINATION_REQUEST,
 } from './actionTypes';
 
 export const getCurrentUserDataRequest = () => ({
@@ -89,5 +90,10 @@ export const savePathwayFailure = (payload: any) => ({
 });
 export const addComponentFromPathwayModal = (payload: any) => ({
   type: ADD_COMPONENT_FROM_PATHWAY_MODAL,
+  payload,
+});
+
+export const selectDestination = (payload: boolean) => ({
+  type: SELECT_DESTINATION_REQUEST,
   payload,
 });

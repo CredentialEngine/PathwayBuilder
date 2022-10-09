@@ -12,6 +12,7 @@ import {
   SAVE_PATHWAY_SUCCESS,
   SAVE_PATHWAY_FAILURE,
   ADD_COMPONENT_FROM_PATHWAY_MODAL,
+  SELECT_DESTINATION_REQUEST,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -59,6 +60,18 @@ const initState: RootState = {
           type: '',
         },
       ],
+      InstructionalProgram: [
+        {
+          id: 0,
+          name: '',
+          cTID: '',
+          codedNotation: '',
+          rowId: '',
+          description: '',
+          uri: '',
+          type: '',
+        },
+      ],
       OccupationType: [
         {
           id: 0,
@@ -93,6 +106,7 @@ const initState: RootState = {
     data: null,
     valid: false,
   },
+  isDestinationSelected: false,
 };
 
 export default (state = initState, action: { type: string; payload: any }) => {
@@ -200,8 +214,10 @@ export default (state = initState, action: { type: string; payload: any }) => {
         savePathway: {
           ...state.savePathway,
           loading: false,
-          data: action.payload.Data,
+          data: action.payload.Messages,
+          PathwayId: action.payload.PathwayId,
           valid: action?.payload?.Valid,
+          error: false,
         },
       };
     case SAVE_PATHWAY_FAILURE:
@@ -215,6 +231,13 @@ export default (state = initState, action: { type: string; payload: any }) => {
           error: true,
         },
       };
+
+    case SELECT_DESTINATION_REQUEST:
+      return {
+        ...state,
+        isDestinationSelected: action.payload.payload,
+      };
+
     default:
       return {
         ...state,

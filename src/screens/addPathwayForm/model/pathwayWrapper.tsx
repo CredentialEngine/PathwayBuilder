@@ -25,6 +25,7 @@ export interface pathway {
   HasDestinationComponent: string[]; //URI for Pathway Component
   HasProgressionModel: string[]; //URI for Progression Model
   IndustryType: [ResourceSummary];
+  InstructionalProgram: [ResourceSummary];
   OccupationType: [ResourceSummary];
   SubjectWebpage: '';
   Keyword: string[];

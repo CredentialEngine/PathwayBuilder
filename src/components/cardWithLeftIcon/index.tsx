@@ -9,6 +9,7 @@ import {
   faCartShopping,
   faAtom,
   faSolarPanel,
+  faHandPointer,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
@@ -134,6 +135,9 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                 {data?.URI?.toLowerCase().includes(
                   'ComonentCondition'.toLowerCase()
                 ) && <FontAwesomeIcon icon={faSitemap} color={IconColor} />}
+                {data?.URI?.toLowerCase().includes(
+                  'selection'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faHandPointer} color={IconColor} />}
               </>
             ) : (
               <>
@@ -154,6 +158,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                 )}
                 {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
                   <FontAwesomeIcon icon={faAtom} color={IconColor} />
+                )}
+                {Type?.toLowerCase().includes(
+                  'Extracurricular'.toLowerCase()
+                ) && <FontAwesomeIcon icon={faSolarPanel} color={IconColor} />}
+                {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
+                  <FontAwesomeIcon icon={faHandPointer} color={IconColor} />
                 )}
                 {Type?.toLowerCase().includes(
                   'Extracurricular'.toLowerCase()

@@ -42,9 +42,14 @@ const SelectDestination: React.FC<Props> = ({
       <h5>Choose how you would like to build your pathway.</h5>
       <br />
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum commodi
-        adipisci omnis accusamus velit ad nulla, quisquam, culpa esse nisi unde
-        nemo doloremque aut architecto ratione iure nihil impedit ullam!
+        Start with the destination to build your Pathway based on the
+        requirements for completing it. To begin drop the last component, the
+        final destination to the far right of the pathway board.
+        <br />
+        <br />
+        Start with the initial components to work your way towards the
+        destination. To begin drop the first component, on the left side of the
+        board. Add a Pathway.
       </p>
       <Row gutter={20}>
         <Col span="12">

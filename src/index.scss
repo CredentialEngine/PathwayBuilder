@@ -56,6 +56,11 @@ body {
 .archerContainer div {
   display: block;
 }
+.d-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .flexRow {
   display: flex;
   flex-direction: row;
@@ -70,4 +75,7 @@ body {
   bottom: 0;
   right: 0;
   z-index: 999;
+}
+.react-transform-wrapper {
+  width: 100% !important;
 }

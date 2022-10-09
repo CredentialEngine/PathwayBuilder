@@ -20,6 +20,7 @@ export class PathwayEntity implements pathway {
   HasProgressionModel: string[];
   IndustryType: [ResourceSummary];
   OccupationType: [ResourceSummary];
+  InstructionalProgram: [ResourceSummary];
   SubjectWebpage: '';
   Keyword: string[];
   Subject: string[];
