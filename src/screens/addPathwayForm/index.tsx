@@ -710,7 +710,7 @@ const AddPathwayForm: React.FC<Props> = ({
             <Button
               type={Type.PRIMARY}
               onClick={() => onAddPathwayOkHandler()}
-              text="Next"
+              text={isEditPathwayFormVisible ? 'Save' : 'Next'}
               disabled={!isAddPathwayFormNextButtonDisable}
             />
           </Col>

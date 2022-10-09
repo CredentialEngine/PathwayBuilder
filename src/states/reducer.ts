@@ -12,6 +12,7 @@ import {
   SAVE_PATHWAY_SUCCESS,
   SAVE_PATHWAY_FAILURE,
   ADD_COMPONENT_FROM_PATHWAY_MODAL,
+  SELECT_DESTINATION_REQUEST,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -93,6 +94,7 @@ const initState: RootState = {
     data: null,
     valid: false,
   },
+  isDestinationSelected: false,
 };
 
 export default (state = initState, action: { type: string; payload: any }) => {
@@ -217,6 +219,13 @@ export default (state = initState, action: { type: string; payload: any }) => {
           error: true,
         },
       };
+
+    case SELECT_DESTINATION_REQUEST:
+      return {
+        ...state,
+        isDestinationSelected: action.payload.payload,
+      };
+
     default:
       return {
         ...state,
