@@ -604,14 +604,21 @@ const HomePage: React.FC<Props> = ({
                 />
               )}
             </div>
-
             <Content className="site-layout-background">
-              <TransformWrapper disabled={isZoomDisabled}>
-                {({ zoomIn, zoomOut, resetTransform }) => (
+              <TransformWrapper
+                initialScale={1}
+                disabled={isZoomDisabled}
+                centerZoomedOut={false}
+                centerOnInit={false}
+              >
+                {({ setTransform, resetTransform }) => (
                   <React.Fragment>
                     <div className="zoom-tools">
-                      <button onClick={() => zoomIn()}>+</button>
-                      <button onClick={() => zoomOut()}>-</button>
+                      <button
+                        onClick={() => setTransform(1, 1, 0.8, 400, 'easeOut')}
+                      >
+                        -
+                      </button>
                       <button onClick={() => resetTransform()}>x</button>
                     </div>
                     <TransformComponent>
