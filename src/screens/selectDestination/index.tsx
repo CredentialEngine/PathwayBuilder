@@ -46,6 +46,7 @@ const SelectDestination: React.FC<Props> = ({
         requirements for completing it. To begin drop the last component, the
         final destination to the far right of the pathway board.
         <br />
+        <br />
         Start with the initial components to work your way towards the
         destination. To begin drop the first component, on the left side of the
         board. Add a Pathway.

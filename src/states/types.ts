@@ -24,4 +24,5 @@ export type RootState = {
     data: any;
     valid: boolean;
   };
+  isDestinationSelected: boolean;
 };

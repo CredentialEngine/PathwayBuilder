@@ -181,8 +181,8 @@ const AddPathwayForm: React.FC<Props> = ({
         PathwayWrapper.Pathway.OccupationType;
       updatedPathwayFormFields.SubjectWebpage =
         PathwayWrapper.Pathway.SubjectWebpage;
-      updatedPathwayFormFields.Keyword = PathwayWrapper.Pathway.Subject;
-      updatedPathwayFormFields.Subject = PathwayWrapper.Pathway.ID;
+      updatedPathwayFormFields.Keyword = PathwayWrapper.Pathway.Keyword;
+      updatedPathwayFormFields.Subject = PathwayWrapper.Pathway.Subject;
       updatedPathwayFormFields.LastUpdated = PathwayWrapper.Pathway.LastUpdated;
       setAddPathwayFormFields({
         ...addPathwayFormFields,
@@ -607,16 +607,18 @@ const AddPathwayForm: React.FC<Props> = ({
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
             >
-              <DebounceSelect
-                mode="multiple"
-                tagRender={tagRender}
-                value={addPathwayFormFields?.InstructionalProgram}
-                placeholder="Select Instructional Program"
-                fetchOptions={fetchInstructionalProgramList}
-                onSelect={(e: any) =>
-                  onDebounceSelectHnadler(e, 'InstructionalProgram')
-                }
-              />
+              <>
+                <DebounceSelect
+                  mode="multiple"
+                  tagRender={tagRender}
+                  value={addPathwayFormFields?.InstructionalProgram}
+                  placeholder="Select Instructional Program"
+                  fetchOptions={fetchInstructionalProgramList}
+                  onSelect={(e: any) =>
+                    onDebounceSelectHnadler(e, 'InstructionalProgram')
+                  }
+                />
+              </>
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -710,7 +712,7 @@ const AddPathwayForm: React.FC<Props> = ({
             <Button
               type={Type.PRIMARY}
               onClick={() => onAddPathwayOkHandler()}
-              text="Next"
+              text={isEditPathwayFormVisible ? 'Save' : 'Next'}
               disabled={!isAddPathwayFormNextButtonDisable}
             />
           </Col>

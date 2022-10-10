@@ -1,6 +1,6 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Form, Row } from 'antd';
+import { Col, Form, Row, Tag } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,19 +8,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
-import MultiSelect from '../../components/formFields/multiSelect';
 import { getAllConstraintOperand } from '../../utils/fetchSearchResponse';
 
+import DebounceSelect from '../addPathwayForm/debounceSelect';
+
 import Styles from './index.module.scss';
+import { ComponentConditionEntity, ConstraintEntity } from './model';
 import {
   getAllArrayConceptsRequest,
   getAllComparatorsRequest,
   getLogicalOperatorsRequest,
 } from './state/actions';
-
-// const PLEASE_SELECT_LEFT_SOURCE_VALUE = 'Please select left source value';
-// const PLEASE_SELECT_RIGHT_SOURCE_VALUE = 'Please select right source value';
-// const PLEASE_SELECT_COMPARATOR = 'Please select comparator value';
 
 interface Props {
   visibleConstraintConditionProp?: (bool: boolean) => void;
@@ -28,26 +26,30 @@ interface Props {
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
   const { visibleConstraintConditionProp } = Props;
-  const [allLogicalOperators, setAllLogicOperators] = useState<any>([]);
-  const [allComparators, setAllComparators] = useState<any>([]);
+  const [componentConditionFields, setComponentConditionFields] = useState<any>(
+    new ComponentConditionEntity()
+  );
+  const [constraintEntityFields, setConstraintEntityFields] = useState<any>(
+    new ConstraintEntity()
+  );
+
+  // older key
   const [selectedComparators, setSelectedComparators] = useState<any>();
-  const [allArrayConcept, setAllArrayConcept] = useState<any>([]);
-  const [allConstraintOperand, setAllConstraintOperand] = useState<any>([]);
-  const [leftSourcedata, setleftSourceData] = useState<any>();
-  const [rightSourcedata, setRightSourceData] = useState<any>();
-  const [errorField, setErrorField] = useState<any>([]);
-  const [parentComponent, setParentComponent] = useState<string>('');
-  const [conditionDescription, setConditionDescription] = useState<string>('');
-  const [requiredNumber, setRequiredNumber] = useState<string>('');
+  const [leftSourcedata, setleftSourceData] = useState<any>([]);
+  const [leftSourcesSelected, setleftSourceSelected] = useState<any>([]);
+  const [rightSourcedata, setRightSourceData] = useState<any>([]);
+  const [rightSourceSelected, setRightSourceSelected] = useState<any>([]);
 
   const dispatch = useDispatch();
 
-  const searchLeftConstraintOperand = (value: any) => {
-    setleftSourceData(value);
+  const onInputChangeHandler = (e: any) => {
+    const updatedData = { ...componentConditionFields };
+    const { name, value } = e.target;
+    updatedData[name] = value;
+    setComponentConditionFields(updatedData);
   };
-  const searchRightConstraintOperand = (value: any) => {
-    setRightSourceData(value);
-  };
+  // older key
+
   const getAllLogicalOperator = useSelector(
     (state: any) => state.addConditionalComponent.logicalOperatorData
   );
@@ -64,50 +66,53 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     setSelectedComparators(value);
   };
 
-  const allConstraintOperandfunc = async () => {
-    const data = await getAllConstraintOperand(leftSourcedata);
+  const allConstraintOperandfunc = async (e: string) => {
+    const data = await getAllConstraintOperand({ Keywords: e });
     if (data.Data.Results) {
-      setAllConstraintOperand(
-        data.Data.Results.map((value: any) => ({
-          ...value,
-          value: value.Name,
-          label: value.Name,
-        }))
-      );
+      const updatedBody = data.Data.Results.map((dta: any) => ({
+        ...dta,
+        value: dta.Name,
+        label: dta.Name,
+      }));
+      setleftSourceData(updatedBody);
+      setRightSourceData(updatedBody);
+      return updatedBody;
     }
   };
 
   useEffect(() => {
-    if (leftSourcedata !== '') {
-      allConstraintOperandfunc();
-    }
-  }, [leftSourcedata]);
-
-  useEffect(() => {
     if (getAllLogicalOperator.valid)
-      setAllLogicOperators(
-        getAllLogicalOperator.data.map((dta: any) => ({
+      setComponentConditionFields({
+        ...componentConditionFields,
+        LogicalOperator: getAllLogicalOperator.data.map((dta: any) => ({
           ...dta,
           value: dta.Name,
           label: dta.Name,
-        }))
-      );
+        })),
+      });
     if (getAllComparators.valid)
-      setAllComparators(
-        getAllComparators.data.map((dta: any) => ({
+      setConstraintEntityFields({
+        ...constraintEntityFields,
+        Comparator: getAllComparators.data.map((dta: any) => ({
           ...dta,
-          value: dta.Name,
+          value: dta.URI,
           label: dta.Name,
-        }))
-      );
+        })),
+      });
     if (getAllArrayConcept.valid)
-      setAllArrayConcept(
-        getAllArrayConcept.data.map((dta: any) => ({
+      setConstraintEntityFields({
+        ...constraintEntityFields,
+        LeftAction: getAllArrayConcept.data.map((dta: any) => ({
           ...dta,
           value: dta.Name,
           label: dta.Name,
-        }))
-      );
+        })),
+        RightAction: getAllArrayConcept.data.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        })),
+      });
   }, [getAllLogicalOperator, getAllComparators, getAllArrayConcept]);
 
   useEffect(() => {
@@ -116,89 +121,163 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     dispatch(getAllArrayConceptsRequest());
   }, []);
 
+  useEffect(() => {
+    const updatedData = { ...constraintEntityFields };
+    if (leftSourcesSelected.length > 0) {
+      updatedData.LeftSources = leftSourcesSelected;
+    }
+    if (rightSourceSelected.length > 0) {
+      updatedData.LeftSources = rightSourceSelected;
+    }
+  }, [leftSourcesSelected, rightSourceSelected]);
+
+  const onDebounceSelectHnadler = (e: any, name: string) => {
+    if (name === 'LeftSources') {
+      const filteredLeftSource = leftSourcedata.filter(
+        (data: any) => e.value == data.Name
+      );
+      setleftSourceSelected((prevState: any) => [
+        ...prevState,
+        ...filteredLeftSource,
+      ]);
+    }
+    if (name === 'RightSource') {
+      const filteredRightSources = rightSourcedata?.filter(
+        (data: any) => e.value == data.Name
+      );
+      setRightSourceSelected((prevState: any) => [
+        ...prevState,
+        ...filteredRightSources,
+      ]);
+    }
+  };
+
+  const tagRender = (props: any) => {
+    const { label, value, closable, onClose } = props;
+    const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    return (
+      <Tag
+        color={value}
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3 }}
+      >
+        {label}
+      </Tag>
+    );
+  };
+
   const saveCondition = () => {
     !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
-    setErrorField(['']);
-    const saveCondition = {
-      rowid: 'asdasdasdasd',
-      leftSource: [
-        {
-          URI: 'ceterms:AdvancedStandingAction',
-          Name: leftSourcedata,
-        },
-      ],
+    const Constraint = {
+      ParentIdentifier: componentConditionFields.ParentIdentifier,
+      // Id
+      // RowId
+      // Name
+      Description: componentConditionFields.Description,
+      // LeftAction :
+      LeftSource: leftSourcesSelected,
+      Comparator: componentConditionFields.Comparator,
+      // RightAction
+      RightSource: rightSourceSelected,
+
+      // rowid: 'asdasdasdasd',
+      // leftSource: [
+      //   {
+      //     URI: 'ceterms:AdvancedStandingAction',
+      //     Name: leftSourcedata,
+      //   },
+      // ],
       comparator: `compare:${selectedComparators}`,
-      rightSource: [
-        {
-          URI: 'ceterms:AdvancedStandingAction',
-          Name: rightSourcedata,
-        },
-      ],
+      // rightSource: [
+      //   {
+      //     URI: 'ceterms:AdvancedStandingAction',
+      //     Name: rightSourcedata,
+      //   },
+      // ],
     };
-    saveCondition;
+    const ComponentCondition = {
+      ParentIdentifier: componentConditionFields.ParentIdentifier,
+      // Id;
+      // RowId;
+      // Name;
+      Description: componentConditionFields.Description,
+      RequiredNumber: componentConditionFields.RequiredNumber,
+      LogicalOperator: componentConditionFields.LogicalOperator,
+      // HasCondition;
+      HasConstraint: Constraint,
+      // LastUpdated;
+      // TargetComponent;
+    };
+
+    ComponentCondition;
   };
 
   return (
     <div className={Styles.addComponentwrapper}>
-      <h2>Add Component</h2>
-      <div className={Styles.iconheader}>
-        <span className={Styles.iconwrapper + ' iconwrapper'}>
-          <FontAwesomeIcon
-            icon={faCubes}
-            style={{ height: '15px' }}
-            color="black"
+      <Form>
+        <h2>Add Component</h2>
+        <div className={Styles.iconheader}>
+          <span className={Styles.iconwrapper + ' iconwrapper'}>
+            <FontAwesomeIcon
+              icon={faCubes}
+              style={{ height: '15px' }}
+              color="black"
+            />
+          </span>
+          <h4>Component Condition</h4>
+        </div>
+        <Form.Item>
+          <label>Parent Component</label>
+          <InputBox
+            onChange={onInputChangeHandler}
+            placeholder=""
+            maxLength={0}
+            value={componentConditionFields.ParentIdentifier}
           />
-        </span>
-        <h4>Component Condition</h4>
-      </div>
-      <Form.Item>
-        <label>Parent Component</label>
-        <InputBox
-          onChange={(e) => setParentComponent(e.target.value)}
-          placeholder=""
-          maxLength={0}
-          value={parentComponent}
-        />
-      </Form.Item>
-      <Form.Item>
-        <label>Condition Description</label>
-        <TextArea
-          onChange={(e) => setConditionDescription(e.target.value)}
-          placeholder=""
-          maxLength={0}
-          rows={3}
-          value={conditionDescription}
-        />
-      </Form.Item>
-      <Row gutter={20}>
-        <Col span="12">
-          <Form.Item>
-            <label>Required Number</label>
-            <InputBox
-              type="number"
-              onChange={(e) => setRequiredNumber(e.target.value)}
-              placeholder=""
-              maxLength={0}
-              value={requiredNumber}
-            />
-          </Form.Item>
-        </Col>
-        <Col span="12">
-          <Form.Item>
-            <label>Logical Operator</label>
-            <Dropdown
-              options={allLogicalOperators}
-              defaultValue="And"
-              showSearch={false}
-            />
-          </Form.Item>
-        </Col>
-      </Row>
-      <div className={Styles.divider}>
-        <label>Constraints</label>
-        <hr className="min-top" />
-      </div>
-      <Form name="dynamic_form_nest_item" autoComplete="off">
+        </Form.Item>
+        <Form.Item>
+          <label>Condition Description</label>
+          <TextArea
+            onChange={onInputChangeHandler}
+            placeholder=""
+            maxLength={0}
+            rows={3}
+            value={componentConditionFields.Description}
+          />
+        </Form.Item>
+        <Row gutter={20}>
+          <Col span="12">
+            <Form.Item>
+              <label>Required Number</label>
+              <InputBox
+                type="number"
+                onChange={onInputChangeHandler}
+                placeholder=""
+                min={1}
+                value={componentConditionFields.RequiredNumber}
+              />
+            </Form.Item>
+          </Col>
+          <Col span="12">
+            <Form.Item>
+              <label>Logical Operator</label>
+              <Dropdown
+                options={componentConditionFields?.LogicalOperator}
+                defaultValue="And"
+                showSearch={false}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <div className={Styles.divider}>
+          <label>Constraints</label>
+          <hr className="min-top" />
+        </div>
         <Form.List name="users">
           {(fields, { add }) => (
             <>
@@ -206,12 +285,27 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                 <Row gutter={20} key={i}>
                   <Col span="9">
                     <>
-                      <Form.Item>
-                        <MultiSelect
+                      {leftSourcesSelected?.length > 1 && (
+                        <Dropdown
+                          options={constraintEntityFields.LeftAction}
+                          defaultValue="Any Of"
+                          showSearch={false}
+                        />
+                      )}
+                      <Form.Item
+                        className="swNoMargin"
+                        validateTrigger="onBlur"
+                        tooltip="This is a required field"
+                      >
+                        <DebounceSelect
+                          showSearch
+                          tagRender={tagRender}
+                          value={constraintEntityFields.LeftSource}
                           placeholder="Left Sources"
-                          options={allConstraintOperand}
-                          optionLabelProp="label"
-                          onChange={(e) => searchLeftConstraintOperand(e)}
+                          fetchOptions={allConstraintOperandfunc}
+                          onSelect={(e: any) =>
+                            onDebounceSelectHnadler(e, 'LeftSources')
+                          }
                         />
                       </Form.Item>
                     </>
@@ -219,7 +313,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                   <Col span="6">
                     <Form.Item>
                       <Dropdown
-                        options={allComparators}
+                        options={constraintEntityFields.Comparator}
                         defaultValue="Equals"
                         showSearch={false}
                         onChange={(e) => funcSelectedComparators(e)}
@@ -229,21 +323,29 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                   <Col span="9">
                     <Form.Item>
                       <>
-                        {rightSourcedata?.length > 1 && (
+                        {rightSourceSelected?.length > 1 && (
                           <Dropdown
-                            options={allArrayConcept}
+                            options={constraintEntityFields.RightAction}
                             defaultValue="Any Of"
                             showSearch={false}
                           />
                         )}
-
-                        <MultiSelect
-                          mode="tags"
-                          options={allConstraintOperand}
-                          optionLabelProp="label"
-                          placeholder="Right Sources"
-                          onChange={(e) => searchRightConstraintOperand(e)}
-                        />
+                        <Form.Item
+                          className="swNoMargin"
+                          validateTrigger="onBlur"
+                          tooltip="This is a required field"
+                        >
+                          <DebounceSelect
+                            showSearch
+                            tagRender={tagRender}
+                            value={constraintEntityFields.RightSource}
+                            placeholder="Right Sources"
+                            fetchOptions={allConstraintOperandfunc}
+                            onSelect={(e: any) =>
+                              onDebounceSelectHnadler(e, 'RightSource')
+                            }
+                          />
+                        </Form.Item>
                       </>
                     </Form.Item>
                   </Col>
@@ -257,21 +359,15 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             </>
           )}
         </Form.List>
-      </Form>
 
-      <hr />
-      {errorField?.map((error: string) => (
-        <p key={error} className="error">
-          {error}
-        </p>
-      ))}
-      <br />
-      <Button
-        size="medium"
-        text="Save Condition"
-        type="primary"
-        onClick={saveCondition}
-      />
+        <hr />
+        <Button
+          size="medium"
+          text="Save Condition"
+          type="primary"
+          onClick={saveCondition}
+        />
+      </Form>
     </div>
   );
 };
