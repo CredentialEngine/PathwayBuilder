@@ -268,6 +268,16 @@ const HomePage: React.FC<Props> = ({
         );
   };
 
+  const onDeleteHandler = (data: any) => {
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    const updatedPathwayComponent = pathwayComponentCards.filter(
+      (item: any) => item.CTID !== data.CTID
+    );
+    updatedPathwayWrapper.Pathway = updatedPathwayComponent;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setPathwayComponentCards(updatedPathwayComponent);
+  };
+
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {
@@ -392,6 +402,7 @@ const HomePage: React.FC<Props> = ({
                         leftpanelSelectedElem={leftpanelSelectedElem}
                         onSelectDragElemenet={onSelectDragElemenet}
                         onMoveItem={onMoveItem}
+                        onDelete={onDeleteHandler}
                       />
                     ))}
                 {!showAddDestination && (
@@ -413,6 +424,7 @@ const HomePage: React.FC<Props> = ({
                     number={column.number}
                     forwardRef={wrapperRef}
                     leftpanelSelectedElem={leftpanelSelectedElem}
+                    onDelete={onDeleteHandler}
                   />
                 )}
                 {showAddDestination &&
@@ -439,6 +451,7 @@ const HomePage: React.FC<Props> = ({
                       number={column.number}
                       forwardRef={wrapperRef}
                       leftpanelSelectedElem={leftpanelSelectedElem}
+                      onDelete={onDeleteHandler}
                     />
                   )}
                 {connection.length

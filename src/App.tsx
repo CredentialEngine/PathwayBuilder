@@ -128,8 +128,8 @@ const App = () => {
 
   const closeCreatePathwayModal = () => {
     Modal.confirm({
-      cancelText: 'Cancel',
-      okText: 'Ok',
+      cancelText: 'No',
+      okText: 'Yes',
       title: 'Are you sure you want to cancel.',
       onOk: () => onCreatePathwayCancelHandler(),
     });
@@ -160,6 +160,7 @@ const App = () => {
           title="Add a Pathway"
           footer={createPathwayFooter()}
           width={550}
+          onCancel={() => setIsCreatePathwayVisible(false)}
         >
           <CreatePathway />
         </Modal>
