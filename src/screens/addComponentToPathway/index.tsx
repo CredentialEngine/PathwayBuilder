@@ -1,4 +1,4 @@
-import { Form } from 'antd';
+import { Form, Radio } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -51,6 +51,8 @@ const AddComponentToPathway = (props: any) => {
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
   );
+  const [chooseResource, setChooseResource] = useState<any>();
+
   const [selectedComponent, setSelectedComponent] = useState(
     allComponentTypes[0]?.label ?? ''
   );
@@ -80,6 +82,23 @@ const AddComponentToPathway = (props: any) => {
   const onProgressionModelSearchHandler = (e: any) => {
     setSearchFilterValue({ ...searchFilterValue, keywords: e });
   };
+
+  useEffect(() => {
+    if (chooseResource === 'Only selected resource' && selectedComponent) {
+      //@ts-ignore
+      setSearchFilterValue({
+        ...searchFilterValue,
+        Filters: [
+          {
+            URI: 'meta:pathwayComponentType',
+            ItemsText: [selectedComponent],
+          },
+        ],
+      });
+    } else {
+      setSearchFilterValue(searchFilterValue);
+    }
+  }, [chooseResource]);
 
   const selectResource = (e: any) => {
     const tempSelectedResource = allProxyResourcesCard.filter(
@@ -127,9 +146,17 @@ const AddComponentToPathway = (props: any) => {
           </Form.Item>
           <Form.Item label="Choose Resource" name="Choose Resource">
             <p>
-              <RadioButton label="Only selected resource" />
-              <RadioButton label="All my resource" />
-              <RadioButton label="All resource" />
+              <Radio.Group
+                value={chooseResource}
+                onChange={(e: any) => setChooseResource(e?.target?.value)}
+              >
+                <RadioButton
+                  value="Only selected resource"
+                  label="Only selected resource"
+                />
+                <RadioButton value="All my resource" label="All my resource" />
+                <RadioButton value="All resource" label="All resource" />
+              </Radio.Group>
             </p>
             <AutoCompleteBox
               {...SelectAutoCompleteProps(
@@ -138,7 +165,7 @@ const AddComponentToPathway = (props: any) => {
                 'Name',
                 'Name'
               )}
-              placeholder="Start typing to choose a Progression Model"
+              placeholder="Start typing to choose a resource "
               onSearch={onProgressionModelSearchHandler}
               onSelect={(e: any) => selectResource(e)}
             />
@@ -159,10 +186,15 @@ const AddComponentToPathway = (props: any) => {
       children: (
         <div className={Styles.addComponentToPathway}>
           <Form.Item label="Component Type" name="Component Type">
-            <Dropdown defaultValue="Course Component">
-              <Options value="item1">item1</Options>
-              <Options value="item2">item2</Options>
-              <Options value="item3">item3</Options>
+            <Dropdown
+              onChange={(e: any) => setSelectedComponent(e)}
+              defaultValue={selectedComponent}
+            >
+              {allComponentTypes?.map((item: any, idx: number) => (
+                <Options key={idx} value={item?.label}>
+                  {item?.label}
+                </Options>
+              ))}
             </Dropdown>
           </Form.Item>
           <Form.Item label="Name Placeholder" name="Name Placeholder">
