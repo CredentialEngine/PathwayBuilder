@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Popover } from 'antd';
 import { noop } from 'lodash';
+
 import React, { useEffect, useRef, useState } from 'react';
 
 import AddConditionalComponent from '../../screens/addComponent';
@@ -31,7 +32,6 @@ interface Props {
   CTID?: string;
   id?: number | string;
   inProgressLevel?: string;
-  columnId?: string;
   destinationComponent?: boolean;
   onSelectDragElemenet: (a: any) => void;
   onMoveItem: (a: any) => void;
@@ -42,7 +42,8 @@ interface Props {
   constraintIcon?: boolean;
   number: number;
   forwardRef: any;
-  leftpanelSelectedElem: any;
+  rowNumber: number;
+  columnNumber: number;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -65,10 +66,10 @@ const MultiCard: React.FC<Props> = ({
   getEndPoints,
   isDraggableCardVisible,
   constraintIcon,
-  // onMoveItem,
   // number,
   // forwardRef,
-  // leftpanelSelectedElem,
+  rowNumber,
+  columnNumber,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
@@ -76,16 +77,9 @@ const MultiCard: React.FC<Props> = ({
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
   const [showRightPenal, setShowRightPenal] = useState(false);
-
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
-  // useEffect(() => {
-  //   const dragElement = leftpanelSelectedElem;
-  //   if (!_.isNull(dragElement) && !_.isUndefined(dragElement)) {
-  //     const element = dragElement.getBoundingClientRect();
-  //   }
-  // }, [leftpanelSelectedElem]);
 
   const getOnClick = (e: any) => {
     /* 
@@ -102,12 +96,25 @@ const MultiCard: React.FC<Props> = ({
     onClick;
     getEndPoints(e, id);
   };
+
+  // const onDragEnterHandler = () => {
+  //   const getElement = forwardRef.current[number];
+  //   if (!_.isNull(getElement)) {
+  //     const rect = getElement.getBoundingClientRect();
+  //     getElement.style.width = `${rect.width * 2}px`;
+  //   }
+  // };
+
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
     e.dataTransfer.setData(
       'card_id',
-      JSON.stringify({ ...data, status, inProgressLevel })
+      JSON.stringify({
+        ...data,
+        status,
+        inProgressLevel,
+      })
     );
     onSelectDragElemenet(data);
     setTimeout(() => {
@@ -116,8 +123,6 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragOver = (e: any) => {
-    // onMoveItem(e.target.innerText);
-
     e.preventDefault();
     e.stopPropagation();
   };
@@ -125,9 +130,6 @@ const MultiCard: React.FC<Props> = ({
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
-    e.target.style.position = 'absolute';
-    // e.target.style.left = `${e.pageX - 75}px`;
-    e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {
@@ -149,7 +151,11 @@ const MultiCard: React.FC<Props> = ({
     <>
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
-          <div id="verticalBorder" className={styles.draggableAreaBox}></div>
+          <div
+            id="verticalBorder"
+            draggable={true}
+            className={styles.draggableAreaBox}
+          ></div>
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
@@ -170,9 +176,15 @@ const MultiCard: React.FC<Props> = ({
               onClick={(e: any) => {
                 getOnClick(e);
               }}
+              // onDragEnter={onDragEnterHandler}
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
               id={id?.toString()}
+              data-cardType="multiCard"
+              data-ticket="1223887"
+              data-columnNumber={columnNumber}
+              data-rowNumber={rowNumber}
+              data-CTID={data.CTID}
             >
               {destinationComponent && isAddDestination && (
                 <>
@@ -477,6 +489,10 @@ const MultiCard: React.FC<Props> = ({
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
           id={id?.toString()}
+          data-ticket="1223887"
+          data-columnNumber={columnNumber}
+          data-rowNumber={rowNumber}
+          data-CTID={data.CTID}
         >
           {destinationComponent && isAddDestination && (
             <>

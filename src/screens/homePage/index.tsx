@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
-import _, { noop } from 'lodash';
+import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Xarrow, { Xwrapper } from 'react-xarrows';
@@ -45,6 +45,7 @@ const HomePage: React.FC<Props> = ({
   const [showAddDestination, setShowAddDestination] = useState(false);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [columnsData, setColumnsData] = useState<any>([]);
+
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const [rightPanelData, setRightPanelData] = useState({});
   const [dragElem, setDragElem] = useState<any>();
@@ -53,6 +54,7 @@ const HomePage: React.FC<Props> = ({
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
 
+  const [numberOfDropWrapper, setNumberOfDropWrapper] = useState<number>(4);
   const [point, setPoint] = useState({
     start: '',
     end: '',
@@ -65,7 +67,11 @@ const HomePage: React.FC<Props> = ({
     firstStageCTID: '',
   });
 
-  const { isDestinationSelected } = pathwayWrapper;
+  const [overlayData, setOverlayData] = useState<any>({
+    columnNumber: 0,
+    rowNumber: 0,
+    CTID: '',
+  });
 
   const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
   useEffect(() => {
@@ -77,7 +83,6 @@ const HomePage: React.FC<Props> = ({
   }, []);
 
   let count = 0;
-
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
@@ -92,10 +97,13 @@ const HomePage: React.FC<Props> = ({
 
   const getSemester = (level: any) => {
     if (level?.Narrower?.length > 0) {
+      const updatedPathwayLevel = pathwayComponent?.ProgressionLevels.map(
+        (level: any) => ({ ...level, columnNumber: 1 })
+      );
       const semesters = [] as any;
       level?.Narrower?.forEach((narrow: any) => {
         count = Math.floor(Math.random() * (99 - 10) + 10);
-        pathwayComponent?.ProgressionLevels.forEach((level1: any) => {
+        updatedPathwayLevel.forEach((level1: any) => {
           if (narrow === level1.CTID) {
             let result = [] as any;
             if (level1?.Narrower?.length > 0) {
@@ -127,9 +135,13 @@ const HomePage: React.FC<Props> = ({
 
         const level2ProgressionModel = [];
 
+        const updatedProgressionLevel = pathwayComponent?.ProgressionLevels.map(
+          (prog_level: any) => ({ ...prog_level, columnNumber: 1 })
+        );
+
         pathwayComponent?.ProgressionModels?.map((model: any) =>
           model?.HasTopConcept?.forEach((CTID: any) => {
-            pathwayComponent?.ProgressionLevels?.forEach((level: any) => {
+            updatedProgressionLevel?.forEach((level: any) => {
               if (CTID === level.CTID) {
                 return updatedPathwayLevel.push(level);
               } else {
@@ -204,7 +216,6 @@ const HomePage: React.FC<Props> = ({
         const itemIndex = prevState.findIndex(
           (i: any) => i?.CTID === dragElem?.CTID
         );
-
         const hoverIndex = prevState.findIndex((i: any) =>
           i?.Description?.toLowerCase()
             .trim()
@@ -213,7 +224,6 @@ const HomePage: React.FC<Props> = ({
         const newState = [...prevState];
         newState.splice(itemIndex, 1);
         newState.splice(hoverIndex, 0, dragElem);
-
         return [...newState];
       });
     }
@@ -221,22 +231,44 @@ const HomePage: React.FC<Props> = ({
 
   const onDropHandler = (
     card: any,
-    CTID: string,
     destinationColumn: boolean,
     HasProgressionLevel: string,
-    isDestinationColumnSelected: boolean
+    isDestinationColumnSelected: boolean,
+    RowNumber: number,
+    ColumnNumber: number,
+    columnNumberEsixt: boolean
   ) => {
-    /* Need to write a logic where same card should not be added
-      Need to filter accorrding to column type like which card should be display where
-      filtered card display accoriding to their column 
+    const { isPendingCards, ...restCardProps } = card;
 
-      need to find column id as well so we can expand column width at a moment
-
-      Need to set item move to any place
-    */
-    if (card.HasProgressionLevel === HasProgressionLevel) {
+    if (columnNumberEsixt && !isPendingCards) {
+      /* 
+        this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
+      */
       return;
     }
+    if (
+      card.HasProgressionLevel === HasProgressionLevel &&
+      card.ColumnNumber === ColumnNumber &&
+      card.RowNumber === RowNumber
+    ) {
+      return;
+    }
+
+    const islastDropWrapperUsed = pathwayComponentCards.some(
+      (card: any) => card.RowNumber === numberOfDropWrapper
+    );
+
+    if (islastDropWrapperUsed) {
+      /* here we are increasing number of DropWrapper */
+      setNumberOfDropWrapper((prevState) => prevState + 1);
+    }
+    if (!isDestinationColumnSelected && pathwayComponentCards.length === 0) {
+      /* 
+        this block is to prevent to drop a card anywhere instead of destination column
+      */
+      return;
+    }
+
     if (isDestinationColumnSelected) {
       const updatedPathwayWrapper = { ...pathwayComponent };
       const updatedPathwayComponent = { ...updatedPathwayWrapper.Pathway };
@@ -249,9 +281,11 @@ const HomePage: React.FC<Props> = ({
       ? setPathwayComponentCards([
           ...pathwayComponentCards,
           {
-            ...card,
+            ...restCardProps,
             destinationColumn,
             HasProgressionLevel,
+            RowNumber,
+            ColumnNumber: ColumnNumber - 1,
             isDestinationColumnSelected: isDestinationColumnSelected
               ? true
               : false,
@@ -261,8 +295,10 @@ const HomePage: React.FC<Props> = ({
           pathwayComponentCards
             .filter((item: any) => item.CTID !== card.CTID)
             .concat({
-              ...card,
+              ...restCardProps,
               HasProgressionLevel,
+              RowNumber,
+              ColumnNumber,
               isDestinationColumnSelected: isDestinationColumnSelected
                 ? true
                 : false,
@@ -321,186 +357,225 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
+
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
-      return (
-        <div key={index} style={{ display: 'flex' }}>
-          <DropWrapper
-            id={column.id}
-            onDrop={onDropHandler}
-            key={column.Id}
-            index={index}
-            column={column.Name}
-            number={column.number}
-            forwardRef={wrapperRef}
-            HasProgressionLevel={column.CTID}
-            isDestinationColumnSelected={column?.isDestinationColumnSelected}
-            destinationColumn={!!column?.destinationComponent}
-            width="450px"
+      const columnNumber = pathwayComponentCards
+        .filter((card: any) => card.HasProgressionLevel === column.CTID)
+        .reduce((acc: any, curr: any) => {
+          if (acc >= curr.ColumnNumber) {
+            return acc;
+          } else {
+            return curr.ColumnNumber;
+          }
+        }, 1);
+
+      {
+        return (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}
           >
-            <div
-              style={{
-                height: '100vh',
-                backgroundColor: `${index % 2 !== 0 ? '#f0f0f0' : '#ffffff'}`,
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'column',
-                position: 'relative',
-              }}
-            >
-              <Xwrapper>
-                {pathwayComponentCards.length > 0 &&
-                  pathwayComponentCards
-                    .filter(
-                      (card: any) => card.HasProgressionLevel === column.CTID
-                    )
-                    .map((item: any) => (
-                      <MultiCard
-                        isDraggableCardVisible={isDraggableCardVisible}
-                        constraintIcon={constraintIcon}
+            {Array.from(Array(columnNumber || 1).keys()).map(
+              (column_num: any) => (
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    height: '100vh',
+                    flexDirection: 'column',
+                    backgroundColor: `${
+                      index % 2 !== 0 ? '#f3f4f6' : '#e1e5e8'
+                    }`,
+                  }}
+                >
+                  {Array.from(Array(numberOfDropWrapper).keys()).map(
+                    (rowNumber: any, index: any) => (
+                      <DropWrapper
+                        id={column.id}
+                        onDrop={onDropHandler}
+                        key={column.Id}
+                        index={index}
+                        column={column.Name}
                         number={column.number}
                         forwardRef={wrapperRef}
-                        onClick={() => {
-                          setRightPanelData(item);
-                          setShowRightPanel(true);
-                        }}
-                        getEndPoints={setEndpoints}
-                        key={item.id}
-                        id={item.CTID}
-                        isCredentialCard={item.Type.toLowerCase().includes(
-                          'credential'.toLowerCase()
-                        )}
-                        isCourseCard={
-                          item.Type.toLowerCase().includes(
-                            'basic'.toLowerCase()
-                          ) ||
-                          item.Type.toLowerCase().includes(
-                            'AssessmentComponent'.toLowerCase()
-                          )
+                        HasProgressionLevel={column.CTID}
+                        CTID={column.CTID}
+                        isDestinationColumnSelected={
+                          column?.isDestinationColumnSelected
                         }
-                        isConditionalCard={item.Type.toLowerCase().includes(
-                          'condition'.toLowerCase()
-                        )}
-                        isDestination={
-                          item?.isDestinationColumnSelected ||
-                          item.Type.toLowerCase().includes(
-                            'destination'.toLowerCase()
-                          )
-                        }
-                        data={item}
-                        setIsZoomDisabled={setIsZoomDisabled}
-                        status={column.Id}
-                        inProgressLevel={column.CTID}
-                        leftpanelSelectedElem={leftpanelSelectedElem}
-                        onSelectDragElemenet={onSelectDragElemenet}
-                        onMoveItem={onMoveItem}
-                      />
-                    ))}
-                {!showAddDestination && (
-                  <MultiCard
-                    onClick={() => setShowRightPanel(true)}
-                    key={0}
-                    id={0}
-                    isAddDestination={
-                      column?.isDestinationColumnSelected ? true : false
-                    }
-                    getEndPoints={setEndpoints}
-                    data={{ Type: 'addDestination' }}
-                    destinationComponent={column?.isDestinationColumnSelected}
-                    setIsZoomDisabled={setIsZoomDisabled}
-                    status={column.Id}
-                    inProgressLevel={column.CTID}
-                    onSelectDragElemenet={onSelectDragElemenet}
-                    onMoveItem={onMoveItem}
-                    number={column.number}
-                    forwardRef={wrapperRef}
-                    leftpanelSelectedElem={leftpanelSelectedElem}
-                  />
-                )}
-                {showAddDestination &&
-                  column?.CTID === getLastColumn('last') &&
-                  pathwayComponentCards?.length <= 1 && (
-                    <MultiCard
-                      onClick={() => setShowRightPanel(true)}
-                      key={0}
-                      id={0}
-                      firstComponent={
-                        column?.CTID === getLastColumn('last') ? true : false
-                      }
-                      getEndPoints={setEndpoints}
-                      isAddFirst={
-                        column?.CTID === getLastColumn('last') ? true : false
-                      }
-                      data={{ Type: 'addDestination' }}
-                      destinationComponent={column?.isDestinationColumnSelected}
-                      setIsZoomDisabled={setIsZoomDisabled}
-                      status={column.Id}
-                      inProgressLevel={column.CTID}
-                      onSelectDragElemenet={onSelectDragElemenet}
-                      onMoveItem={onMoveItem}
-                      number={column.number}
-                      forwardRef={wrapperRef}
-                      leftpanelSelectedElem={leftpanelSelectedElem}
-                    />
+                        destinationColumn={!!column?.destinationComponent}
+                        width="450px"
+                        rowNumber={rowNumber + 1}
+                        columnNumber={columnNumber}
+                        colNumber={columnNumber || 1}
+                        column_num={column_num}
+                        setOverlayData={setOverlayData}
+                        overlayData={overlayData}
+                      >
+                        <div
+                          style={{
+                            height: '100vh',
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            position: 'relative',
+                          }}
+                        >
+                          <Xwrapper>
+                            {pathwayComponentCards.length > 0 &&
+                              pathwayComponentCards
+                                .filter(
+                                  (card: any) =>
+                                    /* here we are mapping the pathwayComponets to respective progression level and rowNumber and columnNumber */
+                                    card.HasProgressionLevel === column.CTID &&
+                                    card.RowNumber === rowNumber + 1 &&
+                                    card.ColumnNumber === column_num + 1
+                                )
+                                .map((item: any) => (
+                                  <MultiCard
+                                    isDraggableCardVisible={
+                                      isDraggableCardVisible
+                                    }
+                                    constraintIcon={constraintIcon}
+                                    number={column.number}
+                                    forwardRef={wrapperRef}
+                                    onClick={() => {
+                                      setRightPanelData(item);
+                                      setShowRightPanel(true);
+                                    }}
+                                    getEndPoints={setEndpoints}
+                                    key={item.id}
+                                    id={item.CTID}
+                                    isCredentialCard={item.Type.toLowerCase().includes(
+                                      'credential'.toLowerCase()
+                                    )}
+                                    isCourseCard={
+                                      item.Type.toLowerCase().includes(
+                                        'basic'.toLowerCase()
+                                      ) ||
+                                      item.Type.toLowerCase().includes(
+                                        'AssessmentComponent'.toLowerCase()
+                                      )
+                                    }
+                                    isConditionalCard={item.Type.toLowerCase().includes(
+                                      'condition'.toLowerCase()
+                                    )}
+                                    isDestination={
+                                      item?.isDestinationColumnSelected ||
+                                      item.Type.toLowerCase().includes(
+                                        'destination'.toLowerCase()
+                                      )
+                                    }
+                                    data={item}
+                                    setIsZoomDisabled={setIsZoomDisabled}
+                                    status={column.Id}
+                                    inProgressLevel={column.CTID}
+                                    leftpanelSelectedElem={
+                                      leftpanelSelectedElem
+                                    }
+                                    onSelectDragElemenet={onSelectDragElemenet}
+                                    onMoveItem={onMoveItem}
+                                    rowNumber={rowNumber + 1}
+                                    columnNumber={column_num}
+                                  />
+                                ))}
+
+                            {!showAddDestination && index === 1 && (
+                              <MultiCard
+                                onClick={() => setShowRightPanel(true)}
+                                key={uuidv4()}
+                                id={0}
+                                isAddDestination={
+                                  column?.isDestinationColumnSelected
+                                    ? true
+                                    : false
+                                }
+                                getEndPoints={setEndpoints}
+                                data={{ Type: 'addDestination' }}
+                                destinationComponent={
+                                  column?.isDestinationColumnSelected
+                                }
+                                setIsZoomDisabled={setIsZoomDisabled}
+                                status={column.Id}
+                                inProgressLevel={column.CTID}
+                                onSelectDragElemenet={onSelectDragElemenet}
+                                onMoveItem={onMoveItem}
+                                number={column.number}
+                                forwardRef={wrapperRef}
+                                leftpanelSelectedElem={leftpanelSelectedElem}
+                              />
+                            )}
+                            {/* {showAddDestination &&
+                      column?.CTID === getLastColumn() &&
+                      pathwayComponentCards?.length <= 1 && (
+                        <MultiCard
+                          onClick={() => setShowRightPanel(true)}
+                          key={0}
+                          id={0}
+                          firstComponent={
+                            column?.CTID === getLastColumn() ? true : false
+                          }
+                          getEndPoints={setEndpoints}
+                          isAddFirst={
+                            column?.CTID === getLastColumn() ? true : false
+                          }
+                          data={{ Type: 'addDestination' }}
+                          destinationComponent={
+                            column?.isDestinationColumnSelected
+                          }
+                          setIsZoomDisabled={setIsZoomDisabled}
+                          status={column.Id}
+                          inProgressLevel={column.CTID}
+                          onSelectDragElemenet={onSelectDragElemenet}
+                          onMoveItem={onMoveItem}
+                          number={column.number}
+                          forwardRef={wrapperRef}
+                          leftpanelSelectedElem={leftpanelSelectedElem}
+                        />
+                      )} */}
+                            {connection.length
+                              ? connection.map((items: any, idx: number) => (
+                                  <Xarrow
+                                    path="grid"
+                                    strokeWidth={1}
+                                    zIndex={1000}
+                                    headSize={16}
+                                    color="black"
+                                    start={items?.start}
+                                    end={items?.end}
+                                    key={idx}
+                                    labels={
+                                      <span className={Styles.addConditionIcon}>
+                                        <FontAwesomeIcon
+                                          icon={faXmarkCircle}
+                                          style={{ cursor: 'pointer' }}
+                                          onClick={() =>
+                                            removeConnection(items)
+                                          }
+                                        />
+                                      </span>
+                                    }
+                                    startAnchor="auto"
+                                    endAnchor="auto"
+                                    // gridBreak="20%"
+                                  />
+                                ))
+                              : ''}
+                          </Xwrapper>
+                        </div>
+                      </DropWrapper>
+                    )
                   )}
-                {!isDestinationSelected &&
-                  !showAddDestination &&
-                  pathwayComponentCards?.length < 1 &&
-                  column?.CTID === getLastColumn('first') && (
-                    <MultiCard
-                      onClick={() => noop}
-                      key={1000}
-                      id={1000}
-                      firstComponent={
-                        column?.CTID === getLastColumn('first') ? true : false
-                      }
-                      getEndPoints={setEndpoints}
-                      isAddFirst={
-                        column?.CTID === getLastColumn('first') ? true : false
-                      }
-                      data={{ Type: 'addFirst' }}
-                      destinationComponent={column?.isDestinationColumnSelected}
-                      setIsZoomDisabled={setIsZoomDisabled}
-                      status={column.Id}
-                      inProgressLevel={column.CTID}
-                      onSelectDragElemenet={onSelectDragElemenet}
-                      onMoveItem={onMoveItem}
-                      number={column.number}
-                      forwardRef={wrapperRef}
-                      leftpanelSelectedElem={leftpanelSelectedElem}
-                    />
-                  )}
-                {connection.length
-                  ? connection.map((items: any, idx: number) => (
-                      <Xarrow
-                        path="grid"
-                        strokeWidth={1}
-                        zIndex={1000}
-                        headSize={16}
-                        color="black"
-                        start={items?.start}
-                        end={items?.end}
-                        key={idx}
-                        labels={
-                          <span className={Styles.addConditionIcon}>
-                            <FontAwesomeIcon
-                              icon={faXmarkCircle}
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => removeConnection(items)}
-                            />
-                          </span>
-                        }
-                        startAnchor="auto"
-                        endAnchor="auto"
-                        // gridBreak="20%"
-                      />
-                    ))
-                  : ''}
-              </Xwrapper>
-            </div>
-          </DropWrapper>
-        </div>
-      );
+                </div>
+              )
+            )}
+          </div>
+        );
+      }
     }
 
     return (
@@ -628,7 +703,7 @@ const HomePage: React.FC<Props> = ({
                           columnsData?.map((column: any, index: any) => (
                             <div
                               id={column.Id}
-                              key={column.id}
+                              key={index}
                               style={{
                                 textAlign: 'center',
                                 width: 'auto',
