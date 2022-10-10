@@ -306,6 +306,13 @@ const HomePage: React.FC<Props> = ({
         );
   };
 
+  // useEffect(() => {
+  //   if(refreshConncetion) {
+  //     setConnection(connection);
+  //     setRefreshConncetion(false)
+  //   }
+  // },[refreshConncetion])
+
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {
@@ -328,6 +335,13 @@ const HomePage: React.FC<Props> = ({
           end: id,
         },
       ]);
+      pathwayComponentCards?.map((card: any) => {
+        if (point?.start === card?.CTID) {
+          if (!card?.HasChild?.includes(id)) {
+            card?.HasChild.push(id);
+          }
+        }
+      });
       setConstraintIcon(true);
     } else {
       setPoint({
@@ -351,6 +365,12 @@ const HomePage: React.FC<Props> = ({
   const removeConnection = (item: any) => {
     const newarray = connection;
     const index = newarray.findIndex((items: any) => items === item);
+    pathwayComponentCards?.map((card: any) => {
+      if (card?.CTID === item?.start) {
+        const idx = card?.HasChild.findIndex((i: any) => i === item?.end);
+        card?.HasChild.splice(idx, 1);
+      }
+    });
     newarray.splice(index, 1);
     setConnection([...newarray]);
     document.getElementById(item?.start)?.classList?.remove('active');
