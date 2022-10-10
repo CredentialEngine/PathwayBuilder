@@ -81,6 +81,7 @@ const MultiCard: React.FC<Props> = ({
     setVisibleConstraintCondition(bool);
   };
 
+  const darkColor = '#0A2942';
   const getOnClick = (e: any) => {
     /* 
     Below commented code is for increasing width for dropWrapper
@@ -145,7 +146,9 @@ const MultiCard: React.FC<Props> = ({
     }
   };
 
-  const darkColor = '#0A2942';
+  const onPlusCircleClickHandler = () => {
+    setVisibleConstraintCondition(true);
+  };
 
   return (
     <>
@@ -604,7 +607,7 @@ const MultiCard: React.FC<Props> = ({
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      setVisibleConstraintCondition(true);
+                      onPlusCircleClickHandler();
                     }}
                   />
                 </div>

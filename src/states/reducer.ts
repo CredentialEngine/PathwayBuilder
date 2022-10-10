@@ -90,7 +90,7 @@ const initState: RootState = {
       LastUpdated: '',
     },
     PathwayComponents: [],
-    PendingComponent: [],
+    PendingComponents: [],
     ProgressionLevels: [],
     ProgressionModels: [],
     DeletedComponentConditions: [],
@@ -174,8 +174,8 @@ export default (state = initState, action: { type: string; payload: any }) => {
         ...state,
         mappedData: {
           ...state?.mappedData,
-          PendingComponent: [
-            ...state?.mappedData?.PendingComponent,
+          PendingComponents: [
+            ...state?.mappedData?.PendingComponents,
             ...action?.payload,
           ],
         },

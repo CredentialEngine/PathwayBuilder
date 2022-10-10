@@ -34,7 +34,7 @@ export class PathwayWrapperEntity implements PathwayWrapper {
   ProgressionLevels: ProgressionLevels[];
   ComponentConditions: ComponentConditions[];
   Constraints: Constraints[];
-  PendingComponent: PathwayComponent[];
+  PendingComponents: PathwayComponent[];
   DeletedComponents: [];
   DeletedComponentConditions: [];
 }

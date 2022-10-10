@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
+import { updateMappedDataRequest } from '../../states/actions';
 import { getAllConstraintOperand } from '../../utils/fetchSearchResponse';
 
 import DebounceSelect from '../addPathwayForm/debounceSelect';
@@ -39,13 +40,26 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const [leftSourcesSelected, setleftSourceSelected] = useState<any>([]);
   const [rightSourcedata, setRightSourceData] = useState<any>([]);
   const [rightSourceSelected, setRightSourceSelected] = useState<any>([]);
+  const [allConditionalComponents, setAllConditionalComponents] = useState<any>(
+    []
+  );
+
+  useEffect(() => {
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    updatedPathwayWrapper.ComponentCondition = allConditionalComponents;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+  }, [allConditionalComponents]);
 
   const dispatch = useDispatch();
+
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
 
   const onInputChangeHandler = (e: any) => {
     const updatedData = { ...componentConditionFields };
     const { name, value } = e.target;
     updatedData[name] = value;
+
     setComponentConditionFields(updatedData);
   };
   // older key
@@ -172,49 +186,29 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   };
 
   const saveCondition = () => {
-    !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
     const Constraint = {
       ParentIdentifier: componentConditionFields.ParentIdentifier,
-      // Id
-      // RowId
-      // Name
+
       Description: componentConditionFields.Description,
-      // LeftAction :
       LeftSource: leftSourcesSelected,
       Comparator: componentConditionFields.Comparator,
-      // RightAction
       RightSource: rightSourceSelected,
-
-      // rowid: 'asdasdasdasd',
-      // leftSource: [
-      //   {
-      //     URI: 'ceterms:AdvancedStandingAction',
-      //     Name: leftSourcedata,
-      //   },
-      // ],
       comparator: `compare:${selectedComparators}`,
-      // rightSource: [
-      //   {
-      //     URI: 'ceterms:AdvancedStandingAction',
-      //     Name: rightSourcedata,
-      //   },
-      // ],
     };
     const ComponentCondition = {
       ParentIdentifier: componentConditionFields.ParentIdentifier,
-      // Id;
-      // RowId;
-      // Name;
       Description: componentConditionFields.Description,
       RequiredNumber: componentConditionFields.RequiredNumber,
       LogicalOperator: componentConditionFields.LogicalOperator,
-      // HasCondition;
       HasConstraint: Constraint,
-      // LastUpdated;
-      // TargetComponent;
     };
 
-    ComponentCondition;
+    setAllConditionalComponents([
+      ...allConditionalComponents,
+      ComponentCondition,
+    ]);
+
+    !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
   };
 
   return (
@@ -236,7 +230,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           <InputBox
             onChange={onInputChangeHandler}
             placeholder=""
-            maxLength={0}
+            name="ParentIdentifier"
             value={componentConditionFields.ParentIdentifier}
           />
         </Form.Item>
@@ -244,9 +238,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           <label>Condition Description</label>
           <TextArea
             onChange={onInputChangeHandler}
-            placeholder=""
-            maxLength={0}
             rows={3}
+            name="Description"
             value={componentConditionFields.Description}
           />
         </Form.Item>
@@ -257,8 +250,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               <InputBox
                 type="number"
                 onChange={onInputChangeHandler}
-                placeholder=""
                 min={1}
+                name="RequiredNumber"
                 value={componentConditionFields.RequiredNumber}
               />
             </Form.Item>
