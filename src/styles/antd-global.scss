@@ -364,4 +364,13 @@ body {
       background-color: $primary;
     }
   }
+
+  .ant-tag-has-color
+  // .ant-tag-has-color a,
+  // .ant-tag-has-color a:hover,
+  // .ant-tag-has-color .anticon-close,
+  // .ant-tag-has-color .anticon-close:hover
+  {
+    color: #000;
+  }
 }

@@ -57,7 +57,7 @@ export const Message = ({
         onClose={onClose}
       />
     ),
-    duration: 3,
+    duration: 0,
     icon: <span />,
   });
 };

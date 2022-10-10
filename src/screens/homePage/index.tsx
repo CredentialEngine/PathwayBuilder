@@ -610,6 +610,7 @@ const HomePage: React.FC<Props> = ({
                 disabled={isZoomDisabled}
                 centerZoomedOut={false}
                 centerOnInit={false}
+                wheel={{ disabled: true }}
               >
                 {({ setTransform, resetTransform }) => (
                   <React.Fragment>
