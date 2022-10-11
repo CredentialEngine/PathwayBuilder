@@ -42,6 +42,8 @@ interface Props {
   constraintIcon?: boolean;
   number: number;
   forwardRef: any;
+  leftpanelSelectedElem: any;
+  onDelete?: any;
   rowNumber: number;
   columnNumber: number;
 }
@@ -66,6 +68,8 @@ const MultiCard: React.FC<Props> = ({
   getEndPoints,
   isDraggableCardVisible,
   constraintIcon,
+  onDelete,
+  // onMoveItem,
   // number,
   // forwardRef,
   rowNumber,
@@ -656,6 +660,7 @@ const MultiCard: React.FC<Props> = ({
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
+                              onDelete(data);
                             }}
                           >
                             Delete

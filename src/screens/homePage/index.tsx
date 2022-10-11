@@ -305,6 +305,15 @@ const HomePage: React.FC<Props> = ({
         );
   };
 
+  const onDeleteHandler = (data: any) => {
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    const updatedPathwayComponent = pathwayComponentCards.filter(
+      (item: any) => item.CTID !== data.CTID
+    );
+    updatedPathwayWrapper.Pathway = updatedPathwayComponent;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setPathwayComponentCards(updatedPathwayComponent);
+  };
   // useEffect(() => {
   //   if(refreshConncetion) {
   //     setConnection(connection);
@@ -500,6 +509,7 @@ const HomePage: React.FC<Props> = ({
                                     onMoveItem={onMoveItem}
                                     rowNumber={rowNumber + 1}
                                     columnNumber={column_num}
+                                    onDelete={onDeleteHandler}
                                   />
                                 ))}
 
@@ -526,6 +536,9 @@ const HomePage: React.FC<Props> = ({
                                 number={column.number}
                                 forwardRef={wrapperRef}
                                 leftpanelSelectedElem={leftpanelSelectedElem}
+                                rowNumber={0}
+                                columnNumber={0}
+                                onDelete={onDeleteHandler}
                               />
                             )}
                             {/* {showAddDestination &&
