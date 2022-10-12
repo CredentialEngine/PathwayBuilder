@@ -22,7 +22,13 @@ const SelectOrganisation: React.FC<Props> = ({
   );
 
   useEffect(() => {
-    getSelectedOrganisation && getSelectedOrganisation(selectedOrganisation);
+    if (selectedOrganisation !== 'Select an organization') {
+      organisationList?.map((organisation: any) => {
+        if (selectedOrganisation === organisation?.Id) {
+          getSelectedOrganisation && getSelectedOrganisation(organisation);
+        }
+      });
+    }
   }, [selectedOrganisation]);
 
   return (
