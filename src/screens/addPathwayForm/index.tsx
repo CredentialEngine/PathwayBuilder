@@ -232,15 +232,18 @@ const AddPathwayForm: React.FC<Props> = ({
     (state: any) => state.addPathwayFormReducer.allHasProgressionModel
   );
 
+  const { selectedOrganization } = pathwayWrapper;
+
   useEffect(() => {
     if (allHasProgressionModel.valid) {
       setAllProgressionModel(allHasProgressionModel.data?.Results);
     }
     if (!isEditPathwayFormVisible) {
-      if (userOrganizations?.length > 0) {
+      if (userOrganizations?.length > 0 && selectedOrganization) {
         setAddPathwayFormFields({
           ...addPathwayFormFields,
-          Organization: userOrganizations[0],
+          ...addPathwayFormFields?.Pathway,
+          Organization: selectedOrganization,
         });
       }
     }
