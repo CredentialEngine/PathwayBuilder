@@ -25,4 +25,5 @@ export type RootState = {
     valid: boolean;
   };
   isDestinationSelected: boolean;
+  selectedOrganization: any;
 };

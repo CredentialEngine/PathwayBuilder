@@ -278,6 +278,26 @@ const HomePage: React.FC<Props> = ({
   ) => {
     const { isPendingCards, ...restCardProps } = card;
 
+    // const conditinalComponentColumnNumber =
+    //   updatedPathwayComponentConditionCards
+    //     .filter(
+    //       (condtional_card: any) =>
+    //         condtional_card.HasProgressionLevel === HasProgressionLevel
+    //     )
+    //     .reduce((acc: any, curr: any) => {
+    //       if (acc >= curr.ColumnNumber) {
+    //         return acc;
+    //       } else {
+    //         return curr.ColumnNumber;
+    //       }
+    //     }, 1);
+
+    // ColumnNumber = Math.max(ColumnNumber, conditinalComponentColumnNumber);
+    // console.log(
+    //   'ColumnNumber --->',
+    //   ColumnNumber,
+    //   conditinalComponentColumnNumber
+    // );
     if (columnNumberEsixt && !isPendingCards) {
       /* 
         this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
@@ -355,6 +375,22 @@ const HomePage: React.FC<Props> = ({
             })
         );
   };
+
+  const onDeleteHandler = (data: any) => {
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    const updatedPathwayComponent = pathwayComponentCards.filter(
+      (item: any) => item.CTID !== data.CTID
+    );
+    updatedPathwayWrapper.Pathway = updatedPathwayComponent;
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    setPathwayComponentCards(updatedPathwayComponent);
+  };
+  // useEffect(() => {
+  //   if(refreshConncetion) {
+  //     setConnection(connection);
+  //     setRefreshConncetion(false)
+  //   }
+  // },[refreshConncetion])
 
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
@@ -565,6 +601,7 @@ const HomePage: React.FC<Props> = ({
                                   rowNumber={rowNumber + 1}
                                   columnNumber={column_num}
                                   HasProgressionLevel={column.CTID}
+                                  onDelete={onDeleteHandler}
                                 />
                               ))}
 
@@ -591,6 +628,7 @@ const HomePage: React.FC<Props> = ({
                               number={column.number}
                               forwardRef={wrapperRef}
                               leftpanelSelectedElem={leftpanelSelectedElem}
+                              onDelete={onDeleteHandler}
                             />
                           )}
                           {/* {showAddDestination &&

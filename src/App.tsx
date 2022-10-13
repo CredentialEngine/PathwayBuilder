@@ -16,7 +16,10 @@ import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
-import { getCurrentUserDataRequest } from './states/actions';
+import {
+  getCurrentUserDataRequest,
+  saveSelectedOrganization,
+} from './states/actions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,7 +45,9 @@ const App = () => {
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
-    useState('');
+    useState<any>();
+
+  console.log('selectedOrganisation', selectedOrganisationValue);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
 
@@ -99,6 +104,9 @@ const App = () => {
   };
 
   const selectOrgOkHandler = () => {
+    if (selectedOrganisationValue) {
+      dispatch(saveSelectedOrganization(selectedOrganisationValue));
+    }
     setsSelectOrganizationsVisble(false);
     setIsCreatePathwayVisible(true);
   };
@@ -128,8 +136,8 @@ const App = () => {
 
   const closeCreatePathwayModal = () => {
     Modal.confirm({
-      cancelText: 'Cancel',
-      okText: 'Ok',
+      cancelText: 'No',
+      okText: 'Yes',
       title: 'Are you sure you want to cancel.',
       onOk: () => onCreatePathwayCancelHandler(),
     });
@@ -160,6 +168,7 @@ const App = () => {
           title="Add a Pathway"
           footer={createPathwayFooter()}
           width={550}
+          onCancel={() => setIsCreatePathwayVisible(false)}
         >
           <CreatePathway />
         </Modal>
