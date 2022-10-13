@@ -170,6 +170,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       updateMappedDataRequest({
         ...addPathwayWrapperFields,
         PendingComponents: selectedResource,
+        ComponentConditions: [],
       })
     );
   };

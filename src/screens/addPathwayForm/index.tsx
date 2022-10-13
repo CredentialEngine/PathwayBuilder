@@ -57,6 +57,7 @@ const tagRender = (props: CustomTagProps) => {
     event.preventDefault();
     event.stopPropagation();
   };
+
   return (
     <Tag
       color={value}
