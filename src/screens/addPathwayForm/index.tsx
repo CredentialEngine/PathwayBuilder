@@ -1,3 +1,6 @@
+import CloseOutlined from '@ant-design/icons/CloseOutlined';
+import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Row, Col, Form, Divider, Tag } from 'antd';
 
 import _ from 'lodash';
@@ -64,9 +67,9 @@ const tagRender = (props: CustomTagProps) => {
       onMouseDown={onPreventMouseDown}
       closable={closable}
       onClose={onClose}
-      style={{ marginRight: 3 }}
+      className={styles.content}
     >
-      {label}
+      {label && label.toString().substring(0, 72)}
     </Tag>
   );
 };
@@ -118,6 +121,45 @@ const AddPathwayForm: React.FC<Props> = ({
     SubjectWebpage: false,
     Organization: false,
   });
+
+  const [toolTip, setToolTip] = useState<any>([
+    {
+      type: 'Industry',
+      isVisible: false,
+    },
+    {
+      type: 'Keywords',
+      isVisible: false,
+    },
+    {
+      type: 'Occupations',
+      isVisible: false,
+    },
+    {
+      type: 'Instructional',
+      isVisible: false,
+    },
+    {
+      type: 'Subjects',
+      isVisible: false,
+    },
+    {
+      type: 'Website',
+      isVisible: false,
+    },
+    {
+      type: 'Model',
+      isVisible: false,
+    },
+    {
+      type: 'Schemes',
+      isVisible: false,
+    },
+    {
+      type: 'Details',
+      isVisible: false,
+    },
+  ]);
 
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
     keywords: '',
@@ -485,6 +527,66 @@ const AddPathwayForm: React.FC<Props> = ({
       })
     );
   };
+
+  const customToolTipIcon = (type: any) => (
+    <span
+      className={styles.iconSpacing}
+      style={{ position: 'absolute', right: 0, top: -23, zIndex: 200 }}
+      onClick={() => onShowCloseToolTip(type, true)}
+    >
+      <span className="fa-layers fa-fw fa-lg">
+        <FontAwesomeIcon icon={faCircle} className={styles.iconPrimary} />
+        <FontAwesomeIcon
+          icon={faQuestion}
+          transform="shrink-6"
+          className={styles.iconSecondary}
+        />
+      </span>
+    </span>
+  );
+
+  const customToolTip = (type: any) => (
+    <Tag
+      color="rgb(220,250,249)"
+      style={{
+        width: '100%',
+        wordWrap: 'break-word',
+        padding: 10,
+        paddingRight: 20,
+        marginTop: 10,
+        blockOverflow: 'ellipsis',
+        whiteSpace: 'pre-wrap',
+      }}
+    >
+      <CloseOutlined
+        style={{
+          marginLeft: 3,
+          fontSize: '10',
+          position: 'absolute',
+          right: 5,
+          top: 55,
+          cursor: 'pointer',
+        }}
+        onClick={() => onShowCloseToolTip(type, false)}
+      />
+      {`Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      Lorem Ipsum has been the industry's standard dummy text ever since the
+      1500s, when an unknown printer took a galley of type and scrambled it to
+      make a type specimen book. It has survived not only five centuries, but
+      also the leap into electronic typesetting, remaining essentially
+      unchanged.`}
+    </Tag>
+  );
+
+  const onShowCloseToolTip = (type: any, visibility: boolean) => {
+    const toolTipArray =
+      toolTip &&
+      toolTip.map((item: any) =>
+        item.type === type ? { ...item, isVisible: visibility } : item
+      );
+    setToolTip(toolTipArray);
+  };
+
   return (
     <>
       <Form className={styles.addPathwayForm}>
@@ -555,16 +657,21 @@ const AddPathwayForm: React.FC<Props> = ({
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
-              tooltip="This is a required field"
+              // tooltip="This is a required field"
             >
+              {customToolTipIcon('Industry')}
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={addPathwayFormFields?.IndustryType}
+                // value={addPathwayFormFields?.IndustryType}
+                defaultValue={addPathwayFormFields?.IndustryType}
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
               />
+
+              {toolTip.find((item: any) => item.type === 'Industry')
+                .isVisible && customToolTip('Industry')}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -575,6 +682,7 @@ const AddPathwayForm: React.FC<Props> = ({
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
             >
+              {customToolTipIcon('Keywords')}
               <MultiSelect
                 mode="tags"
                 tagRender={tagRender}
@@ -583,6 +691,8 @@ const AddPathwayForm: React.FC<Props> = ({
                 value={addPathwayFormFields?.Keyword}
                 onChange={(e) => onSelectChangeHandler(e, 'Keyword')}
               />
+              {toolTip.find((item: any) => item.type === 'Keywords')
+                .isVisible && customToolTip('Keywords')}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -593,14 +703,18 @@ const AddPathwayForm: React.FC<Props> = ({
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
             >
+              {customToolTipIcon('Occupations')}
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={addPathwayFormFields?.OccupationType}
+                //value={addPathwayFormFields?.OccupationType}
+                defaultValue={addPathwayFormFields?.OccupationType}
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
               />
+              {toolTip.find((item: any) => item.type === 'Occupations')
+                .isVisible && customToolTip('Occupations')}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -612,10 +726,12 @@ const AddPathwayForm: React.FC<Props> = ({
               validateTrigger="onBlur"
             >
               <>
+                {customToolTipIcon('Instructional')}
                 <DebounceSelect
                   mode="multiple"
                   tagRender={tagRender}
-                  value={addPathwayFormFields?.InstructionalProgram}
+                  //value={addPathwayFormFields?.InstructionalProgram}
+                  defaultValue={addPathwayFormFields?.InstructionalProgram}
                   placeholder="Select Instructional Program"
                   fetchOptions={fetchInstructionalProgramList}
                   onSelect={(e: any) =>
@@ -623,6 +739,8 @@ const AddPathwayForm: React.FC<Props> = ({
                   }
                 />
               </>
+              {toolTip.find((item: any) => item.type === 'Instructional')
+                .isVisible && customToolTip('Instructional')}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -633,6 +751,7 @@ const AddPathwayForm: React.FC<Props> = ({
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
             >
+              {customToolTipIcon('Subjects')}
               <MultiSelect
                 mode="tags"
                 tagRender={tagRender}
@@ -641,6 +760,8 @@ const AddPathwayForm: React.FC<Props> = ({
                 value={addPathwayFormFields?.Subject}
                 onChange={(e) => onSelectChangeHandler(e, 'Subject')}
               />
+              {toolTip.find((item: any) => item.type === 'Subjects')
+                .isVisible && customToolTip('Subjects')}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -661,6 +782,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   : null
               }
             >
+              {/* {customToolTipIcon("Website")} */}
               <InputBox
                 placeholder="add a URL"
                 maxLength={75}
@@ -673,6 +795,8 @@ const AddPathwayForm: React.FC<Props> = ({
                     : setisTouched({ ...isTouched, SubjectWebpage: true })
                 }
               />
+              {/* {toolTip.find((item:any) => item.type === 'Website').isVisible &&
+              customToolTip("Website")} */}
             </Form.Item>
           </Col>
           <Divider className={styles.divider} />

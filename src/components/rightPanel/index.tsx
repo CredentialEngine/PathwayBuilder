@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Drawer, Row, Collapse } from 'antd';
 import { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const { Panel } = Collapse;
 import Button from '../button';
@@ -57,6 +58,17 @@ const RightPanel: React.FC<Props> = ({
     setDestinationText(truncatedDescription);
     setDestinationTextCondition(true);
   };
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const organizationName =
+    pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name;
+  const ctid = panelData?.CTID;
+  const type = panelData?.Type;
+  const url = `https://sandbox.credentialengine.org/finder/${type}/${ctid}`;
+
+  const openInNewTab = () => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <Drawer visible={visible} closable={true} className={styles.right_drawer}>
       <div ref={ref} className={styles.rightPanelContainer}>
@@ -68,14 +80,17 @@ const RightPanel: React.FC<Props> = ({
         <Divider className={styles.divider} />
         <Row className={styles.topRow}>
           <Row>
-            <FontAwesomeIcon
-              icon={faCubes}
-              style={{ height: '30px' }}
-              onClick={() => onCloseHandler(false)}
-            />
-            <span className={styles.name}>
-              {extractComponentType(panelData?.Type)}
-            </span>
+            <div style={{ flexDirection: 'row', display: 'flex' }}>
+              <FontAwesomeIcon
+                icon={faCubes}
+                style={{ height: '30px' }}
+                onClick={() => onCloseHandler(false)}
+              />
+              <span className={styles.name}>
+                {/* {extractComponentType(panelData?.Type)} */}
+                {panelData && panelData?.Name}
+              </span>
+            </div>
           </Row>
           <Row>
             <Button
@@ -92,7 +107,8 @@ const RightPanel: React.FC<Props> = ({
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Owned and Offered by</p>
-          <p className={styles.value}>{panelData?.ProxyForLabel}</p>
+          {/* <p className={styles.value}>{panelData?.ProxyForLabel}</p> */}
+          <p className={styles.value}>{organizationName}</p>
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Credential Type</p>
@@ -108,7 +124,7 @@ const RightPanel: React.FC<Props> = ({
           <Button
             className={styles.button}
             type={Type.LINK}
-            onClick={noop}
+            onClick={openInNewTab}
             text="View the Credential"
           />
         </Row>

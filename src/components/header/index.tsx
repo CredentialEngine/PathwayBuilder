@@ -106,7 +106,7 @@ const Header = (props: Props) => {
   useEffect(() => {
     let interval: any;
     const counter = 30000;
-    if (pathwayWrapper.Pathway.Name !== '' && isLeftPanelVisible) {
+    if (pathwayWrapper?.Pathway?.Name !== '' && isLeftPanelVisible) {
       interval = setTimeout(() => {
         dispatch(saveDataForPathwayRequest(pathwayWrapper));
       }, counter);

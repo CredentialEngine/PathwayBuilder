@@ -29,11 +29,13 @@ interface Props {
   isLeftPanelVisible: boolean;
   setIsEditPathwayFormVisible: (a: boolean) => void;
   isDestinationColumnSelected: boolean;
+  onClickPreselectComponent?: any;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
   setIsEditPathwayFormVisible,
   isDestinationColumnSelected,
+  onClickPreselectComponent,
 }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
@@ -751,6 +753,7 @@ const HomePage: React.FC<Props> = ({
                 setDraggableCardVisible(isDragTure)
               }
               setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+              onClickPreselectComponent={onClickPreselectComponent}
             />
           </Sider>
           <Layout

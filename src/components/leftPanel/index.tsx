@@ -19,6 +19,7 @@ export enum LeftPanelTabKey {
 const LeftPanel: React.FC<any> = ({
   isDraggableCardVisibleMethod,
   setLeftpanelSelectedElem,
+  onClickPreselectComponent,
 }) => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
@@ -96,33 +97,50 @@ const LeftPanel: React.FC<any> = ({
             onKeyUp={searchComponent}
           />
           <div className={Styles.cardwrapper}>
-            {selectedTabCards
-              .filter((v: any) =>
-                v?.Description?.toLocaleLowerCase().includes(
-                  searchValue?.toLocaleLowerCase()
+            {console.log(selectedTabCards.length)}
+            {selectedTabCards && selectedTabCards.length <= 0 ? (
+              <div className={Styles.tooltipContent}>
+                <p className={Styles.title}>Pre-select components</p>
+                <p className={Styles.content}>
+                  You can create a collection of components to drag and drop
+                  into the pathway
+                </p>
+                <p
+                  className={Styles.contentLink}
+                  onClick={onClickPreselectComponent}
+                >
+                  Pre-select components
+                </p>
+              </div>
+            ) : (
+              selectedTabCards
+                .filter((v: any) =>
+                  v?.Description?.toLocaleLowerCase().includes(
+                    searchValue?.toLocaleLowerCase()
+                  )
                 )
-              )
-              .map((v: any, i: any) => (
-                <CardWithLeftIcon
-                  draggable={true}
-                  data={v}
-                  key={i}
-                  name={v?.Name}
-                  type={v?.Type}
-                  description={v?.Description.slice(0, 30)}
-                  codedNotation={v?.CodedNotation}
-                  IconColor="black"
-                  id={v?.Id}
-                  CTID={v?.CTID}
-                  isDraggableCardVisibleMethod={(isDragTure: boolean) =>
-                    setDraggableCardVisible(isDragTure)
-                  }
-                  getUpdatedCardArr={(value: any) =>
-                    filteredSelectedCards(value)
-                  }
-                  setLeftpanelSelectedElem={setLeftpanelSelectedElem}
-                />
-              ))}
+                .map((v: any, i: any) => (
+                  <CardWithLeftIcon
+                    draggable={true}
+                    data={v}
+                    key={i}
+                    name={v?.Name}
+                    type={v?.Type}
+                    description={v?.Description.slice(0, 30)}
+                    codedNotation={v?.CodedNotation}
+                    IconColor="black"
+                    id={v?.Id}
+                    CTID={v?.CTID}
+                    isDraggableCardVisibleMethod={(isDragTure: boolean) =>
+                      setDraggableCardVisible(isDragTure)
+                    }
+                    getUpdatedCardArr={(value: any) =>
+                      filteredSelectedCards(value)
+                    }
+                    setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+                  />
+                ))
+            )}
           </div>
         </>
       ),
