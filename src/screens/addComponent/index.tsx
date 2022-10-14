@@ -41,6 +41,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     updatedPathwayWrapper.ComponentCondition = allConditionalComponents;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
   }, [allConditionalComponents]);
+
   const constraintRowData = {
     LeftAction: [],
     LeftSource: [],
@@ -98,7 +99,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const saveCondition = () => {
     const Constraint = {
       ParentIdentifier: componentConditionFields.ParentIdentifier,
-
       Description: componentConditionFields.Description,
       constraintRow,
     };
