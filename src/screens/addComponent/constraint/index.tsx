@@ -28,15 +28,14 @@ const Constraint: React.FC<Props> = (Props) => {
   const [constraintEntityFields, setConstraintEntityFields] = useState<any>(
     new ConstraintEntity()
   );
-  const [constraintData, setConstraintData] =
-    useState<any>(/* {
+  const [constraintData, setConstraintData] = useState<any>({
     LeftAction: [],
     LeftSource: [],
     Comparator: [],
     RightAction: [],
     RightSource: [],
     id: 0,
-  } */);
+  });
   const [leftSourcedata, setleftSourceData] = useState<any>([]);
   const [rightSourcedata, setRightSourceData] = useState<any>([]);
 

@@ -87,27 +87,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       // RowId
       // Name
       Description: componentConditionFields.Description,
-      // LeftAction :
-      // LeftSource: constraintData.LeftSource,
-      // Comparator: componentConditionFields.Comparator,
-
-      // RightSource: constraintData.RightSource,
-
-      // rowid: 'asdasdasdasd',
-      // leftSource: [
-      //   {
-      //     URI: 'ceterms:AdvancedStandingAction',
-      //     Name: leftSourcedata,
-      //   },
-      // ],
-      // comparator: `compare:${constraintData.Comparator}`,
-      // RightAction:
-      // rightSource: [
-      //   {
-      //     URI: 'ceterms:AdvancedStandingAction',
-      //     Name: rightSourcedata,
-      //   },
-      // ],
+      constraintRow,
     };
     const ComponentCondition = {
       ParentIdentifier: componentConditionFields.ParentIdentifier,
@@ -155,6 +135,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConstraintRow([]);
     }
   };
+  console.log(constraintRow, 'constraintRow');
+
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
