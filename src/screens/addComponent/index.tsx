@@ -206,13 +206,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </div>
         <Form.Item>
           <label>Parent Component</label>
-          <InputBox
-            disabled
-            // onChange={onInputChangeHandler}
-            // placeholder=""
-            name="ParentIdentifier"
-            value={data?.RowId}
-          />
+          <InputBox name="ParentIdentifier" value={data?.RowId} />
         </Form.Item>
         <Form.Item>
           <label>Name</label>

@@ -189,7 +189,6 @@ const MultiCard: React.FC<Props> = ({
               onMouseOver={() => setIsZoomDisabled(true)}
               id={CTID?.toString()}
               data-cardType="multiCard"
-              data-ticket="1223887"
               data-columnNumber={columnNumber}
               data-rowNumber={rowNumber}
               data-CTID={data.CTID}
@@ -493,7 +492,6 @@ const MultiCard: React.FC<Props> = ({
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
           id={CTID?.toString()}
-          data-ticket="1223887"
           data-columnNumber={columnNumber}
           data-rowNumber={rowNumber}
           data-CTID={data.CTID}

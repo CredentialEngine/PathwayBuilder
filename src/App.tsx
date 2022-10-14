@@ -45,7 +45,6 @@ const App = () => {
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState<any>();
-
   const [organisationList, setOrganisationList] = useState<any>([]);
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
