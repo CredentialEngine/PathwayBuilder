@@ -157,6 +157,9 @@ const App = () => {
               ? true
               : false
           }
+          onClickPreselectComponent={() =>
+            setIsPreSelectedCreateResourceVisible(true)
+          }
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
         />

@@ -63,3 +63,36 @@
     }
   }
 }
+
+.tooltipContent {
+  // height: 120px;
+  // width: 260px;
+  background-color: rgb(246, 246, 246);
+  display: flex;
+  //align-items: center;
+  flex-direction: column;
+  //box-shadow: 6px 6px 10px #00000029;
+  border-radius: 6px;
+  padding: 10px;
+}
+.title {
+  //margin-top: 10px;
+  margin-left: 4px;
+  //margin-right: 30px;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.content {
+  margin-top: 0px;
+  margin-left: 4px;
+  margin-right: 10px;
+}
+
+.contentLink {
+  margin-top: 0px;
+  margin-left: 4px;
+  margin-right: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}

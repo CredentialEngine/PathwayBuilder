@@ -19,6 +19,7 @@ import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import CheckBox from '../../components/formFields/checkbox';
 import SearchBox from '../../components/formFields/searchBox';
 import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
+import Modal from '../../components/modal';
 import { updateMappedDataRequest } from '../../states/actions';
 
 import Styles from './index.module.scss';
@@ -141,12 +142,32 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     }
   }, [selectedResource, allComponentTabCards]);
 
-  const addResource = (itemId: string, itemIndex: number) => {
+  const addResource = (selectedItem: any, itemIndex: number) => {
     const filteredItem = allProxyResourcesCard.filter(
-      (item: any) => item.id === itemId
+      (item: any) => item.CTID === selectedItem?.CTID
     );
-    setSelectedResource([...selectedResource, filteredItem[0]]);
-    allProxyResourcesCard.splice(itemIndex, 1);
+    const selectedItemExist = selectedResource.some(
+      (item: any) =>
+        item.CTID === selectedItem?.CTID ||
+        item.ProxyFor === selectedItem?.ProxyFor
+    );
+    console.log('selectedResource', selectedResource);
+    if (selectedItemExist) {
+      Modal.confirm({
+        cancelText: 'No',
+        okText: 'Yes',
+        title:
+          'This resource has already been selected, or already exists in your Pathway. Do you want to add it again?',
+        onOk: () => {
+          setSelectedResource([...selectedResource, ...filteredItem]);
+          allProxyResourcesCard.splice(itemIndex, 1);
+        },
+      });
+    } else {
+      setSelectedResource([...selectedResource, ...filteredItem]);
+      allProxyResourcesCard.splice(itemIndex, 1);
+    }
+    setAllProxyResourcesCard(allProxyResourcesCard);
     if (allProxyResourcesCard.length === 0) {
       setDisplaySearchContainer(false);
     }
@@ -268,14 +289,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                       data={filteredResources}
                       draggable={true}
                       key={i}
-                      name={filteredResources.Name}
-                      type={filteredResources.Type}
-                      description={filteredResources.Description?.slice(0, 30)}
+                      name={filteredResources?.Name}
+                      type={filteredResources?.Type}
+                      description={filteredResources?.Description?.slice(0, 30)}
                       IconName={faGear}
                       IconColor="black"
                     />
                     <PlusOutlined
-                      onClick={() => addResource(filteredResources.id, i)}
+                      onClick={() => addResource(filteredResources, i)}
                     />
                   </div>
                 )
