@@ -1,3 +1,5 @@
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Row, Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 
@@ -7,6 +9,7 @@ import Dropdown from '../../../components/formFields/dropdown';
 import Modal from '../../../components/modal';
 import { getAllConstraintOperand } from '../../../utils/fetchSearchResponse';
 import DebounceSelect from '../../addPathwayForm/debounceSelect';
+import Styles from '../index.module.scss';
 import { ConstraintEntity } from '../model';
 
 interface Props {
@@ -209,7 +212,7 @@ const Constraint: React.FC<Props> = (Props) => {
             </Form.Item>
           </>
         </Col>
-        <Col span="5">
+        <Col span="6">
           <Form.Item>
             <Dropdown
               options={constraintEntityFields.Comparator}
@@ -253,8 +256,13 @@ const Constraint: React.FC<Props> = (Props) => {
             </>
           </Form.Item>
         </Col>
-        <Col span="2">
-          <span onClick={() => handleDeleteRow(RowIndex)}>X</span>
+        <Col span="1">
+          <span
+            className={Styles.clearRowIcon}
+            onClick={() => handleDeleteRow(RowIndex)}
+          >
+            <FontAwesomeIcon icon={faClose} />
+          </span>
         </Col>
       </Row>
     </>

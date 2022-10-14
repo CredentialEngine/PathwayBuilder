@@ -768,7 +768,6 @@ const HomePage: React.FC<Props> = ({
   //   });
   //   return ids;
   // };
-
   return (
     <Layout className={Styles.centralPannel}>
       <Header

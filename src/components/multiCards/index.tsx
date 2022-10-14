@@ -41,7 +41,7 @@ interface Props {
   constraintIcon?: boolean;
   number: number;
   forwardRef: any;
-  leftpanelSelectedElem: any;
+  leftpanelSelectedElem?: any;
   onDelete?: any;
   rowNumber: number;
   columnNumber: number;
