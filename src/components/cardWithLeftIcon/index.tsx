@@ -232,6 +232,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
+
                 {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
                   <img
                     src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CocurricularComponent.png"
@@ -268,6 +269,13 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   <img
                     src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/JobComponent.png"
                     alt="JobComponent"
+                    className="componentIcon"
+                  />
+                )}
+                {Type?.toLowerCase().includes('Addressing'.toLowerCase()) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/AddressingComponent.png"
+                    alt="AddressingConflictComponent"
                     className="componentIcon"
                   />
                 )}
