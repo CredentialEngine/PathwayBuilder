@@ -115,7 +115,7 @@ const App = () => {
     if (organisationList && organisationList?.length > 1) {
       setsSelectOrganizationsVisble(true);
     } else {
-      setIsCreatePathwayVisible(true);
+      // setIsCreatePathwayVisible(true);
     }
   }, [organisationList?.length]);
 
