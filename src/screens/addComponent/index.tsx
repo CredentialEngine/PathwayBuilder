@@ -31,7 +31,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     new ComponentConditionEntity()
   );
 
-  // older key
   const [allConditionalComponents, setAllConditionalComponents] = useState<any>(
     []
   );
@@ -175,8 +174,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           <label>Name</label>
           <InputBox
             onChange={onInputChangeHandler}
-            placeholder=""
-            maxLength={0}
+            placeholder="Name"
+            name="Name"
             value={componentConditionFields.Name}
           />
         </Form.Item>
