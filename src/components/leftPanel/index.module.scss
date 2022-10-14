@@ -96,3 +96,8 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.PreSelectComponents {
+  background: $inactive4 0% 0% no-repeat padding-box;
+  border-radius: 6px;
+  padding: 10px;
+}

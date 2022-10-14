@@ -1,6 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,11 +18,9 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
-import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
-import AddConditionalComponent from '../addComponent';
 
 import Styles from './index.module.scss';
 
@@ -612,6 +611,7 @@ const HomePage: React.FC<Props> = ({
                                   columnNumber={column_num}
                                   HasProgressionLevel={column.CTID}
                                   onDelete={onDeleteHandler}
+                                  modalBoolean={visibleConstraintCondition}
                                 />
                               ))}
 
@@ -639,6 +639,7 @@ const HomePage: React.FC<Props> = ({
                               forwardRef={wrapperRef}
                               leftpanelSelectedElem={leftpanelSelectedElem}
                               onDelete={onDeleteHandler}
+                              modalBoolean={visibleConstraintCondition}
                             />
                           )}
                           {/* {showAddDestination &&
@@ -680,13 +681,32 @@ const HomePage: React.FC<Props> = ({
                                   end={items?.end}
                                   key={idx}
                                   labels={
-                                    <span className={Styles.addConditionIcon}>
-                                      <FontAwesomeIcon
-                                        icon={faXmarkCircle}
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => removeConnection(items)}
-                                      />
-                                    </span>
+                                    <div className={Styles.tempwrapper}>
+                                      <span className={Styles.addConditionIcon}>
+                                        <FontAwesomeIcon
+                                          icon={faXmarkCircle}
+                                          style={{ cursor: 'pointer' }}
+                                          onClick={() =>
+                                            removeConnection(items)
+                                          }
+                                        />
+                                      </span>
+                                      <span className={Styles.addConditionIcon}>
+                                        <FontAwesomeIcon
+                                          icon={faCirclePlus}
+                                          fill="#000000"
+                                          style={{
+                                            height: '22px',
+                                            width: '22px',
+                                            color: '#ffb90b',
+                                            cursor: 'pointer',
+                                          }}
+                                          onClick={() => {
+                                            setVisibleConstraintCondition(true);
+                                          }}
+                                        />
+                                      </span>
+                                    </div>
                                   }
                                   startAnchor="auto"
                                   endAnchor="auto"
@@ -768,7 +788,6 @@ const HomePage: React.FC<Props> = ({
   //   });
   //   return ids;
   // };
-
   return (
     <Layout className={Styles.centralPannel}>
       <Header
@@ -877,7 +896,7 @@ const HomePage: React.FC<Props> = ({
           panelData={rightPanelData}
         />
       )}
-      <Modal
+      {/* <Modal
         visible={visibleConstraintCondition}
         title=""
         footer={[]}
@@ -886,7 +905,7 @@ const HomePage: React.FC<Props> = ({
         <AddConditionalComponent
           visibleConstraintCondition={visibleConstraintCondition}
         />
-      </Modal>
+      </Modal> */}
     </Layout>
   );
 };
