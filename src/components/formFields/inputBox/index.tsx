@@ -14,6 +14,7 @@ export type InputProps = {
   onBlur?: any;
   required?: boolean;
   min?: number;
+  Readonly?: boolean;
 };
 
 const InputBox: React.FC<InputProps> = (props: InputProps) => {
