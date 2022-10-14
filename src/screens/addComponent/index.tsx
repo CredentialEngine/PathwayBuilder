@@ -147,8 +147,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConstraintRow([]);
     }
   };
-  console.log(constraintRow, 'constraintRow');
-
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
@@ -166,6 +164,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         <Form.Item>
           <label>Parent Component</label>
           <InputBox
+            disabled
             onChange={onInputChangeHandler}
             placeholder=""
             name="ParentIdentifier"
