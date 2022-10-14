@@ -46,6 +46,7 @@ interface Props {
   rowNumber: number;
   columnNumber: number;
   HasProgressionLevel: string;
+  modalBoolean?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -67,13 +68,13 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
-  constraintIcon,
   onDelete,
   // onMoveItem,
   // number,
   // forwardRef,
   rowNumber,
   columnNumber,
+  modalBoolean,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
@@ -85,6 +86,9 @@ const MultiCard: React.FC<Props> = ({
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
+  useEffect(() => {
+    if (modalBoolean) setVisibleConstraintCondition(true);
+  }, [modalBoolean]);
 
   const darkColor = '#0A2942';
   const getOnClick = (e: any) => {
@@ -594,7 +598,7 @@ const MultiCard: React.FC<Props> = ({
 
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
             <>
-              {isDestination && constraintIcon && (
+              {/* {isDestination && constraintIcon && (
                 <div className={styles.addIcon}>
                   <FontAwesomeIcon
                     icon={faCirclePlus}
@@ -610,7 +614,7 @@ const MultiCard: React.FC<Props> = ({
                     }}
                   />
                 </div>
-              )}
+              )} */}
 
               <div
                 className={
