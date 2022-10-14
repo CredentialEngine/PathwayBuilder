@@ -64,7 +64,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
 
     e.dataTransfer.setData(
       'card_id',
-      JSON.stringify({ ...props.data, isPendingCards: true })
+      JSON.stringify({
+        ...props.data,
+        isPendingCards: true,
+        isComponentTab: isComponentTab ? true : false,
+      })
     );
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(true);
     setTimeout(() => {

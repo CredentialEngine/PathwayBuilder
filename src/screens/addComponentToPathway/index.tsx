@@ -9,7 +9,10 @@ import Dropdown from '../../components/formFields/dropdown';
 import Options from '../../components/formFields/dropdown/lib/options';
 import InputBox from '../../components/formFields/inputBox';
 import RadioButton from '../../components/formFields/radio';
-import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
+import {
+  addComponentToLeftPanel,
+  getLeftPanelPathwayComponentRequest,
+} from '../../components/leftPanel/state/actions';
 import Tab, { TabPane } from '../../components/tab';
 import { addComponentFromPathwayModal } from '../../states/actions';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
@@ -108,10 +111,34 @@ const AddComponentToPathway = (props: any) => {
   };
 
   const onClick = () => {
-    dispatch(addComponentFromPathwayModal(selectedResource));
+    if (
+      selectedComponent.includes('BasicComponent') ||
+      selectedComponent.includes('AssessmentComponent') ||
+      selectedComponent.includes('CredentialComponent')
+    ) {
+      dispatch(addComponentToLeftPanel(selectedResource));
+    } else {
+      dispatch(addComponentFromPathwayModal(selectedResource));
+    }
     setSelectedResource([]);
     setSelectedComponent('');
     isVisible(false);
+  };
+
+  const [placeholderName, setPlaceholderName] = useState('');
+
+  const addPlaceholderClick = () => {
+    const dataToSend = [] as any;
+    if (selectedComponent) {
+      allComponentTabCards?.data?.forEach((item: any) => {
+        if (item?.URI === selectedComponent) {
+          return dataToSend?.push({ ...item, Name: placeholderName });
+        }
+      });
+    }
+    if (dataToSend) {
+      dispatch(addComponentFromPathwayModal(dataToSend));
+    }
   };
 
   const propsChildrenData = [];
@@ -198,7 +225,11 @@ const AddComponentToPathway = (props: any) => {
             </Dropdown>
           </Form.Item>
           <Form.Item label="Name Placeholder" name="Name Placeholder">
-            <InputBox placeholder="Name Placeholder" />
+            <InputBox
+              placeholder="Name Placeholder"
+              value={placeholderName}
+              onChange={(e: any) => setPlaceholderName(e?.target.value)}
+            />
           </Form.Item>
           <Form.Item label="External Reference" name="External Reference">
             <small>
@@ -209,7 +240,11 @@ const AddComponentToPathway = (props: any) => {
           </Form.Item>
           <br />
           <hr />
-          <Button text="Add Placeholder" type="primary" disabled />
+          <Button
+            text="Add Placeholder"
+            type="primary"
+            onClick={addPlaceholderClick}
+          />
         </div>
       ),
     },

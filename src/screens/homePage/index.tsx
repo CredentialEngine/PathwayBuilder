@@ -269,6 +269,28 @@ const HomePage: React.FC<Props> = ({
       });
     }
   };
+
+  const createCard = (card: any) => {
+    const CTID = `ce-${uuidv4()}`;
+    const newCard = {
+      CTID,
+      Created: '',
+      Description: card?.Description,
+      HasChild: [],
+      HasCondition: [],
+      IndustryType: [],
+      IsChildOf: [],
+      Name: card?.Name,
+      OccupationType: [],
+      PrecededBy: [],
+      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
+      ProxyForLabel: card?.Name,
+      RowId: uuidv4(),
+      Type: card?.URI,
+    };
+    return newCard;
+  };
+
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -278,7 +300,16 @@ const HomePage: React.FC<Props> = ({
     ColumnNumber: number,
     columnNumberEsixt: boolean
   ) => {
-    const { isPendingCards, ...restCardProps } = card;
+    const { isPendingCards, isComponentTab, ...restCardProps } = card;
+
+    if (isComponentTab) {
+      card = {
+        ...createCard(card),
+        HasProgressionLevel,
+        RowNumber,
+        ColumnNumber: ColumnNumber - 1,
+      };
+    }
 
     if (columnNumberEsixt && !isPendingCards) {
       /* 
