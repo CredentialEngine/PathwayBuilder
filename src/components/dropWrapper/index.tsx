@@ -30,6 +30,7 @@ interface Props {
   column_num: number;
   setOverlayData: (a: any) => void;
   overlayData: any;
+  updatedPathwayComponentConditionCards: any;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -48,6 +49,7 @@ const DropWrapper: React.FC<Props> = ({
   column_num,
   setOverlayData,
   overlayData,
+  updatedPathwayComponentConditionCards,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   const [columnNumberEsixt, setColumnNumber] = useState<boolean>(false);
@@ -55,6 +57,20 @@ const DropWrapper: React.FC<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     setColumnNumber(false);
+
+    const conditinalComponentColumnNumber =
+      updatedPathwayComponentConditionCards
+        .filter(
+          (condtional_card: any) =>
+            condtional_card.HasProgressionLevel === HasProgressionLevel
+        )
+        .reduce((acc: any, curr: any) => {
+          if (acc >= curr.ColumnNumber) {
+            return acc;
+          } else {
+            return curr.ColumnNumber;
+          }
+        }, 1);
 
     const data = JSON.parse(e.dataTransfer.getData('card_id'));
     e.stopPropagation();
@@ -66,7 +82,9 @@ const DropWrapper: React.FC<Props> = ({
           HasProgressionLevel,
           isDestinationColumnSelected,
           rowNumber,
-          columnNumber + 1,
+          conditinalComponentColumnNumber > columnNumber
+            ? columnNumber + 2
+            : columnNumber + 1,
           columnNumberEsixt
         )
       : onDrop(
@@ -127,7 +145,6 @@ const DropWrapper: React.FC<Props> = ({
         forwardRef.current[number] = element;
       }}
       data-cardType="multiCard"
-      data-ticket="1223887"
     >
       {children}
     </div>

@@ -6,6 +6,8 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import Button from '../../components/button';
 import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
@@ -23,10 +25,13 @@ import {
 
 interface Props {
   visibleConstraintConditionProp?: (bool: boolean) => void;
+  lastIndexHasProgressionModelID?: string;
+  CTID: any;
+  data?: any;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
-  const { visibleConstraintConditionProp } = Props;
+  const { visibleConstraintConditionProp, CTID, data } = Props;
   const [componentConditionFields, setComponentConditionFields] = useState<any>(
     new ComponentConditionEntity()
   );
@@ -34,10 +39,13 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const [allConditionalComponents, setAllConditionalComponents] = useState<any>(
     []
   );
-
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
-    updatedPathwayWrapper.ComponentCondition = allConditionalComponents;
+
+    updatedPathwayWrapper.ComponentConditions = [
+      ...updatedPathwayWrapper.ComponentConditions,
+      ...allConditionalComponents,
+    ];
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
   }, [allConditionalComponents]);
 
@@ -101,17 +109,53 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       Description: componentConditionFields.Description,
       constraintRow,
     };
-    const ComponentCondition = {
-      ParentIdentifier: componentConditionFields.ParentIdentifier,
+
+    let pathwayComponentChilds: [] = [];
+    const childPathwayComponent: any = [];
+
+    const filteredPathwayComponent = pathwayComponent?.PathwayComponents.filter(
+      (card: any) => card.CTID === CTID?.toString()
+    );
+
+    let columnNumber = 0;
+    if (filteredPathwayComponent.length > 0) {
+      pathwayComponentChilds = _.get(filteredPathwayComponent, '0').HasChild;
+
+      pathwayComponentChilds.forEach((child: any) => {
+        pathwayComponent.PathwayComponents.forEach((component: any) => {
+          if (component.CTID === child) {
+            childPathwayComponent.push(component);
+          }
+        });
+      });
+      columnNumber = childPathwayComponent.reduce((acc: any, curr: any) => {
+        if (acc >= curr.ColumnNumber) {
+          return acc;
+        } else {
+          return curr.ColumnNumber;
+        }
+      }, 1);
+    }
+
+    const updatedColumnNumber = Math.max(
+      _.toNumber(columnNumber),
+      _.toNumber(data?.ColumnNumber)
+    );
+    const ComponentConditions = {
+      ParentIdentifier: data?.RowId,
       Description: componentConditionFields.Description,
       RequiredNumber: componentConditionFields.RequiredNumber,
       LogicalOperator: componentConditionFields.LogicalOperator,
       HasConstraint: Constraint,
+      ColumnNumber: updatedColumnNumber + 1,
+      RowNumber: data?.RowNumber,
+      RowId: uuidv4(),
+      TargetComponent: data.HasChild || data.TargetComponent,
     };
 
     setAllConditionalComponents([
       ...allConditionalComponents,
-      ComponentCondition,
+      ComponentConditions,
     ]);
 
     !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
@@ -162,13 +206,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </div>
         <Form.Item>
           <label>Parent Component</label>
-          <InputBox
-            disabled
-            onChange={onInputChangeHandler}
-            placeholder=""
-            name="ParentIdentifier"
-            value={componentConditionFields.ParentIdentifier}
-          />
+          <InputBox name="ParentIdentifier" value={data?.RowId} />
         </Form.Item>
         <Form.Item>
           <label>Name</label>
