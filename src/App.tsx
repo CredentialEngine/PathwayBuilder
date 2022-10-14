@@ -8,7 +8,6 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
-import AddConditionalComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
@@ -46,8 +45,6 @@ const App = () => {
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState<any>();
-
-  console.log('selectedOrganisation', selectedOrganisationValue);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
 
@@ -160,9 +157,6 @@ const App = () => {
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
         />
-        <Modal visible={true} title="" footer={[]} width={650}>
-          <AddConditionalComponent />
-        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
