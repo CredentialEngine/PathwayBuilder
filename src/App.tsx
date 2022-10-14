@@ -8,7 +8,6 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
-import AddConditionalComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
@@ -16,7 +15,10 @@ import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
-import { getCurrentUserDataRequest } from './states/actions';
+import {
+  getCurrentUserDataRequest,
+  saveSelectedOrganization,
+} from './states/actions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,8 +44,7 @@ const App = () => {
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
-    useState('');
-
+    useState<any>();
   const [organisationList, setOrganisationList] = useState<any>([]);
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
@@ -99,6 +100,9 @@ const App = () => {
   };
 
   const selectOrgOkHandler = () => {
+    if (selectedOrganisationValue) {
+      dispatch(saveSelectedOrganization(selectedOrganisationValue));
+    }
     setsSelectOrganizationsVisble(false);
     setIsCreatePathwayVisible(true);
   };
@@ -128,8 +132,8 @@ const App = () => {
 
   const closeCreatePathwayModal = () => {
     Modal.confirm({
-      cancelText: 'Cancel',
-      okText: 'Ok',
+      cancelText: 'No',
+      okText: 'Yes',
       title: 'Are you sure you want to cancel.',
       onOk: () => onCreatePathwayCancelHandler(),
     });
@@ -152,14 +156,12 @@ const App = () => {
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
         />
-        <Modal visible={false} title="" footer={[]} width={650}>
-          <AddConditionalComponent />
-        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
           footer={createPathwayFooter()}
           width={550}
+          onCancel={() => setIsCreatePathwayVisible(false)}
         >
           <CreatePathway />
         </Modal>

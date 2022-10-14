@@ -22,7 +22,7 @@ const LeftPanel: React.FC<any> = ({
 }) => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
-    mappedData: { PendingComponent: selectedTabCardData },
+    mappedData: { PendingComponents: selectedTabCardData },
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
@@ -54,7 +54,7 @@ const LeftPanel: React.FC<any> = ({
       (item: any) => item.CTID !== val
     );
     const updatedPathwayWrapper = { ...pathwayComponent };
-    updatedPathwayWrapper.PendingComponent = filteredSelectedCards;
+    updatedPathwayWrapper.PendingComponents = filteredSelectedCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setSelectedtabCards(filteredSelectedCards);
   };

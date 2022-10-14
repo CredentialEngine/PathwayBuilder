@@ -63,14 +63,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   });
 
   const {
-    mappedData: { PendingComponent },
+    mappedData: { PendingComponents },
   } = appState || {};
 
   useEffect(() => {
-    if (PendingComponent?.length > 0) {
-      setSelectedResource(PendingComponent);
+    if (PendingComponents?.length > 0) {
+      setSelectedResource(PendingComponents);
     }
-  }, [PendingComponent]);
+  }, [PendingComponents]);
 
   const searchComponent = (e: any) => {
     setSearchFilterValue({ ...searchFilterValue, Keywords: e.target.value });
@@ -169,7 +169,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     dispatch(
       updateMappedDataRequest({
         ...addPathwayWrapperFields,
-        PendingComponent: selectedResource,
+        PendingComponents: selectedResource,
+        ComponentConditions: [],
       })
     );
   };

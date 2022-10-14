@@ -10,7 +10,7 @@ export interface PathwayWrapper {
   ProgressionLevels: ProgressionLevels[];
   ComponentConditions: ComponentConditions[];
   Constraints: Constraints[];
-  PendingComponent: PathwayComponent[];
+  PendingComponents: PathwayComponent[];
   DeletedComponents: [];
   DeletedComponentConditions: [];
 }
