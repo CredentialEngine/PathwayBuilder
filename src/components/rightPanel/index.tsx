@@ -46,6 +46,7 @@ const RightPanel: React.FC<Props> = ({
 
   const extractComponentType = (type: string) => {
     const typeValue = type?.split(':')[1];
+
     return typeValue;
   };
 
@@ -74,7 +75,7 @@ const RightPanel: React.FC<Props> = ({
       <div ref={ref} className={styles.rightPanelContainer}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Row style={{ fontSize: 22, fontWeight: 700 }}>
-            Transaction Review
+            {extractComponentType(panelData?.Type)}
           </Row>
         </div>
         <Divider className={styles.divider} />
