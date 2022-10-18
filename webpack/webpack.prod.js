@@ -4,7 +4,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 module.exports = {
 
-    mode: 'development',
+    mode: 'production',
     devtool: 'cheap-module-source-map',
     devServer: {
         hot: true,
