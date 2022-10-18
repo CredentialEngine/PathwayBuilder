@@ -29,8 +29,7 @@ interface Props {
   onClick?: () => void;
   setIsZoomDisabled: (a: any) => void;
   status?: string;
-  CTID?: string;
-  id?: number | string;
+  CTID?: number | string;
   inProgressLevel?: string;
   destinationComponent?: boolean;
   onSelectDragElemenet: (a: any) => void;
@@ -42,10 +41,12 @@ interface Props {
   constraintIcon?: boolean;
   number: number;
   forwardRef: any;
-  leftpanelSelectedElem: any;
+  leftpanelSelectedElem?: any;
   onDelete?: any;
   rowNumber: number;
   columnNumber: number;
+  HasProgressionLevel: string;
+  modalBoolean?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -59,7 +60,7 @@ const MultiCard: React.FC<Props> = ({
   onClick,
   setIsZoomDisabled,
   status,
-  id,
+  CTID,
   inProgressLevel,
   destinationComponent,
   onSelectDragElemenet,
@@ -67,13 +68,13 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
-  constraintIcon,
   onDelete,
   // onMoveItem,
   // number,
   // forwardRef,
   rowNumber,
   columnNumber,
+  modalBoolean,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
@@ -81,9 +82,13 @@ const MultiCard: React.FC<Props> = ({
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
   const [showRightPenal, setShowRightPenal] = useState(false);
+
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
+  useEffect(() => {
+    if (modalBoolean) setVisibleConstraintCondition(true);
+  }, [modalBoolean]);
 
   const darkColor = '#0A2942';
   const getOnClick = (e: any) => {
@@ -99,7 +104,7 @@ const MultiCard: React.FC<Props> = ({
     */
 
     onClick;
-    getEndPoints(e, id);
+    getEndPoints(e, CTID);
   };
 
   // const onDragEnterHandler = () => {
@@ -158,11 +163,11 @@ const MultiCard: React.FC<Props> = ({
     <>
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer}>
-          <div
+          {/* <div
             id="verticalBorder"
             draggable={true}
             className={styles.draggableAreaBox}
-          ></div>
+          ></div> */}
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
@@ -186,9 +191,8 @@ const MultiCard: React.FC<Props> = ({
               // onDragEnter={onDragEnterHandler}
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
-              id={id?.toString()}
+              id={CTID?.toString()}
               data-cardType="multiCard"
-              data-ticket="1223887"
               data-columnNumber={columnNumber}
               data-rowNumber={rowNumber}
               data-CTID={data.CTID}
@@ -417,7 +421,7 @@ const MultiCard: React.FC<Props> = ({
                       icon={faSitemap}
                       onClick={noop}
                     />
-                    <span>Component Condition</span>
+                    <span>Required {}</span>
                     <FontAwesomeIcon
                       color="#ffffff"
                       style={{ height: '20px', cursor: 'pointer' }}
@@ -426,7 +430,7 @@ const MultiCard: React.FC<Props> = ({
                     />
                   </div>
                   <div className={styles.requiredSection}>
-                    <span>4/4 Required</span>
+                    <span>{data.Description}</span>
                   </div>
                 </React.Fragment>
               )}
@@ -486,17 +490,12 @@ const MultiCard: React.FC<Props> = ({
           onDragStart={onDragStart}
           onDragOver={onDragOver}
           onDragEnd={onDragEnd}
-          // onClick={(e) => {
-          //   onClick;
-          //   getEndPoints(e, id);
-          // }}
           onClick={(e: any) => {
             getOnClick(e);
           }}
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
-          id={id?.toString()}
-          data-ticket="1223887"
+          id={CTID?.toString()}
           data-columnNumber={columnNumber}
           data-rowNumber={rowNumber}
           data-CTID={data.CTID}
@@ -599,7 +598,7 @@ const MultiCard: React.FC<Props> = ({
 
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
             <>
-              {isDestination && constraintIcon && (
+              {/* {isDestination && constraintIcon && (
                 <div className={styles.addIcon}>
                   <FontAwesomeIcon
                     icon={faCirclePlus}
@@ -615,7 +614,7 @@ const MultiCard: React.FC<Props> = ({
                     }}
                   />
                 </div>
-              )}
+              )} */}
 
               <div
                 className={
@@ -720,6 +719,24 @@ const MultiCard: React.FC<Props> = ({
 
           {isConditionalCard && (
             <React.Fragment>
+              {isConditionalCard && (
+                <div className={styles.addIcon}>
+                  <FontAwesomeIcon
+                    icon={faCirclePlus}
+                    fill="#000000"
+                    style={{
+                      height: '22px',
+                      width: '22px',
+                      color: '#ffb90b',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      onPlusCircleClickHandler();
+                    }}
+                  />
+                </div>
+              )}
+
               <div className={styles.conditionalCardContent}>
                 <FontAwesomeIcon
                   color="#ffffff"
@@ -727,16 +744,22 @@ const MultiCard: React.FC<Props> = ({
                   icon={faSitemap}
                   onClick={noop}
                 />
-                <span>Component Condition</span>
+                <span>Required {data?.RequiredNumber}</span>
                 <FontAwesomeIcon
-                  color="#ffffff"
+                  color="#000000"
                   style={{ height: '20px', cursor: 'pointer' }}
                   icon={faEllipsis}
                   onClick={noop}
                 />
               </div>
+              <Divider
+                style={{
+                  backgroundColor: '#ffb90b',
+                  margin: '8px 0px 4px 0px',
+                }}
+              />
               <div className={styles.requiredSection}>
-                <span>4/4 Required</span>
+                <span>{data.Description}</span>
               </div>
             </React.Fragment>
           )}
@@ -783,8 +806,11 @@ const MultiCard: React.FC<Props> = ({
       >
         <AddConditionalComponent
           visibleConstraintConditionProp={handledConstraintsModal}
+          CTID={CTID}
+          data={data}
         />
       </Modal>
+
       <RightPanel
         visible={showRightPenal}
         onCloseHandler={(val: boolean) => setShowRightPenal(val)}

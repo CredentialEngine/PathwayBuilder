@@ -84,6 +84,7 @@ const LeftPanel: React.FC<any> = ({
       name: LeftPanelTabKey.Components,
     },
   ];
+
   const propsChildren = [
     {
       key: LeftPanelTabKey.Selected,
@@ -96,6 +97,7 @@ const LeftPanel: React.FC<any> = ({
             styleType="outline"
             onKeyUp={searchComponent}
           />
+
           <div className={Styles.cardwrapper}>
             {console.log(selectedTabCards.length)}
             {selectedTabCards && selectedTabCards.length <= 0 ? (

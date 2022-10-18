@@ -139,6 +139,16 @@ const Header = (props: Props) => {
       );
     setIsEditPathwayFormVisible(true);
   };
+  const exitWithSaving = () => {
+    Modal.confirm({
+      cancelText: 'Cancel',
+      okText: 'Exit',
+      title:
+        'You have unsaved changes. If you continue those changes will be lost.',
+      onOk: () => noop,
+    });
+  };
+
   return (
     <>
       <div id="header" className={styles.container + ' header-container'}>
@@ -176,7 +186,7 @@ const Header = (props: Props) => {
             <div className={styles.saveButtonWrapper}>
               <Button
                 type={Type.LINK}
-                onClick={noop}
+                onClick={exitWithSaving}
                 text="Exit Without Saving"
               />
               <AntdButton

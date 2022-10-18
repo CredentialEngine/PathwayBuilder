@@ -153,7 +153,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         item.CTID === selectedItem?.CTID ||
         item.ProxyFor === selectedItem?.ProxyFor
     );
-    console.log('selectedResource', selectedResource);
+
     if (selectedItemExist) {
       Modal.confirm({
         cancelText: 'No',
@@ -193,6 +193,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       updateMappedDataRequest({
         ...addPathwayWrapperFields,
         PendingComponents: selectedResource,
+        ComponentConditions: [],
       })
     );
   };
