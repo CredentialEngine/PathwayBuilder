@@ -46,6 +46,7 @@ const App = () => {
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState<any>();
+  const [fromPreSelect, setFromPreselect] = useState<any>(false);
 
   console.log('selectedOrganisation', selectedOrganisationValue);
 
@@ -157,9 +158,10 @@ const App = () => {
               ? true
               : false
           }
-          onClickPreselectComponent={() =>
-            setIsPreSelectedCreateResourceVisible(true)
-          }
+          onClickPreselectComponent={() => {
+            setIsPreSelectedCreateResourceVisible(true);
+            setFromPreselect(true);
+          }}
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
         />
@@ -206,6 +208,7 @@ const App = () => {
             setIsPreSelectedCreateResourceVisible={
               setIsPreSelectedCreateResourceVisible
             }
+            fromPreSelect={fromPreSelect}
             addPathwayWrapperFields={addPathwayWrapperFields}
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
