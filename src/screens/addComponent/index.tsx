@@ -164,7 +164,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       data?.TargetComponent.filter(
         (target_card: any) => target_card !== data.RowId
       );
-
     const ComponentConditions = {
       ParentIdentifier: data?.RowId,
       Description: componentConditionFields.Description,

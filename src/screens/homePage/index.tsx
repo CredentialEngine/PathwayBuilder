@@ -345,6 +345,13 @@ const HomePage: React.FC<Props> = ({
       return;
     }
 
+    const isDestinationCardExist = pathwayComponentCards.some(
+      (card: any) => card.isDestinationColumnSelected
+    );
+
+    if (!!destinationColumn && isDestinationCardExist) {
+      return;
+    }
     const islastDropWrapperUsed = pathwayComponentCards.some(
       (card: any) => card.RowNumber === numberOfDropWrapper
     );
@@ -532,7 +539,7 @@ const HomePage: React.FC<Props> = ({
                       isDestinationColumnSelected={
                         column?.isDestinationColumnSelected
                       }
-                      destinationColumn={!!column?.destinationComponent}
+                      destinationColumn={!!column?.isDestinationColumnSelected}
                       width="450px"
                       rowNumber={rowNumber + 1}
                       columnNumber={columnNumber}
