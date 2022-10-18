@@ -26,6 +26,7 @@ const SelectDestination: React.FC<Props> = ({
 
   const selectInitialColumn = () => {
     setIsAddPathwayDestinationVisible(false);
+    setIsDestinationColumnSelected(true);
     const firstColumn = document.getElementById('firstColumn');
     if (!_.isNull(firstColumn)) {
       !_.isNull(firstColumn) &&

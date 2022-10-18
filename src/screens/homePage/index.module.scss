@@ -76,6 +76,7 @@
   display: inline-block;
   border-radius: 50%;
   line-height: 1;
+  position: relative;
   &:before {
     content: '';
     height: 20px;
@@ -92,5 +93,10 @@
     fill: #ffb90b;
     color: #ffb90b;
     position: relative;
+  }
+}
+.tempwrapper {
+  span {
+    margin-right: 5px;
   }
 }

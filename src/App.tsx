@@ -111,7 +111,7 @@ const App = () => {
     if (organisationList && organisationList?.length > 1) {
       setsSelectOrganizationsVisble(true);
     } else {
-      setIsCreatePathwayVisible(true);
+      // setIsCreatePathwayVisible(true);
     }
   }, [organisationList?.length]);
 
@@ -153,6 +153,9 @@ const App = () => {
               ? true
               : false
           }
+          onClickPreselectComponent={() =>
+            setIsPreSelectedCreateResourceVisible(true)
+          }
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
         />
@@ -161,7 +164,7 @@ const App = () => {
           title="Add a Pathway"
           footer={createPathwayFooter()}
           width={550}
-          onCancel={() => setIsCreatePathwayVisible(false)}
+          onCancel={closeCreatePathwayModal}
         >
           <CreatePathway />
         </Modal>

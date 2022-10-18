@@ -1,6 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,11 +18,9 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
-import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
-import AddConditionalComponent from '../addComponent';
 
 import Styles from './index.module.scss';
 
@@ -29,11 +28,13 @@ interface Props {
   isLeftPanelVisible: boolean;
   setIsEditPathwayFormVisible: (a: boolean) => void;
   isDestinationColumnSelected: boolean;
+  onClickPreselectComponent?: any;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
   setIsEditPathwayFormVisible,
   isDestinationColumnSelected,
+  onClickPreselectComponent,
 }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
@@ -267,6 +268,28 @@ const HomePage: React.FC<Props> = ({
       });
     }
   };
+
+  const createCard = (card: any) => {
+    const CTID = `ce-${uuidv4()}`;
+    const newCard = {
+      CTID,
+      Created: '',
+      Description: card?.Description,
+      HasChild: [],
+      HasCondition: [],
+      IndustryType: [],
+      IsChildOf: [],
+      Name: card?.Name,
+      OccupationType: [],
+      PrecededBy: [],
+      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
+      ProxyForLabel: card?.Name,
+      RowId: uuidv4(),
+      Type: card?.URI,
+    };
+    return newCard;
+  };
+
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -276,7 +299,16 @@ const HomePage: React.FC<Props> = ({
     ColumnNumber: number,
     columnNumberEsixt: boolean
   ) => {
-    const { isPendingCards, ...restCardProps } = card;
+    const { isPendingCards, isComponentTab, ...restCardProps } = card;
+
+    if (isComponentTab) {
+      card = {
+        ...createCard(card),
+        HasProgressionLevel,
+        RowNumber,
+        ColumnNumber: ColumnNumber - 1,
+      };
+    }
 
     if (columnNumberEsixt && !isPendingCards) {
       /* 
@@ -579,6 +611,7 @@ const HomePage: React.FC<Props> = ({
                                   columnNumber={column_num}
                                   HasProgressionLevel={column.CTID}
                                   onDelete={onDeleteHandler}
+                                  modalBoolean={visibleConstraintCondition}
                                 />
                               ))}
 
@@ -606,6 +639,7 @@ const HomePage: React.FC<Props> = ({
                               forwardRef={wrapperRef}
                               leftpanelSelectedElem={leftpanelSelectedElem}
                               onDelete={onDeleteHandler}
+                              modalBoolean={visibleConstraintCondition}
                             />
                           )}
                           {/* {showAddDestination &&
@@ -647,13 +681,32 @@ const HomePage: React.FC<Props> = ({
                                   end={items?.end}
                                   key={idx}
                                   labels={
-                                    <span className={Styles.addConditionIcon}>
-                                      <FontAwesomeIcon
-                                        icon={faXmarkCircle}
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => removeConnection(items)}
-                                      />
-                                    </span>
+                                    <div className={Styles.tempwrapper}>
+                                      <span className={Styles.addConditionIcon}>
+                                        <FontAwesomeIcon
+                                          icon={faXmarkCircle}
+                                          style={{ cursor: 'pointer' }}
+                                          onClick={() =>
+                                            removeConnection(items)
+                                          }
+                                        />
+                                      </span>
+                                      <span className={Styles.addConditionIcon}>
+                                        <FontAwesomeIcon
+                                          icon={faCirclePlus}
+                                          fill="#000000"
+                                          style={{
+                                            height: '22px',
+                                            width: '22px',
+                                            color: '#ffb90b',
+                                            cursor: 'pointer',
+                                          }}
+                                          onClick={() => {
+                                            setVisibleConstraintCondition(true);
+                                          }}
+                                        />
+                                      </span>
+                                    </div>
                                   }
                                   startAnchor="auto"
                                   endAnchor="auto"
@@ -735,7 +788,6 @@ const HomePage: React.FC<Props> = ({
   //   });
   //   return ids;
   // };
-
   return (
     <Layout className={Styles.centralPannel}>
       <Header
@@ -751,6 +803,7 @@ const HomePage: React.FC<Props> = ({
                 setDraggableCardVisible(isDragTure)
               }
               setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+              onClickPreselectComponent={onClickPreselectComponent}
             />
           </Sider>
           <Layout
@@ -843,7 +896,7 @@ const HomePage: React.FC<Props> = ({
           panelData={rightPanelData}
         />
       )}
-      <Modal
+      {/* <Modal
         visible={visibleConstraintCondition}
         title=""
         footer={[]}
@@ -852,7 +905,7 @@ const HomePage: React.FC<Props> = ({
         <AddConditionalComponent
           visibleConstraintCondition={visibleConstraintCondition}
         />
-      </Modal>
+      </Modal> */}
     </Layout>
   );
 };

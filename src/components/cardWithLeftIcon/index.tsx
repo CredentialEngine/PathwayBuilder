@@ -1,17 +1,3 @@
-import {
-  faCubes,
-  faGear,
-  faFileCircleCheck,
-  faIdBadge,
-  faSitemap,
-  faGraduationCap,
-  faCube,
-  faCartShopping,
-  faAtom,
-  faSolarPanel,
-  faHandPointer,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
 import React from 'react';
 
@@ -50,7 +36,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     Name,
     Description,
     CodedNotation,
-    IconColor,
     inlineStyles,
     id,
     disabledItem,
@@ -64,7 +49,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
 
     e.dataTransfer.setData(
       'card_id',
-      JSON.stringify({ ...props.data, isPendingCards: true })
+      JSON.stringify({
+        ...props.data,
+        isPendingCards: true,
+        isComponentTab: isComponentTab ? true : false,
+      })
     );
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(true);
     setTimeout(() => {
@@ -107,70 +96,189 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                 {data?.URI?.toLowerCase().includes(
                   'AssessmentComponent'.toLowerCase()
                 ) && (
-                  <FontAwesomeIcon icon={faGraduationCap} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/AssessmentComponent.png"
+                    alt="AssessmentComponent"
+                    className="componentIcon"
+                  />
                 )}
                 {data?.URI?.toLowerCase().includes(
                   'BasicComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faCube} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/BasicComponent.png"
+                    alt="BasicComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
                   'CocurricularComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faAtom} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CocurricularComponent.png"
+                    alt="CocurricularComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
                   'CompetencyComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faGear} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CompetencyComponent.png"
+                    alt="CompetencyComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
                   'CourseComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faCubes} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CourseComponent.png"
+                    alt="CourseComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
                   'ExtracurricularComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faSolarPanel} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/ExtracurricularComponent.png"
+                    alt="ExtracurricularComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
                   'JobComponent'.toLowerCase()
                 ) && (
-                  <FontAwesomeIcon icon={faCartShopping} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/JobComponent.png"
+                    alt="JobComponent"
+                    className="componentIcon"
+                  />
                 )}
                 {data?.URI?.toLowerCase().includes(
                   'WorkExperienceComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faIdBadge} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/WorkExperienceComponent.png"
+                    alt="WorkExperienceComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
                   'CredentialComponent'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faIdBadge} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CredentialComponent.png"
+                    alt="CredentialComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
-                  'ComonentCondition'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faSitemap} color={IconColor} />}
+                  'ComponentCondition'.toLowerCase()
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/ComponentCondition.png"
+                    alt="ComponentCondition"
+                    className="componentIcon"
+                  />
+                )}
                 {data?.URI?.toLowerCase().includes(
                   'selection'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faHandPointer} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/SelectionCondition.png"
+                    alt="SelectionCondition"
+                    className="componentIcon"
+                  />
+                )}
               </>
             ) : (
               <>
                 {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faIdBadge} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CredentialComponent.png"
+                    alt="CredentialComponent"
+                    className="componentIcon"
+                  />
                 )}
                 {Type?.toLowerCase().includes('course'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faCubes} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CourseComponent.png"
+                    alt="courseComponent"
+                    className="componentIcon"
+                  />
                 )}
                 {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faCube} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/BasicComponent.png"
+                    alt="BasicComponent"
+                    className="componentIcon"
+                  />
                 )}
                 {Type?.toLowerCase().includes(
                   'competency'.toLocaleLowerCase()
-                ) && <FontAwesomeIcon icon={faGear} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CompetencyComponent.png"
+                    alt="CompetencyComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faFileCircleCheck} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/AssessmentComponent.png"
+                    alt="AssessmentComponent"
+                    className="componentIcon"
+                  />
                 )}
+
                 {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faAtom} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CocurricularComponent.png"
+                    alt="CocurricularComponent"
+                    className="componentIcon"
+                  />
                 )}
                 {Type?.toLowerCase().includes(
                   'Extracurricular'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faSolarPanel} color={IconColor} />}
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/ExtracurricularComponent.png"
+                    alt="ExtracurricularComponent"
+                    className="componentIcon"
+                  />
+                )}
                 {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
-                  <FontAwesomeIcon icon={faHandPointer} color={IconColor} />
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/SelectionComponent.png"
+                    alt="SelectionComponent"
+                    className="componentIcon"
+                  />
                 )}
                 {Type?.toLowerCase().includes(
-                  'Extracurricular'.toLowerCase()
-                ) && <FontAwesomeIcon icon={faSolarPanel} color={IconColor} />}
+                  'WorkExperience'.toLowerCase()
+                ) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/WorkExperienceComponent.png"
+                    alt="WorkExperienceComponent"
+                    className="componentIcon"
+                  />
+                )}
+                {Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/JobComponent.png"
+                    alt="JobComponent"
+                    className="componentIcon"
+                  />
+                )}
+                {Type?.toLowerCase().includes('Addressing'.toLowerCase()) && (
+                  <img
+                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/AddressingComponent.png"
+                    alt="AddressingConflictComponent"
+                    className="componentIcon"
+                  />
+                )}
               </>
             )}
           </span>
