@@ -164,7 +164,7 @@ const App = () => {
           title="Add a Pathway"
           footer={createPathwayFooter()}
           width={550}
-          onCancel={() => setIsCreatePathwayVisible(false)}
+          onCancel={closeCreatePathwayModal}
         >
           <CreatePathway />
         </Modal>
