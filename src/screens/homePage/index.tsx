@@ -617,6 +617,7 @@ const HomePage: React.FC<Props> = ({
                                   ConstraintConditionState={
                                     visibleConstraintCondition
                                   }
+                                  pathwayComponentCards={pathwayComponentCards}
                                 />
                               ))}
 
@@ -646,7 +647,8 @@ const HomePage: React.FC<Props> = ({
                               onDelete={onDeleteHandler}
                             />
                           )}
-                          {showAddDestination &&
+                          {!showAddDestination &&
+                            index === 1 &&
                             column?.CTID === getLastColumn('first') &&
                             pathwayComponentCards?.length <= 1 && (
                               <MultiCard
