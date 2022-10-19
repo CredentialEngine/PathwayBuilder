@@ -164,9 +164,9 @@ const HomePage: React.FC<Props> = ({
             Type: 'conditional',
           }))
         );
-
-        setPathwayComponentCards(pathwayComponent?.PathwayComponents);
       }
+      setPathwayComponentCards(pathwayComponent?.PathwayComponents);
+
       const pathwayModel =
         pathwayComponent?.Pathway?.HasProgressionModel?.length > 0;
 
@@ -788,6 +788,7 @@ const HomePage: React.FC<Props> = ({
   const openConstraintModal = (boolean: boolean) => {
     setVisibleConstraintCondition(boolean);
   };
+
   const getLastColumn = (type: string) => {
     const ids = [] as any;
     columnsData?.map((column: any) => {
