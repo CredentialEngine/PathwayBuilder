@@ -147,6 +147,12 @@ const MultiCard: React.FC<Props> = ({
         inProgressLevel,
       })
     );
+    e.dataTransfer.setData(
+      'leftPanel_card',
+      JSON.stringify({
+        ...data,
+      })
+    );
     onSelectDragElemenet(data);
     setTimeout(() => {
       target.style.visibility = 'hidden';

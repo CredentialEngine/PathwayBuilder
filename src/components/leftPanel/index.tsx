@@ -8,6 +8,7 @@ import { updateMappedDataRequest } from '../../states/actions';
 
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
+import LeftPanelDropWrapper from '../leftPanelDropWrapper';
 import Tab, { TabPane } from '../tab';
 
 import Styles from './index.module.scss';
@@ -22,7 +23,7 @@ const LeftPanel: React.FC<any> = ({
 }) => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
-    mappedData: { PendingComponents: selectedTabCardData },
+    mappedData: { PendingComponents: selectedTabCardData, PathwayComponents },
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
@@ -73,6 +74,35 @@ const LeftPanel: React.FC<any> = ({
     setSearchValue(value.target.value);
   };
 
+  const onDropHandler = (tab: string, card: any) => {
+    if (tab === LeftPanelTabKey.Selected) {
+      setSelectedtabCards([...selectedTabCards, card]);
+    } else {
+      return;
+    }
+    /*  Commenting the below code because Dragging of a component from the gameboard to the Component Tab is 
+    not listed in documents and we are not storing components tab card. 
+
+    if (tab === LeftPanelTabKey.Components) {
+      const isSelectedCardAlreadyExist = componentTabCards.some(
+        (component_card: any) => component_card.RowId === card.RowId
+      );
+      if (!isSelectedCardAlreadyExist) {
+        setComponentTabCards([...componentTabCards, card]);
+      }
+    }
+
+ */
+    const filteredPathwayComponent = PathwayComponents.filter(
+      (component_card: any) => component_card.CTID !== card.CTID
+    );
+
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
+    updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+  };
+
   const tab = [
     {
       key: LeftPanelTabKey.Selected,
@@ -95,7 +125,11 @@ const LeftPanel: React.FC<any> = ({
             styleType="outline"
             onKeyUp={searchComponent}
           />
-          <div className={Styles.cardwrapper}>
+          <LeftPanelDropWrapper
+            className={Styles.cardwrapper}
+            tabName={LeftPanelTabKey.Selected}
+            onDrop={onDropHandler}
+          >
             {selectedTabCards
               .filter((v: any) =>
                 v?.Description?.toLocaleLowerCase().includes(
@@ -123,7 +157,7 @@ const LeftPanel: React.FC<any> = ({
                   setLeftpanelSelectedElem={setLeftpanelSelectedElem}
                 />
               ))}
-          </div>
+          </LeftPanelDropWrapper>
         </>
       ),
     },

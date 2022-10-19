@@ -163,9 +163,9 @@ const HomePage: React.FC<Props> = ({
             Type: 'conditional',
           }))
         );
-
-        setPathwayComponentCards(pathwayComponent?.PathwayComponents);
       }
+      setPathwayComponentCards(pathwayComponent?.PathwayComponents);
+
       const pathwayModel =
         pathwayComponent?.Pathway?.HasProgressionModel?.length > 0;
 
@@ -625,7 +625,7 @@ const HomePage: React.FC<Props> = ({
                               onDelete={onDeleteHandler}
                             />
                           )}
-                          {showAddDestination &&
+                          {/* {showAddDestination &&
                             column?.CTID === getLastColumn('first') &&
                             pathwayComponentCards?.length <= 1 && (
                               <MultiCard
@@ -655,7 +655,7 @@ const HomePage: React.FC<Props> = ({
                                 number={column.number}
                                 forwardRef={wrapperRef}
                               />
-                            )}
+                            )} */}
                           {connection.length
                             ? connection.map((items: any, idx: number) => (
                                 <Xarrow
@@ -730,32 +730,32 @@ const HomePage: React.FC<Props> = ({
     );
   };
 
-  const getLastColumn = (type: string) => {
-    const ids = [] as any;
-    columnsData?.map((column: any) => {
-      if (!column.semesters || !column.semesters.length) {
-        ids?.push(column?.CTID);
-      } else {
-        ids.push(...renderSemester(column?.semesters));
-      }
-    });
-    if (type === 'last') {
-      return ids[ids?.length - 2];
-    } else if (type === 'first') {
-      return ids[0];
-    }
-  };
-  const renderSemester = (semesters: any) => {
-    const ids = [] as any;
-    if (!semesters || !semesters.length) {
-      return null;
-    }
-    semesters.map((sem: any) => {
-      ids?.push(sem?.CTID);
-      sem?.semesters && renderSemester(sem?.semesters);
-    });
-    return ids;
-  };
+  // const getLastColumn = (type: string) => {
+  //   const ids = [] as any;
+  //   columnsData?.map((column: any) => {
+  //     if (!column.semesters || !column.semesters.length) {
+  //       ids?.push(column?.CTID);
+  //     } else {
+  //       ids.push(...renderSemester(column?.semesters));
+  //     }
+  //   });
+  //   if (type === 'last') {
+  //     return ids[ids?.length - 2];
+  //   } else if (type === 'first') {
+  //     return ids[0];
+  //   }
+  // };
+  // const renderSemester = (semesters: any) => {
+  //   const ids = [] as any;
+  //   if (!semesters || !semesters.length) {
+  //     return null;
+  //   }
+  //   semesters.map((sem: any) => {
+  //     ids?.push(sem?.CTID);
+  //     sem?.semesters && renderSemester(sem?.semesters);
+  //   });
+  //   return ids;
+  // };
 
   return (
     <Layout className={Styles.centralPannel}>

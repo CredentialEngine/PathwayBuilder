@@ -482,6 +482,7 @@ const AddPathwayForm: React.FC<Props> = ({
       updateMappedDataRequest({
         ...addPathwayWrapperFields,
         Pathway: addPathwayFormFields,
+        PathwayComponents: [],
       })
     );
   };

@@ -171,6 +171,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         ...addPathwayWrapperFields,
         PendingComponents: selectedResource,
         ComponentConditions: [],
+        PathwayComponents: [],
       })
     );
   };
