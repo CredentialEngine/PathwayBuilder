@@ -41,6 +41,7 @@ const Constraint: React.FC<Props> = (Props) => {
   });
   const [leftSourcedata, setleftSourceData] = useState<any>([]);
   const [rightSourcedata, setRightSourceData] = useState<any>([]);
+  const [Comparator, setComparator] = useState<any>([]);
 
   //   functions
   const handleConstraintAction = (value: string, label: string) => {
@@ -100,7 +101,17 @@ const Constraint: React.FC<Props> = (Props) => {
       });
     }
   };
+
   useEffect(() => {
+    if (getAllComparators.valid)
+      setComparator(
+        getAllComparators.data.map((dta: any) => ({
+          ...dta,
+          value: dta.URI,
+          label: dta.Name,
+        }))
+      );
+
     if (getAllArrayConcept.valid)
       setConstraintEntityFields({
         ...constraintEntityFields,
@@ -115,18 +126,7 @@ const Constraint: React.FC<Props> = (Props) => {
           label: dta.Name,
         })),
       });
-  }, [getAllArrayConcept]);
-  useEffect(() => {
-    if (getAllComparators.valid)
-      setConstraintEntityFields({
-        ...constraintEntityFields,
-        Comparator: getAllComparators.data.map((dta: any) => ({
-          ...dta,
-          value: dta.URI,
-          label: dta.Name,
-        })),
-      });
-  }, [getAllComparators]);
+  }, [getAllComparators, getAllArrayConcept]);
 
   useEffect(() => {
     getConstraintData(constraintData);
@@ -182,6 +182,7 @@ const Constraint: React.FC<Props> = (Props) => {
   const handleDeleteRow = (RowIndex: any) => {
     getRequiredDeleteRow(RowIndex);
   };
+
   return (
     <>
       <Row gutter={20}>
@@ -202,7 +203,7 @@ const Constraint: React.FC<Props> = (Props) => {
             >
               <DebounceSelect
                 showSearch
-                mode="multiple"
+                mode="tags"
                 value={constraintEntityFields.LeftSource}
                 placeholder="Left Sources"
                 fetchOptions={allConstraintOperandfunc}
@@ -215,7 +216,7 @@ const Constraint: React.FC<Props> = (Props) => {
         <Col span="6">
           <Form.Item>
             <Dropdown
-              options={constraintEntityFields.Comparator}
+              options={Comparator}
               defaultValue={constraintData?.Comparator}
               showSearch={false}
               onChange={(e) => funcSelectedComparators(e)}
@@ -241,7 +242,7 @@ const Constraint: React.FC<Props> = (Props) => {
               >
                 <DebounceSelect
                   showSearch
-                  mode="multiple"
+                  mode="tags"
                   value={constraintEntityFields.RightSource}
                   placeholder="Right Sources"
                   fetchOptions={allConstraintOperandfunc}
@@ -259,7 +260,14 @@ const Constraint: React.FC<Props> = (Props) => {
         <Col span="1">
           <span
             className={Styles.clearRowIcon}
-            onClick={() => handleDeleteRow(RowIndex)}
+            onClick={() =>
+              Modal.confirm({
+                cancelText: 'Cancel',
+                okText: 'Ok',
+                title: 'Are you sure you want to Delete this constraint?',
+                onOk: () => handleDeleteRow(RowIndex),
+              })
+            }
           >
             <FontAwesomeIcon icon={faClose} />
           </span>

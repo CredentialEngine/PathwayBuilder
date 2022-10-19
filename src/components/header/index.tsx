@@ -1,7 +1,6 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row, Button as AntdButton } from 'antd';
-import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -139,13 +138,24 @@ const Header = (props: Props) => {
       );
     setIsEditPathwayFormVisible(true);
   };
+  const redicrectTO = () => {
+    process.env.NODE_ENV !== 'production'
+      ? window.open(
+          'https://sandbox.credentialengine.org/publisher/pathways',
+          '_blank'
+        )
+      : window.open(
+          'https://apps.credentialengine.org/publisher/pathways',
+          '_blank'
+        );
+  };
   const exitWithSaving = () => {
     Modal.confirm({
       cancelText: 'Cancel',
       okText: 'Exit',
       title:
         'You have unsaved changes. If you continue those changes will be lost.',
-      onOk: () => noop,
+      onOk: () => redicrectTO(),
     });
   };
 

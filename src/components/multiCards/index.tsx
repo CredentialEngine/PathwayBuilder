@@ -46,7 +46,8 @@ interface Props {
   rowNumber: number;
   columnNumber: number;
   HasProgressionLevel: string;
-  modalBoolean?: boolean;
+  ConstraintConditionProp?: (val: boolean) => void;
+  ConstraintConditionState: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -74,21 +75,13 @@ const MultiCard: React.FC<Props> = ({
   // forwardRef,
   rowNumber,
   columnNumber,
-  modalBoolean,
+  ConstraintConditionProp,
+  ConstraintConditionState,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   showPopover;
   const ref = useRef(null);
-  const [visibleConstraintCondition, setVisibleConstraintCondition] =
-    useState(false);
   const [showRightPenal, setShowRightPenal] = useState(false);
-
-  const handledConstraintsModal = (bool: boolean) => {
-    setVisibleConstraintCondition(bool);
-  };
-  useEffect(() => {
-    if (modalBoolean) setVisibleConstraintCondition(true);
-  }, [modalBoolean]);
 
   const darkColor = '#0A2942';
   const getOnClick = (e: any) => {
@@ -156,7 +149,7 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onPlusCircleClickHandler = () => {
-    setVisibleConstraintCondition(true);
+    ConstraintConditionProp && ConstraintConditionProp(true);
   };
 
   return (
@@ -217,6 +210,7 @@ const MultiCard: React.FC<Props> = ({
                   </div>
                 </>
               )}
+
               {isAddFirst && firstComponent && (
                 <>
                   <InfoTooltip
@@ -799,13 +793,15 @@ const MultiCard: React.FC<Props> = ({
         </div>
       )}
       <Modal
-        visible={visibleConstraintCondition}
+        visible={ConstraintConditionState}
         title=""
         footer={[]}
-        onCancel={() => setVisibleConstraintCondition(false)}
+        onCancel={() =>
+          ConstraintConditionProp && ConstraintConditionProp(false)
+        }
       >
         <AddConditionalComponent
-          visibleConstraintConditionProp={handledConstraintsModal}
+          visibleConstraintConditionProp={ConstraintConditionProp}
           CTID={CTID}
           data={data}
         />
