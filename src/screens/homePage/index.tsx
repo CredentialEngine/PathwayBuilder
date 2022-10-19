@@ -1,7 +1,6 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -53,9 +52,6 @@ const HomePage: React.FC<Props> = ({
   const [leftpanelSelectedElem, setLeftpanelSelectedElem] =
     useState<HTMLElement>();
 
-  const [visibleConstraintCondition, setVisibleConstraintCondition] =
-    useState(false);
-
   const [numberOfDropWrapper, setNumberOfDropWrapper] = useState<number>(4);
   const [point, setPoint] = useState({
     start: '',
@@ -78,10 +74,10 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
-      connection.push({
-        start: conditionalCard.ParentIdentifier,
-        end: conditionalCard.RowId,
-      });
+      // connection.push({
+      //   start: conditionalCard.ParentIdentifier,
+      //   end: conditionalCard.RowId,
+      // });
       conditionalCard?.TargetComponent.forEach((target: any) => {
         pathwayComponentCards.forEach((pathway_card: any) => {
           if (pathway_card.CTID === target) {
@@ -626,10 +622,6 @@ const HomePage: React.FC<Props> = ({
                                   columnNumber={column_num}
                                   HasProgressionLevel={column.CTID}
                                   onDelete={onDeleteHandler}
-                                  ConstraintConditionProp={openConstraintModal}
-                                  ConstraintConditionState={
-                                    visibleConstraintCondition
-                                  }
                                   updatedPathwayComponentConditionCards={
                                     updatedPathwayComponentConditionCards
                                   }
@@ -715,7 +707,7 @@ const HomePage: React.FC<Props> = ({
                                           }
                                         />
                                       </span>
-                                      <span className={Styles.addConditionIcon}>
+                                      {/* <span className={Styles.addConditionIcon}>
                                         <FontAwesomeIcon
                                           icon={faCirclePlus}
                                           fill="#000000"
@@ -729,7 +721,7 @@ const HomePage: React.FC<Props> = ({
                                             openConstraintModal(true);
                                           }}
                                         />
-                                      </span>
+                                      </span> */}
                                     </div>
                                   }
                                   startAnchor="auto"
@@ -784,9 +776,6 @@ const HomePage: React.FC<Props> = ({
           ))}
       </div>
     );
-  };
-  const openConstraintModal = (boolean: boolean) => {
-    setVisibleConstraintCondition(boolean);
   };
 
   const getLastColumn = (type: string) => {

@@ -112,6 +112,7 @@ const MultiCard: React.FC<Props> = ({
   }, [updatedPathwayComponentConditionCards]);
 
   const darkColor = '#0A2942';
+
   const getOnClick = (e: any) => {
     /* 
     Below commented code is for increasing width for dropWrapper
@@ -124,6 +125,7 @@ const MultiCard: React.FC<Props> = ({
 
     */
 
+    console.log('ashu');
     onClick;
     getEndPoints(e, CTID);
   };
