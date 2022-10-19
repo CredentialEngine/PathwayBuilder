@@ -29,12 +29,7 @@ const SelectDestination: React.FC<Props> = ({
     setIsDestinationColumnSelected(true);
     const firstColumn = document.getElementById('firstColumn');
     if (!_.isNull(firstColumn)) {
-      !_.isNull(firstColumn) &&
-        firstColumn.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'start',
-        });
+      !_.isNull(firstColumn) && firstColumn.scrollIntoView(true);
     }
   };
 
