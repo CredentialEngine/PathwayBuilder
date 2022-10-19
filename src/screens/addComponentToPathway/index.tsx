@@ -10,7 +10,7 @@ import Options from '../../components/formFields/dropdown/lib/options';
 import InputBox from '../../components/formFields/inputBox';
 import RadioButton from '../../components/formFields/radio';
 import {
-  addComponentToLeftPanel,
+  // addComponentToLeftPanel,
   getLeftPanelPathwayComponentRequest,
 } from '../../components/leftPanel/state/actions';
 import Tab, { TabPane } from '../../components/tab';
@@ -111,15 +111,16 @@ const AddComponentToPathway = (props: any) => {
   };
 
   const onClick = () => {
-    if (
-      selectedComponent.includes('BasicComponent') ||
-      selectedComponent.includes('AssessmentComponent') ||
-      selectedComponent.includes('CredentialComponent')
-    ) {
-      dispatch(addComponentToLeftPanel(selectedResource));
-    } else {
-      dispatch(addComponentFromPathwayModal(selectedResource));
-    }
+    // if (
+    //   selectedComponent.includes('BasicComponent') ||
+    //   selectedComponent.includes('AssessmentComponent') ||
+    //   selectedComponent.includes('CredentialComponent')
+    // ) {
+    //   dispatch(addComponentToLeftPanel(selectedResource));
+    // } else {
+
+    dispatch(addComponentFromPathwayModal(selectedResource));
+    // }
     setSelectedResource([]);
     setSelectedComponent('');
     isVisible(false);

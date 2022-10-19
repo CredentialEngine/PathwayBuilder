@@ -1,7 +1,6 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -53,9 +52,6 @@ const HomePage: React.FC<Props> = ({
   const [leftpanelSelectedElem, setLeftpanelSelectedElem] =
     useState<HTMLElement>();
 
-  const [visibleConstraintCondition, setVisibleConstraintCondition] =
-    useState(false);
-
   const [numberOfDropWrapper, setNumberOfDropWrapper] = useState<number>(4);
   const [point, setPoint] = useState({
     start: '',
@@ -78,6 +74,10 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
+      // connection.push({
+      //   start: conditionalCard.ParentIdentifier,
+      //   end: conditionalCard.RowId,
+      // });
       conditionalCard?.TargetComponent.forEach((target: any) => {
         pathwayComponentCards.forEach((pathway_card: any) => {
           if (pathway_card.CTID === target) {
@@ -116,6 +116,7 @@ const HomePage: React.FC<Props> = ({
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setDeletedComponentCards([]);
+
     pathwayComponentCards?.some(
       (item: any) =>
         item?.isDestinationColumnSelected && setShowAddDestination(true)
@@ -160,6 +161,8 @@ const HomePage: React.FC<Props> = ({
           }))
         );
       }
+      setPathwayComponentCards(pathwayComponent?.PathwayComponents);
+
       const pathwayModel =
         pathwayComponent?.Pathway?.HasProgressionModel?.length > 0;
 
@@ -170,9 +173,11 @@ const HomePage: React.FC<Props> = ({
 
         const level2ProgressionModel = [];
 
-        const updatedProgressionLevel = pathwayComponent?.ProgressionLevels.map(
-          (prog_level: any) => ({ ...prog_level, columnNumber: 1 })
-        );
+        const updatedProgressionLevel =
+          pathwayComponent?.ProgressionLevels?.map((prog_level: any) => ({
+            ...prog_level,
+            columnNumber: 1,
+          }));
 
         pathwayComponent?.ProgressionModels?.map((model: any) =>
           model?.HasTopConcept?.forEach((CTID: any) => {
@@ -336,6 +341,13 @@ const HomePage: React.FC<Props> = ({
       return;
     }
 
+    const isDestinationCardExist = pathwayComponentCards.some(
+      (card: any) => card.isDestinationColumnSelected
+    );
+
+    if (!!destinationColumn && isDestinationCardExist) {
+      return;
+    }
     const islastDropWrapperUsed = pathwayComponentCards.some(
       (card: any) => card.RowNumber === numberOfDropWrapper
     );
@@ -462,7 +474,6 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
-
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
@@ -524,7 +535,7 @@ const HomePage: React.FC<Props> = ({
                       isDestinationColumnSelected={
                         column?.isDestinationColumnSelected
                       }
-                      destinationColumn={!!column?.destinationComponent}
+                      destinationColumn={!!column?.isDestinationColumnSelected}
                       width="450px"
                       rowNumber={rowNumber + 1}
                       columnNumber={columnNumber}
@@ -611,7 +622,9 @@ const HomePage: React.FC<Props> = ({
                                   columnNumber={column_num}
                                   HasProgressionLevel={column.CTID}
                                   onDelete={onDeleteHandler}
-                                  modalBoolean={visibleConstraintCondition}
+                                  updatedPathwayComponentConditionCards={
+                                    updatedPathwayComponentConditionCards
+                                  }
                                 />
                               ))}
 
@@ -639,36 +652,39 @@ const HomePage: React.FC<Props> = ({
                               forwardRef={wrapperRef}
                               leftpanelSelectedElem={leftpanelSelectedElem}
                               onDelete={onDeleteHandler}
-                              modalBoolean={visibleConstraintCondition}
                             />
                           )}
-                          {/* {showAddDestination &&
-                      column?.CTID === getLastColumn() &&
-                      pathwayComponentCards?.length <= 1 && (
-                        <MultiCard
-                          onClick={() => setShowRightPanel(true)}
-                          key={0}
-                          id={0}
-                          firstComponent={
-                            column?.CTID === getLastColumn() ? true : false
-                          }
-                          getEndPoints={setEndpoints}
-                          isAddFirst={
-                            column?.CTID === getLastColumn() ? true : false
-                          }
-                          data={{ Type: 'addDestination' }}
-                          destinationComponent={
-                            column?.isDestinationColumnSelected
-                          }
-                          setIsZoomDisabled={setIsZoomDisabled}
-                          status={column.Id}
-                          inProgressLevel={column.CTID}
-                          onSelectDragElemenet={onSelectDragElemenet}
-                          onMoveItem={onMoveItem}
-                          number={column.number}
-                          forwardRef={wrapperRef}
-                         />
-                      )} */}
+                          {showAddDestination &&
+                            column?.CTID === getLastColumn('first') &&
+                            pathwayComponentCards?.length <= 1 && (
+                              <MultiCard
+                                onClick={() => setShowRightPanel(true)}
+                                key={0}
+                                id={0}
+                                firstComponent={
+                                  column?.CTID === getLastColumn('first')
+                                    ? true
+                                    : false
+                                }
+                                getEndPoints={setEndpoints}
+                                isAddFirst={
+                                  column?.CTID === getLastColumn('first')
+                                    ? true
+                                    : false
+                                }
+                                data={{ Type: 'addDestination' }}
+                                destinationComponent={
+                                  column?.isDestinationColumnSelected
+                                }
+                                setIsZoomDisabled={setIsZoomDisabled}
+                                status={column.Id}
+                                inProgressLevel={column.CTID}
+                                onSelectDragElemenet={onSelectDragElemenet}
+                                onMoveItem={onMoveItem}
+                                number={column.number}
+                                forwardRef={wrapperRef}
+                              />
+                            )}
                           {connection.length
                             ? connection.map((items: any, idx: number) => (
                                 <Xarrow
@@ -691,7 +707,7 @@ const HomePage: React.FC<Props> = ({
                                           }
                                         />
                                       </span>
-                                      <span className={Styles.addConditionIcon}>
+                                      {/* <span className={Styles.addConditionIcon}>
                                         <FontAwesomeIcon
                                           icon={faCirclePlus}
                                           fill="#000000"
@@ -702,10 +718,10 @@ const HomePage: React.FC<Props> = ({
                                             cursor: 'pointer',
                                           }}
                                           onClick={() => {
-                                            setVisibleConstraintCondition(true);
+                                            openConstraintModal(true);
                                           }}
                                         />
-                                      </span>
+                                      </span> */}
                                     </div>
                                   }
                                   startAnchor="auto"
@@ -762,32 +778,33 @@ const HomePage: React.FC<Props> = ({
     );
   };
 
-  // const getLastColumn = (type: string) => {
-  //   const ids = [] as any;
-  //   columnsData?.map((column: any) => {
-  //     if (!column.semesters || !column.semesters.length) {
-  //       ids?.push(column?.CTID);
-  //     } else {
-  //       ids.push(...renderSemester(column?.semesters));
-  //     }
-  //   });
-  //   if (type === 'last') {
-  //     return ids[ids?.length - 2];
-  //   } else if (type === 'first') {
-  //     return ids[0];
-  //   }
-  // };
-  // const renderSemester = (semesters: any) => {
-  //   const ids = [] as any;
-  //   if (!semesters || !semesters.length) {
-  //     return null;
-  //   }
-  //   semesters.map((sem: any) => {
-  //     ids?.push(sem?.CTID);
-  //     sem?.semesters && renderSemester(sem?.semesters);
-  //   });
-  //   return ids;
-  // };
+  const getLastColumn = (type: string) => {
+    const ids = [] as any;
+    columnsData?.map((column: any) => {
+      if (!column.semesters || !column.semesters.length) {
+        ids?.push(column?.CTID);
+      } else {
+        ids.push(...renderSemester(column?.semesters));
+      }
+    });
+    if (type === 'last') {
+      return ids[ids?.length - 2];
+    } else if (type === 'first') {
+      return ids[0];
+    }
+  };
+  const renderSemester = (semesters: any) => {
+    const ids = [] as any;
+    if (!semesters || !semesters.length) {
+      return null;
+    }
+    semesters.map((sem: any) => {
+      ids?.push(sem?.CTID);
+      sem?.semesters && renderSemester(sem?.semesters);
+    });
+    return ids;
+  };
+
   return (
     <Layout className={Styles.centralPannel}>
       <Header
@@ -896,16 +913,6 @@ const HomePage: React.FC<Props> = ({
           panelData={rightPanelData}
         />
       )}
-      {/* <Modal
-        visible={visibleConstraintCondition}
-        title=""
-        footer={[]}
-        onCancel={() => setVisibleConstraintCondition(false)}
-      >
-        <AddConditionalComponent
-          visibleConstraintCondition={visibleConstraintCondition}
-        />
-      </Modal> */}
     </Layout>
   );
 };

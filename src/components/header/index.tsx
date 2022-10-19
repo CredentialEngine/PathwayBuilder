@@ -1,7 +1,6 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row, Button as AntdButton } from 'antd';
-import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,6 +8,7 @@ import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 import HelpAddingComponent from '../../screens/helpAddingComponent';
 import {
   approvePathwayRequest,
+  getDataForPathwayAndComponentsRequest,
   saveDataForPathwayRequest,
   savePathwaySuccess,
 } from '../../states/actions';
@@ -37,6 +37,18 @@ const Header = (props: Props) => {
   const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
+
+  // useEffect(() => {
+  //   dispatch(getDataForPathwayAndComponentsRequest(savePathwayResult?.PathwayId));
+  // }, []);
+  //   const pathwayData = useSelector((state: any) => state.initalReducer?.pathwayComponentData);
+  //   // const organizationName =
+  //   //   pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name;
+  //   // const pathwayData = useSelector(
+  //   //   (state: any) => state?.initalReducer?.savePathway
+  //   // );
+  // console.log("pathwayData", pathwayData)
+
   useEffect(() => {
     if (savePathwayResult?.valid) {
       setLoadings(false);
@@ -119,13 +131,31 @@ const Header = (props: Props) => {
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
 
+  const onEditPathwayClick = () => {
+    savePathwayResult?.PathwayId &&
+      dispatch(
+        getDataForPathwayAndComponentsRequest(savePathwayResult?.PathwayId)
+      );
+    setIsEditPathwayFormVisible(true);
+  };
+  const redicrectTO = () => {
+    process.env.NODE_ENV !== 'production'
+      ? window.open(
+          'https://sandbox.credentialengine.org/publisher/pathways',
+          '_blank'
+        )
+      : window.open(
+          'https://apps.credentialengine.org/publisher/pathways',
+          '_blank'
+        );
+  };
   const exitWithSaving = () => {
     Modal.confirm({
       cancelText: 'Cancel',
       okText: 'Exit',
       title:
         'You have unsaved changes. If you continue those changes will be lost.',
-      onOk: () => noop,
+      onOk: () => redicrectTO(),
     });
   };
 
@@ -159,10 +189,7 @@ const Header = (props: Props) => {
               <span className={styles.title}>
                 {pathwayWrapper?.Pathway?.Name}
               </span>
-              <span
-                className={styles.editPathway}
-                onClick={() => setIsEditPathwayFormVisible(true)}
-              >
+              <span className={styles.editPathway} onClick={onEditPathwayClick}>
                 Edit Pathway Details
               </span>
             </div>

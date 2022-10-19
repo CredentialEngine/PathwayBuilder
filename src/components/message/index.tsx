@@ -57,7 +57,7 @@ export const Message = ({
         onClose={onClose}
       />
     ),
-    duration: 0,
+    duration: type === 'success' ? 4 : 0,
     icon: <span />,
   });
 };
@@ -97,7 +97,6 @@ export const MessageContent = ({
       />
     ),
   };
-
   const height = (): string => {
     if (linkText) return 'linkHeight';
     else if (title) return 'noLinkHeight';
