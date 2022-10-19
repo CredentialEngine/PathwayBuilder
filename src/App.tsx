@@ -202,6 +202,7 @@ const App = () => {
             setIsPreSelectedCreateResourceVisible={
               setIsPreSelectedCreateResourceVisible
             }
+            setIsDestinationColumnSelected={setIsDestinationColumnSelected}
             fromPreSelect={fromPreSelect}
             addPathwayWrapperFields={addPathwayWrapperFields}
             setIsAddPathwayDestinationVisible={

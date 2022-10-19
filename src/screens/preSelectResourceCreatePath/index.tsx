@@ -30,12 +30,14 @@ export interface Props {
   addPathwayWrapperFields: any;
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
   fromPreSelect: boolean;
+  setIsDestinationColumnSelected?: (a: boolean) => void;
 }
 const PreSelectResourceCreatePath: React.FC<Props> = ({
   setIsPreSelectedCreateResourceVisible,
   addPathwayWrapperFields,
   setIsAddPathwayDestinationVisible,
   fromPreSelect,
+  setIsDestinationColumnSelected,
 }) => {
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
@@ -201,6 +203,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
+    !!setIsDestinationColumnSelected && setIsDestinationColumnSelected(true);
   };
 
   const handleCheckBox = () => {
