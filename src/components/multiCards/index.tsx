@@ -6,9 +6,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Popover } from 'antd';
-import { noop } from 'lodash';
+import _, { noop } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import AddConditionalComponent from '../../screens/addComponent';
 
@@ -48,6 +49,7 @@ interface Props {
   HasProgressionLevel: string;
   ConstraintConditionProp?: (val: boolean) => void;
   ConstraintConditionState: boolean;
+  updatedPathwayComponentConditionCards?: [];
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -77,11 +79,36 @@ const MultiCard: React.FC<Props> = ({
   columnNumber,
   ConstraintConditionProp,
   ConstraintConditionState,
+  updatedPathwayComponentConditionCards,
+  HasProgressionLevel,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
-  showPopover;
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const ref = useRef(null);
   const [showRightPenal, setShowRightPenal] = useState(false);
+  const [filteredConditionalComponent, setFilteredConditionalComponent] =
+    useState<any>([]);
+  const [filteredPathwayComponent, setFilteredPathwayComponent] = useState<any>(
+    []
+  );
+
+  const { mappedData: PathwayWrapper } = pathwayWrapper;
+
+  useEffect(() => {
+    setFilteredConditionalComponent(
+      updatedPathwayComponentConditionCards?.filter(
+        (condition_card: any) =>
+          condition_card.HasProgressionLevel === _.toString(HasProgressionLevel)
+      )
+    );
+
+    setFilteredPathwayComponent(
+      PathwayWrapper.PathwayComponents?.filter(
+        (pathway_card: any) =>
+          pathway_card.HasProgressionLevel === _.toString(HasProgressionLevel)
+      )
+    );
+  }, [updatedPathwayComponentConditionCards]);
 
   const darkColor = '#0A2942';
   const getOnClick = (e: any) => {
@@ -155,12 +182,7 @@ const MultiCard: React.FC<Props> = ({
   return (
     <>
       {isDraggableCardVisible ? (
-        <div className={styles.draggableAreaContainer}>
-          {/* <div
-            id="verticalBorder"
-            draggable={true}
-            className={styles.draggableAreaBox}
-          ></div> */}
+        <div className={styles.draggableAreaContainer} id={CTID?.toString()}>
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
@@ -802,8 +824,10 @@ const MultiCard: React.FC<Props> = ({
       >
         <AddConditionalComponent
           visibleConstraintConditionProp={ConstraintConditionProp}
-          CTID={CTID}
           data={data}
+          filteredConditionalComponent={filteredConditionalComponent}
+          filteredPathwayComponent={filteredPathwayComponent}
+          isDestinationCard={isDestination}
         />
       </Modal>
 

@@ -78,6 +78,10 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
+      connection.push({
+        start: conditionalCard.ParentIdentifier,
+        end: conditionalCard.RowId,
+      });
       conditionalCard?.TargetComponent.forEach((target: any) => {
         pathwayComponentCards.forEach((pathway_card: any) => {
           if (pathway_card.CTID === target) {
@@ -116,6 +120,7 @@ const HomePage: React.FC<Props> = ({
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setDeletedComponentCards([]);
+
     pathwayComponentCards?.some(
       (item: any) =>
         item?.isDestinationColumnSelected && setShowAddDestination(true)
@@ -159,6 +164,8 @@ const HomePage: React.FC<Props> = ({
             Type: 'conditional',
           }))
         );
+
+        setPathwayComponentCards(pathwayComponent?.PathwayComponents);
       }
       const pathwayModel =
         pathwayComponent?.Pathway?.HasProgressionModel?.length > 0;
@@ -464,7 +471,6 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
-
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
@@ -616,6 +622,9 @@ const HomePage: React.FC<Props> = ({
                                   ConstraintConditionProp={openConstraintModal}
                                   ConstraintConditionState={
                                     visibleConstraintCondition
+                                  }
+                                  updatedPathwayComponentConditionCards={
+                                    updatedPathwayComponentConditionCards
                                   }
                                 />
                               ))}
@@ -798,6 +807,7 @@ const HomePage: React.FC<Props> = ({
     });
     return ids;
   };
+
   return (
     <Layout className={Styles.centralPannel}>
       <Header
