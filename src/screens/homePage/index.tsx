@@ -625,6 +625,7 @@ const HomePage: React.FC<Props> = ({
                                   updatedPathwayComponentConditionCards={
                                     updatedPathwayComponentConditionCards
                                   }
+                                  pathwayComponentCards={pathwayComponentCards}
                                 />
                               ))}
 
@@ -654,7 +655,8 @@ const HomePage: React.FC<Props> = ({
                               onDelete={onDeleteHandler}
                             />
                           )}
-                          {showAddDestination &&
+                          {!showAddDestination &&
+                            index === 1 &&
                             column?.CTID === getLastColumn('first') &&
                             pathwayComponentCards?.length <= 1 && (
                               <MultiCard
