@@ -162,7 +162,20 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         item.ProxyFor === selectedItem?.ProxyFor
     );
 
-    if (selectedItemExist || pathwayComponentsExists) {
+    const PendingComponentsExists =
+      pathwayWrapper?.pathwayComponentData?.data?.PendingComponents?.some(
+        (item: any) =>
+          item.CTID === selectedItem?.CTID ||
+          item.ProxyFor === selectedItem?.ProxyFor
+      );
+
+    console.log('pathwayWrapper', pathwayWrapper);
+
+    if (
+      selectedItemExist ||
+      pathwayComponentsExists ||
+      PendingComponentsExists
+    ) {
       Modal.confirm({
         cancelText: 'No',
         okText: 'Yes',
