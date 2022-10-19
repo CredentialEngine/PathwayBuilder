@@ -125,7 +125,6 @@ const MultiCard: React.FC<Props> = ({
 
     */
 
-    console.log('ashu');
     onClick;
     getEndPoints(e, CTID);
   };
@@ -184,7 +183,8 @@ const MultiCard: React.FC<Props> = ({
     }
   };
 
-  const onPlusCircleClickHandler = () => {
+  const onPlusCircleClickHandler = (e: any) => {
+    e.stopPropagation();
     setVisibleConstraintCondition(true);
   };
 
@@ -633,8 +633,8 @@ const MultiCard: React.FC<Props> = ({
                       color: '#ffb90b',
                       cursor: 'pointer',
                     }}
-                    onClick={() => {
-                      onPlusCircleClickHandler();
+                    onClick={(e) => {
+                      onPlusCircleClickHandler(e);
                     }}
                   />
                 </div>
@@ -754,8 +754,8 @@ const MultiCard: React.FC<Props> = ({
                       color: '#ffb90b',
                       cursor: 'pointer',
                     }}
-                    onClick={() => {
-                      onPlusCircleClickHandler();
+                    onClick={(e) => {
+                      onPlusCircleClickHandler(e);
                     }}
                   />
                 </div>
