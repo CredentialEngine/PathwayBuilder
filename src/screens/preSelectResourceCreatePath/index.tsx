@@ -29,11 +29,13 @@ export interface Props {
   setIsPreSelectedCreateResourceVisible: (a: boolean) => void;
   addPathwayWrapperFields: any;
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
+  fromPreSelect: boolean;
 }
 const PreSelectResourceCreatePath: React.FC<Props> = ({
   setIsPreSelectedCreateResourceVisible,
   addPathwayWrapperFields,
   setIsAddPathwayDestinationVisible,
+  fromPreSelect,
 }) => {
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
@@ -186,7 +188,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
-    setIsAddPathwayDestinationVisible(true);
+    !fromPreSelect && setIsAddPathwayDestinationVisible(true);
     dispatch(
       updateMappedDataRequest({
         ...addPathwayWrapperFields,
@@ -199,6 +201,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
   };
+
   const handleCheckBox = () => {
     setCheckboxForOrganisation(!checkboxForOrganisation);
   };

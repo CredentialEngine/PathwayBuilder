@@ -170,9 +170,11 @@ const HomePage: React.FC<Props> = ({
 
         const level2ProgressionModel = [];
 
-        const updatedProgressionLevel = pathwayComponent?.ProgressionLevels.map(
-          (prog_level: any) => ({ ...prog_level, columnNumber: 1 })
-        );
+        const updatedProgressionLevel =
+          pathwayComponent?.ProgressionLevels?.map((prog_level: any) => ({
+            ...prog_level,
+            columnNumber: 1,
+          }));
 
         pathwayComponent?.ProgressionModels?.map((model: any) =>
           model?.HasTopConcept?.forEach((CTID: any) => {

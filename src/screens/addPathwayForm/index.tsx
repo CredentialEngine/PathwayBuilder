@@ -193,23 +193,31 @@ const AddPathwayForm: React.FC<Props> = ({
           error: false,
         })
       );
-      setIsPreSelectedCreateResourceVisible(true);
+      !isEditPathwayFormVisible && setIsPreSelectedCreateResourceVisible(true);
     }
   }, [savePathwayResult]);
 
-  const { mappedData: PathwayWrapper } = pathwayWrapper;
+  let { mappedData: PathwayWrapper } = pathwayWrapper;
   const dispatch = useDispatch();
 
   const userOrganizations = useSelector(
     (state: any) => state.initalReducer?.currentUserData?.data?.Organizations
   );
 
+  const pathwayData = useSelector(
+    (state: any) => state.initalReducer?.pathwayComponentData
+  );
+  useEffect(() => {
+    if (pathwayData?.data) {
+      PathwayWrapper = pathwayData?.data;
+    }
+  }, [pathwayData]);
+
   useEffect(() => {
     if (!_.isNull(PathwayWrapper.Pathway)) {
       const updatedPathwayFormFields = { ...PathwayWrapper.Pathway };
       updatedPathwayFormFields.Id = PathwayWrapper.Pathway.Id;
       updatedPathwayFormFields.Name = PathwayWrapper.Pathway.Name;
-
       updatedPathwayFormFields.Organization =
         PathwayWrapper.Pathway.Organization;
       updatedPathwayFormFields.Description = PathwayWrapper.Pathway.Description;

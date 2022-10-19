@@ -9,6 +9,7 @@ import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 import HelpAddingComponent from '../../screens/helpAddingComponent';
 import {
   approvePathwayRequest,
+  getDataForPathwayAndComponentsRequest,
   saveDataForPathwayRequest,
   savePathwaySuccess,
 } from '../../states/actions';
@@ -37,6 +38,18 @@ const Header = (props: Props) => {
   const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
+
+  // useEffect(() => {
+  //   dispatch(getDataForPathwayAndComponentsRequest(savePathwayResult?.PathwayId));
+  // }, []);
+  //   const pathwayData = useSelector((state: any) => state.initalReducer?.pathwayComponentData);
+  //   // const organizationName =
+  //   //   pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name;
+  //   // const pathwayData = useSelector(
+  //   //   (state: any) => state?.initalReducer?.savePathway
+  //   // );
+  // console.log("pathwayData", pathwayData)
+
   useEffect(() => {
     if (savePathwayResult?.valid) {
       setLoadings(false);
@@ -119,6 +132,13 @@ const Header = (props: Props) => {
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
 
+  const onEditPathwayClick = () => {
+    savePathwayResult?.PathwayId &&
+      dispatch(
+        getDataForPathwayAndComponentsRequest(savePathwayResult?.PathwayId)
+      );
+    setIsEditPathwayFormVisible(true);
+  };
   const exitWithSaving = () => {
     Modal.confirm({
       cancelText: 'Cancel',
@@ -159,10 +179,7 @@ const Header = (props: Props) => {
               <span className={styles.title}>
                 {pathwayWrapper?.Pathway?.Name}
               </span>
-              <span
-                className={styles.editPathway}
-                onClick={() => setIsEditPathwayFormVisible(true)}
-              >
+              <span className={styles.editPathway} onClick={onEditPathwayClick}>
                 Edit Pathway Details
               </span>
             </div>
