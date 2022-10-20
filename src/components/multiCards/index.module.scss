@@ -297,7 +297,7 @@
   text-align: center;
   max-width: 60px;
   position: absolute;
-  left: -30px;
+  left: -36px;
   top: 48px;
   display: flex;
   z-index: 999999;
@@ -334,7 +334,10 @@
     left: -9px;
   }
 }
-
+.isConditionalCardIcon {
+  left: 40px;
+  top: 58px;
+}
 // .addIcon::before {
 //   content: '';
 //   display: block;

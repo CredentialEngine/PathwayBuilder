@@ -752,32 +752,55 @@ const MultiCard: React.FC<Props> = ({
           )}
 
           {isConditionalCard && (
-            <React.Fragment>
-              <div className={styles.conditionalCardContent}>
-                <FontAwesomeIcon
-                  color="#ffffff"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faSitemap}
-                  onClick={noop}
+            <>
+              {isConditionalCard && (
+                <div
+                  className={
+                    styles.addIcon + ' ' + styles.isConditionalCardIcon
+                  }
+                >
+                  <FontAwesomeIcon
+                    icon={faCirclePlus}
+                    fill="#000000"
+                    style={{
+                      height: '22px',
+                      width: '22px',
+                      color: '#ffb90b',
+                      cursor: 'pointer',
+                    }}
+                    onClick={(e) => {
+                      onPlusCircleClickHandler(e);
+                    }}
+                  />
+                </div>
+              )}
+              <React.Fragment>
+                <div className={styles.conditionalCardContent}>
+                  <FontAwesomeIcon
+                    color="#ffffff"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faSitemap}
+                    onClick={noop}
+                  />
+                  <span>Required {data?.RequiredNumber}</span>
+                  <FontAwesomeIcon
+                    color="#000000"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faEllipsis}
+                    onClick={noop}
+                  />
+                </div>
+                <Divider
+                  style={{
+                    backgroundColor: '#ffb90b',
+                    margin: '8px 0px 4px 0px',
+                  }}
                 />
-                <span>Required {data?.RequiredNumber}</span>
-                <FontAwesomeIcon
-                  color="#000000"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faEllipsis}
-                  onClick={noop}
-                />
-              </div>
-              <Divider
-                style={{
-                  backgroundColor: '#ffb90b',
-                  margin: '8px 0px 4px 0px',
-                }}
-              />
-              <div className={styles.requiredSection}>
-                <span>{data.Description}</span>
-              </div>
-            </React.Fragment>
+                <div className={styles.requiredSection}>
+                  <span>{data.Description}</span>
+                </div>
+              </React.Fragment>
+            </>
           )}
 
           {isAddComponentCard && (
