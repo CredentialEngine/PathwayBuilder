@@ -48,6 +48,9 @@ interface Props {
   columnNumber: number;
   HasProgressionLevel: string;
   updatedPathwayComponentConditionCards?: [];
+  ConstraintConditionProp?: (val: boolean) => void;
+  ConstraintConditionState: boolean;
+  pathwayComponentCards: [any];
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -550,6 +553,7 @@ const MultiCard: React.FC<Props> = ({
                 title="Great! Add  another component"
                 content="Drag your next component into the Pathway by dragging it to a hotspot on the component you just placed."
                 onClose={noop}
+                direction="right"
               />
               <div className={styles.addDestinationContent}>
                 <p className={styles.addDestinationTitle}>
@@ -640,6 +644,9 @@ const MultiCard: React.FC<Props> = ({
                 </div>
               )}
 
+              <span
+                className={styles.ornageSection + ' ' + styles.leftSide}
+              ></span>
               <div
                 className={
                   isDestination
@@ -708,6 +715,9 @@ const MultiCard: React.FC<Props> = ({
                   <span>Level 10</span>
                 </div>
               </div>
+              <span
+                className={styles.ornageSection + ' ' + styles.right}
+              ></span>
             </>
           )}
 
@@ -743,24 +753,6 @@ const MultiCard: React.FC<Props> = ({
 
           {isConditionalCard && (
             <React.Fragment>
-              {isConditionalCard && (
-                <div className={styles.addIcon}>
-                  <FontAwesomeIcon
-                    icon={faCirclePlus}
-                    fill="#000000"
-                    style={{
-                      height: '22px',
-                      width: '22px',
-                      color: '#ffb90b',
-                      cursor: 'pointer',
-                    }}
-                    onClick={(e) => {
-                      onPlusCircleClickHandler(e);
-                    }}
-                  />
-                </div>
-              )}
-
               <div className={styles.conditionalCardContent}>
                 <FontAwesomeIcon
                   color="#ffffff"
