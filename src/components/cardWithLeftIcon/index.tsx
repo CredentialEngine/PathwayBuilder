@@ -1,6 +1,8 @@
 import { Card, Col, Row } from 'antd';
 import React from 'react';
 
+import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
+
 import styles from './index.module.scss';
 
 export interface Props {
@@ -97,7 +99,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'AssessmentComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/AssessmentComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/AssessmentComponent.png`}
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
@@ -106,7 +112,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'BasicComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/BasicComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/BasicComponent.png`}
                     alt="BasicComponent"
                     className="componentIcon"
                   />
@@ -115,7 +125,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'CocurricularComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CocurricularComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CocurricularComponent.png`}
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
@@ -124,7 +138,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'CompetencyComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CompetencyComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CompetencyComponent.png`}
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
@@ -133,7 +151,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'CourseComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CourseComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CourseComponent.png`}
                     alt="CourseComponent"
                     className="componentIcon"
                   />
@@ -142,7 +164,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'ExtracurricularComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/ExtracurricularComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
@@ -151,7 +177,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'JobComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/JobComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/JobComponent.png`}
                     alt="JobComponent"
                     className="componentIcon"
                   />
@@ -160,7 +190,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'WorkExperienceComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/WorkExperienceComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
@@ -169,7 +203,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'CredentialComponent'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CredentialComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CredentialComponent.png`}
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
@@ -178,7 +216,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'ComponentCondition'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/ComponentCondition.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/ComponentCondition.png`}
                     alt="ComponentCondition"
                     className="componentIcon"
                   />
@@ -187,7 +229,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'selection'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/SelectionCondition.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/SelectionCondition.png`}
                     alt="SelectionCondition"
                     className="componentIcon"
                   />
@@ -197,21 +243,33 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               <>
                 {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CredentialComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CredentialComponent.png`}
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
                 )}
                 {Type?.toLowerCase().includes('course'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CourseComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CourseComponent.png`}
                     alt="courseComponent"
                     className="componentIcon"
                   />
                 )}
                 {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/BasicComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/BasicComponent.png`}
                     alt="BasicComponent"
                     className="componentIcon"
                   />
@@ -220,14 +278,22 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'competency'.toLocaleLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CompetencyComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CompetencyComponent.png`}
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
                 )}
                 {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/AssessmentComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/AssessmentComponent.png`}
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
@@ -235,7 +301,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
 
                 {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/CocurricularComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CocurricularComponent.png`}
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
@@ -244,14 +314,22 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'Extracurricular'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/ExtracurricularComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
                 )}
                 {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/SelectionComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/SelectionComponent.png`}
                     alt="SelectionComponent"
                     className="componentIcon"
                   />
@@ -260,21 +338,33 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   'WorkExperience'.toLowerCase()
                 ) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/WorkExperienceComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
                 )}
                 {Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/JobComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/JobComponent.png`}
                     alt="JobComponent"
                     className="componentIcon"
                   />
                 )}
                 {Type?.toLowerCase().includes('Addressing'.toLowerCase()) && (
                   <img
-                    src="https://sandbox.credentialengine.org/publisher/Images/PathwayBuilder/AddressingComponent.png"
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/AddressingComponent.png`}
                     alt="AddressingConflictComponent"
                     className="componentIcon"
                   />
