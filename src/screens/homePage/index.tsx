@@ -423,10 +423,6 @@ const HomePage: React.FC<Props> = ({
       (item: any) => item.CTID !== data.CTID
     );
 
-    // //     const updatedHasCondition =  updatedPathwayWrapper?.PathwayComponents?.filter((item: any) =>
-    // //     data?.ParentIdentifier===item?.RowId ? { ...item, HasCondition:[] } : item
-    // //  )
-    // //  console.log("hasCondition", xyz)
     updatedPathwayWrapper.ComponentConditions = ComponentConditions;
     updatedPathwayWrapper.Constraints = {};
     updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
@@ -438,11 +434,6 @@ const HomePage: React.FC<Props> = ({
     updatedPathwayWrapper.DeletedComponents = [data];
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setPathwayComponentCards(updatedPathwayComponent);
-
-    console.log('data', data);
-    console.log('updatedPathwayWrapper', updatedPathwayWrapper);
-    console.log('pathwayComponentCards', pathwayComponentCards);
-    console.log('updatedPathwayComponent', updatedPathwayComponent);
   };
 
   const onCloseHandler = () => {
