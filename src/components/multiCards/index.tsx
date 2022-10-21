@@ -129,6 +129,11 @@ const MultiCard: React.FC<Props> = ({
 
   const darkColor = '#0A2942';
 
+  const onCancelHandler = (value: any) => {
+    setVisibleConstraintCondition(value);
+    !!setIsConditionalModalStatus && setIsConditionalModalStatus(value);
+  };
+
   const getOnClick = (e: any) => {
     /* 
     Below commented code is for increasing width for dropWrapper
@@ -854,7 +859,7 @@ const MultiCard: React.FC<Props> = ({
         visible={visibleConstraintCondition}
         title=""
         footer={[]}
-        onCancel={() => setVisibleConstraintCondition(false)}
+        onCancel={() => onCancelHandler(false)}
       >
         <AddConditionalComponent
           visibleConstraintConditionProp={handledConstraintsModal}

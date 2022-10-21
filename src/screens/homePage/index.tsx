@@ -139,7 +139,10 @@ const HomePage: React.FC<Props> = ({
       setIsDestinationColumnSelected(false)
     );
   }, [pathwayComponentCards]);
-  const onPlusClickHandler = () => {
+
+  const onPlusClickHandler = (event: any) => {
+    // console.log('data ---item --->', item);
+    event.stopPropagation();
     setIsConditionalModalStatus(true);
   };
 
@@ -408,7 +411,9 @@ const HomePage: React.FC<Props> = ({
             destinationColumn,
             HasProgressionLevel,
             RowNumber,
-            ColumnNumber,
+            ColumnNumber: isDestinationColumnSelected
+              ? ColumnNumber - 1
+              : ColumnNumber,
             isDestinationColumnSelected: isDestinationColumnSelected
               ? true
               : false,
@@ -656,8 +661,8 @@ const HomePage: React.FC<Props> = ({
                                                     color: '#ffb90b',
                                                     cursor: 'pointer',
                                                   }}
-                                                  onClick={() => {
-                                                    onPlusClickHandler();
+                                                  onClick={(e: any) => {
+                                                    onPlusClickHandler(e);
                                                   }}
                                                 />
                                               </span>

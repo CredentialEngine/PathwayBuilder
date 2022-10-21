@@ -47,34 +47,32 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   );
   const [conditionalComponent, setConditionalComponent] = useState<any>([]);
 
-  // console.log('conditionalComponent --->', conditionalComponent);
+  // console.log('data --->', data);
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
 
-    const filteredPathwayComponents = _.get(
-      pathwayComponent?.PathwayComponents?.filter(
+    const restPathwayComponents = pathwayComponent?.PathwayComponents?.filter(
+      (pathway_card: any) =>
+        pathway_card.CTID !== _.toString(data.CTID) ||
+        pathway_card.RowId !== _.toString(data.RowId)
+    );
+
+    const currentPathwayComponent = _.get(
+      pathwayComponent?.ComponentConditions?.filter(
         (pathway_card: any) =>
-          pathway_card.CTID === _.toString(data.CTID) ||
-          pathway_card.RowId === _.toString(data.RowId)
+          pathway_card.CTID !== _.toString(data.CTID) ||
+          pathway_card.RowId !== _.toString(data.RowId)
       ),
       '0'
     );
+    const restConditionalComponents =
+      pathwayComponent?.PathwayComponents?.filter(
+        (pathway_card: any) =>
+          pathway_card.CTID !== _.toString(data.CTID) ||
+          pathway_card.RowId !== _.toString(data.RowId)
+      );
 
-    // console.log('filteredPathwayComponents --->', filteredPathwayComponents);
-    if (
-      !!filteredPathwayComponents &&
-      filteredPathwayComponents.length > 0 &&
-      filteredPathwayComponents?.HasCondition.length > 0
-    ) {
-      filteredPathwayComponents.HasCondition = [
-        ...filteredPathwayComponents.HasCondition,
-        conditionalComponent.RowId,
-      ];
-    } else {
-      if (!!filteredPathwayComponents && filteredPathwayComponents.length > 0)
-        filteredPathwayComponents.HasCondition = [conditionalComponent.RowId];
-    }
-    const filteredConditionalComponents = _.get(
+    const currentConditionalComponents = _.get(
       pathwayComponent?.ComponentConditions?.filter(
         (pathway_card: any) =>
           pathway_card.CTID === _.toString(data.CTID) ||
@@ -82,26 +80,47 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       ),
       '0'
     );
+    // console.log('filteredPathwayComponents --->', filteredPathwayComponents);
+    if (
+      !!currentPathwayComponent &&
+      currentPathwayComponent.length > 0 &&
+      currentPathwayComponent?.HasCondition.length > 0
+    ) {
+      currentPathwayComponent.HasCondition = [
+        ...currentPathwayComponent.HasCondition,
+        conditionalComponent.RowId,
+      ];
+    } else {
+      if (!!currentPathwayComponent && currentPathwayComponent.length > 0)
+        currentPathwayComponent.HasCondition = [conditionalComponent.RowId];
+    }
+
+    const allPathwayComponent = restPathwayComponents.push(
+      currentPathwayComponent
+    );
 
     if (
-      !!filteredConditionalComponents &&
-      filteredConditionalComponents.length > 0 &&
-      filteredConditionalComponents?.HasCondition.length > 0
+      !!currentConditionalComponents &&
+      currentConditionalComponents.length > 0 &&
+      currentConditionalComponents?.HasCondition.length > 0
     ) {
-      filteredConditionalComponents.HasCondition = [
-        ...filteredConditionalComponents.HasCondition,
+      currentConditionalComponents.HasCondition = [
+        ...currentConditionalComponents.HasCondition,
         conditionalComponent.RowId,
       ];
     } else {
       if (
-        !!filteredConditionalComponents &&
-        filteredConditionalComponents.length > 0
+        !!currentConditionalComponents &&
+        currentConditionalComponents.length > 0
       )
-        filteredConditionalComponents.HasCondition = [
+        currentConditionalComponents.HasCondition = [
           conditionalComponent.RowId,
         ];
     }
 
+    const allConditionalComponent = restConditionalComponents.push(
+      currentConditionalComponents
+    );
     if (conditionalComponent.length > 0) {
       const uniqueConditionalArray = [...new Set(filteredConditionalComponent)];
       const uniquePathwayComponentArray = [
@@ -123,24 +142,27 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         .concat(conditionalComponent);
 
       const allComponentConditionalCard =
-        !!filteredConditionalComponents &&
-        filteredConditionalComponents.length > 0
+        !!allConditionalComponent && allConditionalComponent.length > 0
           ? [
               ...updatedPathwayWrapper.ComponentConditions,
               ...updatedConditionalArray,
-              ...filteredConditionalComponents,
+              ...allConditionalComponent,
             ]
           : [
               ...updatedPathwayWrapper.ComponentConditions,
               ...updatedConditionalArray,
             ];
 
+      // console.log(
+      //   'allComponentConditionalCard --->',
+      //   allComponentConditionalCard
+      // );
       const allPathwayComponentCard =
-        !!filteredPathwayComponents && filteredPathwayComponents.length > 0
+        !!allPathwayComponent && allPathwayComponent.length > 0
           ? [
               ...updatedPathwayWrapper.PathwayComponents,
               ...updatedPathwayComponentArray,
-              ...filteredPathwayComponents,
+              ...allPathwayComponent,
             ]
           : [
               ...updatedPathwayWrapper.PathwayComponents,
@@ -158,11 +180,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           allComponentConditionalCard.map((item: any) => [item['RowId'], item])
         ).values(),
       ];
-
-      // console.log(
-      //   'uniqueAllPathwayComponentArray --->',
-      //   uniqueAllPathwayComponentArray
-      // );
       updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
