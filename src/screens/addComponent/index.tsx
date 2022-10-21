@@ -47,81 +47,84 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   );
   const [conditionalComponent, setConditionalComponent] = useState<any>([]);
 
-  // console.log('data --->', data);
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
-
-    const restPathwayComponents = pathwayComponent?.PathwayComponents?.filter(
-      (pathway_card: any) =>
-        pathway_card.CTID !== _.toString(data.CTID) ||
-        pathway_card.RowId !== _.toString(data.RowId)
-    );
-
-    const currentPathwayComponent = _.get(
-      pathwayComponent?.ComponentConditions?.filter(
-        (pathway_card: any) =>
-          pathway_card.CTID !== _.toString(data.CTID) ||
-          pathway_card.RowId !== _.toString(data.RowId)
-      ),
-      '0'
-    );
-    const restConditionalComponents =
-      pathwayComponent?.PathwayComponents?.filter(
+    if (conditionalComponent.length > 0) {
+      const restPathwayComponents = pathwayComponent?.PathwayComponents?.filter(
         (pathway_card: any) =>
           pathway_card.CTID !== _.toString(data.CTID) ||
           pathway_card.RowId !== _.toString(data.RowId)
       );
 
-    const currentConditionalComponents = _.get(
-      pathwayComponent?.ComponentConditions?.filter(
-        (pathway_card: any) =>
-          pathway_card.CTID === _.toString(data.CTID) ||
-          pathway_card.RowId === _.toString(data.RowId)
-      ),
-      '0'
-    );
-    // console.log('filteredPathwayComponents --->', filteredPathwayComponents);
-    if (
-      !!currentPathwayComponent &&
-      currentPathwayComponent.length > 0 &&
-      currentPathwayComponent?.HasCondition.length > 0
-    ) {
-      currentPathwayComponent.HasCondition = [
-        ...currentPathwayComponent.HasCondition,
-        conditionalComponent.RowId,
-      ];
-    } else {
-      if (!!currentPathwayComponent && currentPathwayComponent.length > 0)
-        currentPathwayComponent.HasCondition = [conditionalComponent.RowId];
-    }
+      const currentPathwayComponent = _.get(
+        pathwayComponent?.PathwayComponents?.filter(
+          (pathway_card: any) =>
+            pathway_card.CTID !== _.toString(data.CTID) ||
+            pathway_card.RowId !== _.toString(data.RowId)
+        ),
+        '0'
+      );
 
-    const allPathwayComponent = restPathwayComponents.push(
-      currentPathwayComponent
-    );
+      const restConditionalComponents =
+        pathwayComponent?.ComponentConditions?.filter(
+          (pathway_card: any) =>
+            pathway_card.CTID !== _.toString(data.CTID) ||
+            pathway_card.RowId !== _.toString(data.RowId)
+        );
 
-    if (
-      !!currentConditionalComponents &&
-      currentConditionalComponents.length > 0 &&
-      currentConditionalComponents?.HasCondition.length > 0
-    ) {
-      currentConditionalComponents.HasCondition = [
-        ...currentConditionalComponents.HasCondition,
-        conditionalComponent.RowId,
-      ];
-    } else {
+      const currentConditionalComponents = _.get(
+        pathwayComponent?.ComponentConditions?.filter(
+          (pathway_card: any) =>
+            pathway_card.CTID === _.toString(data.CTID) ||
+            pathway_card.RowId === _.toString(data.RowId)
+        ),
+        '0'
+      );
+      if (
+        !_.isUndefined(currentPathwayComponent) &&
+        !_.isNull(currentPathwayComponent)
+      ) {
+        if (!_.isEmpty(currentPathwayComponent.HasCondition)) {
+          currentPathwayComponent.HasCondition = [
+            ...currentPathwayComponent.HasCondition,
+            conditionalComponent[0].RowId,
+          ];
+        } else {
+          currentPathwayComponent.HasCondition = [
+            conditionalComponent[0].RowId,
+          ];
+        }
+      }
+
+      const allPathwayComponent: any =
+        !_.isUndefined(currentPathwayComponent) &&
+        !_.isNull(currentPathwayComponent)
+          ? [...restPathwayComponents, currentPathwayComponent]
+          : [];
+
       if (
         !!currentConditionalComponents &&
-        currentConditionalComponents.length > 0
-      )
+        currentConditionalComponents.length > 0 &&
+        currentConditionalComponents?.HasCondition.length > 0
+      ) {
         currentConditionalComponents.HasCondition = [
+          ...currentConditionalComponents.HasCondition,
           conditionalComponent.RowId,
         ];
-    }
+      } else {
+        if (
+          !!currentConditionalComponents &&
+          currentConditionalComponents.length > 0
+        )
+          currentConditionalComponents.HasCondition = [
+            conditionalComponent.RowId,
+          ];
+      }
 
-    const allConditionalComponent = restConditionalComponents.push(
-      currentConditionalComponents
-    );
-    if (conditionalComponent.length > 0) {
+      const allConditionalComponent = restConditionalComponents.push(
+        currentConditionalComponents
+      );
+
       const uniqueConditionalArray = [...new Set(filteredConditionalComponent)];
       const uniquePathwayComponentArray = [
         ...new Set(filteredPathwayComponent),
@@ -153,10 +156,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               ...updatedConditionalArray,
             ];
 
-      // console.log(
-      //   'allComponentConditionalCard --->',
-      //   allComponentConditionalCard
-      // );
       const allPathwayComponentCard =
         !!allPathwayComponent && allPathwayComponent.length > 0
           ? [

@@ -42,17 +42,7 @@ const Header = (props: Props) => {
   const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
-
-  // useEffect(() => {
-  //   dispatch(getDataForPathwayAndComponentsRequest(savePathwayResult?.PathwayId));
-  // }, []);
-  //   const pathwayData = useSelector((state: any) => state.initalReducer?.pathwayComponentData);
-  //   // const organizationName =
-  //   //   pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name;
-  //   // const pathwayData = useSelector(
-  //   //   (state: any) => state?.initalReducer?.savePathway
-  //   // );
-  // console.log("pathwayData", pathwayData)
+  const delay = 10;
 
   useEffect(() => {
     if (savePathwayResult?.valid) {
@@ -84,6 +74,8 @@ const Header = (props: Props) => {
       setConflictMessages(savePathwayResult.data);
     }
   }, [savePathwayResult]);
+
+  setTimeout(() => setLoadings(false), delay * 1000);
 
   useEffect(() => {
     if (approvePathwayResult?.error) {
