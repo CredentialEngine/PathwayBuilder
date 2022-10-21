@@ -4,6 +4,8 @@ import { Col, Row, Button as AntdButton } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
+
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 import HelpAddingComponent from '../../screens/helpAddingComponent';
 import {
@@ -27,6 +29,9 @@ const Header = (props: Props) => {
   const { setIsEditPathwayFormVisible, isLeftPanelVisible } = props;
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
+  );
+  const approvePathwayResult = useSelector(
+    (state: any) => state?.initalReducer?.pathwayComponentData
   );
   const savePathwayResult = useSelector(
     (state: any) => state?.initalReducer?.savePathway
@@ -79,6 +84,17 @@ const Header = (props: Props) => {
       setConflictMessages(savePathwayResult.data);
     }
   }, [savePathwayResult]);
+
+  useEffect(() => {
+    if (approvePathwayResult?.error) {
+      approvePathwayResult?.data?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
+    }
+  }, [approvePathwayResult]);
 
   const onApproverHandler = () => {
     dispatch(approvePathwayRequest(pathwayWrapper?.Pathway?.Id));
@@ -140,14 +156,8 @@ const Header = (props: Props) => {
   };
   const redicrectTO = () => {
     process.env.NODE_ENV !== 'production'
-      ? window.open(
-          'https://sandbox.credentialengine.org/publisher/pathways',
-          '_blank'
-        )
-      : window.open(
-          'https://apps.credentialengine.org/publisher/pathways',
-          '_blank'
-        );
+      ? window.open(sanboxSetting.api.url, '_blank')
+      : window.open(productionSetting.api.url, '_blank');
   };
   const exitWithSaving = () => {
     Modal.confirm({
