@@ -10,6 +10,7 @@ interface Props {
   content: string;
   onClose: () => void;
   isDestination?: boolean;
+  direction?: 'left' | 'right';
 }
 
 const InfoTooltip: React.FC<Props> = ({
@@ -17,6 +18,7 @@ const InfoTooltip: React.FC<Props> = ({
   content,
   onClose,
   isDestination,
+  direction,
 }) => {
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { isDestinationSelected } = pathwayWrapper;
@@ -25,7 +27,9 @@ const InfoTooltip: React.FC<Props> = ({
     <div
       className={`${styles.infoTooltipContainer} ${
         !isDestinationSelected ? 'isFirst' : ''
-      } ${isDestination ? styles?.isDestination : ''}`}
+      } ${isDestination ? styles?.isDestination : ''} ${
+        direction && styles.direction
+      }`}
     >
       <div className={styles.arrow}></div>
       <div className={styles.buttonContainer}>

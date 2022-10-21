@@ -48,6 +48,9 @@ interface Props {
   columnNumber: number;
   HasProgressionLevel: string;
   updatedPathwayComponentConditionCards?: [];
+  ConstraintConditionProp?: (val: boolean) => void;
+  ConstraintConditionState: boolean;
+  pathwayComponentCards: [any];
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -550,6 +553,7 @@ const MultiCard: React.FC<Props> = ({
                 title="Great! Add  another component"
                 content="Drag your next component into the Pathway by dragging it to a hotspot on the component you just placed."
                 onClose={noop}
+                direction="right"
               />
               <div className={styles.addDestinationContent}>
                 <p className={styles.addDestinationTitle}>
@@ -640,6 +644,9 @@ const MultiCard: React.FC<Props> = ({
                 </div>
               )}
 
+              <span
+                className={styles.ornageSection + ' ' + styles.leftSide}
+              ></span>
               <div
                 className={
                   isDestination
@@ -708,6 +715,9 @@ const MultiCard: React.FC<Props> = ({
                   <span>Level 10</span>
                 </div>
               </div>
+              <span
+                className={styles.ornageSection + ' ' + styles.right}
+              ></span>
             </>
           )}
 
@@ -742,9 +752,13 @@ const MultiCard: React.FC<Props> = ({
           )}
 
           {isConditionalCard && (
-            <React.Fragment>
+            <>
               {isConditionalCard && (
-                <div className={styles.addIcon}>
+                <div
+                  className={
+                    styles.addIcon + ' ' + styles.isConditionalCardIcon
+                  }
+                >
                   <FontAwesomeIcon
                     icon={faCirclePlus}
                     fill="#000000"
@@ -760,32 +774,33 @@ const MultiCard: React.FC<Props> = ({
                   />
                 </div>
               )}
-
-              <div className={styles.conditionalCardContent}>
-                <FontAwesomeIcon
-                  color="#ffffff"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faSitemap}
-                  onClick={noop}
+              <React.Fragment>
+                <div className={styles.conditionalCardContent}>
+                  <FontAwesomeIcon
+                    color="#ffffff"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faSitemap}
+                    onClick={noop}
+                  />
+                  <span>Required {data?.RequiredNumber}</span>
+                  <FontAwesomeIcon
+                    color="#000000"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faEllipsis}
+                    onClick={noop}
+                  />
+                </div>
+                <Divider
+                  style={{
+                    backgroundColor: '#ffb90b',
+                    margin: '8px 0px 4px 0px',
+                  }}
                 />
-                <span>Required {data?.RequiredNumber}</span>
-                <FontAwesomeIcon
-                  color="#000000"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faEllipsis}
-                  onClick={noop}
-                />
-              </div>
-              <Divider
-                style={{
-                  backgroundColor: '#ffb90b',
-                  margin: '8px 0px 4px 0px',
-                }}
-              />
-              <div className={styles.requiredSection}>
-                <span>{data.Description}</span>
-              </div>
-            </React.Fragment>
+                <div className={styles.requiredSection}>
+                  <span>{data.Description}</span>
+                </div>
+              </React.Fragment>
+            </>
           )}
 
           {isAddComponentCard && (
