@@ -48,7 +48,6 @@ const HomePage: React.FC<Props> = ({
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
 
-  const [showAddDestination, setShowAddDestination] = useState(false);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [columnsData, setColumnsData] = useState<any>([]);
 
@@ -76,12 +75,6 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
-
-  console.log(
-    'isStartFromInitialColumnSelected -->',
-    isStartFromInitialColumnSelected
-  );
-  console.log('showAddDestination --->', showAddDestination);
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
@@ -122,7 +115,6 @@ const HomePage: React.FC<Props> = ({
 
   let count = 0;
 
-  console.log('pathwayComponentCards --->', pathwayComponentCards);
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
@@ -139,7 +131,7 @@ const HomePage: React.FC<Props> = ({
     pathwayComponentCards?.some(
       (item: any) =>
         item?.firstColumn && setIsStartFromInitialColumnSelected(false),
-      setShowAddDestination(true)
+      setIsDestinationColumnSelected(false)
     );
   }, [pathwayComponentCards]);
 
