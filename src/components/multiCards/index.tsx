@@ -51,6 +51,8 @@ interface Props {
   ConstraintConditionProp?: (val: boolean) => void;
   ConstraintConditionState: boolean;
   pathwayComponentCards: [any];
+  isConditionalModalStatus?: boolean;
+  setIsConditionalModalStatus?: (a: boolean) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -81,6 +83,8 @@ const MultiCard: React.FC<Props> = ({
   columnNumber,
   updatedPathwayComponentConditionCards,
   HasProgressionLevel,
+  isConditionalModalStatus,
+  setIsConditionalModalStatus,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -98,6 +102,15 @@ const MultiCard: React.FC<Props> = ({
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
+
+  useEffect(() => {
+    if (isConditionalModalStatus) {
+      setVisibleConstraintCondition(true);
+    } else {
+      setVisibleConstraintCondition(false);
+    }
+  }, [isConditionalModalStatus]);
+
   useEffect(() => {
     setFilteredConditionalComponent(
       updatedPathwayComponentConditionCards?.filter(
@@ -849,6 +862,7 @@ const MultiCard: React.FC<Props> = ({
           filteredConditionalComponent={filteredConditionalComponent}
           filteredPathwayComponent={filteredPathwayComponent}
           isDestinationCard={isDestination}
+          setIsConditionalModalStatus={setIsConditionalModalStatus}
         />
       </Modal>
 

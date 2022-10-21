@@ -1,6 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -67,6 +68,8 @@ const HomePage: React.FC<Props> = ({
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const [pathwayComponentConditionCards, setPathwayComponentConditionCards] =
     useState<any>([]);
+  const [isConditionalModalStatus, setIsConditionalModalStatus] =
+    useState<boolean>(false);
   const [
     updatedPathwayComponentConditionCards,
     setUpdatedPathwayComponentConditionCards,
@@ -75,6 +78,8 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
+
+  // console.log('pathwayComponent ===>', pathwayComponent);
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
@@ -134,6 +139,9 @@ const HomePage: React.FC<Props> = ({
       setIsDestinationColumnSelected(false)
     );
   }, [pathwayComponentCards]);
+  const onPlusClickHandler = () => {
+    setIsConditionalModalStatus(true);
+  };
 
   const getSemester = (level: any) => {
     if (level?.Narrower?.length > 0) {
@@ -428,7 +436,8 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayComponent = pathwayComponentCards.filter(
       (item: any) => item.CTID !== data.CTID
     );
-    updatedPathwayWrapper.Pathway = updatedPathwayComponent;
+    updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+    updatedPathwayWrapper.DeletedComponents = [data];
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setPathwayComponentCards(updatedPathwayComponent);
   };
@@ -603,55 +612,121 @@ const HomePage: React.FC<Props> = ({
                                 )
                               )
                               .map((item: any) => (
-                                <MultiCard
-                                  isDraggableCardVisible={
-                                    isDraggableCardVisible
-                                  }
-                                  constraintIcon={constraintIcon}
-                                  number={column.number}
-                                  forwardRef={wrapperRef}
-                                  onClick={() => {
-                                    setRightPanelData(item);
-                                    setShowRightPanel(true);
-                                  }}
-                                  getEndPoints={setEndpoints}
-                                  key={item.id}
-                                  CTID={item.CTID || item.RowId}
-                                  isCredentialCard={item?.Type?.toLowerCase().includes(
-                                    'credential'.toLowerCase()
-                                  )}
-                                  isCourseCard={
-                                    item?.Type?.toLowerCase().includes(
-                                      'basic'.toLowerCase()
-                                    ) ||
-                                    item?.Type?.toLowerCase().includes(
-                                      'AssessmentComponent'.toLowerCase()
-                                    )
-                                  }
-                                  isConditionalCard={item?.Type?.toLowerCase().includes(
-                                    'condition'.toLowerCase()
-                                  )}
-                                  isDestination={
-                                    item?.isDestinationColumnSelected ||
-                                    item?.Type?.toLowerCase().includes(
-                                      'destination'.toLowerCase()
-                                    )
-                                  }
-                                  data={item}
-                                  setIsZoomDisabled={setIsZoomDisabled}
-                                  status={column.Id}
-                                  inProgressLevel={column.CTID}
-                                  onSelectDragElemenet={onSelectDragElemenet}
-                                  onMoveItem={onMoveItem}
-                                  rowNumber={rowNumber + 1}
-                                  columnNumber={column_num}
-                                  HasProgressionLevel={column.CTID}
-                                  onDelete={onDeleteHandler}
-                                  updatedPathwayComponentConditionCards={
-                                    updatedPathwayComponentConditionCards
-                                  }
-                                  pathwayComponentCards={pathwayComponentCards}
-                                />
+                                <>
+                                  {connection.length &&
+                                    connection.map(
+                                      (items: any, idx: number) => (
+                                        <Xarrow
+                                          path="grid"
+                                          strokeWidth={1}
+                                          zIndex={1000}
+                                          headSize={16}
+                                          color="black"
+                                          start={items?.start}
+                                          end={items?.end}
+                                          key={idx}
+                                          labels={
+                                            <div className={Styles.tempwrapper}>
+                                              <span
+                                                className={
+                                                  Styles.addConditionIcon
+                                                }
+                                              >
+                                                <FontAwesomeIcon
+                                                  icon={faXmarkCircle}
+                                                  style={{
+                                                    cursor: 'pointer',
+                                                  }}
+                                                  onClick={() =>
+                                                    removeConnection(items)
+                                                  }
+                                                />
+                                              </span>
+                                              <span
+                                                className={
+                                                  Styles.addConditionIcon
+                                                }
+                                              >
+                                                <FontAwesomeIcon
+                                                  icon={faCirclePlus}
+                                                  fill="#000000"
+                                                  style={{
+                                                    height: '22px',
+                                                    width: '22px',
+                                                    color: '#ffb90b',
+                                                    cursor: 'pointer',
+                                                  }}
+                                                  onClick={() => {
+                                                    onPlusClickHandler();
+                                                  }}
+                                                />
+                                              </span>
+                                            </div>
+                                          }
+                                          startAnchor="auto"
+                                          endAnchor="auto"
+                                          // gridBreak="20%"
+                                        />
+                                      )
+                                    )}
+                                  <MultiCard
+                                    isDraggableCardVisible={
+                                      isDraggableCardVisible
+                                    }
+                                    constraintIcon={constraintIcon}
+                                    number={column.number}
+                                    forwardRef={wrapperRef}
+                                    onClick={() => {
+                                      setRightPanelData(item);
+                                      setShowRightPanel(true);
+                                    }}
+                                    getEndPoints={setEndpoints}
+                                    key={item.id}
+                                    CTID={item.CTID || item.RowId}
+                                    isCredentialCard={item?.Type?.toLowerCase().includes(
+                                      'credential'.toLowerCase()
+                                    )}
+                                    isCourseCard={
+                                      item?.Type?.toLowerCase().includes(
+                                        'basic'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'AssessmentComponent'.toLowerCase()
+                                      )
+                                    }
+                                    isConditionalCard={item?.Type?.toLowerCase().includes(
+                                      'condition'.toLowerCase()
+                                    )}
+                                    isDestination={
+                                      item?.isDestinationColumnSelected ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'destination'.toLowerCase()
+                                      )
+                                    }
+                                    data={item}
+                                    setIsZoomDisabled={setIsZoomDisabled}
+                                    status={column.Id}
+                                    inProgressLevel={column.CTID}
+                                    onSelectDragElemenet={onSelectDragElemenet}
+                                    onMoveItem={onMoveItem}
+                                    rowNumber={rowNumber + 1}
+                                    columnNumber={column_num}
+                                    HasProgressionLevel={column.CTID}
+                                    onDelete={onDeleteHandler}
+                                    updatedPathwayComponentConditionCards={
+                                      updatedPathwayComponentConditionCards
+                                    }
+                                    pathwayComponentCards={
+                                      pathwayComponentCards
+                                    }
+                                    isConditionalModalStatus={
+                                      isConditionalModalStatus
+                                    }
+                                    setIsConditionalModalStatus={
+                                      setIsConditionalModalStatus
+                                    }
+                                  />
+                                </>
                               ))}
 
                           {!!isDestinationColumnSelected && index === 1 && (
@@ -712,51 +787,6 @@ const HomePage: React.FC<Props> = ({
                                 forwardRef={wrapperRef}
                               />
                             )}
-                          {connection.length
-                            ? connection.map((items: any, idx: number) => (
-                                <Xarrow
-                                  path="grid"
-                                  strokeWidth={1}
-                                  zIndex={1000}
-                                  headSize={16}
-                                  color="black"
-                                  start={items?.start}
-                                  end={items?.end}
-                                  key={idx}
-                                  labels={
-                                    <div className={Styles.tempwrapper}>
-                                      <span className={Styles.addConditionIcon}>
-                                        <FontAwesomeIcon
-                                          icon={faXmarkCircle}
-                                          style={{ cursor: 'pointer' }}
-                                          onClick={() =>
-                                            removeConnection(items)
-                                          }
-                                        />
-                                      </span>
-                                      {/* <span className={Styles.addConditionIcon}>
-                                        <FontAwesomeIcon
-                                          icon={faCirclePlus}
-                                          fill="#000000"
-                                          style={{
-                                            height: '22px',
-                                            width: '22px',
-                                            color: '#ffb90b',
-                                            cursor: 'pointer',
-                                          }}
-                                          onClick={() => {
-                                            openConstraintModal(true);
-                                          }}
-                                        />
-                                      </span> */}
-                                    </div>
-                                  }
-                                  startAnchor="auto"
-                                  endAnchor="auto"
-                                  // gridBreak="20%"
-                                />
-                              ))
-                            : ''}
                         </Xwrapper>
                       </div>
                     </DropWrapper>
