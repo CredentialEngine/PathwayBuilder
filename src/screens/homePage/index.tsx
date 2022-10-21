@@ -423,9 +423,15 @@ const HomePage: React.FC<Props> = ({
 
   const onDeleteHandler = (data: any) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
+    const ComponentConditions =
+      updatedPathwayWrapper?.ComponentConditions?.filter(
+        (item: any) => item?.ParentIdentifier !== data?.ParentIdentifier
+      );
     const updatedPathwayComponent = pathwayComponentCards.filter(
       (item: any) => item.CTID !== data.CTID
     );
+    updatedPathwayWrapper.ComponentConditions = ComponentConditions;
+    updatedPathwayWrapper.Constraints = {};
     updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
     updatedPathwayWrapper.DeletedComponents = [data];
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
@@ -715,6 +721,8 @@ const HomePage: React.FC<Props> = ({
                                     setIsConditionalModalStatus={
                                       setIsConditionalModalStatus
                                     }
+                                    leftpanelSelectedElem={undefined}
+                                    ConstraintConditionState={false}
                                   />
                                 </>
                               ))}
@@ -723,7 +731,7 @@ const HomePage: React.FC<Props> = ({
                             <MultiCard
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}
-                              id={0}
+                              //id={0}
                               isAddDestination={
                                 column?.isDestinationColumnSelected
                                   ? true
@@ -743,6 +751,11 @@ const HomePage: React.FC<Props> = ({
                               forwardRef={wrapperRef}
                               leftpanelSelectedElem={leftpanelSelectedElem}
                               onDelete={onDeleteHandler}
+                              rowNumber={0}
+                              columnNumber={0}
+                              HasProgressionLevel=""
+                              ConstraintConditionState={false}
+                              pathwayComponentCards={[]}
                             />
                           )}
                           {!!isStartFromInitialColumnSelected &&
@@ -752,7 +765,7 @@ const HomePage: React.FC<Props> = ({
                               <MultiCard
                                 onClick={() => setShowRightPanel(true)}
                                 key={0}
-                                id={0}
+                                //id={0}
                                 firstComponent={
                                   column?.CTID === getLastColumn('first')
                                     ? true
@@ -775,6 +788,12 @@ const HomePage: React.FC<Props> = ({
                                 onMoveItem={onMoveItem}
                                 number={column.number}
                                 forwardRef={wrapperRef}
+                                leftpanelSelectedElem={undefined}
+                                rowNumber={0}
+                                columnNumber={0}
+                                HasProgressionLevel=""
+                                ConstraintConditionState={false}
+                                pathwayComponentCards={[]}
                               />
                             )}
                         </Xwrapper>
