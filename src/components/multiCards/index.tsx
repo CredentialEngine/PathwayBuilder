@@ -271,7 +271,7 @@ const MultiCard: React.FC<Props> = ({
                   />
                   <div className={styles.addDestinationContent}>
                     <p className={styles.addDestinationTitle}>
-                      Add your next component
+                      Add your first component
                     </p>
                     <FontAwesomeIcon
                       style={{ height: '28px', marginTop: '20px' }}

@@ -9,6 +9,8 @@ import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
+import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
+
 import AutoCompleteBox from '../../components/autoComplete';
 import Button from '../../components/button';
 import { Type } from '../../components/button/type';
@@ -398,7 +400,11 @@ const AddPathwayForm: React.FC<Props> = ({
     // data.append('json', JSON.stringify({ Keywords: e }));
 
     return fetch(
-      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/OccupationType',
+      `${
+        process.env.NODE_ENV !== 'production'
+          ? sanboxSetting.api.url
+          : productionSetting.api.url
+      }PathwayBuilderApi/Search/Codes/OccupationType`,
       {
         method: 'POST',
         headers: {
@@ -429,7 +435,11 @@ const AddPathwayForm: React.FC<Props> = ({
     data.append('json', JSON.stringify({ Keywords: e }));
 
     return fetch(
-      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/IndustryType',
+      `${
+        process.env.NODE_ENV !== 'production'
+          ? sanboxSetting.api.url
+          : productionSetting.api.url
+      }PathwayBuilderApi/Search/Codes/IndustryType`,
       {
         method: 'POST',
         headers: {
@@ -460,7 +470,11 @@ const AddPathwayForm: React.FC<Props> = ({
     data.append('json', JSON.stringify({ Keywords: e }));
 
     return fetch(
-      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/InstructionalProgramType',
+      `${
+        process.env.NODE_ENV !== 'production'
+          ? sanboxSetting.api.url
+          : productionSetting.api.url
+      }PathwayBuilderApi/Search/Codes/InstructionalProgramType`,
       {
         method: 'POST',
         headers: {
