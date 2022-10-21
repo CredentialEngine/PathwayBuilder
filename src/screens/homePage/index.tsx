@@ -164,14 +164,12 @@ const HomePage: React.FC<Props> = ({
 
   useEffect(() => {
     if (pathwayComponent) {
-      if (pathwayComponent?.ComponentConditions?.length > 0) {
-        setPathwayComponentConditionCards(
-          pathwayComponent.ComponentConditions.map((card: any) => ({
-            ...card,
-            Type: 'conditional',
-          }))
-        );
-      }
+      setPathwayComponentConditionCards(
+        pathwayComponent.ComponentConditions.map((card: any) => ({
+          ...card,
+          Type: 'conditional',
+        }))
+      );
       setPathwayComponentCards(pathwayComponent?.PathwayComponents);
 
       const pathwayModel =
@@ -415,10 +413,21 @@ const HomePage: React.FC<Props> = ({
 
   const onDeleteHandler = (data: any) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
+    const ComponentConditions =
+      updatedPathwayWrapper?.ComponentConditions?.filter(
+        (item: any) => item?.RowId !== data?.RowId
+      );
     const updatedPathwayComponent = pathwayComponentCards.filter(
       (item: any) => item.CTID !== data.CTID
     );
-    updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+    updatedPathwayWrapper.ComponentConditions = ComponentConditions;
+    updatedPathwayWrapper.Constraints = {};
+    updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
+      (item: any) =>
+        data?.ParentIdentifier === item?.RowId
+          ? { ...item, HasCondition: [] }
+          : item
+    );
     updatedPathwayWrapper.DeletedComponents = [data];
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setPathwayComponentCards(updatedPathwayComponent);
@@ -719,6 +728,8 @@ const HomePage: React.FC<Props> = ({
                                     setIsConditionalModalStatus={
                                       setIsConditionalModalStatus
                                     }
+                                    leftpanelSelectedElem={undefined}
+                                    ConstraintConditionState={false}
                                   />
                                 </>
                               ))}
@@ -727,7 +738,7 @@ const HomePage: React.FC<Props> = ({
                             <MultiCard
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}
-                              id={0}
+                              //id={0}
                               isAddDestination={
                                 column?.isDestinationColumnSelected
                                   ? true
@@ -747,6 +758,11 @@ const HomePage: React.FC<Props> = ({
                               forwardRef={wrapperRef}
                               leftpanelSelectedElem={leftpanelSelectedElem}
                               onDelete={onDeleteHandler}
+                              rowNumber={0}
+                              columnNumber={0}
+                              HasProgressionLevel=""
+                              ConstraintConditionState={false}
+                              pathwayComponentCards={[]}
                             />
                           )}
                           {!!isStartFromInitialColumnSelected &&
@@ -756,7 +772,7 @@ const HomePage: React.FC<Props> = ({
                               <MultiCard
                                 onClick={() => setShowRightPanel(true)}
                                 key={0}
-                                id={0}
+                                //id={0}
                                 firstComponent={
                                   column?.CTID === getLastColumn('first')
                                     ? true
@@ -779,6 +795,12 @@ const HomePage: React.FC<Props> = ({
                                 onMoveItem={onMoveItem}
                                 number={column.number}
                                 forwardRef={wrapperRef}
+                                leftpanelSelectedElem={undefined}
+                                rowNumber={0}
+                                columnNumber={0}
+                                HasProgressionLevel=""
+                                ConstraintConditionState={false}
+                                pathwayComponentCards={[]}
                               />
                             )}
                         </Xwrapper>

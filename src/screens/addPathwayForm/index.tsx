@@ -623,6 +623,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 required={true}
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields?.Name}
+                defaultValue="Pathway Name"
                 onBlur={() =>
                   isTouched.Name === true
                     ? null
@@ -652,6 +653,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 name="Description"
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields.Description}
+                defaultValue="This is Pathway Description"
                 required={true}
                 onBlur={() =>
                   isTouched.Description === true
@@ -798,6 +800,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 placeholder="add a URL"
                 maxLength={75}
                 value={addPathwayFormFields?.SubjectWebpage}
+                defaultValue="https://www.google.com"
                 name="SubjectWebpage"
                 onChange={onInputChangeHandler}
                 onBlur={() =>

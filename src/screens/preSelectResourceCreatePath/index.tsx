@@ -171,8 +171,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
           item.ProxyFor === selectedItem?.ProxyFor
       );
 
-    console.log('pathwayWrapper', pathwayWrapper);
-
     if (
       selectedItemExist ||
       pathwayComponentsExists ||
