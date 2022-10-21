@@ -54,7 +54,11 @@ export function* getPathwayAndComponentData(payload: any): Generator {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
       },
     });
-    yield put(getDataForPathwayAndComponentsSuccess(result));
+    if (result.Valid) {
+      yield put(getDataForPathwayAndComponentsSuccess(result));
+    } else if (!result.Valid && result?.Messages?.length > 0) {
+      yield put(getDataForPathwayAndComponentsFailure(result));
+    }
   } catch (error) {
     yield put(getDataForPathwayAndComponentsFailure(error));
   }
@@ -110,6 +114,8 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       data: JSON.stringify(payload.payload),
     });
     // const result = savePathwayWrapper(payload.payload);
+    console.log(result, 'result');
+
     if (result.Valid) {
       yield put(savePathwaySuccess(result));
     } else if (!result.Valid && result?.Messages?.length > 0) {
