@@ -44,7 +44,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     CTID,
     Type,
   } = props.data;
-
   const onDragStart = (e: any) => {
     const target = e.target;
     !!setLeftpanelSelectedElem && setLeftpanelSelectedElem(e.target);
