@@ -1,7 +1,6 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,7 +26,7 @@ import Styles from './index.module.scss';
 interface Props {
   isLeftPanelVisible: boolean;
   setIsEditPathwayFormVisible: (a: boolean) => void;
-  isDestinationColumnSelected: boolean;
+  isDestinationColumnStatus: boolean;
   onClickPreselectComponent?: any;
   isStartFromInitialColumnSelected: boolean;
   setIsStartFromInitialColumnSelected: (a: boolean) => void;
@@ -36,7 +35,7 @@ interface Props {
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
   setIsEditPathwayFormVisible,
-  isDestinationColumnSelected,
+  isDestinationColumnStatus,
   onClickPreselectComponent,
   isStartFromInitialColumnSelected,
   setIsStartFromInitialColumnSelected,
@@ -79,7 +78,6 @@ const HomePage: React.FC<Props> = ({
     firstStageCTID: '',
   });
 
-  // console.log('pathwayComponent ===>', pathwayComponent);
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
@@ -119,7 +117,6 @@ const HomePage: React.FC<Props> = ({
   }, []);
 
   let count = 0;
-
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
@@ -127,24 +124,15 @@ const HomePage: React.FC<Props> = ({
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setDeletedComponentCards([]);
 
-    pathwayComponentCards?.some(
-      (item: any) =>
-        item?.isDestinationColumnSelected &&
-        setIsDestinationColumnSelected(false),
-      setIsStartFromInitialColumnSelected(false)
-    );
-    pathwayComponentCards?.some(
-      (item: any) =>
-        item?.firstColumn && setIsStartFromInitialColumnSelected(false),
-      setIsDestinationColumnSelected(false)
-    );
+    pathwayComponentCards?.length > 0 &&
+      setIsStartFromInitialColumnSelected(false),
+      setIsDestinationColumnSelected(false);
   }, [pathwayComponentCards]);
 
-  const onPlusClickHandler = (event: any) => {
-    // console.log('data ---item --->', item);
-    event.stopPropagation();
-    setIsConditionalModalStatus(true);
-  };
+  // const onPlusClickHandler = (event: any) => {
+  //   event.stopPropagation();
+  //   setIsConditionalModalStatus(true);
+  // };
 
   const getSemester = (level: any) => {
     if (level?.Narrower?.length > 0) {
@@ -251,7 +239,7 @@ const HomePage: React.FC<Props> = ({
         setColumnsData([
           ...updatedPathwayLevel2,
           {
-            isDestinationColumnSelected,
+            isDestinationColumnSelected: isDestinationColumnStatus,
             id: 'destinationColumn',
             CTID: generatedUuid.destinationCTID,
             Name: 'Destination Component',
@@ -262,7 +250,7 @@ const HomePage: React.FC<Props> = ({
         setColumnsData([
           { Id: 0, Name: 'Stage 1', CTID: generatedUuid.firstStageCTID },
           {
-            isDestinationColumnSelected,
+            isDestinationColumnSelected: isDestinationColumnStatus,
             Id: 1,
             id: 'destinationColumn',
             Name: 'Destination Component',
@@ -272,7 +260,7 @@ const HomePage: React.FC<Props> = ({
         ]);
       }
     }
-  }, [pathwayComponent, isDestinationColumnSelected]);
+  }, [pathwayComponent, isDestinationColumnStatus]);
 
   const onSelectDragElemenet = (elem: HTMLElement) => {
     setDragElem(elem);
@@ -371,7 +359,6 @@ const HomePage: React.FC<Props> = ({
     const isDestinationCardExist = pathwayComponentCards.some(
       (card: any) => card.isDestinationColumnSelected
     );
-
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
       return;
@@ -411,9 +398,7 @@ const HomePage: React.FC<Props> = ({
             destinationColumn,
             HasProgressionLevel,
             RowNumber,
-            ColumnNumber: isDestinationColumnSelected
-              ? ColumnNumber - 1
-              : ColumnNumber,
+            ColumnNumber: 1,
             isDestinationColumnSelected: isDestinationColumnSelected
               ? true
               : false,
@@ -572,7 +557,7 @@ const HomePage: React.FC<Props> = ({
                       isDestinationColumnSelected={
                         column?.isDestinationColumnSelected
                       }
-                      destinationColumn={!!column?.isDestinationColumnSelected}
+                      destinationColumn={column?.id === 'destinationColumn'}
                       width="450px"
                       rowNumber={rowNumber + 1}
                       columnNumber={columnNumber}
@@ -647,7 +632,7 @@ const HomePage: React.FC<Props> = ({
                                                   }
                                                 />
                                               </span>
-                                              <span
+                                              {/* <span
                                                 className={
                                                   Styles.addConditionIcon
                                                 }
@@ -665,7 +650,7 @@ const HomePage: React.FC<Props> = ({
                                                     onPlusClickHandler(e);
                                                   }}
                                                 />
-                                              </span>
+                                              </span> */}
                                             </div>
                                           }
                                           startAnchor="auto"
@@ -703,7 +688,7 @@ const HomePage: React.FC<Props> = ({
                                       'condition'.toLowerCase()
                                     )}
                                     isDestination={
-                                      item?.isDestinationColumnSelected ||
+                                      column?.id === 'destinationColumn' ||
                                       item?.Type?.toLowerCase().includes(
                                         'destination'.toLowerCase()
                                       )
@@ -734,7 +719,7 @@ const HomePage: React.FC<Props> = ({
                                 </>
                               ))}
 
-                          {!!isDestinationColumnSelected && index === 1 && (
+                          {!!isDestinationColumnStatus && index === 1 && (
                             <MultiCard
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}

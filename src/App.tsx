@@ -162,7 +162,7 @@ const App = () => {
             setFromPreselect(true);
           }}
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
-          isDestinationColumnSelected={isDestinationColumnSelected}
+          isDestinationColumnStatus={isDestinationColumnSelected}
           isStartFromInitialColumnSelected={isStartFromInitialColumnSelected}
           setIsStartFromInitialColumnSelected={
             setIsStartFromInitialColumnSelected
