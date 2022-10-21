@@ -241,7 +241,6 @@ const HomePage: React.FC<Props> = ({
           {
             isDestinationColumnSelected: isDestinationColumnStatus,
             id: 'destinationColumn',
-            CTID: generatedUuid.destinationCTID,
             Name: 'Destination Component',
             Narrower: null,
           },
@@ -255,7 +254,6 @@ const HomePage: React.FC<Props> = ({
             id: 'destinationColumn',
             Name: 'Destination Component',
             Narrower: null,
-            CTID: generatedUuid.destinationCTID,
           },
         ]);
       }
@@ -355,9 +353,8 @@ const HomePage: React.FC<Props> = ({
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
-
-    const isDestinationCardExist = pathwayComponentCards.some(
-      (card: any) => card.isDestinationColumnSelected
+    const isDestinationCardExist = !_.isEmpty(
+      pathwayComponent.Pathway.HasDestinationComponent
     );
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
@@ -399,9 +396,7 @@ const HomePage: React.FC<Props> = ({
             HasProgressionLevel,
             RowNumber,
             ColumnNumber: 1,
-            isDestinationColumnSelected: isDestinationColumnSelected
-              ? true
-              : false,
+
             firstColumn,
           },
         ])
@@ -413,9 +408,6 @@ const HomePage: React.FC<Props> = ({
               HasProgressionLevel,
               RowNumber,
               ColumnNumber,
-              isDestinationColumnSelected: isDestinationColumnSelected
-                ? true
-                : false,
               firstColumn,
             })
         );
@@ -496,6 +488,7 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
+
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
@@ -518,6 +511,9 @@ const HomePage: React.FC<Props> = ({
               return curr.ColumnNumber;
             }
           }, 1);
+
+      const destinationComponent =
+        pathwayComponent?.Pathway?.HasDestinationComponent;
 
       {
         return (
@@ -586,9 +582,14 @@ const HomePage: React.FC<Props> = ({
                               .filter(
                                 (card: any) =>
                                   /* here we are mapping the pathwayComponets to respective progression level and rowNumber and columnNumber */
-                                  card.HasProgressionLevel === column.CTID &&
-                                  card.RowNumber === rowNumber + 1 &&
-                                  card.ColumnNumber === column_num + 1
+                                  (card.CTID ===
+                                    _.toString(destinationComponent) &&
+                                    column?.id === 'destinationColumn' &&
+                                    card.RowNumber === rowNumber + 1 &&
+                                    card.ColumnNumber === column_num + 1) ||
+                                  (card.HasProgressionLevel === column.CTID &&
+                                    card.RowNumber === rowNumber + 1 &&
+                                    card.ColumnNumber === column_num + 1)
                               )
                               .concat(
                                 updatedPathwayComponentConditionCards.filter(
@@ -603,36 +604,38 @@ const HomePage: React.FC<Props> = ({
                               )
                               .map((item: any) => (
                                 <>
-                                  {connection.length &&
-                                    connection.map(
-                                      (items: any, idx: number) => (
-                                        <Xarrow
-                                          path="grid"
-                                          strokeWidth={1}
-                                          zIndex={1000}
-                                          headSize={16}
-                                          color="black"
-                                          start={items?.start}
-                                          end={items?.end}
-                                          key={idx}
-                                          labels={
-                                            <div className={Styles.tempwrapper}>
-                                              <span
-                                                className={
-                                                  Styles.addConditionIcon
-                                                }
+                                  {connection.length
+                                    ? connection.map(
+                                        (items: any, idx: number) => (
+                                          <Xarrow
+                                            path="grid"
+                                            strokeWidth={1}
+                                            zIndex={1000}
+                                            headSize={16}
+                                            color="black"
+                                            start={items?.start}
+                                            end={items?.end}
+                                            key={idx}
+                                            labels={
+                                              <div
+                                                className={Styles.tempwrapper}
                                               >
-                                                <FontAwesomeIcon
-                                                  icon={faXmarkCircle}
-                                                  style={{
-                                                    cursor: 'pointer',
-                                                  }}
-                                                  onClick={() =>
-                                                    removeConnection(items)
+                                                <span
+                                                  className={
+                                                    Styles.addConditionIcon
                                                   }
-                                                />
-                                              </span>
-                                              {/* <span
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faXmarkCircle}
+                                                    style={{
+                                                      cursor: 'pointer',
+                                                    }}
+                                                    onClick={() =>
+                                                      removeConnection(items)
+                                                    }
+                                                  />
+                                                </span>
+                                                {/* <span
                                                 className={
                                                   Styles.addConditionIcon
                                                 }
@@ -651,14 +654,15 @@ const HomePage: React.FC<Props> = ({
                                                   }}
                                                 />
                                               </span> */}
-                                            </div>
-                                          }
-                                          startAnchor="auto"
-                                          endAnchor="auto"
-                                          // gridBreak="20%"
-                                        />
+                                              </div>
+                                            }
+                                            startAnchor="auto"
+                                            endAnchor="auto"
+                                            // gridBreak="20%"
+                                          />
+                                        )
                                       )
-                                    )}
+                                    : ''}
                                   <MultiCard
                                     isDraggableCardVisible={
                                       isDraggableCardVisible
