@@ -819,15 +819,15 @@ const MultiCard: React.FC<Props> = ({
                     placement="bottomRight"
                     content={
                       <div className={styles.popoverMenu} ref={ref}>
-                        {/* <span
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              setShowRightPenal(true);
-                            }}
-                          >
-                            View
-                          </span> */}
+                        <span
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setShowRightPenal(true);
+                          }}
+                        >
+                          View
+                        </span>
                         <span
                           onClick={(e: any) => {
                             e.stopPropagation();

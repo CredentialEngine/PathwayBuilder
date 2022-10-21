@@ -2,12 +2,12 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../apiConfig/api';
 import {
-  BASE_URL,
   GET_DATA_FOR_CURRENT_USER,
   GET_DATA_FOR_PATHWAY,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY,
   SAVE_DATA_FOR_PATHWAY,
 } from '../apiConfig/endpoint';
+import { TEMP_BASE_URL } from '../apiConfig/setting';
 
 import {
   getCurrentUserDataFailure,
@@ -27,7 +27,7 @@ import {
 export function* getCurrentUserData(): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
+      url: `${TEMP_BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export function* getCurrentUserData(): Generator {
 export function* getPathwayAndComponentData(payload: any): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${GET_DATA_FOR_PATHWAY}${payload?.id}`,
+      url: `${TEMP_BASE_URL}${GET_DATA_FOR_PATHWAY}${payload?.id}`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ export function* getPathwayAndComponentData(payload: any): Generator {
 export function* approvePathway(payload: any): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}${payload?.id}`,
+      url: `${TEMP_BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}${payload?.id}`,
       method: 'POST',
       // headers: {
       //   'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export function* approvePathway(payload: any): Generator {
 export function* getSavePathwayWrapper(payload: any): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${SAVE_DATA_FOR_PATHWAY}`,
+      url: `${TEMP_BASE_URL}${SAVE_DATA_FOR_PATHWAY}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -113,9 +113,6 @@ export function* getSavePathwayWrapper(payload: any): Generator {
       },
       data: JSON.stringify(payload.payload),
     });
-    // const result = savePathwayWrapper(payload.payload);
-    console.log(result, 'result');
-
     if (result.Valid) {
       yield put(savePathwaySuccess(result));
     } else if (!result.Valid && result?.Messages?.length > 0) {

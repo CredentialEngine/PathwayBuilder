@@ -164,14 +164,12 @@ const HomePage: React.FC<Props> = ({
 
   useEffect(() => {
     if (pathwayComponent) {
-      if (pathwayComponent?.ComponentConditions?.length > 0) {
-        setPathwayComponentConditionCards(
-          pathwayComponent.ComponentConditions.map((card: any) => ({
-            ...card,
-            Type: 'conditional',
-          }))
-        );
-      }
+      setPathwayComponentConditionCards(
+        pathwayComponent.ComponentConditions.map((card: any) => ({
+          ...card,
+          Type: 'conditional',
+        }))
+      );
       setPathwayComponentCards(pathwayComponent?.PathwayComponents);
 
       const pathwayModel =
@@ -417,14 +415,19 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayWrapper = { ...pathwayComponent };
     const ComponentConditions =
       updatedPathwayWrapper?.ComponentConditions?.filter(
-        (item: any) => item?.ParentIdentifier !== data?.ParentIdentifier
+        (item: any) => item?.RowId !== data?.RowId
       );
     const updatedPathwayComponent = pathwayComponentCards.filter(
       (item: any) => item.CTID !== data.CTID
     );
     updatedPathwayWrapper.ComponentConditions = ComponentConditions;
     updatedPathwayWrapper.Constraints = {};
-    updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+    updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
+      (item: any) =>
+        data?.ParentIdentifier === item?.RowId
+          ? { ...item, HasCondition: [] }
+          : item
+    );
     updatedPathwayWrapper.DeletedComponents = [data];
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setPathwayComponentCards(updatedPathwayComponent);

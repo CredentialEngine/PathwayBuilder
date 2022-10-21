@@ -1,9 +1,6 @@
-import { sanboxSetting, productionSetting } from './setting';
-
-export const BASE_URL =
-  process.env.NODE_ENV !== 'production'
-    ? sanboxSetting.api.url
-    : productionSetting.api.url;
+export const BASE_URL = 'https://sandbox.credentialengine.org/publisher/';
+export const BASE_URL_PRODUCTION =
+  'https://apps.credentialengine.org/publisher/';
 
 export const GET_ALL_PATHWAY_COMPONENT =
   'PathwayBuilderApi/Schema/PathwayComponent';
