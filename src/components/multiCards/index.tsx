@@ -75,7 +75,7 @@ const MultiCard: React.FC<Props> = ({
   getEndPoints,
   isDraggableCardVisible,
   constraintIcon,
-  onDelete,
+  // onDelete,
   // onMoveItem,
   // number,
   // forwardRef,
@@ -708,7 +708,7 @@ const MultiCard: React.FC<Props> = ({
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              onDelete(data);
+                              // onDelete(data);
                             }}
                           >
                             Delete
@@ -832,7 +832,7 @@ const MultiCard: React.FC<Props> = ({
                           onClick={(e: any) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            onDelete(data);
+                            // onDelete(data);
                           }}
                         >
                           Delete

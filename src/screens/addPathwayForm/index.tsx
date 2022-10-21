@@ -674,8 +674,7 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                // value={addPathwayFormFields?.IndustryType}
-                defaultValue={addPathwayFormFields?.IndustryType}
+                value={addPathwayFormFields?.IndustryType}
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
@@ -718,8 +717,7 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                //value={addPathwayFormFields?.OccupationType}
-                defaultValue={addPathwayFormFields?.OccupationType}
+                value={addPathwayFormFields?.OccupationType}
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
@@ -741,8 +739,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 <DebounceSelect
                   mode="multiple"
                   tagRender={tagRender}
-                  //value={addPathwayFormFields?.InstructionalProgram}
-                  defaultValue={addPathwayFormFields?.InstructionalProgram}
+                  value={addPathwayFormFields?.InstructionalProgram}
                   placeholder="Select Instructional Program"
                   fetchOptions={fetchInstructionalProgramList}
                   onSelect={(e: any) =>
