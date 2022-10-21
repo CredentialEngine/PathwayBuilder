@@ -1,15 +1,19 @@
 import { noop } from 'lodash';
 
-import { productionSetting, sanboxSetting } from '../apiConfig/setting';
+import {
+  BASE_URL,
+  BASE_URL_PRODUCTION,
+  SEARCH_FOR_LEST_RIGHT_OPERAND,
+  SEARCH_FOR_PROGRESSION_MODAL,
+} from '../apiConfig/endpoint';
+
+const TEMP_BASE_URL =
+  process.env.NODE_ENV !== 'production' ? BASE_URL : BASE_URL_PRODUCTION;
 
 export default async function fetchProgressionList(data: any) {
   try {
     const res = await fetch(
-      `${
-        process.env.NODE_ENV !== 'production'
-          ? sanboxSetting.api.url
-          : productionSetting.api.url
-      }PathwayBuilderApi/Search/Codes/InstructionalProgramTypePathwayBuilderApi/Search/Resource/Pathway_HasProgressionModel?userCreds=tara.mueller%40protiviti.com~ceI$Awesome`,
+      `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}?userCreds=tara.mueller%40protiviti.com~ceI$Awesome`,
       {
         method: 'post', // *GET, POST, PUT, DELETE, etc.
         body: JSON.stringify(data), // body data type must match "Content-Type" header
@@ -62,11 +66,7 @@ export default async function fetchProgressionList(data: any) {
 export async function getAllConstraintOperand(data: any) {
   try {
     const res = await fetch(
-      `${
-        process.env.NODE_ENV !== 'production'
-          ? sanboxSetting.api.url
-          : productionSetting.api.url
-      }PathwayBuilderApi/Search/Resource/Constraint_Operand?userCreds=tara.mueller%40protiviti.com~ceI$Awesome`,
+      `${TEMP_BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}?userCreds=tara.mueller%40protiviti.com~ceI$Awesome`,
       {
         method: 'post', // *GET, POST, PUT, DELETE, etc.
         body: JSON.stringify(data), // body data type must match "Content-Type" header

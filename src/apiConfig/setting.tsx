@@ -13,3 +13,8 @@ export const stagingSetting = {
     url: 'https://staging.credentialengine.org/publisher/',
   },
 };
+
+export const TEMP_BASE_URL =
+  process.env.NODE_ENV !== 'production'
+    ? sanboxSetting.api.url
+    : productionSetting.api.url;
