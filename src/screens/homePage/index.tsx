@@ -28,12 +28,18 @@ interface Props {
   setIsEditPathwayFormVisible: (a: boolean) => void;
   isDestinationColumnSelected: boolean;
   onClickPreselectComponent?: any;
+  isStartFromInitialColumnSelected: boolean;
+  setIsStartFromInitialColumnSelected: (a: boolean) => void;
+  setIsDestinationColumnSelected: (a: boolean) => void;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
   setIsEditPathwayFormVisible,
   isDestinationColumnSelected,
   onClickPreselectComponent,
+  isStartFromInitialColumnSelected,
+  setIsStartFromInitialColumnSelected,
+  setIsDestinationColumnSelected,
 }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
@@ -71,6 +77,11 @@ const HomePage: React.FC<Props> = ({
     firstStageCTID: '',
   });
 
+  console.log(
+    'isStartFromInitialColumnSelected -->',
+    isStartFromInitialColumnSelected
+  );
+  console.log('showAddDestination --->', showAddDestination);
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
@@ -91,6 +102,7 @@ const HomePage: React.FC<Props> = ({
     });
 
     setUpdatedPathwayComponentConditionCards(updatedConditionalComponents);
+    setIsStartFromInitialColumnSelected(false);
   }, [pathwayComponentConditionCards]);
 
   const [overlayData, setOverlayData] = useState<any>({
@@ -110,6 +122,7 @@ const HomePage: React.FC<Props> = ({
 
   let count = 0;
 
+  console.log('pathwayComponentCards --->', pathwayComponentCards);
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
@@ -119,7 +132,14 @@ const HomePage: React.FC<Props> = ({
 
     pathwayComponentCards?.some(
       (item: any) =>
-        item?.isDestinationColumnSelected && setShowAddDestination(true)
+        item?.isDestinationColumnSelected &&
+        setIsDestinationColumnSelected(false),
+      setIsStartFromInitialColumnSelected(false)
+    );
+    pathwayComponentCards?.some(
+      (item: any) =>
+        item?.firstColumn && setIsStartFromInitialColumnSelected(false),
+      setShowAddDestination(true)
     );
   }, [pathwayComponentCards]);
 
@@ -302,7 +322,9 @@ const HomePage: React.FC<Props> = ({
     isDestinationColumnSelected: boolean,
     RowNumber: number,
     ColumnNumber: number,
-    columnNumberEsixt: boolean
+    columnNumberEsixt: boolean,
+    isFirstColumneSelected: boolean,
+    firstColumn: boolean
   ) => {
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
 
@@ -322,6 +344,7 @@ const HomePage: React.FC<Props> = ({
       return;
     }
     if (card?.Type === 'conditional') {
+      /* This Function add only conditional cards*/
       setUpdatedPathwayComponentConditionCards(
         updatedPathwayComponentConditionCards
           .filter((item: any) => item.RowId !== card.RowId)
@@ -338,6 +361,7 @@ const HomePage: React.FC<Props> = ({
       card.ColumnNumber === ColumnNumber &&
       card.RowNumber === RowNumber
     ) {
+      /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
 
@@ -346,6 +370,7 @@ const HomePage: React.FC<Props> = ({
     );
 
     if (!!destinationColumn && isDestinationCardExist) {
+      /*  Prevent to drop multiple destination cards inside destination component*/
       return;
     }
     const islastDropWrapperUsed = pathwayComponentCards.some(
@@ -356,9 +381,13 @@ const HomePage: React.FC<Props> = ({
       /* here we are increasing number of DropWrapper */
       setNumberOfDropWrapper((prevState) => prevState + 1);
     }
-    if (!isDestinationColumnSelected && pathwayComponentCards.length === 0) {
-      /* 
-        this block is to prevent to drop a card anywhere instead of destination column
+    if (
+      !isDestinationColumnSelected &&
+      !isFirstColumneSelected &&
+      pathwayComponentCards.length === 0
+    ) {
+      /*
+        this block is to prevent to drop a card anywhere before dropping a card in destination column and first column
       */
       return;
     }
@@ -379,10 +408,11 @@ const HomePage: React.FC<Props> = ({
             destinationColumn,
             HasProgressionLevel,
             RowNumber,
-            ColumnNumber: ColumnNumber - 1,
+            ColumnNumber,
             isDestinationColumnSelected: isDestinationColumnSelected
               ? true
               : false,
+            firstColumn,
           },
         ])
       : setPathwayComponentCards(
@@ -396,6 +426,7 @@ const HomePage: React.FC<Props> = ({
               isDestinationColumnSelected: isDestinationColumnSelected
                 ? true
                 : false,
+              firstColumn,
             })
         );
   };
@@ -546,6 +577,8 @@ const HomePage: React.FC<Props> = ({
                       updatedPathwayComponentConditionCards={
                         updatedPathwayComponentConditionCards
                       }
+                      isFirstColumneSelected={column?.id === 'firstColumn'}
+                      firstColumn={column?.id === 'firstColumn'}
                     >
                       <div
                         style={{
@@ -629,7 +662,7 @@ const HomePage: React.FC<Props> = ({
                                 />
                               ))}
 
-                          {!showAddDestination && index === 1 && (
+                          {!!isDestinationColumnSelected && index === 1 && (
                             <MultiCard
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}
@@ -655,7 +688,7 @@ const HomePage: React.FC<Props> = ({
                               onDelete={onDeleteHandler}
                             />
                           )}
-                          {!showAddDestination &&
+                          {!!isStartFromInitialColumnSelected &&
                             index === 1 &&
                             column?.CTID === getLastColumn('first') &&
                             pathwayComponentCards?.length <= 1 && (

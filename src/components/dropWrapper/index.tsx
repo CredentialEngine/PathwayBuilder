@@ -9,7 +9,9 @@ interface Props {
     isDestinationColumnSelected: any,
     rowNumber: any,
     columnNumber: any,
-    columnNumberEsixt: any
+    columnNumberEsixt: any,
+    isFirstColumneSelected: any,
+    firstColumn: boolean
   ) => void;
   children: any;
   key: string;
@@ -31,6 +33,8 @@ interface Props {
   setOverlayData: (a: any) => void;
   overlayData: any;
   updatedPathwayComponentConditionCards: any;
+  isFirstColumneSelected: boolean;
+  firstColumn: boolean;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -50,6 +54,8 @@ const DropWrapper: React.FC<Props> = ({
   setOverlayData,
   overlayData,
   updatedPathwayComponentConditionCards,
+  isFirstColumneSelected,
+  firstColumn,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   const [columnNumberEsixt, setColumnNumber] = useState<boolean>(false);
@@ -85,7 +91,9 @@ const DropWrapper: React.FC<Props> = ({
           conditinalComponentColumnNumber > columnNumber
             ? columnNumber + 2
             : columnNumber + 1,
-          columnNumberEsixt
+          columnNumberEsixt,
+          isFirstColumneSelected,
+          firstColumn
         )
       : onDrop(
           data,
@@ -94,7 +102,9 @@ const DropWrapper: React.FC<Props> = ({
           isDestinationColumnSelected,
           rowNumber,
           column_num + 1,
-          columnNumberEsixt
+          columnNumberEsixt,
+          isFirstColumneSelected,
+          firstColumn
         );
   };
 

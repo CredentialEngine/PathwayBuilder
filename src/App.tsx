@@ -28,6 +28,10 @@ const App = () => {
   );
   const [isDestinationColumnSelected, setIsDestinationColumnSelected] =
     useState<boolean>(false);
+  const [
+    isStartFromInitialColumnSelected,
+    setIsStartFromInitialColumnSelected,
+  ] = useState<boolean>(false);
 
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
@@ -112,8 +116,6 @@ const App = () => {
   useEffect(() => {
     if (organisationList && organisationList?.length > 1) {
       setsSelectOrganizationsVisble(true);
-    } else {
-      // setIsCreatePathwayVisible(true);
     }
   }, [organisationList?.length]);
 
@@ -161,6 +163,11 @@ const App = () => {
           }}
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isDestinationColumnSelected={isDestinationColumnSelected}
+          isStartFromInitialColumnSelected={isStartFromInitialColumnSelected}
+          setIsStartFromInitialColumnSelected={
+            setIsStartFromInitialColumnSelected
+          }
+          setIsDestinationColumnSelected={setIsDestinationColumnSelected}
         />
         <Modal
           visible={isCreatePathwayVisible}
@@ -229,6 +236,9 @@ const App = () => {
               setIsAddPathwayDestinationVisible
             }
             setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+            setIsStartFromInitialColumnSelected={
+              setIsStartFromInitialColumnSelected
+            }
           />
         </Modal>
         <Modal
