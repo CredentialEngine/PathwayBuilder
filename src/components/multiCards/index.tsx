@@ -48,6 +48,11 @@ interface Props {
   columnNumber: number;
   HasProgressionLevel: string;
   updatedPathwayComponentConditionCards?: [];
+  ConstraintConditionProp?: (val: boolean) => void;
+  ConstraintConditionState: boolean;
+  pathwayComponentCards: [any];
+  isConditionalModalStatus?: boolean;
+  setIsConditionalModalStatus?: (a: boolean) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -70,7 +75,7 @@ const MultiCard: React.FC<Props> = ({
   getEndPoints,
   isDraggableCardVisible,
   constraintIcon,
-  onDelete,
+  // onDelete,
   // onMoveItem,
   // number,
   // forwardRef,
@@ -78,6 +83,8 @@ const MultiCard: React.FC<Props> = ({
   columnNumber,
   updatedPathwayComponentConditionCards,
   HasProgressionLevel,
+  isConditionalModalStatus,
+  setIsConditionalModalStatus,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -95,6 +102,15 @@ const MultiCard: React.FC<Props> = ({
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
+
+  useEffect(() => {
+    if (isConditionalModalStatus) {
+      setVisibleConstraintCondition(true);
+    } else {
+      setVisibleConstraintCondition(false);
+    }
+  }, [isConditionalModalStatus]);
+
   useEffect(() => {
     setFilteredConditionalComponent(
       updatedPathwayComponentConditionCards?.filter(
@@ -112,6 +128,11 @@ const MultiCard: React.FC<Props> = ({
   }, [updatedPathwayComponentConditionCards]);
 
   const darkColor = '#0A2942';
+
+  const onCancelHandler = (value: any) => {
+    setVisibleConstraintCondition(value);
+    !!setIsConditionalModalStatus && setIsConditionalModalStatus(value);
+  };
 
   const getOnClick = (e: any) => {
     /* 
@@ -250,7 +271,7 @@ const MultiCard: React.FC<Props> = ({
                   />
                   <div className={styles.addDestinationContent}>
                     <p className={styles.addDestinationTitle}>
-                      Add your next component
+                      Add your first component
                     </p>
                     <FontAwesomeIcon
                       style={{ height: '28px', marginTop: '20px' }}
@@ -550,6 +571,7 @@ const MultiCard: React.FC<Props> = ({
                 title="Great! Add  another component"
                 content="Drag your next component into the Pathway by dragging it to a hotspot on the component you just placed."
                 onClose={noop}
+                direction="right"
               />
               <div className={styles.addDestinationContent}>
                 <p className={styles.addDestinationTitle}>
@@ -640,6 +662,9 @@ const MultiCard: React.FC<Props> = ({
                 </div>
               )}
 
+              <span
+                className={styles.ornageSection + ' ' + styles.leftSide}
+              ></span>
               <div
                 className={
                   isDestination
@@ -683,7 +708,7 @@ const MultiCard: React.FC<Props> = ({
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              onDelete(data);
+                              // onDelete(data);
                             }}
                           >
                             Delete
@@ -708,6 +733,9 @@ const MultiCard: React.FC<Props> = ({
                   <span>Level 10</span>
                 </div>
               </div>
+              <span
+                className={styles.ornageSection + ' ' + styles.right}
+              ></span>
             </>
           )}
 
@@ -742,9 +770,13 @@ const MultiCard: React.FC<Props> = ({
           )}
 
           {isConditionalCard && (
-            <React.Fragment>
+            <>
               {isConditionalCard && (
-                <div className={styles.addIcon}>
+                <div
+                  className={
+                    styles.addIcon + ' ' + styles.isConditionalCardIcon
+                  }
+                >
                   <FontAwesomeIcon
                     icon={faCirclePlus}
                     fill="#000000"
@@ -760,32 +792,66 @@ const MultiCard: React.FC<Props> = ({
                   />
                 </div>
               )}
-
-              <div className={styles.conditionalCardContent}>
-                <FontAwesomeIcon
-                  color="#ffffff"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faSitemap}
-                  onClick={noop}
+              <React.Fragment>
+                <div className={styles.conditionalCardContent}>
+                  <FontAwesomeIcon
+                    color="#ffffff"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faSitemap}
+                    onClick={noop}
+                  />
+                  <span>Required {data?.RequiredNumber}</span>
+                  <FontAwesomeIcon
+                    color="#000000"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faEllipsis}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowPopover(true);
+                    }}
+                  />
+                </div>
+                {showPopover && !showRightPenal && (
+                  <Popover
+                    visible={showPopover}
+                    arrowPointAtCenter
+                    placement="bottomRight"
+                    content={
+                      <div className={styles.popoverMenu} ref={ref}>
+                        <span
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setShowRightPenal(true);
+                          }}
+                        >
+                          View
+                        </span>
+                        <span
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            // onDelete(data);
+                          }}
+                        >
+                          Delete
+                        </span>
+                      </div>
+                    }
+                  ></Popover>
+                )}
+                <Divider
+                  style={{
+                    backgroundColor: '#ffb90b',
+                    margin: '8px 0px 4px 0px',
+                  }}
                 />
-                <span>Required {data?.RequiredNumber}</span>
-                <FontAwesomeIcon
-                  color="#000000"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faEllipsis}
-                  onClick={noop}
-                />
-              </div>
-              <Divider
-                style={{
-                  backgroundColor: '#ffb90b',
-                  margin: '8px 0px 4px 0px',
-                }}
-              />
-              <div className={styles.requiredSection}>
-                <span>{data.Description}</span>
-              </div>
-            </React.Fragment>
+                <div className={styles.requiredSection}>
+                  <span>{data.Description}</span>
+                </div>
+              </React.Fragment>
+            </>
           )}
 
           {isAddComponentCard && (
@@ -826,7 +892,7 @@ const MultiCard: React.FC<Props> = ({
         visible={visibleConstraintCondition}
         title=""
         footer={[]}
-        onCancel={() => setVisibleConstraintCondition(false)}
+        onCancel={() => onCancelHandler(false)}
       >
         <AddConditionalComponent
           visibleConstraintConditionProp={handledConstraintsModal}
@@ -834,6 +900,7 @@ const MultiCard: React.FC<Props> = ({
           filteredConditionalComponent={filteredConditionalComponent}
           filteredPathwayComponent={filteredPathwayComponent}
           isDestinationCard={isDestination}
+          setIsConditionalModalStatus={setIsConditionalModalStatus}
         />
       </Modal>
 

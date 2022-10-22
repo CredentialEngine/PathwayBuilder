@@ -30,12 +30,14 @@ export interface Props {
   addPathwayWrapperFields: any;
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
   fromPreSelect: boolean;
+  setIsDestinationColumnSelected?: (a: boolean) => void;
 }
 const PreSelectResourceCreatePath: React.FC<Props> = ({
   setIsPreSelectedCreateResourceVisible,
   addPathwayWrapperFields,
   setIsAddPathwayDestinationVisible,
   fromPreSelect,
+  setIsDestinationColumnSelected,
 }) => {
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
@@ -50,6 +52,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [checkboxForOrganisation, setCheckboxForOrganisation] =
     useState<boolean>(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
 
   const appState = useSelector((state: any) => state?.initalReducer);
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
@@ -148,13 +151,31 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     const filteredItem = allProxyResourcesCard.filter(
       (item: any) => item.CTID === selectedItem?.CTID
     );
+
     const selectedItemExist = selectedResource.some(
       (item: any) =>
         item.CTID === selectedItem?.CTID ||
         item.ProxyFor === selectedItem?.ProxyFor
     );
 
-    if (selectedItemExist) {
+    const pathwayComponentsExists = pathwayComponent?.PathwayComponents?.some(
+      (item: any) =>
+        item.CTID === selectedItem?.CTID ||
+        item.ProxyFor === selectedItem?.ProxyFor
+    );
+
+    const PendingComponentsExists =
+      pathwayWrapper?.pathwayComponentData?.data?.PendingComponents?.some(
+        (item: any) =>
+          item.CTID === selectedItem?.CTID ||
+          item.ProxyFor === selectedItem?.ProxyFor
+      );
+
+    if (
+      selectedItemExist ||
+      pathwayComponentsExists ||
+      PendingComponentsExists
+    ) {
       Modal.confirm({
         cancelText: 'No',
         okText: 'Yes',
@@ -201,6 +222,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
+    !!setIsDestinationColumnSelected && setIsDestinationColumnSelected(true);
   };
 
   const handleCheckBox = () => {

@@ -9,6 +9,14 @@ import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
+import {
+  BASE_URL,
+  BASE_URL_PRODUCTION,
+  SEARCH_FOR_INDUSTRICAL_PROGRAM_TYPE,
+  SEARCH_FOR_INDUSTRY_TYPE,
+  SEARCH_FOR_OCCUPATION_TYPE,
+} from '../../apiConfig/endpoint';
+
 import AutoCompleteBox from '../../components/autoComplete';
 import Button from '../../components/button';
 import { Type } from '../../components/button/type';
@@ -87,6 +95,9 @@ const AddPathwayForm: React.FC<Props> = ({
   );
   const [selectedProgressionModelValue, setSelectedProgressionModelValue] =
     useState<string>('');
+
+  const TEMP_BASE_URL =
+    process.env.NODE_ENV !== 'production' ? BASE_URL : BASE_URL_PRODUCTION;
 
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);
@@ -397,16 +408,13 @@ const AddPathwayForm: React.FC<Props> = ({
     // const data = new FormData();
     // data.append('json', JSON.stringify({ Keywords: e }));
 
-    return fetch(
-      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/OccupationType',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ Keywords: e }),
-      }
-    )
+    return fetch(`${TEMP_BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Keywords: e }),
+    })
       .then((response: any) => response.clone().json())
       .then((body: any) => {
         const updatedBody = body.Data.Results.map((dta: any) => ({
@@ -428,16 +436,13 @@ const AddPathwayForm: React.FC<Props> = ({
     const data = new FormData();
     data.append('json', JSON.stringify({ Keywords: e }));
 
-    return fetch(
-      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/IndustryType',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ Keywords: e }),
-      }
-    )
+    return fetch(`${TEMP_BASE_URL}${SEARCH_FOR_INDUSTRY_TYPE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Keywords: e }),
+    })
       .then((response: any) => response.clone().json())
       .then((body: any) => {
         const updatedBody = body.Data.Results.map((dta: any) => ({
@@ -459,16 +464,13 @@ const AddPathwayForm: React.FC<Props> = ({
     const data = new FormData();
     data.append('json', JSON.stringify({ Keywords: e }));
 
-    return fetch(
-      'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/Search/Codes/InstructionalProgramType',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ Keywords: e }),
-      }
-    )
+    return fetch(`${TEMP_BASE_URL}${SEARCH_FOR_INDUSTRICAL_PROGRAM_TYPE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Keywords: e }),
+    })
       .then((response: any) => response.clone().json())
       .then((body: any) => {
         const updatedBody = body.Data.Results.map((dta: any) => ({
@@ -672,8 +674,7 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                // value={addPathwayFormFields?.IndustryType}
-                defaultValue={addPathwayFormFields?.IndustryType}
+                value={addPathwayFormFields?.IndustryType}
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
@@ -716,8 +717,7 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                //value={addPathwayFormFields?.OccupationType}
-                defaultValue={addPathwayFormFields?.OccupationType}
+                value={addPathwayFormFields?.OccupationType}
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
@@ -739,8 +739,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 <DebounceSelect
                   mode="multiple"
                   tagRender={tagRender}
-                  //value={addPathwayFormFields?.InstructionalProgram}
-                  defaultValue={addPathwayFormFields?.InstructionalProgram}
+                  value={addPathwayFormFields?.InstructionalProgram}
                   placeholder="Select Instructional Program"
                   fetchOptions={fetchInstructionalProgramList}
                   onSelect={(e: any) =>

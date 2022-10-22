@@ -9,11 +9,13 @@ import Button from '../../components/button';
 export interface Props {
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
   setIsDestinationColumnSelected: (a: boolean) => void;
+  setIsStartFromInitialColumnSelected: (a: boolean) => void;
 }
 
 const SelectDestination: React.FC<Props> = ({
   setIsAddPathwayDestinationVisible,
   setIsDestinationColumnSelected,
+  setIsStartFromInitialColumnSelected,
 }) => {
   const selectDestinationColumn = () => {
     setIsAddPathwayDestinationVisible(false);
@@ -26,7 +28,7 @@ const SelectDestination: React.FC<Props> = ({
 
   const selectInitialColumn = () => {
     setIsAddPathwayDestinationVisible(false);
-    setIsDestinationColumnSelected(true);
+    setIsStartFromInitialColumnSelected(true);
     const firstColumn = document.getElementById('firstColumn');
     if (!_.isNull(firstColumn)) {
       !_.isNull(firstColumn) && firstColumn.scrollIntoView(true);

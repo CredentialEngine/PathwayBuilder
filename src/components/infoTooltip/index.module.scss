@@ -64,3 +64,10 @@
   right: -170px;
   top: 66px;
 }
+.direction {
+  right: -170px;
+  .arrow {
+    left: -9px;
+    transform: rotate(180deg);
+  }
+}

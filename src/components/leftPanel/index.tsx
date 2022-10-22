@@ -224,10 +224,7 @@ const LeftPanel: React.FC<any> = ({
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
-        <u
-          style={{ cursor: 'pointer' }}
-          onClick={() => setShowAddComponentToPathway(true)}
-        >
+        <u style={{ cursor: 'pointer' }} onClick={onClickPreselectComponent}>
           Select
         </u>
       </div>
