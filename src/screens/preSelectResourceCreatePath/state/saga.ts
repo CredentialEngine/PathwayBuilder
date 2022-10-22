@@ -1,9 +1,7 @@
 import { call, debounce, put } from 'redux-saga/effects';
 
-import {
-  BASE_URL,
-  PATHWAY_COMPONENT_PROXY_FOR,
-} from '../../../apiConfig/endpoint';
+import { PATHWAY_COMPONENT_PROXY_FOR } from '../../../apiConfig/endpoint';
+import { TEMP_BASE_URL } from '../../../apiConfig/setting';
 
 import {
   getAllProxyForResourcesFailure,
@@ -12,7 +10,7 @@ import {
 import { GET_ALL_PROXY_FOR_RESCOURCES_REQUEST } from './actionTypes';
 
 export function fetchPostsApi(value: any) {
-  const url = new URL(`${BASE_URL}${PATHWAY_COMPONENT_PROXY_FOR}`),
+  const url = new URL(`${TEMP_BASE_URL}${PATHWAY_COMPONENT_PROXY_FOR}`),
     params = { userCreds: 'tara.mueller@protiviti.com~ceI$Awesome' };
 
   url.search = new URLSearchParams(params).toString();

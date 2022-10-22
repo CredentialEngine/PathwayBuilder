@@ -2,11 +2,11 @@ import { call, put, debounce, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../../../apiConfig/api';
 import {
-  BASE_URL,
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
   SEARCH_FOR_PROGRESSION_MODAL,
 } from '../../../apiConfig/endpoint';
+import { TEMP_BASE_URL } from '../../../apiConfig/setting';
 
 import {
   getDataForProgressionModelSuccess,
@@ -25,7 +25,7 @@ import {
 export function* getAllProgressionModelData(payload: any): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`,
+      url: `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export function* getAllProgressionModelData(payload: any): Generator {
 export function* getAllIndustryTypeCodeData(payload: any): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${SEARCH_FOR_INDUSTRY_TYPE}`,
+      url: `${TEMP_BASE_URL}${SEARCH_FOR_INDUSTRY_TYPE}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export function* getAllIndustryTypeCodeData(payload: any): Generator {
 export function* getAllOccupationTypeCodeData(payload: any): Generator {
   try {
     const result: any = yield call(request, {
-      url: `${BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`,
+      url: `${TEMP_BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`,
       method: 'POST',
       params: {
         userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',

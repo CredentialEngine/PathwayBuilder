@@ -75,7 +75,7 @@ const MultiCard: React.FC<Props> = ({
   getEndPoints,
   isDraggableCardVisible,
   constraintIcon,
-  onDelete,
+  // onDelete,
   // onMoveItem,
   // number,
   // forwardRef,
@@ -708,7 +708,7 @@ const MultiCard: React.FC<Props> = ({
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              onDelete(data);
+                              // onDelete(data);
                             }}
                           >
                             Delete
@@ -805,9 +805,42 @@ const MultiCard: React.FC<Props> = ({
                     color="#000000"
                     style={{ height: '20px', cursor: 'pointer' }}
                     icon={faEllipsis}
-                    onClick={noop}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowPopover(true);
+                    }}
                   />
                 </div>
+                {showPopover && !showRightPenal && (
+                  <Popover
+                    visible={showPopover}
+                    arrowPointAtCenter
+                    placement="bottomRight"
+                    content={
+                      <div className={styles.popoverMenu} ref={ref}>
+                        <span
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setShowRightPenal(true);
+                          }}
+                        >
+                          View
+                        </span>
+                        <span
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            // onDelete(data);
+                          }}
+                        >
+                          Delete
+                        </span>
+                      </div>
+                    }
+                  ></Popover>
+                )}
                 <Divider
                   style={{
                     backgroundColor: '#ffb90b',
