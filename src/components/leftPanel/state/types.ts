@@ -1,7 +1,7 @@
 export type RootState = {
   allLeftPathwayComponent: {
     loading: boolean;
-    data: null;
+    data: any;
     valid: boolean;
   };
 };

@@ -8,7 +8,6 @@ import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
-import AddConditionalComponent from './screens/addComponent';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
@@ -16,7 +15,10 @@ import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
-import { getCurrentUserDataRequest } from './states/actions';
+import {
+  getCurrentUserDataRequest,
+  saveSelectedOrganization,
+} from './states/actions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,6 +28,10 @@ const App = () => {
   );
   const [isDestinationColumnSelected, setIsDestinationColumnSelected] =
     useState<boolean>(false);
+  const [
+    isStartFromInitialColumnSelected,
+    setIsStartFromInitialColumnSelected,
+  ] = useState<boolean>(false);
 
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
@@ -42,7 +48,8 @@ const App = () => {
   const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
-    useState('');
+    useState<any>();
+  const [fromPreSelect, setFromPreselect] = useState<any>(false);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
 
@@ -99,6 +106,9 @@ const App = () => {
   };
 
   const selectOrgOkHandler = () => {
+    if (selectedOrganisationValue) {
+      dispatch(saveSelectedOrganization(selectedOrganisationValue));
+    }
     setsSelectOrganizationsVisble(false);
     setIsCreatePathwayVisible(true);
   };
@@ -106,8 +116,6 @@ const App = () => {
   useEffect(() => {
     if (organisationList && organisationList?.length > 1) {
       setsSelectOrganizationsVisble(true);
-    } else {
-      setIsCreatePathwayVisible(true);
     }
   }, [organisationList?.length]);
 
@@ -128,8 +136,8 @@ const App = () => {
 
   const closeCreatePathwayModal = () => {
     Modal.confirm({
-      cancelText: 'Cancel',
-      okText: 'Ok',
+      cancelText: 'No',
+      okText: 'Yes',
       title: 'Are you sure you want to cancel.',
       onOk: () => onCreatePathwayCancelHandler(),
     });
@@ -149,17 +157,24 @@ const App = () => {
               ? true
               : false
           }
+          onClickPreselectComponent={() => {
+            setIsPreSelectedCreateResourceVisible(true);
+            setFromPreselect(true);
+          }}
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
-          isDestinationColumnSelected={isDestinationColumnSelected}
+          isDestinationColumnStatus={isDestinationColumnSelected}
+          isStartFromInitialColumnSelected={isStartFromInitialColumnSelected}
+          setIsStartFromInitialColumnSelected={
+            setIsStartFromInitialColumnSelected
+          }
+          setIsDestinationColumnSelected={setIsDestinationColumnSelected}
         />
-        <Modal visible={false} title="" footer={[]} width={650}>
-          <AddConditionalComponent />
-        </Modal>
         <Modal
           visible={isCreatePathwayVisible}
           title="Add a Pathway"
           footer={createPathwayFooter()}
           width={550}
+          onCancel={closeCreatePathwayModal}
         >
           <CreatePathway />
         </Modal>
@@ -194,6 +209,8 @@ const App = () => {
             setIsPreSelectedCreateResourceVisible={
               setIsPreSelectedCreateResourceVisible
             }
+            setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+            fromPreSelect={fromPreSelect}
             addPathwayWrapperFields={addPathwayWrapperFields}
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
@@ -219,6 +236,9 @@ const App = () => {
               setIsAddPathwayDestinationVisible
             }
             setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+            setIsStartFromInitialColumnSelected={
+              setIsStartFromInitialColumnSelected
+            }
           />
         </Modal>
         <Modal

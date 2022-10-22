@@ -6,8 +6,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Popover } from 'antd';
-import { noop } from 'lodash';
+import _, { noop } from 'lodash';
+
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import AddConditionalComponent from '../../screens/addComponent';
 
@@ -28,10 +30,8 @@ interface Props {
   onClick?: () => void;
   setIsZoomDisabled: (a: any) => void;
   status?: string;
-  CTID?: string;
-  id?: number | string;
+  CTID?: number | string;
   inProgressLevel?: string;
-  columnId?: string;
   destinationComponent?: boolean;
   onSelectDragElemenet: (a: any) => void;
   onMoveItem: (a: any) => void;
@@ -43,6 +43,16 @@ interface Props {
   number: number;
   forwardRef: any;
   leftpanelSelectedElem: any;
+  onDelete?: any;
+  rowNumber: number;
+  columnNumber: number;
+  HasProgressionLevel: string;
+  updatedPathwayComponentConditionCards?: [];
+  ConstraintConditionProp?: (val: boolean) => void;
+  ConstraintConditionState: boolean;
+  pathwayComponentCards: [any];
+  isConditionalModalStatus?: boolean;
+  setIsConditionalModalStatus?: (a: boolean) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -56,7 +66,7 @@ const MultiCard: React.FC<Props> = ({
   onClick,
   setIsZoomDisabled,
   status,
-  id,
+  CTID,
   inProgressLevel,
   destinationComponent,
   onSelectDragElemenet,
@@ -65,27 +75,64 @@ const MultiCard: React.FC<Props> = ({
   getEndPoints,
   isDraggableCardVisible,
   constraintIcon,
+  // onDelete,
   // onMoveItem,
   // number,
   // forwardRef,
-  // leftpanelSelectedElem,
+  rowNumber,
+  columnNumber,
+  updatedPathwayComponentConditionCards,
+  HasProgressionLevel,
+  isConditionalModalStatus,
+  setIsConditionalModalStatus,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
-  showPopover;
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const ref = useRef(null);
   const [visibleConstraintCondition, setVisibleConstraintCondition] =
     useState(false);
   const [showRightPenal, setShowRightPenal] = useState(false);
+  const [filteredConditionalComponent, setFilteredConditionalComponent] =
+    useState<any>([]);
+  const [filteredPathwayComponent, setFilteredPathwayComponent] = useState<any>(
+    []
+  );
 
+  const { mappedData: PathwayWrapper } = pathwayWrapper;
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
-  // useEffect(() => {
-  //   const dragElement = leftpanelSelectedElem;
-  //   if (!_.isNull(dragElement) && !_.isUndefined(dragElement)) {
-  //     const element = dragElement.getBoundingClientRect();
-  //   }
-  // }, [leftpanelSelectedElem]);
+
+  useEffect(() => {
+    if (isConditionalModalStatus) {
+      setVisibleConstraintCondition(true);
+    } else {
+      setVisibleConstraintCondition(false);
+    }
+  }, [isConditionalModalStatus]);
+
+  useEffect(() => {
+    setFilteredConditionalComponent(
+      updatedPathwayComponentConditionCards?.filter(
+        (condition_card: any) =>
+          condition_card.HasProgressionLevel === _.toString(HasProgressionLevel)
+      )
+    );
+
+    setFilteredPathwayComponent(
+      PathwayWrapper.PathwayComponents?.filter(
+        (pathway_card: any) =>
+          pathway_card.HasProgressionLevel === _.toString(HasProgressionLevel)
+      )
+    );
+  }, [updatedPathwayComponentConditionCards]);
+
+  const darkColor = '#0A2942';
+
+  const onCancelHandler = (value: any) => {
+    setVisibleConstraintCondition(value);
+    !!setIsConditionalModalStatus && setIsConditionalModalStatus(value);
+  };
 
   const getOnClick = (e: any) => {
     /* 
@@ -100,14 +147,33 @@ const MultiCard: React.FC<Props> = ({
     */
 
     onClick;
-    getEndPoints(e, id);
+    getEndPoints(e, CTID);
   };
+
+  // const onDragEnterHandler = () => {
+  //   const getElement = forwardRef.current[number];
+  //   if (!_.isNull(getElement)) {
+  //     const rect = getElement.getBoundingClientRect();
+  //     getElement.style.width = `${rect.width * 2}px`;
+  //   }
+  // };
+
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
     e.dataTransfer.setData(
       'card_id',
-      JSON.stringify({ ...data, status, inProgressLevel })
+      JSON.stringify({
+        ...data,
+        status,
+        inProgressLevel,
+      })
+    );
+    e.dataTransfer.setData(
+      'leftPanel_card',
+      JSON.stringify({
+        ...data,
+      })
     );
     onSelectDragElemenet(data);
     setTimeout(() => {
@@ -116,8 +182,6 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragOver = (e: any) => {
-    // onMoveItem(e.target.innerText);
-
     e.preventDefault();
     e.stopPropagation();
   };
@@ -125,9 +189,6 @@ const MultiCard: React.FC<Props> = ({
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
     e.target.style.visibility = 'visible';
-    e.target.style.position = 'absolute';
-    // e.target.style.left = `${e.pageX - 75}px`;
-    e.target.style.top = `${e.pageY - 75}px`;
   };
 
   useEffect(() => {
@@ -143,13 +204,15 @@ const MultiCard: React.FC<Props> = ({
     }
   };
 
-  const darkColor = '#0A2942';
+  const onPlusCircleClickHandler = (e: any) => {
+    e.stopPropagation();
+    setVisibleConstraintCondition(true);
+  };
 
   return (
     <>
       {isDraggableCardVisible ? (
-        <div className={styles.draggableAreaContainer}>
-          <div id="verticalBorder" className={styles.draggableAreaBox}></div>
+        <div className={styles.draggableAreaContainer} id={CTID?.toString()}>
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
@@ -170,9 +233,14 @@ const MultiCard: React.FC<Props> = ({
               onClick={(e: any) => {
                 getOnClick(e);
               }}
+              // onDragEnter={onDragEnterHandler}
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
-              id={id?.toString()}
+              id={CTID?.toString()}
+              data-cardType="multiCard"
+              data-columnNumber={columnNumber}
+              data-rowNumber={rowNumber}
+              data-CTID={data.CTID}
             >
               {destinationComponent && isAddDestination && (
                 <>
@@ -203,7 +271,7 @@ const MultiCard: React.FC<Props> = ({
                   />
                   <div className={styles.addDestinationContent}>
                     <p className={styles.addDestinationTitle}>
-                      Add your next component
+                      Add your first component
                     </p>
                     <FontAwesomeIcon
                       style={{ height: '28px', marginTop: '20px' }}
@@ -398,7 +466,7 @@ const MultiCard: React.FC<Props> = ({
                       icon={faSitemap}
                       onClick={noop}
                     />
-                    <span>Component Condition</span>
+                    <span>Required {}</span>
                     <FontAwesomeIcon
                       color="#ffffff"
                       style={{ height: '20px', cursor: 'pointer' }}
@@ -407,7 +475,7 @@ const MultiCard: React.FC<Props> = ({
                     />
                   </div>
                   <div className={styles.requiredSection}>
-                    <span>4/4 Required</span>
+                    <span>{data.Description}</span>
                   </div>
                 </React.Fragment>
               )}
@@ -467,16 +535,15 @@ const MultiCard: React.FC<Props> = ({
           onDragStart={onDragStart}
           onDragOver={onDragOver}
           onDragEnd={onDragEnd}
-          // onClick={(e) => {
-          //   onClick;
-          //   getEndPoints(e, id);
-          // }}
           onClick={(e: any) => {
             getOnClick(e);
           }}
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
-          id={id?.toString()}
+          id={CTID?.toString()}
+          data-columnNumber={columnNumber}
+          data-rowNumber={rowNumber}
+          data-CTID={data.CTID}
         >
           {destinationComponent && isAddDestination && (
             <>
@@ -504,6 +571,7 @@ const MultiCard: React.FC<Props> = ({
                 title="Great! Add  another component"
                 content="Drag your next component into the Pathway by dragging it to a hotspot on the component you just placed."
                 onClose={noop}
+                direction="right"
               />
               <div className={styles.addDestinationContent}>
                 <p className={styles.addDestinationTitle}>
@@ -587,13 +655,16 @@ const MultiCard: React.FC<Props> = ({
                       color: '#ffb90b',
                       cursor: 'pointer',
                     }}
-                    onClick={() => {
-                      setVisibleConstraintCondition(true);
+                    onClick={(e) => {
+                      onPlusCircleClickHandler(e);
                     }}
                   />
                 </div>
               )}
 
+              <span
+                className={styles.ornageSection + ' ' + styles.leftSide}
+              ></span>
               <div
                 className={
                   isDestination
@@ -637,6 +708,7 @@ const MultiCard: React.FC<Props> = ({
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
+                              // onDelete(data);
                             }}
                           >
                             Delete
@@ -661,6 +733,9 @@ const MultiCard: React.FC<Props> = ({
                   <span>Level 10</span>
                 </div>
               </div>
+              <span
+                className={styles.ornageSection + ' ' + styles.right}
+              ></span>
             </>
           )}
 
@@ -695,26 +770,88 @@ const MultiCard: React.FC<Props> = ({
           )}
 
           {isConditionalCard && (
-            <React.Fragment>
-              <div className={styles.conditionalCardContent}>
-                <FontAwesomeIcon
-                  color="#ffffff"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faSitemap}
-                  onClick={noop}
+            <>
+              {isConditionalCard && (
+                <div
+                  className={
+                    styles.addIcon + ' ' + styles.isConditionalCardIcon
+                  }
+                >
+                  <FontAwesomeIcon
+                    icon={faCirclePlus}
+                    fill="#000000"
+                    style={{
+                      height: '22px',
+                      width: '22px',
+                      color: '#ffb90b',
+                      cursor: 'pointer',
+                    }}
+                    onClick={(e) => {
+                      onPlusCircleClickHandler(e);
+                    }}
+                  />
+                </div>
+              )}
+              <React.Fragment>
+                <div className={styles.conditionalCardContent}>
+                  <FontAwesomeIcon
+                    color="#ffffff"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faSitemap}
+                    onClick={noop}
+                  />
+                  <span>Required {data?.RequiredNumber}</span>
+                  <FontAwesomeIcon
+                    color="#000000"
+                    style={{ height: '20px', cursor: 'pointer' }}
+                    icon={faEllipsis}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowPopover(true);
+                    }}
+                  />
+                </div>
+                {showPopover && !showRightPenal && (
+                  <Popover
+                    visible={showPopover}
+                    arrowPointAtCenter
+                    placement="bottomRight"
+                    content={
+                      <div className={styles.popoverMenu} ref={ref}>
+                        <span
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setShowRightPenal(true);
+                          }}
+                        >
+                          View
+                        </span>
+                        <span
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            // onDelete(data);
+                          }}
+                        >
+                          Delete
+                        </span>
+                      </div>
+                    }
+                  ></Popover>
+                )}
+                <Divider
+                  style={{
+                    backgroundColor: '#ffb90b',
+                    margin: '8px 0px 4px 0px',
+                  }}
                 />
-                <span>Component Condition</span>
-                <FontAwesomeIcon
-                  color="#ffffff"
-                  style={{ height: '20px', cursor: 'pointer' }}
-                  icon={faEllipsis}
-                  onClick={noop}
-                />
-              </div>
-              <div className={styles.requiredSection}>
-                <span>4/4 Required</span>
-              </div>
-            </React.Fragment>
+                <div className={styles.requiredSection}>
+                  <span>{data.Description}</span>
+                </div>
+              </React.Fragment>
+            </>
           )}
 
           {isAddComponentCard && (
@@ -755,12 +892,18 @@ const MultiCard: React.FC<Props> = ({
         visible={visibleConstraintCondition}
         title=""
         footer={[]}
-        onCancel={() => setVisibleConstraintCondition(false)}
+        onCancel={() => onCancelHandler(false)}
       >
         <AddConditionalComponent
           visibleConstraintConditionProp={handledConstraintsModal}
+          data={data}
+          filteredConditionalComponent={filteredConditionalComponent}
+          filteredPathwayComponent={filteredPathwayComponent}
+          isDestinationCard={isDestination}
+          setIsConditionalModalStatus={setIsConditionalModalStatus}
         />
       </Modal>
+
       <RightPanel
         visible={showRightPenal}
         onCloseHandler={(val: boolean) => setShowRightPenal(val)}

@@ -1,4 +1,5 @@
 import {
+  ADD_COMPONENT_TO_LEFT_PANEL,
   GET_LEFT_PANEL_PATHWAY_COMPONENTS_FAILURE,
   GET_LEFT_PANEL_PATHWAY_COMPONENTS_REQUEST,
   GET_LEFT_PANEL_PATHWAY_COMPONENTS_SUCCESS,
@@ -41,6 +42,16 @@ export default (state = initState, action: { type: string; payload: any }) => {
           loading: false,
           data: action.payload.Data, // Need to add data as an empty array on error.
           valid: action?.payload?.Valid,
+        },
+      };
+
+    case ADD_COMPONENT_TO_LEFT_PANEL:
+      console.log('payload', action);
+      return {
+        ...state,
+        allLeftPathwayComponent: {
+          ...state.allLeftPathwayComponent,
+          data: [...state?.allLeftPathwayComponent?.data, ...action?.payload],
         },
       };
 

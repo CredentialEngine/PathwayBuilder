@@ -1,14 +1,16 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row, Button as AntdButton } from 'antd';
-import { noop } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 import HelpAddingComponent from '../../screens/helpAddingComponent';
 import {
   approvePathwayRequest,
+  getDataForPathwayAndComponentsRequest,
   saveDataForPathwayRequest,
   savePathwaySuccess,
 } from '../../states/actions';
@@ -28,6 +30,9 @@ const Header = (props: Props) => {
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
   );
+  const approvePathwayResult = useSelector(
+    (state: any) => state?.initalReducer?.pathwayComponentData
+  );
   const savePathwayResult = useSelector(
     (state: any) => state?.initalReducer?.savePathway
   );
@@ -37,6 +42,8 @@ const Header = (props: Props) => {
   const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
+  const delay = 10;
+
   useEffect(() => {
     if (savePathwayResult?.valid) {
       setLoadings(false);
@@ -67,6 +74,19 @@ const Header = (props: Props) => {
       setConflictMessages(savePathwayResult.data);
     }
   }, [savePathwayResult]);
+
+  setTimeout(() => setLoadings(false), delay * 1000);
+
+  useEffect(() => {
+    if (approvePathwayResult?.error) {
+      approvePathwayResult?.data?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
+    }
+  }, [approvePathwayResult]);
 
   const onApproverHandler = () => {
     dispatch(approvePathwayRequest(pathwayWrapper?.Pathway?.Id));
@@ -106,7 +126,7 @@ const Header = (props: Props) => {
   useEffect(() => {
     let interval: any;
     const counter = 30000;
-    if (pathwayWrapper.Pathway.Name !== '' && isLeftPanelVisible) {
+    if (pathwayWrapper?.Pathway?.Name !== '' && isLeftPanelVisible) {
       interval = setTimeout(() => {
         dispatch(saveDataForPathwayRequest(pathwayWrapper));
       }, counter);
@@ -118,6 +138,29 @@ const Header = (props: Props) => {
     setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
+
+  const onEditPathwayClick = () => {
+    savePathwayResult?.PathwayId &&
+      dispatch(
+        getDataForPathwayAndComponentsRequest(savePathwayResult?.PathwayId)
+      );
+    setIsEditPathwayFormVisible(true);
+  };
+  const redicrectTO = () => {
+    process.env.NODE_ENV !== 'production'
+      ? window.open(sanboxSetting.api.url, '_blank')
+      : window.open(productionSetting.api.url, '_blank');
+  };
+  const exitWithSaving = () => {
+    Modal.confirm({
+      cancelText: 'Cancel',
+      okText: 'Exit',
+      title:
+        'You have unsaved changes. If you continue those changes will be lost.',
+      onOk: () => redicrectTO(),
+    });
+  };
+
   return (
     <>
       <div id="header" className={styles.container + ' header-container'}>
@@ -148,17 +191,14 @@ const Header = (props: Props) => {
               <span className={styles.title}>
                 {pathwayWrapper?.Pathway?.Name}
               </span>
-              <span
-                className={styles.editPathway}
-                onClick={() => setIsEditPathwayFormVisible(true)}
-              >
+              <span className={styles.editPathway} onClick={onEditPathwayClick}>
                 Edit Pathway Details
               </span>
             </div>
             <div className={styles.saveButtonWrapper}>
               <Button
                 type={Type.LINK}
-                onClick={noop}
+                onClick={exitWithSaving}
                 text="Exit Without Saving"
               />
               <AntdButton

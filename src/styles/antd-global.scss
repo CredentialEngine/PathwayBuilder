@@ -274,7 +274,8 @@ body {
   }
   .ant-select-arrow {
     // margin-top: -8px;
-    font-size: 14px;
+    font-size: 12px;
+    right: 6px;
   }
   .ant-select-single:not(.ant-select-customize-input)
     .ant-select-selector
@@ -363,5 +364,14 @@ body {
     .ant-btn .ant-btn-primary ::before {
       background-color: $primary;
     }
+  }
+
+  .ant-tag-has-color
+  // .ant-tag-has-color a,
+  // .ant-tag-has-color a:hover,
+  // .ant-tag-has-color .anticon-close,
+  // .ant-tag-has-color .anticon-close:hover
+  {
+    color: #000;
   }
 }

@@ -19,6 +19,7 @@ import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import CheckBox from '../../components/formFields/checkbox';
 import SearchBox from '../../components/formFields/searchBox';
 import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
+import Modal from '../../components/modal';
 import { updateMappedDataRequest } from '../../states/actions';
 
 import Styles from './index.module.scss';
@@ -28,11 +29,15 @@ export interface Props {
   setIsPreSelectedCreateResourceVisible: (a: boolean) => void;
   addPathwayWrapperFields: any;
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
+  fromPreSelect: boolean;
+  setIsDestinationColumnSelected?: (a: boolean) => void;
 }
 const PreSelectResourceCreatePath: React.FC<Props> = ({
   setIsPreSelectedCreateResourceVisible,
   addPathwayWrapperFields,
   setIsAddPathwayDestinationVisible,
+  fromPreSelect,
+  setIsDestinationColumnSelected,
 }) => {
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
@@ -47,6 +52,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [checkboxForOrganisation, setCheckboxForOrganisation] =
     useState<boolean>(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
 
   const appState = useSelector((state: any) => state?.initalReducer);
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
@@ -63,14 +69,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   });
 
   const {
-    mappedData: { PendingComponent },
+    mappedData: { PendingComponents },
   } = appState || {};
 
   useEffect(() => {
-    if (PendingComponent?.length > 0) {
-      setSelectedResource(PendingComponent);
+    if (PendingComponents?.length > 0) {
+      setSelectedResource(PendingComponents);
     }
-  }, [PendingComponent]);
+  }, [PendingComponents]);
 
   const searchComponent = (e: any) => {
     setSearchFilterValue({ ...searchFilterValue, Keywords: e.target.value });
@@ -141,12 +147,50 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     }
   }, [selectedResource, allComponentTabCards]);
 
-  const addResource = (itemId: string, itemIndex: number) => {
+  const addResource = (selectedItem: any, itemIndex: number) => {
     const filteredItem = allProxyResourcesCard.filter(
-      (item: any) => item.id === itemId
+      (item: any) => item.CTID === selectedItem?.CTID
     );
-    setSelectedResource([...selectedResource, filteredItem[0]]);
-    allProxyResourcesCard.splice(itemIndex, 1);
+
+    const selectedItemExist = selectedResource.some(
+      (item: any) =>
+        item.CTID === selectedItem?.CTID ||
+        item.ProxyFor === selectedItem?.ProxyFor
+    );
+
+    const pathwayComponentsExists = pathwayComponent?.PathwayComponents?.some(
+      (item: any) =>
+        item.CTID === selectedItem?.CTID ||
+        item.ProxyFor === selectedItem?.ProxyFor
+    );
+
+    const PendingComponentsExists =
+      pathwayWrapper?.pathwayComponentData?.data?.PendingComponents?.some(
+        (item: any) =>
+          item.CTID === selectedItem?.CTID ||
+          item.ProxyFor === selectedItem?.ProxyFor
+      );
+
+    if (
+      selectedItemExist ||
+      pathwayComponentsExists ||
+      PendingComponentsExists
+    ) {
+      Modal.confirm({
+        cancelText: 'No',
+        okText: 'Yes',
+        title:
+          'This resource has already been selected, or already exists in your Pathway. Do you want to add it again?',
+        onOk: () => {
+          setSelectedResource([...selectedResource, ...filteredItem]);
+          allProxyResourcesCard.splice(itemIndex, 1);
+        },
+      });
+    } else {
+      setSelectedResource([...selectedResource, ...filteredItem]);
+      allProxyResourcesCard.splice(itemIndex, 1);
+    }
+    setAllProxyResourcesCard(allProxyResourcesCard);
     if (allProxyResourcesCard.length === 0) {
       setDisplaySearchContainer(false);
     }
@@ -165,18 +209,22 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
-    setIsAddPathwayDestinationVisible(true);
+    !fromPreSelect && setIsAddPathwayDestinationVisible(true);
     dispatch(
       updateMappedDataRequest({
         ...addPathwayWrapperFields,
-        PendingComponent: selectedResource,
+        PendingComponents: selectedResource,
+        ComponentConditions: [],
+        PathwayComponents: [],
       })
     );
   };
 
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
+    !!setIsDestinationColumnSelected && setIsDestinationColumnSelected(true);
   };
+
   const handleCheckBox = () => {
     setCheckboxForOrganisation(!checkboxForOrganisation);
   };
@@ -268,14 +316,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                       data={filteredResources}
                       draggable={true}
                       key={i}
-                      name={filteredResources.Name}
-                      type={filteredResources.Type}
-                      description={filteredResources.Description?.slice(0, 30)}
+                      name={filteredResources?.Name}
+                      type={filteredResources?.Type}
+                      description={filteredResources?.Description?.slice(0, 30)}
                       IconName={faGear}
                       IconColor="black"
                     />
                     <PlusOutlined
-                      onClick={() => addResource(filteredResources.id, i)}
+                      onClick={() => addResource(filteredResources, i)}
                     />
                   </div>
                 )

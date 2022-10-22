@@ -13,6 +13,8 @@ export type InputProps = {
   name?: string;
   onBlur?: any;
   required?: boolean;
+  min?: number;
+  Readonly?: boolean;
 };
 
 const InputBox: React.FC<InputProps> = (props: InputProps) => {
@@ -41,6 +43,7 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
       disabled={disabled}
       onBlur={onBlur}
       required={required}
+      {...props}
     />
   ) : (
     <Input
@@ -53,6 +56,7 @@ const InputBox: React.FC<InputProps> = (props: InputProps) => {
       disabled={disabled}
       required={required}
       onBlur={onBlur}
+      {...props}
     />
   );
 };

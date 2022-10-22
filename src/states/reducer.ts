@@ -13,6 +13,7 @@ import {
   SAVE_PATHWAY_FAILURE,
   ADD_COMPONENT_FROM_PATHWAY_MODAL,
   SELECT_DESTINATION_REQUEST,
+  SAVE_SELECTED_ORGANISATION,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -90,7 +91,7 @@ const initState: RootState = {
       LastUpdated: '',
     },
     PathwayComponents: [],
-    PendingComponent: [],
+    PendingComponents: [],
     ProgressionLevels: [],
     ProgressionModels: [],
     DeletedComponentConditions: [],
@@ -107,6 +108,7 @@ const initState: RootState = {
     valid: false,
   },
   isDestinationSelected: false,
+  selectedOrganization: null,
 };
 
 export default (state = initState, action: { type: string; payload: any }) => {
@@ -174,8 +176,8 @@ export default (state = initState, action: { type: string; payload: any }) => {
         ...state,
         mappedData: {
           ...state?.mappedData,
-          PendingComponent: [
-            ...state?.mappedData?.PendingComponent,
+          PendingComponents: [
+            ...state?.mappedData?.PendingComponents,
             ...action?.payload,
           ],
         },
@@ -236,6 +238,12 @@ export default (state = initState, action: { type: string; payload: any }) => {
       return {
         ...state,
         isDestinationSelected: action.payload.payload,
+      };
+
+    case SAVE_SELECTED_ORGANISATION:
+      return {
+        ...state,
+        selectedOrganization: action.payload,
       };
 
     default:

@@ -8,6 +8,7 @@ import { updateMappedDataRequest } from '../../states/actions';
 
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
+import LeftPanelDropWrapper from '../leftPanelDropWrapper';
 import Tab, { TabPane } from '../tab';
 
 import Styles from './index.module.scss';
@@ -19,10 +20,11 @@ export enum LeftPanelTabKey {
 const LeftPanel: React.FC<any> = ({
   isDraggableCardVisibleMethod,
   setLeftpanelSelectedElem,
+  onClickPreselectComponent,
 }) => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
-    mappedData: { PendingComponent: selectedTabCardData },
+    mappedData: { PendingComponents: selectedTabCardData, PathwayComponents },
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
@@ -54,7 +56,7 @@ const LeftPanel: React.FC<any> = ({
       (item: any) => item.CTID !== val
     );
     const updatedPathwayWrapper = { ...pathwayComponent };
-    updatedPathwayWrapper.PendingComponent = filteredSelectedCards;
+    updatedPathwayWrapper.PendingComponents = filteredSelectedCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setSelectedtabCards(filteredSelectedCards);
   };
@@ -73,6 +75,35 @@ const LeftPanel: React.FC<any> = ({
     setSearchValue(value.target.value);
   };
 
+  const onDropHandler = (tab: string, card: any) => {
+    if (tab === LeftPanelTabKey.Selected) {
+      setSelectedtabCards([...selectedTabCards, card]);
+    } else {
+      return;
+    }
+    /*  Commenting the below code because Dragging of a component from the gameboard to the Component Tab is 
+    not listed in documents and we are not storing components tab card. 
+
+    if (tab === LeftPanelTabKey.Components) {
+      const isSelectedCardAlreadyExist = componentTabCards.some(
+        (component_card: any) => component_card.RowId === card.RowId
+      );
+      if (!isSelectedCardAlreadyExist) {
+        setComponentTabCards([...componentTabCards, card]);
+      }
+    }
+
+ */
+    const filteredPathwayComponent = PathwayComponents.filter(
+      (component_card: any) => component_card.CTID !== card.CTID
+    );
+
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
+    updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+  };
+
   const tab = [
     {
       key: LeftPanelTabKey.Selected,
@@ -83,6 +114,7 @@ const LeftPanel: React.FC<any> = ({
       name: LeftPanelTabKey.Components,
     },
   ];
+
   const propsChildren = [
     {
       key: LeftPanelTabKey.Selected,
@@ -95,35 +127,55 @@ const LeftPanel: React.FC<any> = ({
             styleType="outline"
             onKeyUp={searchComponent}
           />
-          <div className={Styles.cardwrapper}>
-            {selectedTabCards
-              .filter((v: any) =>
-                v?.Description.toLocaleLowerCase().includes(
-                  searchValue.toLocaleLowerCase()
+          <LeftPanelDropWrapper
+            className={Styles.cardwrapper}
+            tabName={LeftPanelTabKey.Selected}
+            onDrop={onDropHandler}
+          >
+            {selectedTabCards && selectedTabCards.length <= 0 ? (
+              <div className={Styles.tooltipContent}>
+                <p className={Styles.title}>Pre-select components</p>
+                <p className={Styles.content}>
+                  You can create a collection of components to drag and drop
+                  into the pathway
+                </p>
+                <p
+                  className={Styles.contentLink}
+                  onClick={onClickPreselectComponent}
+                >
+                  Pre-select components
+                </p>
+              </div>
+            ) : (
+              selectedTabCards
+                .filter((v: any) =>
+                  v?.Description?.toLocaleLowerCase().includes(
+                    searchValue?.toLocaleLowerCase()
+                  )
                 )
-              )
-              .map((v: any, i: any) => (
-                <CardWithLeftIcon
-                  draggable={true}
-                  data={v}
-                  key={i}
-                  name={v?.Name}
-                  type={v?.Type}
-                  description={v?.Description.slice(0, 30)}
-                  codedNotation={v?.CodedNotation}
-                  IconColor="black"
-                  id={v?.Id}
-                  CTID={v?.CTID}
-                  isDraggableCardVisibleMethod={(isDragTure: boolean) =>
-                    setDraggableCardVisible(isDragTure)
-                  }
-                  getUpdatedCardArr={(value: any) =>
-                    filteredSelectedCards(value)
-                  }
-                  setLeftpanelSelectedElem={setLeftpanelSelectedElem}
-                />
-              ))}
-          </div>
+                .map((v: any, i: any) => (
+                  <CardWithLeftIcon
+                    draggable={true}
+                    data={v}
+                    key={i}
+                    name={v?.Name}
+                    type={v?.Type}
+                    description={v?.Description.slice(0, 30)}
+                    codedNotation={v?.CodedNotation}
+                    IconColor="black"
+                    id={v?.Id}
+                    CTID={v?.CTID}
+                    isDraggableCardVisibleMethod={(isDragTure: boolean) =>
+                      setDraggableCardVisible(isDragTure)
+                    }
+                    getUpdatedCardArr={(value: any) =>
+                      filteredSelectedCards(value)
+                    }
+                    setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+                  />
+                ))
+            )}
+          </LeftPanelDropWrapper>
         </>
       ),
     },
@@ -172,10 +224,7 @@ const LeftPanel: React.FC<any> = ({
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
-        <u
-          style={{ cursor: 'pointer' }}
-          onClick={() => setShowAddComponentToPathway(true)}
-        >
+        <u style={{ cursor: 'pointer' }} onClick={onClickPreselectComponent}>
           Select
         </u>
       </div>
