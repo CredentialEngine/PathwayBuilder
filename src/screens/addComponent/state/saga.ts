@@ -3,6 +3,7 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { request } from '../../../apiConfig/api';
 
 import {
+  BASE_USER_CREDS,
   GET_ALL_ARRAY_OPERATION,
   GET_ALL_COMPARATORS,
   GET_ALL_LOGICAL_OPERATOR,
@@ -31,7 +32,7 @@ export function* getAllLogicalOperators(): Generator {
       url: `${TEMP_BASE_URL}${GET_ALL_LOGICAL_OPERATOR}`,
       method: 'GET',
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     yield put(getLogicalOperatorsSuccess(result));
@@ -46,7 +47,7 @@ export function* getComparatorsData(): Generator {
       url: `${TEMP_BASE_URL}${GET_ALL_COMPARATORS}`,
       method: 'GET',
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     yield put(getAllComparatorsSuccess(result));
@@ -61,7 +62,7 @@ export function* getArrayConceptData(): Generator {
       url: `${TEMP_BASE_URL}${GET_ALL_ARRAY_OPERATION}`,
       method: 'GET',
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     yield put(getAllArrayConceptsSuccess(result));
@@ -79,7 +80,7 @@ export function* getAllConstraintOperand(data: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
 
       body: JSON.stringify(data),

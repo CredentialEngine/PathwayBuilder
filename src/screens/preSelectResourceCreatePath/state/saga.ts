@@ -1,6 +1,9 @@
 import { call, debounce, put } from 'redux-saga/effects';
 
-import { PATHWAY_COMPONENT_PROXY_FOR } from '../../../apiConfig/endpoint';
+import {
+  BASE_USER_CREDS,
+  PATHWAY_COMPONENT_PROXY_FOR,
+} from '../../../apiConfig/endpoint';
 import { TEMP_BASE_URL } from '../../../apiConfig/setting';
 
 import {
@@ -11,7 +14,7 @@ import { GET_ALL_PROXY_FOR_RESCOURCES_REQUEST } from './actionTypes';
 
 export function fetchPostsApi(value: any) {
   const url = new URL(`${TEMP_BASE_URL}${PATHWAY_COMPONENT_PROXY_FOR}`),
-    params = { userCreds: 'tara.mueller@protiviti.com~ceI$Awesome' };
+    params: any = { userCreds: `${BASE_USER_CREDS}` };
 
   url.search = new URLSearchParams(params).toString();
   const fetchedProxyResources = fetch(url, {
@@ -35,7 +38,7 @@ export function* getAllProxyForResources(payload: any): Generator {
     //   url: `${BASE_URL}${PATHWAY_COMPONENT_PROXY_FOR}`,
     //   method: 'post',
     //   params: {
-    //     userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+    //     userCreds: {BASE_USER_CREDS},
     //   },
     //   // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     //   data: payload.payload,
