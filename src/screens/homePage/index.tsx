@@ -62,6 +62,7 @@ const HomePage: React.FC<Props> = ({
     start: '',
     end: '',
   });
+  const [newConn, setNewConn] = useState<any>([]);
   const [connection, setConnection] = useState<any>([]);
   const [constraintIcon, setConstraintIcon] = useState<boolean>(false);
   const { mappedData: pathwayComponent } = pathwayWrapper;
@@ -432,8 +433,8 @@ const HomePage: React.FC<Props> = ({
         end: id,
       });
       e?.target?.classList?.add('active');
-      setConnection([
-        ...connection,
+      setNewConn([
+        ...newConn,
         {
           start: point.start,
           end: id,
@@ -446,7 +447,7 @@ const HomePage: React.FC<Props> = ({
           }
         }
       });
-      createConnection();
+      // createConnection();
       setConstraintIcon(true);
     } else {
       setPoint({
@@ -457,8 +458,6 @@ const HomePage: React.FC<Props> = ({
       e?.target?.classList?.add('active');
     }
   };
-
-  const [newConn, setNewConn] = useState<any>([]);
 
   const createConnection = () => {
     const tempCon = [] as any;
@@ -493,7 +492,14 @@ const HomePage: React.FC<Props> = ({
         }
       });
     }
-    setNewConn(tempCon);
+    const uniqArrConn = tempCon?.filter(
+      (value: any, idx: number, self: any) =>
+        idx ===
+        self.findIndex(
+          (t: any) => t.start === value?.start && t?.end === value?.end
+        )
+    );
+    setNewConn(uniqArrConn);
   };
 
   useEffect(() => {
