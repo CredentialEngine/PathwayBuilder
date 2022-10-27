@@ -1,7 +1,10 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../../../apiConfig/api';
-import { GET_ALL_PATHWAY_COMPONENT } from '../../../apiConfig/endpoint';
+import {
+  BASE_USER_CREDS,
+  GET_ALL_PATHWAY_COMPONENT,
+} from '../../../apiConfig/endpoint';
 import { TEMP_BASE_URL } from '../../../apiConfig/setting';
 
 import {
@@ -17,7 +20,7 @@ export function* getAllLeftPathwayComponents(): Generator {
       url: `${TEMP_BASE_URL}${GET_ALL_PATHWAY_COMPONENT}`,
       method: 'GET',
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     yield put(getLeftPanelPathwayComponentSuccess(result));

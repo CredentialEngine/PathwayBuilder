@@ -901,6 +901,7 @@ const MultiCard: React.FC<Props> = ({
           filteredPathwayComponent={filteredPathwayComponent}
           isDestinationCard={isDestination}
           setIsConditionalModalStatus={setIsConditionalModalStatus}
+          HasProgressionLevel={HasProgressionLevel}
         />
       </Modal>
 

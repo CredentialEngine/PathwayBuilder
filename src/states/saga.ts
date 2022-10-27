@@ -2,6 +2,7 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../apiConfig/api';
 import {
+  BASE_USER_CREDS,
   GET_DATA_FOR_CURRENT_USER,
   GET_DATA_FOR_PATHWAY,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY,
@@ -33,7 +34,7 @@ export function* getCurrentUserData(): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     yield put(getCurrentUserDataSuccess(result));
@@ -51,7 +52,7 @@ export function* getPathwayAndComponentData(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     if (result.Valid) {
@@ -72,7 +73,7 @@ export function* approvePathway(payload: any): Generator {
       //   'Content-Type': 'application/json',
       // },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     yield put(getDataForPathwayAndComponentsSuccess(result));
@@ -109,7 +110,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
       data: JSON.stringify(payload.payload),
     });
