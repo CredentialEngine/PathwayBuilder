@@ -2,6 +2,8 @@ import Modal from 'antd/lib/modal/Modal';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
 import { updateMappedDataRequest } from '../../states/actions';
@@ -52,6 +54,7 @@ const LeftPanel: React.FC<any> = ({
   }, [selectedTabCardData]);
 
   const filteredSelectedCards = (val: any) => {
+    console.log('card123', val);
     const filteredSelectedCards = selectedTabCards?.filter(
       (item: any) => item.CTID !== val
     );
@@ -61,11 +64,34 @@ const LeftPanel: React.FC<any> = ({
     setSelectedtabCards(filteredSelectedCards);
   };
 
+  const createCard = (card: any) => {
+    console.log('cardInner', card);
+    const CTID = `ce-${uuidv4()}`;
+    const newCard = {
+      CTID,
+      Created: '',
+      Description: card?.Description,
+      HasChild: [],
+      HasCondition: [],
+      IndustryType: [],
+      IsChildOf: [],
+      Name: card?.Name,
+      OccupationType: [],
+      PrecededBy: [],
+      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
+      ProxyForLabel: card?.Name,
+      RowId: uuidv4(),
+      Type: card?.URI,
+    };
+    return newCard;
+  };
+
   useEffect(() => {
     if (allComponentTabCards.valid)
       setComponentTabCards(
         allComponentTabCards.data.map((comp_data: any) => ({
-          ...comp_data,
+          // ...comp_data,
+          ...createCard(comp_data),
           Type: comp_data.URI,
         }))
       );
@@ -194,6 +220,7 @@ const LeftPanel: React.FC<any> = ({
                 name={card.Name}
                 description={card.Description}
                 uri={card?.URI}
+                CTID={card?.CTID}
                 id={card.Id}
                 type={card?.URI}
                 getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
