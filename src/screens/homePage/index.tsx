@@ -436,6 +436,8 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
+  console.log('123tenp', newConn);
+
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -527,12 +529,21 @@ const HomePage: React.FC<Props> = ({
     const index = newarray.findIndex((items: any) => items === item);
     pathwayComponentCards?.map((card: any) => {
       if (card?.CTID === item?.start) {
-        const idx = card?.HasChild.findIndex((i: any) => i === item?.end);
-        card?.HasChild.splice(idx, 1);
+        const idx = card?.PrecededBy.findIndex((i: any) => i === item?.end);
+        card?.PrecededBy.splice(idx, 1);
+      }
+    });
+    updatedPathwayComponentConditionCards?.map((conditionCard: any) => {
+      if (conditionCard?.CTID || conditionCard?.RowId === item?.start) {
+        const idx = conditionCard?.TargetComponent.findIndex(
+          (i: any) => i === item?.end
+        );
+        conditionCard?.TargetComponent.splice(idx, 1);
       }
     });
     newarray.splice(index, 1);
     setConnection([...newarray]);
+    createConnection();
     document.getElementById(item?.start)?.classList?.remove('active');
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
