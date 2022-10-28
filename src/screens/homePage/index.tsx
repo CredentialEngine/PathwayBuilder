@@ -62,6 +62,7 @@ const HomePage: React.FC<Props> = ({
     start: '',
     end: '',
   });
+  const [newConn, setNewConn] = useState<any>([]);
   const [connection, setConnection] = useState<any>([]);
   const [constraintIcon, setConstraintIcon] = useState<boolean>(false);
   const { mappedData: pathwayComponent } = pathwayWrapper;
@@ -114,6 +115,7 @@ const HomePage: React.FC<Props> = ({
       destinationCTID: uuidv4(),
       firstStageCTID: uuidv4(),
     });
+    createConnection();
   }, []);
 
   let count = 0;
@@ -283,27 +285,6 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
-  const createCard = (card: any) => {
-    const CTID = `ce-${uuidv4()}`;
-    const newCard = {
-      CTID,
-      Created: '',
-      Description: card?.Description,
-      HasChild: [],
-      HasCondition: [],
-      IndustryType: [],
-      IsChildOf: [],
-      Name: card?.Name,
-      OccupationType: [],
-      PrecededBy: [],
-      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
-      ProxyForLabel: card?.Name,
-      RowId: uuidv4(),
-      Type: card?.URI,
-    };
-    return newCard;
-  };
-
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -317,9 +298,10 @@ const HomePage: React.FC<Props> = ({
   ) => {
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
 
+    removeConnection(card?.CTID || card?.RowId);
     if (isComponentTab) {
       card = {
-        ...createCard(card),
+        // ...createCard(card),
         HasProgressionLevel,
         RowNumber,
         ColumnNumber: ColumnNumber - 1,
@@ -462,8 +444,8 @@ const HomePage: React.FC<Props> = ({
         end: id,
       });
       e?.target?.classList?.add('active');
-      setConnection([
-        ...connection,
+      setNewConn([
+        ...newConn,
         {
           start: point.start,
           end: id,
@@ -471,11 +453,12 @@ const HomePage: React.FC<Props> = ({
       ]);
       pathwayComponentCards?.map((card: any) => {
         if (point?.start === card?.CTID) {
-          if (!card?.HasChild?.includes(id)) {
-            card?.HasChild.push(id);
+          if (!card?.PrecededBy?.includes(id)) {
+            card?.PrecededBy.push(id);
           }
         }
       });
+      // createConnection();
       setConstraintIcon(true);
     } else {
       setPoint({
@@ -485,6 +468,49 @@ const HomePage: React.FC<Props> = ({
       });
       e?.target?.classList?.add('active');
     }
+  };
+
+  const createConnection = () => {
+    const tempCon = [] as any;
+    if (pathwayComponentCards) {
+      pathwayComponentCards?.map((card: any) => {
+        if (card?.PrecededBy?.length > 0) {
+          card?.PrecededBy?.map((child: string) => {
+            tempCon.push({ start: card?.CTID || card?.RowId, end: child });
+          });
+        }
+
+        if (card?.HasCondition?.length > 0) {
+          card?.HasCondition?.map((condition: string) => {
+            tempCon?.push({ start: card?.CTID || card?.RowId, end: condition });
+          });
+        }
+
+        if (pathwayComponent) {
+          pathwayComponent?.ComponentConditions?.map(
+            (componentCondition: any) => {
+              if (componentCondition?.TargetComponent?.length > 0) {
+                componentCondition?.TargetComponent?.map((target: string) => {
+                  tempCon?.push({
+                    start:
+                      componentCondition?.CTID || componentCondition?.RowId,
+                    end: target,
+                  });
+                });
+              }
+            }
+          );
+        }
+      });
+    }
+    const uniqArrConn = tempCon?.filter(
+      (value: any, idx: number, self: any) =>
+        idx ===
+        self.findIndex(
+          (t: any) => t.start === value?.start && t?.end === value?.end
+        )
+    );
+    setNewConn(uniqArrConn);
   };
 
   useEffect(() => {
@@ -627,38 +653,35 @@ const HomePage: React.FC<Props> = ({
                               )
                               .map((item: any) => (
                                 <>
-                                  {connection.length
-                                    ? connection.map(
-                                        (items: any, idx: number) => (
-                                          <Xarrow
-                                            path="grid"
-                                            strokeWidth={1}
-                                            zIndex={1000}
-                                            headSize={16}
-                                            color="black"
-                                            start={items?.start}
-                                            end={items?.end}
-                                            key={idx}
-                                            labels={
-                                              <div
-                                                className={Styles.tempwrapper}
+                                  {newConn.length > 0
+                                    ? newConn.map((items: any, idx: number) => (
+                                        <Xarrow
+                                          path="grid"
+                                          strokeWidth={1}
+                                          zIndex={1000}
+                                          headSize={16}
+                                          color="black"
+                                          start={items?.start}
+                                          end={items?.end}
+                                          key={idx}
+                                          labels={
+                                            <div className={Styles.tempwrapper}>
+                                              <span
+                                                className={
+                                                  Styles.addConditionIcon
+                                                }
                                               >
-                                                <span
-                                                  className={
-                                                    Styles.addConditionIcon
+                                                <FontAwesomeIcon
+                                                  icon={faXmarkCircle}
+                                                  style={{
+                                                    cursor: 'pointer',
+                                                  }}
+                                                  onClick={() =>
+                                                    removeConnection(items)
                                                   }
-                                                >
-                                                  <FontAwesomeIcon
-                                                    icon={faXmarkCircle}
-                                                    style={{
-                                                      cursor: 'pointer',
-                                                    }}
-                                                    onClick={() =>
-                                                      removeConnection(items)
-                                                    }
-                                                  />
-                                                </span>
-                                                {/* <span
+                                                />
+                                              </span>
+                                              {/* <span
                                                 className={
                                                   Styles.addConditionIcon
                                                 }
@@ -677,14 +700,13 @@ const HomePage: React.FC<Props> = ({
                                                   }}
                                                 />
                                               </span> */}
-                                              </div>
-                                            }
-                                            startAnchor="auto"
-                                            endAnchor="auto"
-                                            // gridBreak="20%"
-                                          />
-                                        )
-                                      )
+                                            </div>
+                                          }
+                                          startAnchor="auto"
+                                          endAnchor="auto"
+                                          // gridBreak="20%"
+                                        />
+                                      ))
                                     : ''}
                                   <MultiCard
                                     isDraggableCardVisible={
@@ -709,6 +731,27 @@ const HomePage: React.FC<Props> = ({
                                       ) ||
                                       item?.Type?.toLowerCase().includes(
                                         'AssessmentComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CompetencyComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CocurricularComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CocurricularComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CourseComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'ExtracurricularComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'JobComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'WorkExperienceComponent'.toLowerCase()
                                       )
                                     }
                                     isConditionalCard={item?.Type?.toLowerCase().includes(

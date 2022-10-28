@@ -292,7 +292,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       RowNumber: data?.RowNumber,
       RowId: uuidv4(),
       Name: componentConditionFields.Name,
-      TargetComponent: data.HasChild || updatedTargetChild,
+      TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
       HasCondition: [],
     };
 
