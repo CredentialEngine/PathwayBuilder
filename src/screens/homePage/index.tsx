@@ -423,7 +423,12 @@ const HomePage: React.FC<Props> = ({
       (item: any) => item.CTID !== data.CTID
     );
 
-    updatedPathwayWrapper.ComponentConditions = ComponentConditions;
+    updatedPathwayWrapper.ComponentConditions = ComponentConditions.map(
+      (item: any) => ({
+        ...item,
+        HasCondition: item.HasCondition.filter((e: any) => e !== data.RowId),
+      })
+    );
     updatedPathwayWrapper.Constraints = {};
     updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
       (item: any) =>
@@ -433,9 +438,13 @@ const HomePage: React.FC<Props> = ({
     );
     updatedPathwayWrapper.DeletedComponents = [data];
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    setPathwayComponentCards(updatedPathwayComponent);
+    setPathwayComponentCards(
+      updatedPathwayComponent.map((item: any) => ({
+        ...item,
+        HasCondition: item.HasCondition.filter((e: any) => e !== data.RowId),
+      }))
+    );
   };
-
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {
