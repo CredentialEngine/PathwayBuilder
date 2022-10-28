@@ -130,13 +130,23 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       (comp_type: any) => comp_type.key === _.toNumber(e.key)
     );
     const updatedSearchValue = { ...searchFilterValue };
-    updatedSearchValue.Filters = [
-      {
-        URI: 'meta:pathwayComponentType',
-        ItemTexts: [_.get(selectedCardType, '0').label],
-      },
-    ];
-    setSearchFilterValue(updatedSearchValue);
+
+    if (e?.key) {
+      updatedSearchValue.Filters = [
+        ...updatedSearchValue.Filters,
+        {
+          URI: 'meta:pathwayComponentType',
+          ItemTexts: [_.get(selectedCardType, '0').label],
+        },
+      ];
+      setSearchFilterValue(updatedSearchValue);
+    } else {
+      _.remove(
+        updatedSearchValue.Filters,
+        (item: any) => item.URI == 'meta:pathwayComponentType'
+      );
+      setSearchFilterValue(updatedSearchValue);
+    }
   };
   useEffect(() => {
     if (allComponentTabCards?.data?.length > 0) {

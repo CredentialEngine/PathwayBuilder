@@ -561,12 +561,13 @@ const AddPathwayForm: React.FC<Props> = ({
       color="rgb(220,250,249)"
       style={{
         width: '100%',
-        wordWrap: 'break-word',
+        // wordWrap: 'break-word',
         padding: 10,
         paddingRight: 20,
         marginTop: 10,
         blockOverflow: 'ellipsis',
         whiteSpace: 'pre-wrap',
+        position: 'relative',
       }}
     >
       <CloseOutlined
@@ -575,17 +576,19 @@ const AddPathwayForm: React.FC<Props> = ({
           fontSize: '10',
           position: 'absolute',
           right: 5,
-          top: 55,
+          top: 5,
           cursor: 'pointer',
         }}
         onClick={() => onShowCloseToolTip(type, false)}
       />
-      {`Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-      Lorem Ipsum has been the industry's standard dummy text ever since the
-      1500s, when an unknown printer took a galley of type and scrambled it to
-      make a type specimen book. It has survived not only five centuries, but
-      also the leap into electronic typesetting, remaining essentially
-      unchanged.`}
+      <p>
+        Lorem Ipsum is simply dummy text of the printing and typesetting
+        industry. Lorem Ipsum has been the industry&apos;s standard dummy text
+        ever since the 1500s, when an unknown printer took a galley of type and
+        scrambled it to make a type specimen book. It has survived not only five
+        centuries, but also the leap into electronic typesetting, remaining
+        essentially unchanged.
+      </p>
     </Tag>
   );
 

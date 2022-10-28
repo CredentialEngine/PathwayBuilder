@@ -31,13 +31,14 @@ const Header = (props: Props) => {
     (state: any) => state?.initalReducer?.mappedData
   );
   const approvePathwayResult = useSelector(
-    (state: any) => state?.initalReducer?.pathwayComponentData
+    (state: any) => state?.initalReducer?.approvePathway
   );
   const savePathwayResult = useSelector(
     (state: any) => state?.initalReducer?.savePathway
   );
   const dispatch = useDispatch();
   const [hasConflicts, setHasConflicts] = useState<boolean>(false);
+  const [approveDisable, setApproveDisable] = useState<boolean>(true);
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
   const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
@@ -62,6 +63,7 @@ const Header = (props: Props) => {
           error: false,
         })
       );
+      setApproveDisable(false);
     } else if (savePathwayResult?.error) {
       setLoadings(false);
       savePathwayResult?.data?.map((message: any) =>
@@ -72,6 +74,7 @@ const Header = (props: Props) => {
       );
       setHasConflicts(true);
       setConflictMessages(savePathwayResult.data);
+      setApproveDisable(true);
     }
   }, [savePathwayResult]);
 
@@ -79,7 +82,7 @@ const Header = (props: Props) => {
 
   useEffect(() => {
     if (approvePathwayResult?.error) {
-      approvePathwayResult?.data?.map((message: any) =>
+      approvePathwayResult?.data?.Messages?.map((message: any) =>
         Message({
           description: message,
           type: 'error',
@@ -116,7 +119,7 @@ const Header = (props: Props) => {
           className={styles.approveButtonSpecification}
           onClick={onApproverHandler}
           iconOnTop={conflictMessages.length > 0 ? true : false}
-          disabled={conflictMessages.length > 0}
+          disabled={approveDisable}
           text="Approve"
         />
       </div>

@@ -790,7 +790,6 @@ const HomePage: React.FC<Props> = ({
                                   />
                                 </>
                               ))}
-
                           {!!isDestinationColumnStatus && index === 1 && (
                             <MultiCard
                               onClick={() => setShowRightPanel(true)}
@@ -980,6 +979,7 @@ const HomePage: React.FC<Props> = ({
                 disabled={isZoomDisabled}
                 centerZoomedOut={false}
                 centerOnInit={false}
+                panning={{ disabled: true }}
                 wheel={{ disabled: true }}
               >
                 {({ setTransform, resetTransform }) => (

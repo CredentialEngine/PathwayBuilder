@@ -338,6 +338,11 @@
   left: 40px;
   top: 58px;
 }
+.rightAlign {
+  display: inline-block;
+  left: auto;
+  right: -30px;
+}
 // .addIcon::before {
 //   content: '';
 //   display: block;
