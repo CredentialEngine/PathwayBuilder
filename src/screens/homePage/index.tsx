@@ -82,10 +82,6 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     pathwayComponentConditionCards.map((conditionalCard: any) => {
-      // connection.push({
-      //   start: conditionalCard.ParentIdentifier,
-      //   end: conditionalCard.RowId,
-      // });
       conditionalCard?.TargetComponent.forEach((target: any) => {
         pathwayComponentCards.forEach((pathway_card: any) => {
           if (pathway_card.CTID === target) {
@@ -265,7 +261,6 @@ const HomePage: React.FC<Props> = ({
   const onSelectDragElemenet = (elem: HTMLElement) => {
     setDragElem(elem);
   };
-
   const onMoveItem = (elem: any) => {
     if (!_.isNull(dragElem) && !_.isUndefined(dragElem)) {
       setPathwayComponentCards((prevState: any) => {
@@ -350,14 +345,53 @@ const HomePage: React.FC<Props> = ({
       /* here we are increasing number of DropWrapper */
       setNumberOfDropWrapper((prevState) => prevState + 1);
     }
+
     if (
-      !isDestinationColumnSelected &&
-      !isFirstColumneSelected &&
-      pathwayComponentCards.length === 0
+      pathwayComponentCards.length === 0 &&
+      isStartFromInitialColumnSelected &&
+      isFirstColumneSelected
     ) {
-      /*
-        this block is to prevent to drop a card anywhere before dropping a card in destination column and first column
-      */
+      setPathwayComponentCards([
+        ...pathwayComponentCards,
+        {
+          ...restCardProps,
+          destinationColumn,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+
+          firstColumn,
+        },
+      ]);
+    } else if (
+      pathwayComponentCards.length === 0 &&
+      isDestinationColumnSelected &&
+      isDestinationColumnStatus
+    ) {
+      setPathwayComponentCards([
+        ...pathwayComponentCards,
+        {
+          ...restCardProps,
+          destinationColumn,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+          firstColumn,
+        },
+      ]);
+    } else if (pathwayComponentCards.length !== 0) {
+      setPathwayComponentCards(
+        pathwayComponentCards
+          .filter((item: any) => item.CTID !== card.CTID)
+          .concat({
+            ...restCardProps,
+            HasProgressionLevel,
+            RowNumber,
+            ColumnNumber,
+            firstColumn,
+          })
+      );
+    } else {
       return;
     }
 
@@ -368,31 +402,6 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.Pathway = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
-
-    pathwayComponentCards.length === 0
-      ? setPathwayComponentCards([
-          ...pathwayComponentCards,
-          {
-            ...restCardProps,
-            destinationColumn,
-            HasProgressionLevel,
-            RowNumber,
-            ColumnNumber: 1,
-
-            firstColumn,
-          },
-        ])
-      : setPathwayComponentCards(
-          pathwayComponentCards
-            .filter((item: any) => item.CTID !== card.CTID)
-            .concat({
-              ...restCardProps,
-              HasProgressionLevel,
-              RowNumber,
-              ColumnNumber,
-              firstColumn,
-            })
-        );
   };
 
   const onDeleteHandler = (data: any) => {
@@ -435,9 +444,6 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
-
-  console.log('123tenp', newConn);
-
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -787,9 +793,6 @@ const HomePage: React.FC<Props> = ({
                                     updatedPathwayComponentConditionCards={
                                       updatedPathwayComponentConditionCards
                                     }
-                                    pathwayComponentCards={
-                                      pathwayComponentCards
-                                    }
                                     isConditionalModalStatus={
                                       isConditionalModalStatus
                                     }
@@ -830,7 +833,6 @@ const HomePage: React.FC<Props> = ({
                               columnNumber={0}
                               HasProgressionLevel=""
                               ConstraintConditionState={false}
-                              pathwayComponentCards={[]}
                             />
                           )}
                           {!!isStartFromInitialColumnSelected &&
@@ -868,7 +870,6 @@ const HomePage: React.FC<Props> = ({
                                 columnNumber={0}
                                 HasProgressionLevel=""
                                 ConstraintConditionState={false}
-                                pathwayComponentCards={[]}
                               />
                             )}
                         </Xwrapper>

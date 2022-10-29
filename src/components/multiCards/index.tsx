@@ -50,7 +50,6 @@ interface Props {
   updatedPathwayComponentConditionCards?: [];
   ConstraintConditionProp?: (val: boolean) => void;
   ConstraintConditionState: boolean;
-  pathwayComponentCards: [any];
   isConditionalModalStatus?: boolean;
   setIsConditionalModalStatus?: (a: boolean) => void;
 }
@@ -102,7 +101,6 @@ const MultiCard: React.FC<Props> = ({
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
-
   useEffect(() => {
     if (isConditionalModalStatus) {
       setVisibleConstraintCondition(true);
@@ -213,6 +211,11 @@ const MultiCard: React.FC<Props> = ({
     <>
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer} id={CTID?.toString()}>
+          <div
+            id="verticalBorder"
+            draggable={true}
+            className={styles.draggableAreaBox}
+          ></div>
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div

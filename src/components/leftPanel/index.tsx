@@ -1,4 +1,5 @@
 import Modal from 'antd/lib/modal/Modal';
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -47,25 +48,33 @@ const LeftPanel: React.FC<any> = ({
   );
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
+  const [selectedPathwayComponents, setSelectedPathwayComponents] =
+    useState<any>([]);
+
   useEffect(() => {
-    if (selectedTabCardData) {
-      setSelectedtabCards(selectedTabCardData);
+    if (selectedTabCardData && selectedTabCardData.length > 0) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+      if (
+        updatedPathwayWrapper.PathwayComponents.length > 0 &&
+        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
+      ) {
+        const filteredPendingCards = selectedTabCards.filter(
+          (selected_card: any) =>
+            !updatedPathwayWrapper.PathwayComponents.some(
+              (pathway_card: any) =>
+                _.toString(pathway_card.CTID) === _.toString(selected_card.CTID)
+            )
+        );
+        setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
+        updatedPathwayWrapper.PendingComponents = selectedTabCards;
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+        setSelectedtabCards(filteredPendingCards);
+      } else {
+        setSelectedtabCards(selectedTabCardData);
+      }
     }
-  }, [selectedTabCardData]);
-
-  const filteredSelectedCards = (val: any) => {
-    console.log('card123', val);
-    const filteredSelectedCards = selectedTabCards?.filter(
-      (item: any) => item.CTID !== val
-    );
-    const updatedPathwayWrapper = { ...pathwayComponent };
-    updatedPathwayWrapper.PendingComponents = filteredSelectedCards;
-    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    setSelectedtabCards(filteredSelectedCards);
-  };
-
+  }, [selectedTabCardData, pathwayComponent.PathwayComponents]);
   const createCard = (card: any) => {
-    console.log('cardInner', card);
     const CTID = `ce-${uuidv4()}`;
     const newCard = {
       CTID,
@@ -107,19 +116,7 @@ const LeftPanel: React.FC<any> = ({
     } else {
       return;
     }
-    /*  Commenting the below code because Dragging of a component from the gameboard to the Component Tab is 
-    not listed in documents and we are not storing components tab card. 
 
-    if (tab === LeftPanelTabKey.Components) {
-      const isSelectedCardAlreadyExist = componentTabCards.some(
-        (component_card: any) => component_card.RowId === card.RowId
-      );
-      if (!isSelectedCardAlreadyExist) {
-        setComponentTabCards([...componentTabCards, card]);
-      }
-    }
-
- */
     const filteredPathwayComponent = PathwayComponents.filter(
       (component_card: any) => component_card.CTID !== card.CTID
     );
@@ -194,9 +191,6 @@ const LeftPanel: React.FC<any> = ({
                     isDraggableCardVisibleMethod={(isDragTure: boolean) =>
                       setDraggableCardVisible(isDragTure)
                     }
-                    getUpdatedCardArr={(value: any) =>
-                      filteredSelectedCards(value)
-                    }
                     setLeftpanelSelectedElem={setLeftpanelSelectedElem}
                   />
                 ))
@@ -223,7 +217,6 @@ const LeftPanel: React.FC<any> = ({
                 CTID={card?.CTID}
                 id={card.Id}
                 type={card?.URI}
-                getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
                 setLeftpanelSelectedElem={setLeftpanelSelectedElem}
               />
             ))}
@@ -250,7 +243,6 @@ const LeftPanel: React.FC<any> = ({
     <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
-        {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
         <u style={{ cursor: 'pointer' }} onClick={onClickPreselectComponent}>
           Select
         </u>
