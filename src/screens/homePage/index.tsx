@@ -120,6 +120,7 @@ const HomePage: React.FC<Props> = ({
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+
     setDeletedComponentCards([]);
 
     pathwayComponentCards?.length > 0 &&

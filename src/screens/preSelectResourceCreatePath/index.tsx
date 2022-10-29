@@ -69,14 +69,19 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   });
 
   const {
-    mappedData: { PendingComponents },
+    mappedData: {
+      PathwayComponents,
+      ComponentConditions,
+      Constraints,
+      DeletedComponents,
+    },
   } = appState || {};
 
   useEffect(() => {
-    if (PendingComponents?.length > 0) {
-      setSelectedResource(PendingComponents);
+    if (pathwayComponent && pathwayComponent?.PendingComponents?.length > 0) {
+      setSelectedResource(pathwayComponent?.PendingComponents);
     }
-  }, [PendingComponents]);
+  }, [pathwayComponent]);
 
   const searchComponent = (e: any) => {
     setSearchFilterValue({ ...searchFilterValue, Keywords: e.target.value });
@@ -209,15 +214,29 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
+
+    const updatedPathwayWrapper = { ...appState.mappedData };
+    updatedPathwayWrapper.PathwayComponents = PathwayComponents;
+    updatedPathwayWrapper.ComponentConditions = ComponentConditions;
+    updatedPathwayWrapper.Constraints = Constraints;
+    updatedPathwayWrapper.DeletedComponents = DeletedComponents;
+
     !fromPreSelect && setIsAddPathwayDestinationVisible(true);
-    dispatch(
-      updateMappedDataRequest({
-        ...addPathwayWrapperFields,
-        PendingComponents: selectedResource,
-        ComponentConditions: [],
-        PathwayComponents: [],
-      })
-    );
+    !fromPreSelect
+      ? dispatch(
+          updateMappedDataRequest({
+            ...addPathwayWrapperFields,
+            PendingComponents: selectedResource,
+            ComponentConditions: [],
+            PathwayComponents: [],
+          })
+        )
+      : dispatch(
+          updateMappedDataRequest({
+            ...updatedPathwayWrapper,
+            PendingComponents: selectedResource,
+          })
+        );
   };
 
   const onPreSelectResourceCancelHandler = () => {

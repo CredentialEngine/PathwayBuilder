@@ -31,7 +31,8 @@ const LeftPanel: React.FC<any> = ({
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
+  const [selectedTabCards, setSelectedtabCards] =
+    useState<any>(selectedTabCardData);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
@@ -50,7 +51,6 @@ const LeftPanel: React.FC<any> = ({
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const [selectedPathwayComponents, setSelectedPathwayComponents] =
     useState<any>([]);
-
   useEffect(() => {
     if (selectedTabCardData && selectedTabCardData.length > 0) {
       const updatedPathwayWrapper = { ...pathwayComponent };
@@ -65,15 +65,19 @@ const LeftPanel: React.FC<any> = ({
                 _.toString(pathway_card.CTID) === _.toString(selected_card.CTID)
             )
         );
-        setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
-        updatedPathwayWrapper.PendingComponents = selectedTabCards;
+        updatedPathwayWrapper.PendingComponents =
+          filteredPendingCards.length === 0 ? [] : selectedTabCards;
+
         dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+
         setSelectedtabCards(filteredPendingCards);
       } else {
         setSelectedtabCards(selectedTabCardData);
       }
+      setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
     }
   }, [selectedTabCardData, pathwayComponent.PathwayComponents]);
+
   const createCard = (card: any) => {
     const CTID = `ce-${uuidv4()}`;
     const newCard = {
