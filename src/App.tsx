@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.scss';
@@ -253,7 +254,10 @@ const App = () => {
                 onClick={selectOrgOkHandler}
                 text="Confirm"
                 disabled={
-                  selectedOrganisationValue === 'Select an organization'
+                  !(
+                    !_.isUndefined(selectedOrganisationValue) ||
+                    _.isNull(selectedOrganisationValue)
+                  )
                 }
               />
             </>,
