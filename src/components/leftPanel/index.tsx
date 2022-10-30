@@ -58,7 +58,7 @@ const LeftPanel: React.FC<any> = ({
         updatedPathwayWrapper.PathwayComponents.length > 0 &&
         selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
       ) {
-        const filteredPendingCards = selectedTabCards.filter(
+        const filteredPendingCards = selectedTabCards?.filter(
           (selected_card: any) =>
             !updatedPathwayWrapper.PathwayComponents.some(
               (pathway_card: any) =>
@@ -159,7 +159,7 @@ const LeftPanel: React.FC<any> = ({
             tabName={LeftPanelTabKey.Selected}
             onDrop={onDropHandler}
           >
-            {selectedTabCards && selectedTabCards.length <= 0 ? (
+            {selectedTabCards && selectedTabCards?.length <= 0 ? (
               <div className={Styles.tooltipContent}>
                 <p className={Styles.title}>Pre-select components</p>
                 <p className={Styles.content}>
@@ -175,7 +175,7 @@ const LeftPanel: React.FC<any> = ({
               </div>
             ) : (
               selectedTabCards
-                .filter((v: any) =>
+                ?.filter((v: any) =>
                   v?.Description?.toLocaleLowerCase().includes(
                     searchValue?.toLocaleLowerCase()
                   )
@@ -248,7 +248,7 @@ const LeftPanel: React.FC<any> = ({
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
         <u style={{ cursor: 'pointer' }} onClick={onClickPreselectComponent}>
-          Select
+          Search Components
         </u>
       </div>
       <Tab {...tabVal} />
