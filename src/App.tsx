@@ -51,6 +51,9 @@ const App = () => {
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState<any>();
   const [fromPreSelect, setFromPreselect] = useState<any>(false);
+  const [skipPreSelect, setSkipPreSelect] = useState<any>(false);
+  const [destinationColumnSelect, setDestinationColumnSelected] =
+    useState<any>(false);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
 
@@ -149,6 +152,12 @@ const App = () => {
     });
   };
 
+  const getSkipValueOfPreSelectResources = (skipedValue: boolean) => {
+    setSkipPreSelect(skipedValue);
+  };
+  const destinationColumnSelected = (value: boolean) => {
+    setDestinationColumnSelected(value);
+  };
   return (
     <div>
       <MainContainer>
@@ -174,6 +183,8 @@ const App = () => {
             setIsStartFromInitialColumnSelected
           }
           setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+          skipPreSelect={skipPreSelect}
+          destinationColumnSelect={destinationColumnSelect}
         />
         <Modal
           visible={isCreatePathwayVisible}
@@ -222,6 +233,7 @@ const App = () => {
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
             }
+            getSkipValueOfPreSelectResources={getSkipValueOfPreSelectResources}
           />
         </Modal>
         <CustomDrawer
@@ -239,6 +251,7 @@ const App = () => {
           footer={[]}
         >
           <SelectDestination
+            destinationColumnSelected={destinationColumnSelected}
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
             }

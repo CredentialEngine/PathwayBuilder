@@ -53,11 +53,12 @@ interface Props {
   isConditionalModalStatus?: boolean;
   setIsConditionalModalStatus?: (a: boolean) => void;
   newConnection?: any;
-  condCardItem?: any;
+  skipPreSelect?: boolean;
+  destinationColumnSelect?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
-  condCardItem,
+  destinationColumnSelect,
   isAddDestination,
   isDestination,
   isCourseCard,
@@ -88,6 +89,7 @@ const MultiCard: React.FC<Props> = ({
   isConditionalModalStatus,
   setIsConditionalModalStatus,
   newConnection,
+  skipPreSelect,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -210,7 +212,6 @@ const MultiCard: React.FC<Props> = ({
     e.stopPropagation();
     setVisibleConstraintCondition(true);
   };
-  // console.log({isAddFirst,firstComponent , datType: data}, '---->');
 
   return (
     <>
@@ -225,7 +226,7 @@ const MultiCard: React.FC<Props> = ({
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
               className={`${styles.multiCardWrapper} ${
-                (isAddDestination && destinationComponent) ||
+                (skipPreSelect && isAddDestination && destinationComponent) ||
                 (isAddFirst && firstComponent)
                   ? styles.addDestinationCard
                   : ''
@@ -250,7 +251,7 @@ const MultiCard: React.FC<Props> = ({
               data-rowNumber={rowNumber}
               data-CTID={data.CTID}
             >
-              {destinationComponent && isAddDestination && (
+              {skipPreSelect && destinationComponent && isAddDestination && (
                 <>
                   <InfoTooltip
                     title="Add your destination component"
@@ -549,7 +550,7 @@ const MultiCard: React.FC<Props> = ({
       ) : (
         <div
           className={`${styles.multiCardWrapper} ${
-            (isAddDestination && destinationComponent) ||
+            (skipPreSelect && isAddDestination && destinationComponent) ||
             (isAddFirst && firstComponent)
               ? styles.addDestinationCard
               : ''
@@ -574,7 +575,7 @@ const MultiCard: React.FC<Props> = ({
           data-rowNumber={rowNumber}
           data-CTID={data.CTID}
         >
-          {destinationComponent && isAddDestination && (
+          {skipPreSelect && destinationComponent && isAddDestination && (
             <>
               <InfoTooltip
                 title="Add your destination component"
@@ -594,6 +595,7 @@ const MultiCard: React.FC<Props> = ({
               </div>
             </>
           )}
+
           {isAddFirst && firstComponent && (
             <>
               <InfoTooltip
@@ -690,57 +692,34 @@ const MultiCard: React.FC<Props> = ({
                   />
                 </div>
               )}
-              {data.firstColumn &&
-                constraintIcon &&
-                PathwayWrapper.PathwayComponents.map(
-                  (component: any) =>
-                    component.HasChild.length > 0 && (
-                      <div className={styles.addIcon + ' ' + styles.rightAlign}>
-                        <FontAwesomeIcon
-                          icon={faCirclePlus}
-                          fill="#000000"
-                          style={{
-                            height: '22px',
-                            width: '22px',
-                            color: '#ffb90b',
-                            cursor: 'pointer',
-                          }}
-                          onClick={(e) => {
-                            onPlusCircleClickHandler(e);
-                          }}
-                        />
-                      </div>
-                    )
-                )}
-
-              {console.log(
-                { condCardItem, newConnection, data },
-                'condCardItem'
-              )}
 
               {newConnection.length > 0 &&
-                (data.CTID == newConnection[newConnection.length - 1]?.start ? (
-                  /* data.firstColumn && */ <div
-                    className={styles.addIcon + ' ' + styles.rightAlign}
-                  >
-                    {}
-                    <FontAwesomeIcon
-                      icon={faCirclePlus}
-                      fill="#000000"
-                      style={{
-                        height: '22px',
-                        width: '22px',
-                        color: '#ffb90b',
-                        cursor: 'pointer',
-                      }}
-                      onClick={(e) => {
-                        onPlusCircleClickHandler(e);
-                      }}
-                    />
-                  </div>
-                ) : (
-                  ''
-                ))}
+                newConnection?.map((v: any) =>
+                  v.start == data.CTID
+                    ? !data.destinationColumn && (
+                        <div
+                          className={`${styles.addIcon} ${
+                            !destinationColumnSelect ? styles.rightAlign : ''
+                          }`}
+                        >
+                          {}
+                          <FontAwesomeIcon
+                            icon={faCirclePlus}
+                            fill="#000000"
+                            style={{
+                              height: '22px',
+                              width: '22px',
+                              color: '#ffb90b',
+                              cursor: 'pointer',
+                            }}
+                            onClick={(e) => {
+                              onPlusCircleClickHandler(e);
+                            }}
+                          />
+                        </div>
+                      )
+                    : ''
+                )}
 
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}

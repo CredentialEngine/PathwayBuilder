@@ -31,6 +31,7 @@ export interface Props {
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
   fromPreSelect: boolean;
   setIsDestinationColumnSelected?: (a: boolean) => void;
+  getSkipValueOfPreSelectResources?: (a: boolean) => void;
 }
 const PreSelectResourceCreatePath: React.FC<Props> = ({
   setIsPreSelectedCreateResourceVisible,
@@ -38,6 +39,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   setIsAddPathwayDestinationVisible,
   fromPreSelect,
   setIsDestinationColumnSelected,
+  getSkipValueOfPreSelectResources,
 }) => {
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
@@ -224,7 +226,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
-
+    !!getSkipValueOfPreSelectResources &&
+      getSkipValueOfPreSelectResources(true);
     const updatedPathwayWrapper = { ...appState.mappedData };
     updatedPathwayWrapper.PathwayComponents = PathwayComponents;
     updatedPathwayWrapper.ComponentConditions = ComponentConditions;
@@ -254,6 +257,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     !fromPreSelect &&
       !!setIsDestinationColumnSelected &&
       setIsDestinationColumnSelected(true);
+    !!getSkipValueOfPreSelectResources &&
+      getSkipValueOfPreSelectResources(false);
   };
 
   const handleCheckBox = () => {

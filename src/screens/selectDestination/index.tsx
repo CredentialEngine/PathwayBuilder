@@ -10,14 +10,17 @@ export interface Props {
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
   setIsDestinationColumnSelected: (a: boolean) => void;
   setIsStartFromInitialColumnSelected: (a: boolean) => void;
+  destinationColumnSelected: (a: boolean) => void;
 }
 
 const SelectDestination: React.FC<Props> = ({
   setIsAddPathwayDestinationVisible,
   setIsDestinationColumnSelected,
   setIsStartFromInitialColumnSelected,
+  destinationColumnSelected,
 }) => {
   const selectDestinationColumn = () => {
+    destinationColumnSelected(true);
     setIsAddPathwayDestinationVisible(false);
     setIsDestinationColumnSelected(true);
     const destinationElemenet = document.getElementById('destinationColumn');
@@ -27,6 +30,7 @@ const SelectDestination: React.FC<Props> = ({
   };
 
   const selectInitialColumn = () => {
+    destinationColumnSelected(false);
     setIsAddPathwayDestinationVisible(false);
     setIsStartFromInitialColumnSelected(true);
     const firstColumn = document.getElementById('firstColumn');
