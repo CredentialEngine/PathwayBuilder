@@ -1,6 +1,5 @@
 import {
   faCirclePlus,
-  faCubes,
   faEllipsis,
   faSitemap,
 } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +9,8 @@ import _, { noop } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
 
 import AddConditionalComponent from '../../screens/addComponent';
 
@@ -209,6 +210,152 @@ const MultiCard: React.FC<Props> = ({
     setVisibleConstraintCondition(true);
   };
 
+  const renderImage = (data: any) =>
+    (data?.Type?.toLowerCase().includes(
+      'AssessmentComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/AssessmentComponent.png`}
+        alt="AssessmentComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('BasicComponent'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/BasicComponent.png`}
+        alt="BasicComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'CocurricularComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CocurricularComponent.png`}
+        alt="CocurricularComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'CompetencyComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CompetencyComponent.png`}
+        alt="CompetencyComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('CourseComponent'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CourseComponent.png`}
+        alt="CourseComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'ExtracurricularComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/ExtracurricularComponent.png`}
+        alt="ExtracurricularComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/JobComponent.png`}
+        alt="JobComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'WorkExperienceComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/WorkExperienceComponent.png`}
+        alt="WorkExperienceComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'CredentialComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CredentialComponent.png`}
+        alt="CredentialComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('ComponentCondition'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/ComponentCondition.png`}
+        alt="ComponentCondition"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('selection'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/SelectionCondition.png`}
+        alt="SelectionCondition"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    ));
+
   return (
     <>
       {isDraggableCardVisible ? (
@@ -362,10 +509,11 @@ const MultiCard: React.FC<Props> = ({
                 data.Type === 'course') && (
                 <div className={styles.credentialsCardWrapeer}>
                   <div className={styles.topCourseContent}>
-                    <FontAwesomeIcon
+                    {/* <FontAwesomeIcon
                       icon={faCubes}
                       style={{ height: '24px', width: '24px' }}
-                    />
+                    /> */}
+                    {renderImage(data)}
                     <span className={styles.title}>
                       {data.Name.slice(0, 30)}
                     </span>
@@ -429,10 +577,11 @@ const MultiCard: React.FC<Props> = ({
                 <>
                   <div className={styles.courseCredCardWrapper}>
                     <div className={styles.topCourseContent}>
-                      <FontAwesomeIcon
+                      {/* <FontAwesomeIcon
                         icon={faCubes}
                         style={{ height: '24px', width: '24px' }}
-                      />
+                      /> */}
+                      {renderImage(data)}
                       <span className={styles.title}>
                         {data.Name.slice(0, 30)}
                       </span>
@@ -673,10 +822,11 @@ const MultiCard: React.FC<Props> = ({
                 }
               >
                 <div className={styles.topCourseContent}>
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faCubes}
                     style={{ height: '24px', width: '24px' }}
-                  />
+                  /> */}
+                  {renderImage(data)}
                   <span className={styles.title}>{data.Name.slice(0, 30)}</span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -743,10 +893,11 @@ const MultiCard: React.FC<Props> = ({
             <>
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faCubes}
                     style={{ height: '24px', width: '24px' }}
-                  />
+                  /> */}
+                  {renderImage(data)}
                   <span className={styles.title}>{data.Name.slice(0, 30)}</span>
                   <FontAwesomeIcon
                     color={darkColor}
