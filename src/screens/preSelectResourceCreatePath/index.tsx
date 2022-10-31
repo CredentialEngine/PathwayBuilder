@@ -69,14 +69,19 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   });
 
   const {
-    mappedData: { PendingComponents },
+    mappedData: {
+      PathwayComponents,
+      ComponentConditions,
+      Constraints,
+      DeletedComponents,
+    },
   } = appState || {};
 
   useEffect(() => {
-    if (PendingComponents?.length > 0) {
-      setSelectedResource(PendingComponents);
+    if (pathwayComponent && pathwayComponent?.PendingComponents?.length > 0) {
+      setSelectedResource(pathwayComponent?.PendingComponents);
     }
-  }, [PendingComponents]);
+  }, [pathwayComponent]);
 
   const searchComponent = (e: any) => {
     setSearchFilterValue({ ...searchFilterValue, Keywords: e.target.value });
@@ -130,13 +135,23 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       (comp_type: any) => comp_type.key === _.toNumber(e.key)
     );
     const updatedSearchValue = { ...searchFilterValue };
-    updatedSearchValue.Filters = [
-      {
-        URI: 'meta:pathwayComponentType',
-        ItemTexts: [_.get(selectedCardType, '0').label],
-      },
-    ];
-    setSearchFilterValue(updatedSearchValue);
+
+    if (e?.key) {
+      updatedSearchValue.Filters = [
+        ...updatedSearchValue.Filters,
+        {
+          URI: 'meta:pathwayComponentType',
+          ItemTexts: [_.get(selectedCardType, '0').label],
+        },
+      ];
+      setSearchFilterValue(updatedSearchValue);
+    } else {
+      _.remove(
+        updatedSearchValue.Filters,
+        (item: any) => item.URI == 'meta:pathwayComponentType'
+      );
+      setSearchFilterValue(updatedSearchValue);
+    }
   };
   useEffect(() => {
     if (allComponentTabCards?.data?.length > 0) {
@@ -209,20 +224,36 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const onPathwaySaveHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
+
+    const updatedPathwayWrapper = { ...appState.mappedData };
+    updatedPathwayWrapper.PathwayComponents = PathwayComponents;
+    updatedPathwayWrapper.ComponentConditions = ComponentConditions;
+    updatedPathwayWrapper.Constraints = Constraints;
+    updatedPathwayWrapper.DeletedComponents = DeletedComponents;
+
     !fromPreSelect && setIsAddPathwayDestinationVisible(true);
-    dispatch(
-      updateMappedDataRequest({
-        ...addPathwayWrapperFields,
-        PendingComponents: selectedResource,
-        ComponentConditions: [],
-        PathwayComponents: [],
-      })
-    );
+    !fromPreSelect
+      ? dispatch(
+          updateMappedDataRequest({
+            ...addPathwayWrapperFields,
+            PendingComponents: selectedResource,
+            ComponentConditions: [],
+            PathwayComponents: [],
+          })
+        )
+      : dispatch(
+          updateMappedDataRequest({
+            ...updatedPathwayWrapper,
+            PendingComponents: selectedResource,
+          })
+        );
   };
 
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
-    !!setIsDestinationColumnSelected && setIsDestinationColumnSelected(true);
+    !fromPreSelect &&
+      !!setIsDestinationColumnSelected &&
+      setIsDestinationColumnSelected(true);
   };
 
   const handleCheckBox = () => {

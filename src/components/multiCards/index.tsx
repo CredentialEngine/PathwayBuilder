@@ -50,12 +50,14 @@ interface Props {
   updatedPathwayComponentConditionCards?: [];
   ConstraintConditionProp?: (val: boolean) => void;
   ConstraintConditionState: boolean;
-  pathwayComponentCards: [any];
   isConditionalModalStatus?: boolean;
   setIsConditionalModalStatus?: (a: boolean) => void;
+  newConnection?: any;
+  condCardItem?: any;
 }
 
 const MultiCard: React.FC<Props> = ({
+  condCardItem,
   isAddDestination,
   isDestination,
   isCourseCard,
@@ -85,6 +87,7 @@ const MultiCard: React.FC<Props> = ({
   HasProgressionLevel,
   isConditionalModalStatus,
   setIsConditionalModalStatus,
+  newConnection,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -102,7 +105,6 @@ const MultiCard: React.FC<Props> = ({
   const handledConstraintsModal = (bool: boolean) => {
     setVisibleConstraintCondition(bool);
   };
-
   useEffect(() => {
     if (isConditionalModalStatus) {
       setVisibleConstraintCondition(true);
@@ -212,6 +214,11 @@ const MultiCard: React.FC<Props> = ({
     <>
       {isDraggableCardVisible ? (
         <div className={styles.draggableAreaContainer} id={CTID?.toString()}>
+          <div
+            id="verticalBorder"
+            draggable={true}
+            className={styles.draggableAreaBox}
+          ></div>
           <div>
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
@@ -359,69 +366,90 @@ const MultiCard: React.FC<Props> = ({
 
               {((isCourseCard && !isCredentialCard) ||
                 data.Type === 'course') && (
-                <div className={styles.credentialsCardWrapeer}>
-                  <div className={styles.topCourseContent}>
-                    <FontAwesomeIcon
-                      icon={faCubes}
-                      style={{ height: '24px', width: '24px' }}
-                    />
-                    <span className={styles.title}>
-                      {data.Name.slice(0, 30)}
-                    </span>
-                    <FontAwesomeIcon
-                      color={darkColor}
-                      style={{ height: '20px', cursor: 'pointer' }}
-                      icon={faEllipsis}
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setShowPopover(true);
+                <>
+                  {/* {data.firstColumn && constraintIcon && (
+                    <div className={styles.addIcon + ' ' + styles.rightAlign}>
+                      {}
+                      <FontAwesomeIcon
+                        icon={faCirclePlus}
+                        fill="#000000"
+                        style={{
+                          height: '22px',
+                          width: '22px',
+                          color: '#ffb90b',
+                          cursor: 'pointer',
+                        }}
+                        onClick={(e) => {
+                          onPlusCircleClickHandler(e);
+                        }}
+                      />
+                    </div>
+                  )} */}
+
+                  <div className={styles.credentialsCardWrapeer}>
+                    <div className={styles.topCourseContent}>
+                      <FontAwesomeIcon
+                        icon={faCubes}
+                        style={{ height: '24px', width: '24px' }}
+                      />
+                      <span className={styles.title}>
+                        {data.Name.slice(0, 30)}
+                      </span>
+                      <FontAwesomeIcon
+                        color={darkColor}
+                        style={{ height: '20px', cursor: 'pointer' }}
+                        icon={faEllipsis}
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setShowPopover(true);
+                        }}
+                      />
+                      {showPopover && !showRightPenal && (
+                        <Popover
+                          visible={showPopover}
+                          arrowPointAtCenter
+                          placement="bottomRight"
+                          content={
+                            <div className={styles.popoverMenu} ref={ref}>
+                              <span
+                                onClick={(e: any) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  setShowRightPenal(true);
+                                }}
+                              >
+                                View
+                              </span>
+                              <span
+                                onClick={(e: any) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                }}
+                              >
+                                Delete
+                              </span>
+                            </div>
+                          }
+                        ></Popover>
+                      )}
+                    </div>
+                    <Divider
+                      style={{
+                        backgroundColor: '#F3F4F6',
+                        margin: '8px 0px 4px 0px',
                       }}
                     />
-                    {showPopover && !showRightPenal && (
-                      <Popover
-                        visible={showPopover}
-                        arrowPointAtCenter
-                        placement="bottomRight"
-                        content={
-                          <div className={styles.popoverMenu} ref={ref}>
-                            <span
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                setShowRightPenal(true);
-                              }}
-                            >
-                              View
-                            </span>
-                            <span
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                              }}
-                            >
-                              Delete
-                            </span>
-                          </div>
-                        }
-                      ></Popover>
-                    )}
+                    <div className={styles.courseNameContainter}>
+                      <span>{data.CodedNotation}</span>
+                      <span>{data.Description.slice(0, 40)}</span>
+                    </div>
+                    <div className={styles.creditSection}>
+                      <span>Credits: 3</span>
+                      <span>Level 10</span>
+                    </div>
                   </div>
-                  <Divider
-                    style={{
-                      backgroundColor: '#F3F4F6',
-                      margin: '8px 0px 4px 0px',
-                    }}
-                  />
-                  <div className={styles.courseNameContainter}>
-                    <span>{data.CodedNotation}</span>
-                    <span>{data.Description.slice(0, 40)}</span>
-                  </div>
-                  <div className={styles.creditSection}>
-                    <span>Credits: 3</span>
-                    <span>Level 10</span>
-                  </div>
-                </div>
+                </>
               )}
 
               {isCredentialCard && (
@@ -660,6 +688,57 @@ const MultiCard: React.FC<Props> = ({
                   />
                 </div>
               )}
+              {data.firstColumn &&
+                constraintIcon &&
+                PathwayWrapper.PathwayComponents.map(
+                  (component: any) =>
+                    component.HasChild.length > 0 && (
+                      <div className={styles.addIcon + ' ' + styles.rightAlign}>
+                        <FontAwesomeIcon
+                          icon={faCirclePlus}
+                          fill="#000000"
+                          style={{
+                            height: '22px',
+                            width: '22px',
+                            color: '#ffb90b',
+                            cursor: 'pointer',
+                          }}
+                          onClick={(e) => {
+                            onPlusCircleClickHandler(e);
+                          }}
+                        />
+                      </div>
+                    )
+                )}
+
+              {console.log(
+                { condCardItem, newConnection, data },
+                'condCardItem'
+              )}
+
+              {newConnection.length > 0 &&
+                (data.CTID == newConnection[newConnection.length - 1]?.start ? (
+                  /* data.firstColumn && */ <div
+                    className={styles.addIcon + ' ' + styles.rightAlign}
+                  >
+                    {}
+                    <FontAwesomeIcon
+                      icon={faCirclePlus}
+                      fill="#000000"
+                      style={{
+                        height: '22px',
+                        width: '22px',
+                        color: '#ffb90b',
+                        cursor: 'pointer',
+                      }}
+                      onClick={(e) => {
+                        onPlusCircleClickHandler(e);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  ''
+                ))}
 
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}

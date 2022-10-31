@@ -50,12 +50,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     if (conditionalComponent.length > 0) {
-      // const restPathwayComponents = pathwayComponent?.PathwayComponents?.filter(
-      //   (pathway_card: any) =>
-      //     pathway_card.CTID !== _.toString(data.CTID) ||
-      //     pathway_card.RowId !== _.toString(data.RowId)
-      // );
-
       const currentPathwayComponent = _.get(
         pathwayComponent?.PathwayComponents?.filter(
           (pathway_card: any) => pathway_card.CTID === _.toString(data.CTID)
@@ -78,24 +72,12 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ];
         }
       }
-
-      // const allPathwayComponent: any =
-      //   !_.isUndefined(currentPathwayComponent) &&
-      //   !_.isNull(currentPathwayComponent)
-      //     ? [...restPathwayComponents, currentPathwayComponent]
-      //     : [];
       const otherconditionalComponentOutOfProgressionLevel =
         pathwayComponent?.ComponentConditions?.filter(
           (pathway_card: any) =>
             pathway_card.HasProgressionLevel !==
             _.toString(data.HasProgressionLevel)
         );
-
-      // console.log(
-      //   'otherconditionalComponentOutOfProgressionLevel --->',
-      //   otherconditionalComponentOutOfProgressionLevel
-      // );
-
       const currentConditionalComponentInProgressionLevel1 = _.get(
         pathwayComponent?.ComponentConditions?.filter(
           (pathway_card: any) =>
@@ -104,11 +86,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ),
         '0'
       );
-
-      // console.log(
-      //   'currentConditionalComponentInProgressionLevel1 --->',
-      //   currentConditionalComponentInProgressionLevel1
-      // );
 
       const restConditionalComponentInProgressionLevel1 =
         pathwayComponent?.ComponentConditions?.filter(
@@ -146,7 +123,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             ]
           : [];
 
-      // console.log('allConditionalComponent --->', allConditionalComponent);
       const uniqueConditionalArray = [
         ...new Set([
           ...otherconditionalComponentOutOfProgressionLevel,
@@ -154,7 +130,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ]),
       ];
 
-      // console.log('uniqueConditionalArray -->', uniqueConditionalArray);
       const uniquePathwayComponentArray = [
         ...new Set(filteredPathwayComponent),
       ];
@@ -173,7 +148,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         .map((a: any) => ({ ...a, ColumnNumber: a.ColumnNumber + 1 }))
         .concat(conditionalComponent);
 
-      // console.log('updatedConditionalArray --->', updatedConditionalArray);
       const allComponentConditionalCard = [
         ...updatedPathwayWrapper.ComponentConditions,
         ...updatedConditionalArray,
@@ -198,7 +172,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ).values(),
       ];
 
-      // console.log('uniqueAllConditionalArray --->', uniqueAllConditionalArray);
       updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
 
@@ -212,6 +185,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConditionalComponent([]);
     }
   }, [conditionalComponent]);
+
   const constraintRowData = {
     LeftAction: [],
     LeftSource: [],
@@ -221,16 +195,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     id: 0,
   };
 
-  const [constraintRow, setConstraintRow] = useState<any>([
-    // {
-    //   LeftAction: [],
-    //   LeftSource: [],
-    //   Comparator: [],
-    //   RightAction: [],
-    //   RightSource: [],
-    //   id: 0,
-    // },
-  ]);
+  const [constraintRow, setConstraintRow] = useState<any>([]);
   const dispatch = useDispatch();
 
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -292,7 +257,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       RowNumber: data?.RowNumber,
       RowId: uuidv4(),
       Name: componentConditionFields.Name,
-      TargetComponent: data.HasChild || updatedTargetChild,
+      TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
       HasCondition: [],
     };
 
@@ -333,7 +298,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConstraintRow([]);
     }
   };
-
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
@@ -350,7 +314,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </div>
         <Form.Item>
           <label>Parent Component</label>
-          <InputBox name="ParentIdentifier" value={data?.RowId} />
+          <InputBox name="ParentIdentifier" value={data?.Name} />
         </Form.Item>
         <Form.Item>
           <label>Name</label>

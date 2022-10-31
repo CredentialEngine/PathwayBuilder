@@ -79,7 +79,6 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
     yield put(getDataForOccupationTypeCodeFailure(error));
   }
 }
-
 function* pathwayFormsaga() {
   yield debounce(
     400,
