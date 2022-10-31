@@ -31,6 +31,8 @@ interface Props {
   isStartFromInitialColumnSelected: boolean;
   setIsStartFromInitialColumnSelected: (a: boolean) => void;
   setIsDestinationColumnSelected: (a: boolean) => void;
+  skipPreSelect?: boolean;
+  destinationColumnSelect?: boolean;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
@@ -40,6 +42,8 @@ const HomePage: React.FC<Props> = ({
   isStartFromInitialColumnSelected,
   setIsStartFromInitialColumnSelected,
   setIsDestinationColumnSelected,
+  skipPreSelect,
+  destinationColumnSelect,
 }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
@@ -47,7 +51,6 @@ const HomePage: React.FC<Props> = ({
   const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
-  const [condCardItem, setCondCardItem] = useState<any>([]);
 
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [columnsData, setColumnsData] = useState<any>([]);
@@ -671,38 +674,34 @@ const HomePage: React.FC<Props> = ({
                               .map((item: any) => (
                                 <>
                                   {newConn.length > 0
-                                    ? newConn.map((items: any, idx: number) => {
-                                        setCondCardItem(items);
-                                        return (
-                                          <Xarrow
-                                            path="grid"
-                                            strokeWidth={1}
-                                            zIndex={1000}
-                                            headSize={16}
-                                            color="black"
-                                            start={items?.start}
-                                            end={items?.end}
-                                            key={idx}
-                                            labels={
-                                              <div
-                                                className={Styles.tempwrapper}
+                                    ? newConn.map((items: any, idx: number) => (
+                                        <Xarrow
+                                          path="grid"
+                                          strokeWidth={1}
+                                          zIndex={1000}
+                                          headSize={16}
+                                          color="black"
+                                          start={items?.start}
+                                          end={items?.end}
+                                          key={idx}
+                                          labels={
+                                            <div className={Styles.tempwrapper}>
+                                              <span
+                                                className={
+                                                  Styles.addConditionIcon
+                                                }
                                               >
-                                                <span
-                                                  className={
-                                                    Styles.addConditionIcon
+                                                <FontAwesomeIcon
+                                                  icon={faXmarkCircle}
+                                                  style={{
+                                                    cursor: 'pointer',
+                                                  }}
+                                                  onClick={() =>
+                                                    removeConnection(items)
                                                   }
-                                                >
-                                                  <FontAwesomeIcon
-                                                    icon={faXmarkCircle}
-                                                    style={{
-                                                      cursor: 'pointer',
-                                                    }}
-                                                    onClick={() =>
-                                                      removeConnection(items)
-                                                    }
-                                                  />
-                                                </span>
-                                                {/* <span
+                                                />
+                                              </span>
+                                              {/* <span
                                                 className={
                                                   Styles.addConditionIcon
                                                 }
@@ -721,21 +720,23 @@ const HomePage: React.FC<Props> = ({
                                                   }}
                                                 />
                                               </span> */}
-                                              </div>
-                                            }
-                                            startAnchor="auto"
-                                            endAnchor="auto"
-                                            // gridBreak="20%"
-                                          />
-                                        );
-                                      })
+                                            </div>
+                                          }
+                                          startAnchor="auto"
+                                          endAnchor="auto"
+                                          // gridBreak="20%"
+                                        />
+                                      ))
                                     : ''}
                                   <MultiCard
+                                    skipPreSelect={skipPreSelect}
+                                    destinationColumnSelect={
+                                      destinationColumnSelect
+                                    }
                                     isDraggableCardVisible={
                                       isDraggableCardVisible
                                     }
                                     newConnection={newConn}
-                                    condCardItem={condCardItem}
                                     constraintIcon={constraintIcon}
                                     number={column.number}
                                     forwardRef={wrapperRef}
@@ -813,6 +814,7 @@ const HomePage: React.FC<Props> = ({
                               ))}
                           {!!isDestinationColumnStatus && index === 1 && (
                             <MultiCard
+                              skipPreSelect={skipPreSelect}
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}
                               //id={0}
