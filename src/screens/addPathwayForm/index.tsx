@@ -627,7 +627,7 @@ const AddPathwayForm: React.FC<Props> = ({
             fontSize: '10',
             position: 'absolute',
             right: 5,
-            top: 55,
+            top: 5,
             cursor: 'pointer',
           }}
           onClick={() => onShowCloseToolTip(type, false)}
