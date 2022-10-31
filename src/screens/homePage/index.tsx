@@ -47,6 +47,7 @@ const HomePage: React.FC<Props> = ({
   const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
+  const [condCardItem, setCondCardItem] = useState<any>([]);
 
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [columnsData, setColumnsData] = useState<any>([]);
@@ -672,34 +673,38 @@ const HomePage: React.FC<Props> = ({
                               .map((item: any) => (
                                 <>
                                   {newConn.length > 0
-                                    ? newConn.map((items: any, idx: number) => (
-                                        <Xarrow
-                                          path="grid"
-                                          strokeWidth={1}
-                                          zIndex={1000}
-                                          headSize={16}
-                                          color="black"
-                                          start={items?.start}
-                                          end={items?.end}
-                                          key={idx}
-                                          labels={
-                                            <div className={Styles.tempwrapper}>
-                                              <span
-                                                className={
-                                                  Styles.addConditionIcon
-                                                }
+                                    ? newConn.map((items: any, idx: number) => {
+                                        setCondCardItem(items);
+                                        return (
+                                          <Xarrow
+                                            path="grid"
+                                            strokeWidth={1}
+                                            zIndex={1000}
+                                            headSize={16}
+                                            color="black"
+                                            start={items?.start}
+                                            end={items?.end}
+                                            key={idx}
+                                            labels={
+                                              <div
+                                                className={Styles.tempwrapper}
                                               >
-                                                <FontAwesomeIcon
-                                                  icon={faXmarkCircle}
-                                                  style={{
-                                                    cursor: 'pointer',
-                                                  }}
-                                                  onClick={() =>
-                                                    removeConnection(items)
+                                                <span
+                                                  className={
+                                                    Styles.addConditionIcon
                                                   }
-                                                />
-                                              </span>
-                                              {/* <span
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faXmarkCircle}
+                                                    style={{
+                                                      cursor: 'pointer',
+                                                    }}
+                                                    onClick={() =>
+                                                      removeConnection(items)
+                                                    }
+                                                  />
+                                                </span>
+                                                {/* <span
                                                 className={
                                                   Styles.addConditionIcon
                                                 }
@@ -718,18 +723,21 @@ const HomePage: React.FC<Props> = ({
                                                   }}
                                                 />
                                               </span> */}
-                                            </div>
-                                          }
-                                          startAnchor="auto"
-                                          endAnchor="auto"
-                                          // gridBreak="20%"
-                                        />
-                                      ))
+                                              </div>
+                                            }
+                                            startAnchor="auto"
+                                            endAnchor="auto"
+                                            // gridBreak="20%"
+                                          />
+                                        );
+                                      })
                                     : ''}
                                   <MultiCard
                                     isDraggableCardVisible={
                                       isDraggableCardVisible
                                     }
+                                    newConnection={newConn}
+                                    condCardItem={condCardItem}
                                     constraintIcon={constraintIcon}
                                     number={column.number}
                                     forwardRef={wrapperRef}

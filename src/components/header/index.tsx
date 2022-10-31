@@ -109,7 +109,7 @@ const Header = (props: Props) => {
         <Button
           type={Type.LINK}
           onClick={() => conflictHandler()}
-          text={`show ${conflictMessages.length} conflicts`}
+          text={`show ${conflictMessages?.length} conflicts`}
           disabled={!hasConflicts}
         />
       </div>
@@ -118,7 +118,7 @@ const Header = (props: Props) => {
           type={Type.PRIMARY}
           className={styles.approveButtonSpecification}
           onClick={onApproverHandler}
-          iconOnTop={conflictMessages.length > 0 ? true : false}
+          iconOnTop={conflictMessages?.length > 0 ? true : false}
           disabled={approveDisable}
           text="Approve"
         />
