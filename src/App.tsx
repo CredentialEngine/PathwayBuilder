@@ -135,6 +135,11 @@ const App = () => {
     </div>
   );
 
+  const onPreSelectResourceCancelHandler = () => {
+    setIsPreSelectedCreateResourceVisible(false);
+    !!setIsDestinationColumnSelected && setIsDestinationColumnSelected(true);
+  };
+
   const closeCreatePathwayModal = () => {
     Modal.confirm({
       cancelText: 'No',
@@ -204,6 +209,7 @@ const App = () => {
           visible={isPreSelectedCreateResourceVisible}
           width="650px"
           footer={[]}
+          onCancel={onPreSelectResourceCancelHandler}
           title="Pre-Select Resources to Create Your Pathway"
         >
           <PreSelectResourceCreatePath

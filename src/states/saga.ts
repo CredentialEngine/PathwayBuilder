@@ -11,6 +11,8 @@ import {
 import { TEMP_BASE_URL } from '../apiConfig/setting';
 
 import {
+  approvePathwayFailure,
+  approvePathwaySuccess,
   getCurrentUserDataFailure,
   getCurrentUserDataSuccess,
   getDataForPathwayAndComponentsFailure,
@@ -76,9 +78,13 @@ export function* approvePathway(payload: any): Generator {
         userCreds: `${BASE_USER_CREDS}`,
       },
     });
-    yield put(getDataForPathwayAndComponentsSuccess(result));
+    if (result.Data.Messages.length === 0) {
+      yield put(approvePathwaySuccess(result));
+    } else if (!result.Data.Valid && result.Data.Messages.length > 0) {
+      yield put(approvePathwayFailure(result));
+    }
   } catch (error) {
-    yield put(getDataForPathwayAndComponentsFailure(error));
+    yield put(approvePathwayFailure(error));
   }
 }
 // export async function savePathwayWrapper(data: any) {

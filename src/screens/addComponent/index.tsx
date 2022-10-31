@@ -298,7 +298,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConstraintRow([]);
     }
   };
-
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
@@ -315,7 +314,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </div>
         <Form.Item>
           <label>Parent Component</label>
-          <InputBox name="ParentIdentifier" value={data?.RowId} />
+          <InputBox name="ParentIdentifier" value={data?.Name} />
         </Form.Item>
         <Form.Item>
           <label>Name</label>

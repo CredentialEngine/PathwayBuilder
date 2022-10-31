@@ -149,7 +149,7 @@ const LeftPanel: React.FC<any> = ({
       children: (
         <>
           <SearchBox
-            placeholder="Search your components"
+            placeholder="Search Components"
             className={Styles.customsearch}
             styleType="outline"
             onKeyUp={searchComponent}
