@@ -239,6 +239,8 @@ const AddPathwayForm: React.FC<Props> = ({
         PathwayWrapper.Pathway.HasProgressionModel;
       updatedPathwayFormFields.IndustryType =
         PathwayWrapper.Pathway.IndustryType;
+      updatedPathwayFormFields.InstructionalType =
+        PathwayWrapper.Pathway.InstructionalType;
       updatedPathwayFormFields.OccupationType =
         PathwayWrapper.Pathway.OccupationType;
       updatedPathwayFormFields.SubjectWebpage =
@@ -489,8 +491,9 @@ const AddPathwayForm: React.FC<Props> = ({
   }
   const onDebounceSelectHnadler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
+
     if (name === 'Occupation') {
-      const filteredOccupations = allOccupationTypeData.filter(
+      const filteredOccupations = allOccupationTypeData?.filter(
         (data: any) => data.Name === e.value
       );
 
@@ -499,12 +502,12 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...filteredOccupations,
       // ]);
       updatedData.OccupationType = [
-        ...addPathwayFormFields?.OccupationType,
+        ...(addPathwayFormFields?.OccupationType || []),
         ...filteredOccupations,
       ];
     }
     if (name === 'Industry') {
-      const filteredIndustry = allIndustryTypeData.filter(
+      const filteredIndustry = allIndustryTypeData?.filter(
         (data: any) => data.Name === e.value
       );
       // setIndustrySelectedValue((prevState: any) => [
@@ -512,13 +515,14 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...filteredIndustry,
       // ]);
       updatedData.IndustryType = [
-        ...addPathwayFormFields?.IndustryType,
+        ...(addPathwayFormFields?.IndustryType || []),
         ...filteredIndustry,
       ];
+      // console.log("filteredIndustry",  ...addPathwayFormFields?.IndustryType)
     }
-    if (name === 'instructionalProgram') {
+    if (name === 'InstructionalProgram') {
       const filteredInstructionalProgram =
-        allInstructionalProgramTypeData.filter(
+        allInstructionalProgramTypeData?.filter(
           (data: any) => data.Name === e.value
         );
 
@@ -527,7 +531,7 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...filteredInstructionalProgram,
       // ]);
       updatedData.InstructionalType = [
-        ...addPathwayFormFields?.InstructionalType,
+        ...(addPathwayFormFields?.InstructionalType || []),
         ...filteredInstructionalProgram,
       ];
     }
@@ -782,7 +786,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 <DebounceSelect
                   mode="multiple"
                   tagRender={tagRender}
-                  value={addPathwayFormFields?.InstructionalProgram}
+                  value={addPathwayFormFields?.InstructionalType}
                   placeholder="Select Instructional Program"
                   fetchOptions={fetchInstructionalProgramList}
                   onSelect={(e: any) =>
