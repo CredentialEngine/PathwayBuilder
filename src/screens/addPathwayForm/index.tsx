@@ -568,36 +568,68 @@ const AddPathwayForm: React.FC<Props> = ({
     </span>
   );
 
+  const getToolTipText = (value: string) => {
+    let text = '';
+    switch (value) {
+      case 'Industry':
+        text =
+          'Identify the specific industries that apply to this pathway. We recommend using the NAICS codes.';
+        break;
+      case 'Keywords':
+        text =
+          'Enter keywords or phrases that describe this pathway. Press the enter key after each word or phrase to enter it as a keyword.';
+        break;
+      case 'Occupations':
+        text =
+          'Identify the specific occupations that apply to this pathway. We recommend using the SOC codes.';
+        break;
+      case 'Instructional':
+        text =
+          'Identify the specific instructional program classifications that apply to this pathway. We recommend using the CIP codes.';
+        break;
+      case 'Subjects':
+        text =
+          'Enter subjects or topics that this pathway covers. Press the enter key after each word or phrase to enter it as a subject.';
+        break;
+      case 'Website':
+        text =
+          'Provide a URL to the web page, PDF, or other source documentation where this pathway is described.';
+        break;
+      case 'Model':
+        text = 'Select an applicable Progression Model for this pathway.';
+        break;
+    }
+    return text;
+  };
+
   const customToolTip = (type: any) => (
     <Tag
       color="rgb(220,250,249)"
       style={{
         width: '100%',
-        wordWrap: 'break-word',
+        // wordWrap: 'break-word',
         padding: 10,
         paddingRight: 20,
         marginTop: 10,
         blockOverflow: 'ellipsis',
         whiteSpace: 'pre-wrap',
+        position: 'relative',
       }}
     >
-      <CloseOutlined
-        style={{
-          marginLeft: 3,
-          fontSize: '10',
-          position: 'absolute',
-          right: 5,
-          top: 55,
-          cursor: 'pointer',
-        }}
-        onClick={() => onShowCloseToolTip(type, false)}
-      />
-      {`Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-      Lorem Ipsum has been the industry's standard dummy text ever since the
-      1500s, when an unknown printer took a galley of type and scrambled it to
-      make a type specimen book. It has survived not only five centuries, but
-      also the leap into electronic typesetting, remaining essentially
-      unchanged.`}
+      <>
+        <CloseOutlined
+          style={{
+            marginLeft: 3,
+            fontSize: '10',
+            position: 'absolute',
+            right: 5,
+            top: 55,
+            cursor: 'pointer',
+          }}
+          onClick={() => onShowCloseToolTip(type, false)}
+        />
+        {getToolTipText(type)}
+      </>
     </Tag>
   );
 
@@ -680,7 +712,6 @@ const AddPathwayForm: React.FC<Props> = ({
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
-              // tooltip="This is a required field"
             >
               {customToolTipIcon('Industry')}
               <DebounceSelect
@@ -802,7 +833,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   : null
               }
             >
-              {/* {customToolTipIcon("Website")} */}
+              {customToolTipIcon('Website')}
               <InputBox
                 placeholder="add a URL"
                 maxLength={75}
@@ -815,8 +846,8 @@ const AddPathwayForm: React.FC<Props> = ({
                     : setisTouched({ ...isTouched, SubjectWebpage: true })
                 }
               />
-              {/* {toolTip.find((item:any) => item.type === 'Website').isVisible &&
-              customToolTip("Website")} */}
+              {toolTip.find((item: any) => item.type === 'Website').isVisible &&
+                customToolTip('Website')}
             </Form.Item>
           </Col>
           <Divider className={styles.divider} />
@@ -838,6 +869,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 labelCol={{ span: 24 }}
                 validateTrigger="onBlur"
               >
+                {customToolTipIcon('Model')}
                 <AutoCompleteBox
                   {...SelectAutoCompleteProps(
                     allProgressionModel,
@@ -852,6 +884,8 @@ const AddPathwayForm: React.FC<Props> = ({
                   onSelect={(e: any) => onProgressionModelSelectHandler(e)}
                   onChange={(e: any) => onProgressionModelHandler(e)}
                 />
+                {toolTip.find((item: any) => item.type === 'Model').isVisible &&
+                  customToolTip('Model')}
               </Form.Item>
             </Col>
           )}

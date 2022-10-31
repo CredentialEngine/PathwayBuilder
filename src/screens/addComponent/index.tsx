@@ -72,14 +72,12 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ];
         }
       }
-
       const otherconditionalComponentOutOfProgressionLevel =
         pathwayComponent?.ComponentConditions?.filter(
           (pathway_card: any) =>
             pathway_card.HasProgressionLevel !==
             _.toString(data.HasProgressionLevel)
         );
-
       const currentConditionalComponentInProgressionLevel1 = _.get(
         pathwayComponent?.ComponentConditions?.filter(
           (pathway_card: any) =>
@@ -182,6 +180,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConditionalComponent([]);
     }
   }, [conditionalComponent]);
+
   const constraintRowData = {
     LeftAction: [],
     LeftSource: [],
@@ -258,7 +257,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       RowNumber: data?.RowNumber,
       RowId: uuidv4(),
       Name: componentConditionFields.Name,
-      TargetComponent: data.HasChild || updatedTargetChild,
+      TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
       HasCondition: [],
     };
 
@@ -299,7 +298,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConstraintRow([]);
     }
   };
-
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
@@ -316,7 +314,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </div>
         <Form.Item>
           <label>Parent Component</label>
-          <InputBox name="ParentIdentifier" value={data?.RowId} />
+          <InputBox name="ParentIdentifier" value={data?.Name} />
         </Form.Item>
         <Form.Item>
           <label>Name</label>

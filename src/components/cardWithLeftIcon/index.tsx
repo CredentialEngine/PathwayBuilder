@@ -17,7 +17,6 @@ export interface Props {
   title?: string;
   id?: number | string;
   uri?: string;
-  getUpdatedCardArr?: (value: any) => void;
   isDraggableCardVisibleMethod?: (value: any) => any;
   disabledItem?: any;
   CTID?: any;
@@ -41,7 +40,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     inlineStyles,
     id,
     disabledItem,
-    CTID,
     Type,
   } = props.data;
   const onDragStart = (e: any) => {
@@ -56,6 +54,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
         isComponentTab: isComponentTab ? true : false,
       })
     );
+
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(true);
     setTimeout(() => {
       target.style.display = 'hidden';
@@ -69,7 +68,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
 
   const onDragEnd = (e: any) => {
     e.target.style.visibility = 'visible';
-    !!props.getUpdatedCardArr && props.getUpdatedCardArr(CTID);
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(false);
     // e.target.style.visibility = 'visible';
 
@@ -94,7 +92,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
           <span className={styles.iconwrapper + ' customicon'}>
             {isComponentTab ? (
               <>
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'AssessmentComponent'.toLowerCase()
                 ) && (
                   <img
@@ -107,7 +105,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'BasicComponent'.toLowerCase()
                 ) && (
                   <img
@@ -120,7 +118,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'CocurricularComponent'.toLowerCase()
                 ) && (
                   <img
@@ -133,7 +131,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'CompetencyComponent'.toLowerCase()
                 ) && (
                   <img
@@ -146,7 +144,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'CourseComponent'.toLowerCase()
                 ) && (
                   <img
@@ -159,7 +157,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'ExtracurricularComponent'.toLowerCase()
                 ) && (
                   <img
@@ -172,7 +170,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'JobComponent'.toLowerCase()
                 ) && (
                   <img
@@ -185,7 +183,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'WorkExperienceComponent'.toLowerCase()
                 ) && (
                   <img
@@ -198,7 +196,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'CredentialComponent'.toLowerCase()
                 ) && (
                   <img
@@ -211,7 +209,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'ComponentCondition'.toLowerCase()
                 ) && (
                   <img
@@ -224,7 +222,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     className="componentIcon"
                   />
                 )}
-                {data?.URI?.toLowerCase().includes(
+                {data?.Type?.toLowerCase().includes(
                   'selection'.toLowerCase()
                 ) && (
                   <img

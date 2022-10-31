@@ -1,6 +1,9 @@
 import Modal from 'antd/lib/modal/Modal';
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { v4 as uuidv4 } from 'uuid';
 
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
@@ -28,7 +31,8 @@ const LeftPanel: React.FC<any> = ({
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  const [selectedTabCards, setSelectedtabCards] = useState<any>([]);
+  const [selectedTabCards, setSelectedtabCards] =
+    useState<any>(selectedTabCardData);
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
@@ -45,27 +49,62 @@ const LeftPanel: React.FC<any> = ({
   );
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
+  const [selectedPathwayComponents, setSelectedPathwayComponents] =
+    useState<any>([]);
   useEffect(() => {
-    if (selectedTabCardData) {
-      setSelectedtabCards(selectedTabCardData);
-    }
-  }, [selectedTabCardData]);
+    if (selectedTabCardData && selectedTabCardData.length > 0) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+      if (
+        updatedPathwayWrapper.PathwayComponents.length > 0 &&
+        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
+      ) {
+        const filteredPendingCards = selectedTabCards?.filter(
+          (selected_card: any) =>
+            !updatedPathwayWrapper.PathwayComponents.some(
+              (pathway_card: any) =>
+                _.toString(pathway_card.CTID) === _.toString(selected_card.CTID)
+            )
+        );
+        updatedPathwayWrapper.PendingComponents =
+          filteredPendingCards.length === 0 ? [] : selectedTabCards;
 
-  const filteredSelectedCards = (val: any) => {
-    const filteredSelectedCards = selectedTabCards?.filter(
-      (item: any) => item.CTID !== val
-    );
-    const updatedPathwayWrapper = { ...pathwayComponent };
-    updatedPathwayWrapper.PendingComponents = filteredSelectedCards;
-    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    setSelectedtabCards(filteredSelectedCards);
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+
+        setSelectedtabCards(filteredPendingCards);
+      } else {
+        setSelectedtabCards(selectedTabCardData);
+      }
+      setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
+    }
+  }, [selectedTabCardData, pathwayComponent.PathwayComponents]);
+
+  const createCard = (card: any) => {
+    const CTID = `ce-${uuidv4()}`;
+    const newCard = {
+      CTID,
+      Created: '',
+      Description: card?.Description,
+      HasChild: [],
+      HasCondition: [],
+      IndustryType: [],
+      IsChildOf: [],
+      Name: card?.Name,
+      OccupationType: [],
+      PrecededBy: [],
+      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
+      ProxyForLabel: card?.Name,
+      RowId: uuidv4(),
+      Type: card?.URI,
+    };
+    return newCard;
   };
 
   useEffect(() => {
     if (allComponentTabCards.valid)
       setComponentTabCards(
         allComponentTabCards.data.map((comp_data: any) => ({
-          ...comp_data,
+          // ...comp_data,
+          ...createCard(comp_data),
           Type: comp_data.URI,
         }))
       );
@@ -81,19 +120,7 @@ const LeftPanel: React.FC<any> = ({
     } else {
       return;
     }
-    /*  Commenting the below code because Dragging of a component from the gameboard to the Component Tab is 
-    not listed in documents and we are not storing components tab card. 
 
-    if (tab === LeftPanelTabKey.Components) {
-      const isSelectedCardAlreadyExist = componentTabCards.some(
-        (component_card: any) => component_card.RowId === card.RowId
-      );
-      if (!isSelectedCardAlreadyExist) {
-        setComponentTabCards([...componentTabCards, card]);
-      }
-    }
-
- */
     const filteredPathwayComponent = PathwayComponents.filter(
       (component_card: any) => component_card.CTID !== card.CTID
     );
@@ -122,7 +149,7 @@ const LeftPanel: React.FC<any> = ({
       children: (
         <>
           <SearchBox
-            placeholder="Search your components"
+            placeholder="Search Components"
             className={Styles.customsearch}
             styleType="outline"
             onKeyUp={searchComponent}
@@ -132,7 +159,7 @@ const LeftPanel: React.FC<any> = ({
             tabName={LeftPanelTabKey.Selected}
             onDrop={onDropHandler}
           >
-            {selectedTabCards && selectedTabCards.length <= 0 ? (
+            {selectedTabCards && selectedTabCards?.length <= 0 ? (
               <div className={Styles.tooltipContent}>
                 <p className={Styles.title}>Pre-select components</p>
                 <p className={Styles.content}>
@@ -148,7 +175,7 @@ const LeftPanel: React.FC<any> = ({
               </div>
             ) : (
               selectedTabCards
-                .filter((v: any) =>
+                ?.filter((v: any) =>
                   v?.Description?.toLocaleLowerCase().includes(
                     searchValue?.toLocaleLowerCase()
                   )
@@ -167,9 +194,6 @@ const LeftPanel: React.FC<any> = ({
                     CTID={v?.CTID}
                     isDraggableCardVisibleMethod={(isDragTure: boolean) =>
                       setDraggableCardVisible(isDragTure)
-                    }
-                    getUpdatedCardArr={(value: any) =>
-                      filteredSelectedCards(value)
                     }
                     setLeftpanelSelectedElem={setLeftpanelSelectedElem}
                   />
@@ -194,9 +218,9 @@ const LeftPanel: React.FC<any> = ({
                 name={card.Name}
                 description={card.Description}
                 uri={card?.URI}
+                CTID={card?.CTID}
                 id={card.Id}
                 type={card?.URI}
-                getUpdatedCardArr={(value: any) => filteredSelectedCards(value)}
                 setLeftpanelSelectedElem={setLeftpanelSelectedElem}
               />
             ))}
@@ -223,9 +247,8 @@ const LeftPanel: React.FC<any> = ({
     <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
         <h1>Add Components</h1>
-        {/* <Button onClick={noop} text="Edit Selections" type="selection" /> */}
         <u style={{ cursor: 'pointer' }} onClick={onClickPreselectComponent}>
-          Select
+          Search Components
         </u>
       </div>
       <Tab {...tabVal} />

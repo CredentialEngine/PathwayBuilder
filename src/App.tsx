@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.scss';
@@ -134,6 +135,11 @@ const App = () => {
     </div>
   );
 
+  const onPreSelectResourceCancelHandler = () => {
+    setIsPreSelectedCreateResourceVisible(false);
+    !!setIsDestinationColumnSelected && setIsDestinationColumnSelected(true);
+  };
+
   const closeCreatePathwayModal = () => {
     Modal.confirm({
       cancelText: 'No',
@@ -203,6 +209,7 @@ const App = () => {
           visible={isPreSelectedCreateResourceVisible}
           width="650px"
           footer={[]}
+          onCancel={onPreSelectResourceCancelHandler}
           title="Pre-Select Resources to Create Your Pathway"
         >
           <PreSelectResourceCreatePath
@@ -253,7 +260,10 @@ const App = () => {
                 onClick={selectOrgOkHandler}
                 text="Confirm"
                 disabled={
-                  selectedOrganisationValue === 'Select an organization'
+                  !(
+                    !_.isUndefined(selectedOrganisationValue) ||
+                    _.isNull(selectedOrganisationValue)
+                  )
                 }
               />
             </>,

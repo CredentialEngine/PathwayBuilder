@@ -88,6 +88,13 @@ const Constraint: React.FC<Props> = (Props) => {
           });
         }
       });
+      if (e.label === undefined) {
+        setConstraintData({
+          ...constraintData,
+          LeftSource: [...constraintData?.LeftSource, e.value],
+          id: RowIndex,
+        });
+      }
     }
     if (name === 'RightSource') {
       rightSourcedata.map((val: any) => {
@@ -99,6 +106,13 @@ const Constraint: React.FC<Props> = (Props) => {
           });
         }
       });
+      if (e.label === undefined) {
+        setConstraintData({
+          ...constraintData,
+          RightSource: [...constraintData?.RightSource, e.value],
+          id: RowIndex,
+        });
+      }
     }
   };
 
@@ -182,7 +196,6 @@ const Constraint: React.FC<Props> = (Props) => {
   const handleDeleteRow = (RowIndex: any) => {
     getRequiredDeleteRow(RowIndex);
   };
-
   return (
     <>
       <Row gutter={20}>
@@ -191,7 +204,7 @@ const Constraint: React.FC<Props> = (Props) => {
             {constraintData?.LeftSource?.length > 1 && (
               <Dropdown
                 options={constraintEntityFields.LeftAction}
-                defaultValue="Any Of"
+                placeholder="Left Action"
                 showSearch={false}
                 onChange={(e) => handleConstraintAction(e, 'LeftAction')}
               />
@@ -230,7 +243,7 @@ const Constraint: React.FC<Props> = (Props) => {
               {constraintData?.RightSource?.length > 1 && (
                 <Dropdown
                   options={constraintEntityFields.RightAction}
-                  defaultValue="Any Of"
+                  placeholder="Right Action"
                   showSearch={false}
                   onChange={(e) => handleConstraintAction(e, 'RightAction')}
                 />
