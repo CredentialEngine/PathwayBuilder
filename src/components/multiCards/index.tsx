@@ -206,6 +206,7 @@ const MultiCard: React.FC<Props> = ({
     e.stopPropagation();
     setVisibleConstraintCondition(true);
   };
+  // console.log({isAddFirst,firstComponent , datType: data}, '---->');
 
   return (
     <>
@@ -664,6 +665,28 @@ const MultiCard: React.FC<Props> = ({
                   />
                 </div>
               )}
+              {data.firstColumn &&
+                constraintIcon &&
+                PathwayWrapper.PathwayComponents.map(
+                  (component: any) =>
+                    component.HasChild.length > 0 && (
+                      <div className={styles.addIcon + ' ' + styles.rightAlign}>
+                        <FontAwesomeIcon
+                          icon={faCirclePlus}
+                          fill="#000000"
+                          style={{
+                            height: '22px',
+                            width: '22px',
+                            color: '#ffb90b',
+                            cursor: 'pointer',
+                          }}
+                          onClick={(e) => {
+                            onPlusCircleClickHandler(e);
+                          }}
+                        />
+                      </div>
+                    )
+                )}
 
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}

@@ -595,12 +595,13 @@ const AddPathwayForm: React.FC<Props> = ({
       color="rgb(220,250,249)"
       style={{
         width: '100%',
-        wordWrap: 'break-word',
+        // wordWrap: 'break-word',
         padding: 10,
         paddingRight: 20,
         marginTop: 10,
         blockOverflow: 'ellipsis',
         whiteSpace: 'pre-wrap',
+        position: 'relative',
       }}
     >
       <>
