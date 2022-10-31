@@ -60,8 +60,9 @@ const RightPanel: React.FC<Props> = ({
     setDestinationTextCondition(true);
   };
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
-  const organizationName =
-    pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name;
+  const organizationName = pathwayWrapper?.pathwayComponentData?.data
+    ? pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name
+    : pathwayWrapper?.selectedOrganization?.Name;
   const ctid = panelData?.CTID;
   const type = panelData?.Type;
   const url = `https://sandbox.credentialengine.org/finder/${type}/${ctid}`;
@@ -108,7 +109,6 @@ const RightPanel: React.FC<Props> = ({
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Owned and Offered by</p>
-          {/* <p className={styles.value}>{panelData?.ProxyForLabel}</p> */}
           <p className={styles.value}>{organizationName}</p>
         </Row>
         <Row className={styles.infoContainer}>

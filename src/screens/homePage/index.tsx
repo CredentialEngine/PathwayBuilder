@@ -419,7 +419,6 @@ const HomePage: React.FC<Props> = ({
     updatedPathwayWrapper.ComponentConditions = ComponentConditions.map(
       (item: any) => ({
         ...item,
-
         HasCondition: item.HasCondition.filter((e: any) => e !== data.RowId),
       })
     );
@@ -439,7 +438,6 @@ const HomePage: React.FC<Props> = ({
       }))
     );
   };
-
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {

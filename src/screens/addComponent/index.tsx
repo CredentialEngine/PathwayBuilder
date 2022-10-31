@@ -175,12 +175,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
 
-      const Constraints = {
-        ParentIdentifier: data?.RowId,
-        Description: componentConditionFields.Description,
-        constraintRow,
-      };
-      updatedPathwayWrapper.Constraints = Constraints;
+      updatedPathwayWrapper.Constraints = constraintRow;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setConditionalComponent([]);
     }
@@ -193,6 +188,9 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     RightAction: [],
     RightSource: [],
     id: 0,
+    RowId: data?.RowId,
+    name: componentConditionFields.Name,
+    Description: componentConditionFields.Description,
   };
 
   const [constraintRow, setConstraintRow] = useState<any>([]);
@@ -232,10 +230,12 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, []);
 
   const saveCondition = () => {
+    const mId = uuidv4();
     const Constraint = {
       ParentIdentifier: componentConditionFields.ParentIdentifier,
       Description: componentConditionFields.Description,
       constraintRow,
+      rowId: mId,
     };
 
     const updatedTargetChild =

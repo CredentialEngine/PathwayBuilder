@@ -210,8 +210,6 @@ const MultiCard: React.FC<Props> = ({
     e.stopPropagation();
     setVisibleConstraintCondition(true);
   };
-  // console.log({isAddFirst,firstComponent , datType: data}, '---->');
-
   return (
     <>
       {isDraggableCardVisible ? (

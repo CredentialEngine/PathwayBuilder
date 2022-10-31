@@ -42,16 +42,16 @@ import {
   getDataForProgressionModelSuccess,
 } from './state/actions';
 
-interface ComponentTypesValue {
-  label: string;
-  value: string;
-  RowId?: string;
-  Id?: number;
-  CodedNotation?: string;
-  Name?: string;
-  Description?: string;
-  URI?: string;
-}
+// interface ComponentTypesValue {
+//   label: string;
+//   value: string;
+//   RowId?: string;
+//   Id?: number;
+//   CodedNotation?: string;
+//   Name?: string;
+//   Description?: string;
+//   URI?: string;
+// }
 
 export interface Props {
   addPathwayWrapperFields?: any;
@@ -102,19 +102,19 @@ const AddPathwayForm: React.FC<Props> = ({
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
-  const [occupationSelectedValue, setOccupationSelectedValue] = useState<
-    ComponentTypesValue[]
-  >([]);
+  // const [occupationSelectedValue, setOccupationSelectedValue] = useState<
+  //   ComponentTypesValue[]
+  // >([]);
   const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
-  const [industrySelectedValue, setIndustrySelectedValue] = useState<
-    ComponentTypesValue[]
-  >([]);
+  // const [industrySelectedValue, setIndustrySelectedValue] = useState<
+  //   ComponentTypesValue[]
+  // >([]);
   const [allInstructionalProgramTypeData, setAllInstructionalProgramTypeData] =
     useState<[]>([]);
-  const [
-    instructionalProgramSelectedValue,
-    setInstructionalProgramSelectedValue,
-  ] = useState<ComponentTypesValue[]>([]);
+  // const [
+  //   instructionalProgramSelectedValue,
+  //   setInstructionalProgramSelectedValue,
+  // ] = useState<ComponentTypesValue[]>([]);
   const [
     isAddPathwayFormNextButtonDisable,
     setIsAddPathwayFormNextButtonDisable,
@@ -208,21 +208,21 @@ const AddPathwayForm: React.FC<Props> = ({
     }
   }, [savePathwayResult]);
 
-  let { mappedData: PathwayWrapper } = pathwayWrapper;
+  const { mappedData: PathwayWrapper } = pathwayWrapper;
   const dispatch = useDispatch();
 
   const userOrganizations = useSelector(
     (state: any) => state.initalReducer?.currentUserData?.data?.Organizations
   );
 
-  const pathwayData = useSelector(
-    (state: any) => state.initalReducer?.pathwayComponentData
-  );
-  useEffect(() => {
-    if (pathwayData?.data) {
-      PathwayWrapper = pathwayData?.data;
-    }
-  }, [pathwayData]);
+  // const pathwayData = useSelector(
+  //   (state: any) => state.initalReducer?.pathwayComponentData
+  // );
+  // useEffect(() => {
+  //   if (pathwayData?.data) {
+  //     PathwayWrapper = pathwayData?.data;
+  //   }
+  // }, [pathwayData]);
 
   useEffect(() => {
     if (!_.isNull(PathwayWrapper.Pathway)) {
@@ -273,22 +273,22 @@ const AddPathwayForm: React.FC<Props> = ({
     );
   }, [addPathwayFormFields]);
 
-  useEffect(() => {
-    const updatedData = { ...addPathwayFormFields };
+  // useEffect(() => {
+  //   const updatedData = { ...addPathwayFormFields };
 
-    if (occupationSelectedValue.length > 0) {
-      updatedData.OccupationType = occupationSelectedValue;
-    }
-    if (industrySelectedValue.length > 0) {
-      updatedData.IndustryType = industrySelectedValue;
-    }
-    if (instructionalProgramSelectedValue.length > 0) {
-      updatedData.InstructionalType = industrySelectedValue;
-    }
-    if (!isEditPathwayFormVisible) {
-      setAddPathwayFormFields(updatedData);
-    }
-  }, [occupationSelectedValue, industrySelectedValue]);
+  //   if (occupationSelectedValue.length > 0) {
+  //     updatedData.OccupationType = occupationSelectedValue;
+  //   }
+  //   if (industrySelectedValue.length > 0) {
+  //     updatedData.IndustryType = industrySelectedValue;
+  //   }
+  //   if (instructionalProgramSelectedValue.length > 0) {
+  //     updatedData.InstructionalType = industrySelectedValue;
+  //   }
+  //   if (!isEditPathwayFormVisible) {
+  //     setAddPathwayFormFields(updatedData);
+  //   }
+  // }, [occupationSelectedValue, industrySelectedValue]);
 
   const allHasProgressionModel = useSelector(
     (state: any) => state.addPathwayFormReducer.allHasProgressionModel
@@ -487,27 +487,34 @@ const AddPathwayForm: React.FC<Props> = ({
         return updatedBody;
       });
   }
-
   const onDebounceSelectHnadler = (e: any, name: string) => {
+    const updatedData = { ...addPathwayFormFields };
     if (name === 'Occupation') {
       const filteredOccupations = allOccupationTypeData.filter(
         (data: any) => data.Name === e.value
       );
 
-      setOccupationSelectedValue((prevState: any) => [
-        ...prevState,
+      // setOccupationSelectedValue((prevState: any) => [
+      //   ...prevState,
+      //   ...filteredOccupations,
+      // ]);
+      updatedData.OccupationType = [
+        ...addPathwayFormFields?.OccupationType,
         ...filteredOccupations,
-      ]);
+      ];
     }
     if (name === 'Industry') {
       const filteredIndustry = allIndustryTypeData.filter(
         (data: any) => data.Name === e.value
       );
-
-      setIndustrySelectedValue((prevState: any) => [
-        ...prevState,
+      // setIndustrySelectedValue((prevState: any) => [
+      //   ...prevState,
+      //   ...filteredIndustry,
+      // ]);
+      updatedData.IndustryType = [
+        ...addPathwayFormFields?.IndustryType,
         ...filteredIndustry,
-      ]);
+      ];
     }
     if (name === 'instructionalProgram') {
       const filteredInstructionalProgram =
@@ -515,11 +522,16 @@ const AddPathwayForm: React.FC<Props> = ({
           (data: any) => data.Name === e.value
         );
 
-      setInstructionalProgramSelectedValue((prevState: any) => [
-        ...prevState,
+      // setInstructionalProgramSelectedValue((prevState: any) => [
+      //   ...prevState,
+      //   ...filteredInstructionalProgram,
+      // ]);
+      updatedData.InstructionalType = [
+        ...addPathwayFormFields?.InstructionalType,
         ...filteredInstructionalProgram,
-      ]);
+      ];
     }
+    setAddPathwayFormFields(updatedData);
   };
 
   const onAddPathwayOkHandler = () => {
