@@ -1,9 +1,9 @@
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, Col, Form, Divider, Tag } from 'antd';
+import { Row, Col, Form, Divider, Tag, Modal } from 'antd';
 
-import _ from 'lodash';
+import _, { noop } from 'lodash';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import React, { useEffect, useState } from 'react';
 
@@ -239,6 +239,8 @@ const AddPathwayForm: React.FC<Props> = ({
         PathwayWrapper.Pathway.HasProgressionModel;
       updatedPathwayFormFields.IndustryType =
         PathwayWrapper.Pathway.IndustryType;
+      updatedPathwayFormFields.InstructionalType =
+        PathwayWrapper.Pathway.InstructionalType;
       updatedPathwayFormFields.OccupationType =
         PathwayWrapper.Pathway.OccupationType;
       updatedPathwayFormFields.SubjectWebpage =
@@ -489,6 +491,7 @@ const AddPathwayForm: React.FC<Props> = ({
   }
   const onDebounceSelectHnadler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
+
     if (name === 'Occupation') {
       const filteredOccupations = allOccupationTypeData?.filter(
         (data: any) => data.Name === e.value
@@ -517,8 +520,9 @@ const AddPathwayForm: React.FC<Props> = ({
         ...indData,
         ...filteredIndustry,
       ];
+      // console.log("filteredIndustry",  ...addPathwayFormFields?.IndustryType)
     }
-    if (name === 'instructionalProgram') {
+    if (name === 'InstructionalProgram') {
       const filteredInstructionalProgram =
         allInstructionalProgramTypeData?.filter(
           (data: any) => data.Name === e.value
@@ -538,20 +542,46 @@ const AddPathwayForm: React.FC<Props> = ({
   };
 
   const onAddPathwayOkHandler = () => {
-    dispatch(
-      saveDataForPathwayRequest({
-        ...addPathwayWrapperFields,
-        Pathway: addPathwayFormFields,
-      })
-    );
+    if (isEditPathwayFormVisible) {
+      Modal.confirm({
+        title: 'By clicking on Save all existing data will be lost.',
+        okText: 'Save',
+        cancelText: 'Cancel',
+        onOk: () => {
+          dispatch(
+            saveDataForPathwayRequest({
+              ...addPathwayWrapperFields,
+              Pathway: addPathwayFormFields,
+            })
+          );
 
-    dispatch(
-      updateMappedDataRequest({
-        ...addPathwayWrapperFields,
-        Pathway: addPathwayFormFields,
-        PathwayComponents: [],
-      })
-    );
+          dispatch(
+            updateMappedDataRequest({
+              ...addPathwayWrapperFields,
+              Pathway: addPathwayFormFields,
+              PathwayComponents: [],
+            })
+          );
+          setIsEditPathwayFormVisible(false);
+        },
+        onCancel: noop,
+      });
+    } else {
+      dispatch(
+        saveDataForPathwayRequest({
+          ...addPathwayWrapperFields,
+          Pathway: addPathwayFormFields,
+        })
+      );
+
+      dispatch(
+        updateMappedDataRequest({
+          ...addPathwayWrapperFields,
+          Pathway: addPathwayFormFields,
+          PathwayComponents: [],
+        })
+      );
+    }
   };
 
   const customToolTipIcon = (type: any) => (
@@ -626,7 +656,7 @@ const AddPathwayForm: React.FC<Props> = ({
             fontSize: '10',
             position: 'absolute',
             right: 5,
-            top: 55,
+            top: 5,
             cursor: 'pointer',
           }}
           onClick={() => onShowCloseToolTip(type, false)}

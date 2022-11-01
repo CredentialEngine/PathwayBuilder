@@ -149,7 +149,7 @@ const LeftPanel: React.FC<any> = ({
       children: (
         <>
           <SearchBox
-            placeholder="Search Components"
+            placeholder="Search your Components"
             className={Styles.customsearch}
             styleType="outline"
             onKeyUp={searchComponent}
@@ -246,7 +246,7 @@ const LeftPanel: React.FC<any> = ({
   return (
     <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
-        <h1>Add Components</h1>
+        <h2>Add Components</h2>
         <u style={{ cursor: 'pointer' }} onClick={onClickPreselectComponent}>
           Search Components
         </u>

@@ -1,6 +1,5 @@
 import {
   faCirclePlus,
-  faCubes,
   faEllipsis,
   faSitemap,
 } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +9,8 @@ import _, { noop } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
 
 import AddConditionalComponent from '../../screens/addComponent';
 
@@ -53,11 +54,12 @@ interface Props {
   isConditionalModalStatus?: boolean;
   setIsConditionalModalStatus?: (a: boolean) => void;
   newConnection?: any;
-  condCardItem?: any;
+  skipPreSelect?: boolean;
+  destinationColumnSelect?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
-  condCardItem,
+  destinationColumnSelect,
   isAddDestination,
   isDestination,
   isCourseCard,
@@ -88,6 +90,7 @@ const MultiCard: React.FC<Props> = ({
   isConditionalModalStatus,
   setIsConditionalModalStatus,
   newConnection,
+  skipPreSelect,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -100,6 +103,7 @@ const MultiCard: React.FC<Props> = ({
   const [filteredPathwayComponent, setFilteredPathwayComponent] = useState<any>(
     []
   );
+  const [isConditionalEditing, setIsConditionalEditing] = useState(false);
 
   const { mappedData: PathwayWrapper } = pathwayWrapper;
   const handledConstraintsModal = (bool: boolean) => {
@@ -210,6 +214,153 @@ const MultiCard: React.FC<Props> = ({
     e.stopPropagation();
     setVisibleConstraintCondition(true);
   };
+
+  const renderImage = (data: any) =>
+    (data?.Type?.toLowerCase().includes(
+      'AssessmentComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/AssessmentComponent.png`}
+        alt="AssessmentComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('BasicComponent'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/BasicComponent.png`}
+        alt="BasicComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'CocurricularComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CocurricularComponent.png`}
+        alt="CocurricularComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'CompetencyComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CompetencyComponent.png`}
+        alt="CompetencyComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('CourseComponent'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CourseComponent.png`}
+        alt="CourseComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'ExtracurricularComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/ExtracurricularComponent.png`}
+        alt="ExtracurricularComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/JobComponent.png`}
+        alt="JobComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'WorkExperienceComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/WorkExperienceComponent.png`}
+        alt="WorkExperienceComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes(
+      'CredentialComponent'.toLowerCase()
+    ) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/CredentialComponent.png`}
+        alt="CredentialComponent"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('ComponentCondition'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/ComponentCondition.png`}
+        alt="ComponentCondition"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    )) ||
+    (data?.Type?.toLowerCase().includes('selection'.toLowerCase()) && (
+      <img
+        src={`${
+          process.env.NODE_ENV !== 'production'
+            ? sanboxSetting.api.url
+            : productionSetting.api.url
+        }Images/PathwayBuilder/SelectionCondition.png`}
+        alt="SelectionCondition"
+        className="componentIcon"
+        style={{ height: '26px', width: '26px' }}
+      />
+    ));
+
   return (
     <>
       {isDraggableCardVisible ? (
@@ -223,7 +374,7 @@ const MultiCard: React.FC<Props> = ({
             <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
             <div
               className={`${styles.multiCardWrapper} ${
-                (isAddDestination && destinationComponent) ||
+                (skipPreSelect && isAddDestination && destinationComponent) ||
                 (isAddFirst && firstComponent)
                   ? styles.addDestinationCard
                   : ''
@@ -248,7 +399,7 @@ const MultiCard: React.FC<Props> = ({
               data-rowNumber={rowNumber}
               data-CTID={data.CTID}
             >
-              {destinationComponent && isAddDestination && (
+              {skipPreSelect && destinationComponent && isAddDestination && (
                 <>
                   <InfoTooltip
                     title="Add your destination component"
@@ -388,10 +539,11 @@ const MultiCard: React.FC<Props> = ({
 
                   <div className={styles.credentialsCardWrapeer}>
                     <div className={styles.topCourseContent}>
-                      <FontAwesomeIcon
+                      {/* <FontAwesomeIcon
                         icon={faCubes}
                         style={{ height: '24px', width: '24px' }}
-                      />
+                      /> */}
+                      {renderImage(data)}
                       <span className={styles.title}>
                         {data.Name.slice(0, 30)}
                       </span>
@@ -456,10 +608,11 @@ const MultiCard: React.FC<Props> = ({
                 <>
                   <div className={styles.courseCredCardWrapper}>
                     <div className={styles.topCourseContent}>
-                      <FontAwesomeIcon
+                      {/* <FontAwesomeIcon
                         icon={faCubes}
                         style={{ height: '24px', width: '24px' }}
-                      />
+                      /> */}
+                      {renderImage(data)}
                       <span className={styles.title}>
                         {data.Name.slice(0, 30)}
                       </span>
@@ -547,7 +700,7 @@ const MultiCard: React.FC<Props> = ({
       ) : (
         <div
           className={`${styles.multiCardWrapper} ${
-            (isAddDestination && destinationComponent) ||
+            (skipPreSelect && isAddDestination && destinationComponent) ||
             (isAddFirst && firstComponent)
               ? styles.addDestinationCard
               : ''
@@ -572,7 +725,7 @@ const MultiCard: React.FC<Props> = ({
           data-rowNumber={rowNumber}
           data-CTID={data.CTID}
         >
-          {destinationComponent && isAddDestination && (
+          {skipPreSelect && destinationComponent && isAddDestination && (
             <>
               <InfoTooltip
                 title="Add your destination component"
@@ -592,6 +745,7 @@ const MultiCard: React.FC<Props> = ({
               </div>
             </>
           )}
+
           {isAddFirst && firstComponent && (
             <>
               <InfoTooltip
@@ -688,57 +842,34 @@ const MultiCard: React.FC<Props> = ({
                   />
                 </div>
               )}
-              {data.firstColumn &&
-                constraintIcon &&
-                PathwayWrapper.PathwayComponents.map(
-                  (component: any) =>
-                    component.HasChild.length > 0 && (
-                      <div className={styles.addIcon + ' ' + styles.rightAlign}>
-                        <FontAwesomeIcon
-                          icon={faCirclePlus}
-                          fill="#000000"
-                          style={{
-                            height: '22px',
-                            width: '22px',
-                            color: '#ffb90b',
-                            cursor: 'pointer',
-                          }}
-                          onClick={(e) => {
-                            onPlusCircleClickHandler(e);
-                          }}
-                        />
-                      </div>
-                    )
-                )}
-
-              {console.log(
-                { condCardItem, newConnection, data },
-                'condCardItem'
-              )}
 
               {newConnection.length > 0 &&
-                (data.CTID == newConnection[newConnection.length - 1]?.start ? (
-                  /* data.firstColumn && */ <div
-                    className={styles.addIcon + ' ' + styles.rightAlign}
-                  >
-                    {}
-                    <FontAwesomeIcon
-                      icon={faCirclePlus}
-                      fill="#000000"
-                      style={{
-                        height: '22px',
-                        width: '22px',
-                        color: '#ffb90b',
-                        cursor: 'pointer',
-                      }}
-                      onClick={(e) => {
-                        onPlusCircleClickHandler(e);
-                      }}
-                    />
-                  </div>
-                ) : (
-                  ''
-                ))}
+                newConnection?.map((v: any) =>
+                  v.start == data.CTID
+                    ? !data.destinationColumn && (
+                        <div
+                          className={`${styles.addIcon} ${
+                            !destinationColumnSelect ? styles.rightAlign : ''
+                          }`}
+                        >
+                          {}
+                          <FontAwesomeIcon
+                            icon={faCirclePlus}
+                            fill="#000000"
+                            style={{
+                              height: '22px',
+                              width: '22px',
+                              color: '#ffb90b',
+                              cursor: 'pointer',
+                            }}
+                            onClick={(e) => {
+                              onPlusCircleClickHandler(e);
+                            }}
+                          />
+                        </div>
+                      )
+                    : ''
+                )}
 
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}
@@ -751,10 +882,11 @@ const MultiCard: React.FC<Props> = ({
                 }
               >
                 <div className={styles.topCourseContent}>
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faCubes}
                     style={{ height: '24px', width: '24px' }}
-                  />
+                  /> */}
+                  {renderImage(data)}
                   <span className={styles.title}>{data.Name.slice(0, 30)}</span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -821,10 +953,11 @@ const MultiCard: React.FC<Props> = ({
             <>
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faCubes}
                     style={{ height: '24px', width: '24px' }}
-                  />
+                  /> */}
+                  {renderImage(data)}
                   <span className={styles.title}>{data.Name.slice(0, 30)}</span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -901,10 +1034,12 @@ const MultiCard: React.FC<Props> = ({
                           onClick={(e: any) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            setShowRightPenal(true);
+                            setVisibleConstraintCondition(true);
+                            setIsConditionalEditing(true);
+                            setShowPopover(false);
                           }}
                         >
-                          View
+                          Edit
                         </span>
                         <span
                           onClick={(e: any) => {
@@ -980,6 +1115,8 @@ const MultiCard: React.FC<Props> = ({
           isDestinationCard={isDestination}
           setIsConditionalModalStatus={setIsConditionalModalStatus}
           HasProgressionLevel={HasProgressionLevel}
+          isConditionalEditing={isConditionalEditing}
+          setIsConditionalEditing={setIsConditionalEditing}
         />
       </Modal>
 
