@@ -501,11 +501,8 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...prevState,
       //   ...filteredOccupations,
       // ]);
-      const occData = addPathwayFormFields?.OccupationType ?? []
-      updatedData.OccupationType = [
-          ...occData,
-        ...filteredOccupations,
-      ];
+      const occData = addPathwayFormFields?.OccupationType ?? [];
+      updatedData.OccupationType = [...occData, ...filteredOccupations];
     }
     if (name === 'Industry') {
       const filteredIndustry = allIndustryTypeData?.filter(
@@ -515,11 +512,8 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...prevState,
       //   ...filteredIndustry,
       // ]);
-      const indData = addPathwayFormFields?.IndustryType ?? []
-      updatedData.IndustryType = [
-        ...indData,
-        ...filteredIndustry,
-      ];
+      const indData = addPathwayFormFields?.IndustryType ?? [];
+      updatedData.IndustryType = [...indData, ...filteredIndustry];
       // console.log("filteredIndustry",  ...addPathwayFormFields?.IndustryType)
     }
     if (name === 'InstructionalProgram') {
@@ -532,7 +526,7 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...prevState,
       //   ...filteredInstructionalProgram,
       // ]);
-      const insData = addPathwayFormFields?.InstructionalType ?? []
+      const insData = addPathwayFormFields?.InstructionalType ?? [];
       updatedData.InstructionalType = [
         ...insData,
         ...filteredInstructionalProgram,
@@ -552,6 +546,7 @@ const AddPathwayForm: React.FC<Props> = ({
             saveDataForPathwayRequest({
               ...addPathwayWrapperFields,
               Pathway: addPathwayFormFields,
+              Constraints: [],
             })
           );
 
@@ -560,6 +555,7 @@ const AddPathwayForm: React.FC<Props> = ({
               ...addPathwayWrapperFields,
               Pathway: addPathwayFormFields,
               PathwayComponents: [],
+              Constraints: [],
             })
           );
           setIsEditPathwayFormVisible(false);
@@ -579,6 +575,7 @@ const AddPathwayForm: React.FC<Props> = ({
           ...addPathwayWrapperFields,
           Pathway: addPathwayFormFields,
           PathwayComponents: [],
+          Constraints: [],
         })
       );
     }
@@ -750,8 +747,11 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={isEditPathwayFormVisible ?
-                   addPathwayFormFields?.IndustryType: undefined}
+                value={
+                  isEditPathwayFormVisible
+                    ? addPathwayFormFields?.IndustryType
+                    : undefined
+                }
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
@@ -794,8 +794,11 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={isEditPathwayFormVisible? 
-                  addPathwayFormFields?.OccupationType: undefined}
+                value={
+                  isEditPathwayFormVisible
+                    ? addPathwayFormFields?.OccupationType
+                    : undefined
+                }
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
@@ -817,8 +820,11 @@ const AddPathwayForm: React.FC<Props> = ({
                 <DebounceSelect
                   mode="multiple"
                   tagRender={tagRender}
-                  value={isEditPathwayFormVisible ? 
-                    addPathwayFormFields?.InstructionalProgram: undefined}
+                  value={
+                    isEditPathwayFormVisible
+                      ? addPathwayFormFields?.InstructionalProgram
+                      : undefined
+                  }
                   placeholder="Select Instructional Program"
                   fetchOptions={fetchInstructionalProgramList}
                   onSelect={(e: any) =>
