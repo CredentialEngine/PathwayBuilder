@@ -189,7 +189,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     RightSource: [],
     id: 0,
     RowId: data?.RowId,
-    name: componentConditionFields.Name,
+    Name: componentConditionFields.Name,
     Description: componentConditionFields.Description,
   };
 
@@ -231,11 +231,15 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   const saveCondition = () => {
     const mId = uuidv4();
-    const Constraint = {
-      ParentIdentifier: componentConditionFields.ParentIdentifier,
+    const addConstraints = constraintRow.map((v: any) => ({
+      ...v,
+      ParentIdentifier: mId,
+      RowId: mId,
+      Name: componentConditionFields.Name,
       Description: componentConditionFields.Description,
-      constraintRow,
-      rowId: mId,
+    }));
+    const Constraint = {
+      ...addConstraints,
     };
 
     const updatedTargetChild =
@@ -247,20 +251,19 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
     const ComponentConditions = {
       ParentIdentifier: data?.RowId,
+      RowId: mId,
+      Name: componentConditionFields.Name,
       Description: componentConditionFields.Description,
       RequiredNumber: componentConditionFields.RequiredNumber,
       LogicalOperator: componentConditionFields.LogicalOperator,
+      HasCondition: [],
       HasConstraint: Constraint,
       ColumnNumber: isDestinationCard
         ? data?.ColumnNumber + 1
         : data?.ColumnNumber,
       RowNumber: data?.RowNumber,
-      RowId: uuidv4(),
-      Name: componentConditionFields.Name,
       TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
-      HasCondition: [],
     };
-
     setConditionalComponent([ComponentConditions]);
 
     !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
