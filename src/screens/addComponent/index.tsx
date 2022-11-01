@@ -174,8 +174,13 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
       updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
-
-      updatedPathwayWrapper.Constraints = constraintRow;
+       
+      updatedPathwayWrapper.Constraints = constraintRow.map((v:any) => ({...v,
+          ParentIdentifier: consRowID,
+          RowId: consRowID,
+          Name: componentConditionFields.Name,
+          Description: componentConditionFields.Description,
+          }));
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setConditionalComponent([]);
     }
@@ -188,12 +193,14 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     RightAction: [],
     RightSource: [],
     id: 0,
-    RowId: data?.RowId,
+    //RowId: data?.RowId,
     Name: componentConditionFields.Name,
     Description: componentConditionFields.Description,
   };
 
   const [constraintRow, setConstraintRow] = useState<any>([]);
+  const [consRowID, setConstRowId] = useState<any>([]);
+  const [hasConstraints, setHasConstraints] = useState<any>([]);
   const dispatch = useDispatch();
 
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -232,14 +239,17 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
  
   const saveCondition = () => {
     const mId = uuidv4();
-    const addConstraints = constraintRow.map((v:any) => ({...v,
-      ParentIdentifier: mId,
-       RowId: mId,
+    // const addConstraints = constraintRow.map((v:any) => ({...v,
+    //   ParentIdentifier: mId,
+    //    RowId: mId,
+    //   Name: componentConditionFields.Name,
+    //   Description: componentConditionFields.Description,
+    //   }))
+    const Constraint = {
+      ...constraintRow,
+      RowId: mId,
       Name: componentConditionFields.Name,
       Description: componentConditionFields.Description,
-      }))
-    const Constraint = {
-      ...addConstraints,
     };
 
     const updatedTargetChild =
@@ -257,7 +267,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       RequiredNumber: componentConditionFields.RequiredNumber,
       LogicalOperator: componentConditionFields.LogicalOperator,
       HasCondition: [],
-      HasConstraint: Constraint,
+      HasConstraint: hasConstraints,
       ColumnNumber: isDestinationCard
         ? data?.ColumnNumber + 1
         : data?.ColumnNumber,
@@ -265,22 +275,26 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
     };
      setConditionalComponent([ComponentConditions]);
-
      !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
 
      !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
   };
 
   const addConstraintRow = () => {
-    setConstraintRow((prevState: any) => [
+    const mId = uuidv4();
+    const rowCon = [
       ...constraintRow,
       {
         ...constraintRowData,
-        id: !_.isUndefined(prevState[prevState.length - 1]?.id)
-          ? prevState[prevState.length - 1]?.id + 1
+        RowId: mId,
+        id: !_.isUndefined(constraintRow[constraintRow.length - 1]?.id)
+          ? constraintRow[constraintRow.length - 1]?.id + 1
           : 0,
       },
-    ]);
+    ]
+    setConstRowId(mId)
+    setConstraintRow(rowCon);
+    setHasConstraints([...hasConstraints, mId])
   };
 
   const getData = (val: any) => {
