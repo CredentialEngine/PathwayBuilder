@@ -153,7 +153,7 @@ const RightPanel: React.FC<Props> = ({
         <Divider />
         <Row className={styles.requiredBlock}>
           <Collapse
-            defaultActiveKey={['1']}
+            // defaultActiveKey={['1']}
             ghost
             expandIcon={({ isActive }) => (
               <CaretRightOutlined rotate={isActive ? 90 : 0} />

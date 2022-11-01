@@ -612,7 +612,7 @@ const HomePage: React.FC<Props> = ({
                     <DropWrapper
                       id={column.id}
                       onDrop={onDropHandler}
-                      key={column.Id}
+                      key={uuidv4()}
                       index={index}
                       column={column.Name}
                       number={column.number}
@@ -685,7 +685,10 @@ const HomePage: React.FC<Props> = ({
                                           end={items?.end}
                                           key={idx}
                                           labels={
-                                            <div className={Styles.tempwrapper}>
+                                            <div
+                                              key={idx}
+                                              className={Styles.tempwrapper}
+                                            >
                                               <span
                                                 className={
                                                   Styles.addConditionIcon
@@ -849,7 +852,7 @@ const HomePage: React.FC<Props> = ({
                             pathwayComponentCards?.length <= 1 && (
                               <MultiCard
                                 onClick={() => setShowRightPanel(true)}
-                                key={0}
+                                key={uuidv4()}
                                 //id={0}
                                 firstComponent={
                                   column?.CTID === getLastColumn('first')
@@ -901,7 +904,7 @@ const HomePage: React.FC<Props> = ({
         {!!column.semesters &&
           column.semesters.map((semester: any, index: any) => (
             <>
-              <div>
+              <div key={uuidv4()}>
                 <div
                   style={{
                     backgroundColor: `${
@@ -1002,10 +1005,11 @@ const HomePage: React.FC<Props> = ({
                 centerOnInit={false}
                 panning={{ disabled: true }}
                 wheel={{ disabled: true }}
+                key="TransformWrapper"
               >
                 {({ setTransform, resetTransform }) => (
                   <React.Fragment>
-                    <div className="zoom-tools">
+                    <div className="zoom-tools" key="zoom-tools">
                       <button
                         onClick={() => setTransform(1, 1, 0.8, 400, 'easeOut')}
                       >
@@ -1013,8 +1017,8 @@ const HomePage: React.FC<Props> = ({
                       </button>
                       <button onClick={() => resetTransform()}>x</button>
                     </div>
-                    <TransformComponent>
-                      <div style={{ display: 'flex' }}>
+                    <TransformComponent key="TransformComponent">
+                      <div style={{ display: 'flex' }} key="transform">
                         {columnsData &&
                           columnsData?.map((column: any, index: any) => (
                             <div

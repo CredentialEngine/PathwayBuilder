@@ -7,9 +7,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Card, Row, Form, Dropdown, Typography, Space, Menu } from 'antd';
 import _, { noop } from 'lodash';
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 import Button from '../../components/button';
 
@@ -347,11 +347,11 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
             <div className={Styles.searchItemWrapper}>
               {allProxyResourcesCard.map(
                 (filteredResources: any, i: number) => (
-                  <div className={Styles.flexGrowCenter} key={i}>
+                  <div className={Styles.flexGrowCenter} key={uuidv4()}>
                     <CardWithLeftIcon
                       data={filteredResources}
                       draggable={true}
-                      key={i}
+                      key={uuidv4()}
                       name={filteredResources?.Name}
                       type={filteredResources?.Type}
                       description={filteredResources?.Description?.slice(0, 30)}
@@ -396,11 +396,11 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                 ? selectedResource
                 : selectedAlphaResource
               )?.map((select_resource: any, i: number) => (
-                <div className={Styles.flexGrowCenter} key={i}>
+                <div className={Styles.flexGrowCenter} key={uuidv4()}>
                   <CardWithLeftIcon
                     draggable={true}
                     data={select_resource}
-                    key={i}
+                    key={uuidv4()}
                     name={select_resource.Name}
                     type={select_resource.Type}
                     description={select_resource.Description?.slice(0, 30)}

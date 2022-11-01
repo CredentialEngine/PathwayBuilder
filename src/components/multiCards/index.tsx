@@ -393,10 +393,10 @@ const MultiCard: React.FC<Props> = ({
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
               id={CTID?.toString()}
-              data-cardType="multiCard"
-              data-columnNumber={columnNumber}
-              data-rowNumber={rowNumber}
-              data-CTID={data.CTID}
+              data-cardtype="multiCard"
+              data-columnnumber={columnNumber}
+              data-rownumber={rowNumber}
+              data-ctid={data.CTID}
             >
               {skipPreSelect && destinationComponent && isAddDestination && (
                 <>
@@ -720,9 +720,9 @@ const MultiCard: React.FC<Props> = ({
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
           id={CTID?.toString()}
-          data-columnNumber={columnNumber}
-          data-rowNumber={rowNumber}
-          data-CTID={data.CTID}
+          data-columnnumber={columnNumber}
+          data-rownumber={rowNumber}
+          data-ctid={data.CTID}
         >
           {skipPreSelect && destinationComponent && isAddDestination && (
             <>
