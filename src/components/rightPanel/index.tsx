@@ -159,16 +159,20 @@ const RightPanel: React.FC<Props> = ({
               <CaretRightOutlined rotate={isActive ? 90 : 0} />
             )}
           >
-            <Panel
-              header={
-                <>
-                  <span className={styles.require}>Requires (1)</span>
-                </>
-              }
-              key="1"
-            >
-              <p className={styles.text}>Pass the Business of Retail Exam</p>
-            </Panel>
+            {panelData?.RequiredNumber && (
+              <Panel
+                header={
+                  <>
+                    <span className={styles.require}>
+                      Requires ({panelData?.RequiredNumber})
+                    </span>
+                  </>
+                }
+                key="1"
+              >
+                <p className={styles.text}>{panelData?.Description}</p>
+              </Panel>
+            )}
           </Collapse>
         </Row>
       </div>
