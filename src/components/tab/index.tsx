@@ -4,7 +4,6 @@ import React from 'react';
 
 import styles from './index.module.scss';
 import { Props as TabPaneProps } from './lib/tabPane';
-
 /* global HTMLDivElement */
 
 interface TabInfo {
@@ -73,7 +72,8 @@ export const Tab: React.FC<Props> = (props: Props) => {
 
   const handleTabClick = (activeKey: string) => {
     setActiveKey(activeKey);
-    console.log('inkBarWidth -->', inkBarWidth);
+    console.log(inkBarWidth);
+
     return onTabChange && onTabChange(activeKey);
   };
 
