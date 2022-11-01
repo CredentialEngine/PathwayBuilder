@@ -186,25 +186,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, [conditionalComponent]);
 
   useEffect(() => {
-    const dataObj = {} as ComponentConditionEntity;
-
     if (isConditionalEditing) {
-      if (data) {
-        // dataObj = {
-        (dataObj.ParentIdentifier = data?.ParentIdentifier),
-          (dataObj.Id = data?.Id),
-          (dataObj.RowId = data?.RowId),
-          (dataObj.Name = data?.Name),
-          (dataObj.Description = data?.Description),
-          (dataObj.RequiredNumber = data?.RequiredNumber),
-          (dataObj.LogicalOperator = data?.LogicalOperator), // URI
-          (dataObj.HasCondition = data?.HasCondition),
-          (dataObj.HasConstraint = data?.HasConstraint),
-          (dataObj.LastUpdated = data?.LastUpdated),
-          (dataObj.TargetComponent = data?.TargetComponent),
-          // };
-          console.log('123condobj', dataObj);
-      }
       setComponentConditionFields({ ...componentConditionFields, ...data });
     }
   }, [isConditionalEditing]);
