@@ -103,6 +103,7 @@ const MultiCard: React.FC<Props> = ({
   const [filteredPathwayComponent, setFilteredPathwayComponent] = useState<any>(
     []
   );
+  const [isConditionalEditing, setIsConditionalEditing] = useState(false);
 
   const { mappedData: PathwayWrapper } = pathwayWrapper;
   const handledConstraintsModal = (bool: boolean) => {
@@ -1033,10 +1034,12 @@ const MultiCard: React.FC<Props> = ({
                           onClick={(e: any) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            setShowRightPenal(true);
+                            setVisibleConstraintCondition(true);
+                            setIsConditionalEditing(true);
+                            setShowPopover(false);
                           }}
                         >
-                          View
+                          Edit
                         </span>
                         <span
                           onClick={(e: any) => {
@@ -1112,6 +1115,8 @@ const MultiCard: React.FC<Props> = ({
           isDestinationCard={isDestination}
           setIsConditionalModalStatus={setIsConditionalModalStatus}
           HasProgressionLevel={HasProgressionLevel}
+          isConditionalEditing={isConditionalEditing}
+          setIsConditionalEditing={setIsConditionalEditing}
         />
       </Modal>
 
