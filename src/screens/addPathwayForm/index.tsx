@@ -501,8 +501,9 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...prevState,
       //   ...filteredOccupations,
       // ]);
+      const occData = addPathwayFormFields?.OccupationType ?? []
       updatedData.OccupationType = [
-        ...(addPathwayFormFields?.OccupationType || []),
+          ...occData,
         ...filteredOccupations,
       ];
     }
@@ -514,8 +515,9 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...prevState,
       //   ...filteredIndustry,
       // ]);
+      const indData = addPathwayFormFields?.IndustryType ?? []
       updatedData.IndustryType = [
-        ...(addPathwayFormFields?.IndustryType || []),
+        ...indData,
         ...filteredIndustry,
       ];
       // console.log("filteredIndustry",  ...addPathwayFormFields?.IndustryType)
@@ -530,8 +532,9 @@ const AddPathwayForm: React.FC<Props> = ({
       //   ...prevState,
       //   ...filteredInstructionalProgram,
       // ]);
+      const insData = addPathwayFormFields?.InstructionalType ?? []
       updatedData.InstructionalType = [
-        ...(addPathwayFormFields?.InstructionalType || []),
+        ...insData,
         ...filteredInstructionalProgram,
       ];
     }
@@ -747,7 +750,8 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={addPathwayFormFields?.IndustryType}
+                value={isEditPathwayFormVisible ?
+                   addPathwayFormFields?.IndustryType: undefined}
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
@@ -790,7 +794,8 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={addPathwayFormFields?.OccupationType}
+                value={isEditPathwayFormVisible? 
+                  addPathwayFormFields?.OccupationType: undefined}
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
@@ -812,7 +817,8 @@ const AddPathwayForm: React.FC<Props> = ({
                 <DebounceSelect
                   mode="multiple"
                   tagRender={tagRender}
-                  value={addPathwayFormFields?.InstructionalType}
+                  value={isEditPathwayFormVisible ? 
+                    addPathwayFormFields?.InstructionalProgram: undefined}
                   placeholder="Select Instructional Program"
                   fetchOptions={fetchInstructionalProgramList}
                   onSelect={(e: any) =>
