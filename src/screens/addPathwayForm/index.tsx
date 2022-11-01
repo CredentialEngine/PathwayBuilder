@@ -1,9 +1,9 @@
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, Col, Form, Divider, Tag } from 'antd';
+import { Row, Col, Form, Divider, Tag, Modal } from 'antd';
 
-import _ from 'lodash';
+import _, { noop } from 'lodash';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import React, { useEffect, useState } from 'react';
 
@@ -539,20 +539,46 @@ const AddPathwayForm: React.FC<Props> = ({
   };
 
   const onAddPathwayOkHandler = () => {
-    dispatch(
-      saveDataForPathwayRequest({
-        ...addPathwayWrapperFields,
-        Pathway: addPathwayFormFields,
-      })
-    );
+    if (isEditPathwayFormVisible) {
+      Modal.confirm({
+        title: 'By clicking on Save all existing data will be lost.',
+        okText: 'Save',
+        cancelText: 'Cancel',
+        onOk: () => {
+          dispatch(
+            saveDataForPathwayRequest({
+              ...addPathwayWrapperFields,
+              Pathway: addPathwayFormFields,
+            })
+          );
 
-    dispatch(
-      updateMappedDataRequest({
-        ...addPathwayWrapperFields,
-        Pathway: addPathwayFormFields,
-        PathwayComponents: [],
-      })
-    );
+          dispatch(
+            updateMappedDataRequest({
+              ...addPathwayWrapperFields,
+              Pathway: addPathwayFormFields,
+              PathwayComponents: [],
+            })
+          );
+          setIsEditPathwayFormVisible(false);
+        },
+        onCancel: noop,
+      });
+    } else {
+      dispatch(
+        saveDataForPathwayRequest({
+          ...addPathwayWrapperFields,
+          Pathway: addPathwayFormFields,
+        })
+      );
+
+      dispatch(
+        updateMappedDataRequest({
+          ...addPathwayWrapperFields,
+          Pathway: addPathwayFormFields,
+          PathwayComponents: [],
+        })
+      );
+    }
   };
 
   const customToolTipIcon = (type: any) => (
