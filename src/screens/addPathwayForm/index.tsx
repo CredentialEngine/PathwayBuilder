@@ -495,28 +495,22 @@ const AddPathwayForm: React.FC<Props> = ({
       const filteredOccupations = allOccupationTypeData?.filter(
         (data: any) => data.Name === e.value
       );
-      const occData = addPathwayFormFields?.OccupationType ?? []
-      updatedData.OccupationType = [
-          ...occData,
-        ...filteredOccupations,
-      ];
+      const occData = addPathwayFormFields?.OccupationType ?? [];
+      updatedData.OccupationType = [...occData, ...filteredOccupations];
     }
     if (name === 'Industry') {
       const filteredIndustry = allIndustryTypeData?.filter(
         (data: any) => data.Name === e.value
       );
-      const indData = addPathwayFormFields?.IndustryType ?? []
-      updatedData.IndustryType = [
-        ...indData,
-        ...filteredIndustry,
-      ];
+      const indData = addPathwayFormFields?.IndustryType ?? [];
+      updatedData.IndustryType = [...indData, ...filteredIndustry];
     }
     if (name === 'InstructionalProgram') {
       const filteredInstructionalProgram =
         allInstructionalProgramTypeData?.filter(
           (data: any) => data.Name === e.value
         );
-      const insData = addPathwayFormFields?.InstructionalType ?? []
+      const insData = addPathwayFormFields?.InstructionalType ?? [];
       updatedData.InstructionalType = [
         ...insData,
         ...filteredInstructionalProgram,
@@ -528,19 +522,19 @@ const AddPathwayForm: React.FC<Props> = ({
   const onDebounceDeSelectHnadler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
     if (name === 'Occupation') {
-      updatedData.OccupationType = updatedData?.OccupationType?.filter((item: any) => {
-        return item.Name !== e.key;
-      });
+      updatedData.OccupationType = updatedData?.OccupationType?.filter(
+        (item: any) => item.Name !== e.key
+      );
     }
     if (name === 'Industry') {
-      updatedData.IndustryType = updatedData.IndustryType?.filter((item: any) => {
-        return item.Name !== e.key;
-      });
+      updatedData.IndustryType = updatedData.IndustryType?.filter(
+        (item: any) => item.Name !== e.key
+      );
     }
     if (name === 'InstructionalProgram') {
-      updatedData.InstructionalType = updatedData?.InstructionalType?.filter((item: any) => {
-        return item.Name !== e.key;
-      });
+      updatedData.InstructionalType = updatedData?.InstructionalType?.filter(
+        (item: any) => item.Name !== e.key
+      );
     }
     setAddPathwayFormFields(updatedData);
   };
@@ -765,7 +759,9 @@ const AddPathwayForm: React.FC<Props> = ({
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
-                onDeselect={(e: any) => onDebounceDeSelectHnadler(e, 'Industry')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Industry')
+                }
               />
 
               {toolTip.find((item: any) => item.type === 'Industry')
@@ -813,7 +809,9 @@ const AddPathwayForm: React.FC<Props> = ({
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
-                onDeselect={(e: any) => onDebounceDeSelectHnadler(e, 'Occupation')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Occupation')
+                }
               />
               {toolTip.find((item: any) => item.type === 'Occupations')
                 .isVisible && customToolTip('Occupations')}
