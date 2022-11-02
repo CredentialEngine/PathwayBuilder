@@ -340,8 +340,41 @@ const HomePage: React.FC<Props> = ({
     const isDestinationCardExist = !_.isEmpty(
       pathwayComponent.Pathway.HasDestinationComponent
     );
+
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
+
+      const indestinationColumn = pathwayComponentCards.filter(
+        (el: any) => el.CTID == card.CTID && el.destinationColumn === true
+      );
+
+      if (indestinationColumn.length > 0) {
+        const updatedPathwayComponentCards: any = _.cloneDeep(
+          pathwayComponentCards
+        );
+
+        const copiedObj = updatedPathwayComponentCards?.findIndex(
+          (i: any) => i.CTID == restCardProps.CTID
+        );
+        updatedPathwayComponentCards?.splice(copiedObj, 1);
+        setPathwayComponentCards([
+          ...new Set([
+            ...updatedPathwayComponentCards,
+            {
+              ...restCardProps,
+              destinationColumn,
+              HasProgressionLevel,
+              RowNumber,
+              ColumnNumber: 1,
+
+              firstColumn,
+            },
+          ]),
+        ]);
+      } else {
+        return;
+      }
+
       return;
     }
     const islastDropWrapperUsed = pathwayComponentCards.some(
@@ -552,8 +585,8 @@ const HomePage: React.FC<Props> = ({
     const index = newarray.findIndex((items: any) => items === item);
     pathwayComponentCards?.map((card: any) => {
       if (card?.CTID === item?.start) {
-        const idx = card?.PrecededBy.findIndex((i: any) => i === item?.end);
-        card?.PrecededBy.splice(idx, 1);
+        const idx = card?.PrecededBy?.findIndex((i: any) => i === item?.end);
+        card?.PrecededBy?.splice(idx, 1);
       }
     });
     updatedPathwayComponentConditionCards?.map((conditionCard: any) => {
