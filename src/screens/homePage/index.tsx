@@ -332,6 +332,8 @@ const HomePage: React.FC<Props> = ({
       card.ColumnNumber === ColumnNumber &&
       card.RowNumber === RowNumber
     ) {
+      console.log('card--2');
+
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
@@ -384,6 +386,18 @@ const HomePage: React.FC<Props> = ({
           firstColumn,
         },
       ]);
+    } else if (card?.pathwayGameboardCard) {
+      setPathwayComponentCards(
+        pathwayComponentCards
+          .filter((item: any) => item.CTID !== card.CTID)
+          .concat({
+            ...restCardProps,
+            HasProgressionLevel,
+            RowNumber,
+            ColumnNumber,
+            firstColumn,
+          })
+      );
     } else if (pathwayComponentCards.length !== 0) {
       setPathwayComponentCards(
         pathwayComponentCards
@@ -583,7 +597,6 @@ const HomePage: React.FC<Props> = ({
 
       const destinationComponent =
         pathwayComponent?.Pathway?.HasDestinationComponent;
-
       {
         return (
           <div
@@ -732,6 +745,9 @@ const HomePage: React.FC<Props> = ({
                                     skipPreSelect={skipPreSelect}
                                     destinationColumnSelect={
                                       destinationColumnSelect
+                                    }
+                                    setDraggableCardVisible={
+                                      setDraggableCardVisible
                                     }
                                     isDraggableCardVisible={
                                       isDraggableCardVisible

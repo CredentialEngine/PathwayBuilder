@@ -140,7 +140,9 @@ const App = () => {
 
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
-    !!setIsDestinationColumnSelected && setIsDestinationColumnSelected(true);
+    !fromPreSelect &&
+      !!setIsDestinationColumnSelected &&
+      setIsDestinationColumnSelected(true);
   };
 
   const closeCreatePathwayModal = () => {

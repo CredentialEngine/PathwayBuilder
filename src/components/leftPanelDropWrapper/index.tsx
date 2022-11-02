@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface Props {
-  onDrop: (tabName: string, card: any) => void;
+  onDrop: (tabName: string, card: any, pathwayGameboardCard: true) => void;
   children: any;
   tabName: string;
   className: any;
@@ -19,7 +19,7 @@ const LeftPanelDropWrapper: React.FC<Props> = ({
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('leftPanel_card'));
     e.stopPropagation();
-    onDrop(tabName, data);
+    onDrop(tabName, data, true);
   };
 
   return (

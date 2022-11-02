@@ -56,6 +56,7 @@ interface Props {
   newConnection?: any;
   skipPreSelect?: boolean;
   destinationColumnSelect?: boolean;
+  setDraggableCardVisible?: (a: boolean) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -91,6 +92,7 @@ const MultiCard: React.FC<Props> = ({
   setIsConditionalModalStatus,
   newConnection,
   skipPreSelect,
+  setDraggableCardVisible,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
@@ -167,6 +169,7 @@ const MultiCard: React.FC<Props> = ({
   const onDragStart = (e: any) => {
     setIsZoomDisabled(true);
     const target = e.target;
+    !!setDraggableCardVisible && setDraggableCardVisible(true);
     e.dataTransfer.setData(
       'card_id',
       JSON.stringify({
@@ -194,6 +197,8 @@ const MultiCard: React.FC<Props> = ({
 
   const onDragEnd = (e: any) => {
     setIsZoomDisabled(false);
+    !!setDraggableCardVisible && setDraggableCardVisible(false);
+
     e.target.style.visibility = 'visible';
   };
 

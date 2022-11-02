@@ -7,7 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
-import { updateMappedDataRequest } from '../../states/actions';
+import {
+  saveDataForPathwayRequest,
+  updateMappedDataRequest,
+} from '../../states/actions';
 
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
@@ -31,8 +34,7 @@ const LeftPanel: React.FC<any> = ({
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-  const [selectedTabCards, setSelectedtabCards] =
-    useState<any>(selectedTabCardData);
+
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
@@ -49,6 +51,9 @@ const LeftPanel: React.FC<any> = ({
   );
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
+
+  const [selectedTabCards, setSelectedtabCards] =
+    useState<any>(selectedTabCardData);
   const [selectedPathwayComponents, setSelectedPathwayComponents] =
     useState<any>([]);
   useEffect(() => {
@@ -65,10 +70,13 @@ const LeftPanel: React.FC<any> = ({
                 _.toString(pathway_card.CTID) === _.toString(selected_card.CTID)
             )
         );
+
         updatedPathwayWrapper.PendingComponents =
           filteredPendingCards.length === 0 ? [] : selectedTabCards;
 
-        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+        // const filteredSelectedCard = selectedTabCards.filter(
+        //   (card: any) => selectedTabCards.HasDestinationComponent !== ''
+        // );
 
         setSelectedtabCards(filteredPendingCards);
       } else {
@@ -114,9 +122,21 @@ const LeftPanel: React.FC<any> = ({
     setSearchValue(value.target.value);
   };
 
-  const onDropHandler = (tab: string, card: any) => {
+  const onDropHandler = (
+    tab: string,
+    card: any,
+    pathwayGameboardCard: boolean
+  ) => {
     if (tab === LeftPanelTabKey.Selected) {
-      setSelectedtabCards([...selectedTabCards, card]);
+      const updatedCard = {
+        ...card,
+        pathwayGameboardCard,
+        destinationColumn: false,
+        isDestinationColumnSelected: false,
+        isFirstColumneSelected: false,
+        firstColumn: false,
+      };
+      setSelectedtabCards([...selectedTabCards, updatedCard]);
     } else {
       return;
     }
@@ -126,9 +146,21 @@ const LeftPanel: React.FC<any> = ({
     );
 
     const updatedPathwayWrapper = { ...pathwayComponent };
-    updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
-    updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
-    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+
+    const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+    if (card.destinationColumn || card.isDestinationColumnSelected) {
+      updatedPathway.HasDestinationComponent = '';
+      updatedPathwayWrapper.Pathway = updatedPathway;
+      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
+      updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+    } else {
+      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
+      updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+    }
   };
 
   const tab = [
@@ -174,6 +206,8 @@ const LeftPanel: React.FC<any> = ({
                 </p>
               </div>
             ) : (
+              !!selectedTabCards &&
+              selectedTabCards.length > 0 &&
               selectedTabCards
                 ?.filter((v: any) =>
                   v?.Description?.toLocaleLowerCase().includes(
