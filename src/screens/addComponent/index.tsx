@@ -174,19 +174,13 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
       updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
-
-      const updatedConstraint = constraintRow.map((v: any) => ({
-        ...v,
-        ParentIdentifier: consRowID,
-        RowId: consRowID,
-        Name: componentConditionFields.Name,
-        Description: componentConditionFields.Description,
-      }));
-
-      updatedPathwayWrapper.Constraints = [
-        ...updatedPathwayWrapper.Constraints,
-        ...updatedConstraint,
-      ];
+       
+      updatedPathwayWrapper.Constraints = [...updatedPathwayWrapper.Constraints, ...constraintRow.map((v:any) => ({...v,
+          ParentIdentifier: data.RowId,
+          RowId: consRowID,
+          Name: componentConditionFields.Name,
+          Description: componentConditionFields.Description,
+          }))]
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setConditionalComponent([]);
     }
@@ -199,6 +193,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     RightAction: [],
     RightSource: [],
     id: 0,
+    //RowId: data?.RowId,
     Name: componentConditionFields.Name,
     Description: componentConditionFields.Description,
   };
@@ -210,6 +205,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
+  
 
   const onInputChangeHandler = (e: any) => {
     const updatedData = { ...componentConditionFields };
@@ -240,7 +236,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     dispatch(getAllComparatorsRequest());
     dispatch(getAllArrayConceptsRequest());
   }, []);
-
+ 
   const saveCondition = () => {
     const mId = uuidv4();
     // const addConstraints = constraintRow.map((v:any) => ({...v,
@@ -249,6 +245,12 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     //   Name: componentConditionFields.Name,
     //   Description: componentConditionFields.Description,
     //   }))
+    const Constraint = {
+      ...constraintRow,
+      RowId: mId,
+      Name: componentConditionFields.Name,
+      Description: componentConditionFields.Description,
+    };
 
     const updatedTargetChild =
       !!data?.TargetComponent &&
@@ -272,10 +274,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       RowNumber: data?.RowNumber,
       TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
     };
-    setConditionalComponent([ComponentConditions]);
-    !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
+     setConditionalComponent([ComponentConditions]);
+     !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
 
-    !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+     !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
   };
 
   const addConstraintRow = () => {
@@ -289,10 +291,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ? constraintRow[constraintRow.length - 1]?.id + 1
           : 0,
       },
-    ];
-    setConstRowId(mId);
+    ]
+   
     setConstraintRow(rowCon);
-    setHasConstraints([...hasConstraints, mId]);
+    setConstRowId(mId)
+    setHasConstraints([...hasConstraints, mId])
   };
 
   const getData = (val: any) => {
