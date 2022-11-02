@@ -140,7 +140,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
     if (e?.key) {
       updatedSearchValue.Filters = [
-        // ...updatedSearchValue.Filters,
         {
           URI: 'meta:pathwayComponentType',
           ItemTexts: [_.get(selectedCardType, '0').label],
