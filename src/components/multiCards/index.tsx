@@ -1125,11 +1125,13 @@ const MultiCard: React.FC<Props> = ({
         />
       </Modal>
 
-      <RightPanel
-        visible={showRightPenal}
-        onCloseHandler={(val: boolean) => setShowRightPenal(val)}
-        panelData={data}
-      />
+      {!!showRightPenal && (
+        <RightPanel
+          visible={showRightPenal}
+          onCloseHandler={(val: boolean) => setShowRightPenal(val)}
+          panelData={data}
+        />
+      )}
     </>
   );
 };
