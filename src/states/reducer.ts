@@ -153,6 +153,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
           data: action.payload.Data,
           valid: action?.payload?.Valid,
         },
+        // mappedData: action?.payload?.Data
       };
     case GET_DATA_FOR_PATHWAY_AND_COMPONENTS_FAILURE:
       return {
