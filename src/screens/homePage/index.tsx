@@ -302,6 +302,7 @@ const HomePage: React.FC<Props> = ({
     isFirstColumneSelected: boolean,
     firstColumn: boolean
   ) => {
+    setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
     removeConnection(card?.CTID || card?.RowId);
     if (isComponentTab) {
