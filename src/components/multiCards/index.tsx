@@ -519,7 +519,6 @@ const MultiCard: React.FC<Props> = ({
                   </div>
                 </div>
                 )} */}
-
               {((isCourseCard && !isCredentialCard) ||
                 data.Type === 'course') && (
                 <>
@@ -968,8 +967,41 @@ const MultiCard: React.FC<Props> = ({
                     color={darkColor}
                     style={{ height: '20px', cursor: 'pointer' }}
                     icon={faEllipsis}
-                    onClick={noop}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowPopover(true);
+                    }}
                   />
+                  {showPopover && !showRightPenal && (
+                    <Popover
+                      visible={showPopover}
+                      arrowPointAtCenter
+                      placement="bottomRight"
+                      content={
+                        <div className={styles.popoverMenu} ref={ref}>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setShowRightPenal(true);
+                            }}
+                          >
+                            View
+                          </span>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              onDelete(data);
+                            }}
+                          >
+                            Delete
+                          </span>
+                        </div>
+                      }
+                    ></Popover>
+                  )}
                 </div>
                 <Divider
                   style={{
