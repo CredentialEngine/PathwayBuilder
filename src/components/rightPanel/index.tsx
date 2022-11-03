@@ -71,9 +71,7 @@ const RightPanel: React.FC<Props> = ({
   const organizationName = pathwayWrapper?.pathwayComponentData?.data
     ? pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name
     : pathwayWrapper?.selectedOrganization?.Name;
-  const ctid = rightPanelData?.CTID;
-  const type = rightPanelData?.Type;
-  const url = `https://sandbox.credentialengine.org/finder/${type}/${ctid}`;
+
   useEffect(() => {
     const relatedConditionalComponent =
       pathwayWrapper?.mappedData?.ComponentConditions?.filter(
@@ -90,7 +88,11 @@ const RightPanel: React.FC<Props> = ({
     []
   );
   const openInNewTab = () => {
-    window.open(url, '_blank', 'noopener,noreferrer');
+    window.open(
+      rightPanelData?.FinderResource?.URI,
+      '_blank',
+      'noopener,noreferrer'
+    );
   };
 
   return (
@@ -133,13 +135,17 @@ const RightPanel: React.FC<Props> = ({
           <p className={styles.value}>{organizationName}</p>
         </Row>
         <Row className={styles.infoContainer}>
-          <p className={styles.label}>Credential Type</p>
+          <p className={styles.label}>
+            {rightPanelData?.Type?.split(':')[1]} Type
+          </p>
           <p className={styles.value}>
             {extractComponentType(rightPanelData?.Type)}
           </p>
         </Row>
         <Row className={styles.infoContainer}>
-          <p className={styles.label}>Credential Status</p>
+          <p className={styles.label}>
+            {rightPanelData?.Type?.split(':')[1]} Status
+          </p>
           <p className={styles.value}>Active</p>
         </Row>
         <Row className={styles.buttonContainer}>
@@ -147,7 +153,7 @@ const RightPanel: React.FC<Props> = ({
             className={styles.button}
             type={Type.LINK}
             onClick={openInNewTab}
-            text="View the Credential"
+            text={`View the ${rightPanelData?.Type?.split(':')[1]}`}
           />
         </Row>
         <Divider />

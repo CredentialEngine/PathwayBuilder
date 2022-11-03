@@ -74,14 +74,12 @@ const LeftPanel: React.FC<any> = ({
         updatedPathwayWrapper.PendingComponents =
           filteredPendingCards.length === 0 ? [] : selectedTabCards;
 
-        // const filteredSelectedCard = selectedTabCards.filter(
-        //   (card: any) => selectedTabCards.HasDestinationComponent !== ''
-        // );
-
         setSelectedtabCards(filteredPendingCards);
       } else {
         setSelectedtabCards(selectedTabCardData);
       }
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
     }
   }, [selectedTabCardData, pathwayComponent.PathwayComponents]);
