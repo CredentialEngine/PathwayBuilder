@@ -60,6 +60,7 @@ export interface Props {
   setIsPreSelectedCreateResourceVisible: (a: boolean) => void;
   setIsAddPathwayFormVisible: (a: boolean) => void;
   setIsEditPathwayFormVisible: (a: boolean) => void;
+  setIsDropCardAfterEditingForm: (a: boolean) => void;
 }
 
 const tagRender = (props: CustomTagProps) => {
@@ -89,6 +90,7 @@ const AddPathwayForm: React.FC<Props> = ({
   setIsPreSelectedCreateResourceVisible,
   setIsAddPathwayFormVisible,
   setIsEditPathwayFormVisible,
+  setIsDropCardAfterEditingForm,
 }) => {
   const [addPathwayFormFields, setAddPathwayFormFields] = useState<any>(
     new PathwayEntity()
@@ -546,23 +548,49 @@ const AddPathwayForm: React.FC<Props> = ({
         okText: 'Save',
         cancelText: 'Cancel',
         onOk: () => {
-          dispatch(
-            saveDataForPathwayRequest({
-              ...addPathwayWrapperFields,
-              Pathway: addPathwayFormFields,
-              Constraints: [],
-            })
-          );
+          if (
+            _.toString(_.get(addPathwayFormFields.HasProgressionModel, '0')) ===
+              _.toString(_.get(PathwayWrapper.ProgressionModels, '0')?.CTID) &&
+            pathwayWrapper.ProgressionLevels?.length > 0 &&
+            pathwayWrapper.ProgressionModels?.length > 0 &&
+            PathwayWrapper.PathwayComponents?.length > 0 &&
+            PathwayWrapper.PendingComponents?.length > 0
+          ) {
+            dispatch(
+              saveDataForPathwayRequest({
+                ...addPathwayWrapperFields,
+                Pathway: addPathwayFormFields,
+                PathwayComponents: addPathwayWrapperFields.PathwayComponents,
+                PendingComponents: addPathwayWrapperFields.PendingComponents,
+                ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+                ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+              })
+            );
+            dispatch(
+              updateMappedDataRequest({
+                ...addPathwayWrapperFields,
+                Pathway: addPathwayFormFields,
+                PathwayComponents: addPathwayWrapperFields.PendingComponents,
+                PendingComponents: addPathwayWrapperFields.PendingComponents,
+                ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+                ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+              })
+            );
+          } else {
+            const updatedPathwayWrapper = { ...PathwayWrapper };
 
-          dispatch(
-            updateMappedDataRequest({
-              ...addPathwayWrapperFields,
-              Pathway: addPathwayFormFields,
-              PathwayComponents: [],
-              Constraints: [],
-            })
-          );
+            const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+
+            updatedPathway.HasDestinationComponent = '';
+            updatedPathwayWrapper.Pathway = updatedPathway;
+            updatedPathwayWrapper.PathwayComponents = [];
+            updatedPathwayWrapper.PendingComponents = [];
+
+            dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+            dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+          }
           setIsEditPathwayFormVisible(false);
+          setIsDropCardAfterEditingForm(true);
         },
         onCancel: noop,
       });

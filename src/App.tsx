@@ -59,6 +59,8 @@ const App = () => {
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
     useState<boolean>(false);
+  const [isDropCardAfterEditingForm, setIsDropCardAfterEditingForm] =
+    useState<boolean>(false);
 
   const {
     currentUserData: { data: userData },
@@ -187,6 +189,9 @@ const App = () => {
           setIsDestinationColumnSelected={setIsDestinationColumnSelected}
           skipPreSelect={skipPreSelect}
           destinationColumnSelect={destinationColumnSelect}
+          isEditPathwayFormVisible={isEditPathwayFormVisible}
+          isDropCardAfterEditingForm={isDropCardAfterEditingForm}
+          setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
         />
         <Modal
           visible={isCreatePathwayVisible}
@@ -216,6 +221,7 @@ const App = () => {
             }
             setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
             setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
+            setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
           />
         </Modal>
         <Modal

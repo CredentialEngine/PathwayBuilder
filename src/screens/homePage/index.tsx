@@ -33,6 +33,9 @@ interface Props {
   setIsDestinationColumnSelected: (a: boolean) => void;
   skipPreSelect?: boolean;
   destinationColumnSelect?: boolean;
+  isEditPathwayFormVisible?: boolean;
+  setIsDropCardAfterEditingForm: (a: boolean) => void;
+  isDropCardAfterEditingForm: boolean;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
@@ -44,6 +47,9 @@ const HomePage: React.FC<Props> = ({
   setIsDestinationColumnSelected,
   skipPreSelect,
   destinationColumnSelect,
+  // isEditPathwayFormVisible,
+  setIsDropCardAfterEditingForm,
+  isDropCardAfterEditingForm,
 }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
@@ -297,7 +303,6 @@ const HomePage: React.FC<Props> = ({
     firstColumn: boolean
   ) => {
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
-
     removeConnection(card?.CTID || card?.RowId);
     if (isComponentTab) {
       card = {
@@ -332,8 +337,6 @@ const HomePage: React.FC<Props> = ({
       card.ColumnNumber === ColumnNumber &&
       card.RowNumber === RowNumber
     ) {
-      console.log('card--2');
-
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
@@ -351,6 +354,22 @@ const HomePage: React.FC<Props> = ({
     if (islastDropWrapperUsed) {
       /* here we are increasing number of DropWrapper */
       setNumberOfDropWrapper((prevState) => prevState + 1);
+    }
+
+    if (isDropCardAfterEditingForm) {
+      setPathwayComponentCards([
+        ...pathwayComponentCards,
+        {
+          ...restCardProps,
+          destinationColumn,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+
+          firstColumn,
+        },
+      ]);
+      setIsDropCardAfterEditingForm(false);
     }
 
     if (
