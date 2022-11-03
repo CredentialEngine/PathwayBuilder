@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { productionSetting, sanboxSetting } from './apiConfig/setting';
 import './App.scss';
 
 import Button from './components/button';
@@ -56,6 +58,7 @@ const App = () => {
     useState<any>(false);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
+  const [pathwayId, setPathwayId] = useState('');
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
     useState<boolean>(false);
@@ -91,6 +94,7 @@ const App = () => {
   useEffect(() => {
     if (userData) {
       setOrganisationList(userData?.Organizations);
+      setPathwayId(userData?.Id);
     }
   }, [userData]);
 
@@ -100,7 +104,10 @@ const App = () => {
   };
 
   const onCreatePathwayCancelHandler = () => {
-    setIsCreatePathwayVisible(false);
+    process.env.NODE_ENV !== 'production'
+      ? (window.location.href = sanboxSetting.api.url)
+      : (window.location.href = productionSetting.api.url);
+    // setIsCreatePathwayVisible(false);
   };
 
   const onCloseHandler = () => {
@@ -295,6 +302,7 @@ const App = () => {
             getSelectedOrganisation={(value: string) =>
               setSelectedOrganisationValue(value)
             }
+            pathwayId={pathwayId}
           />
         </Modal>
       </MainContainer>

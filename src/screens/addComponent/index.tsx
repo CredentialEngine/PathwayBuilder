@@ -32,6 +32,8 @@ interface Props {
   filteredPathwayComponent?: any;
   setIsConditionalModalStatus?: (a: boolean) => void;
   HasProgressionLevel?: string;
+  isConditionalEditing?: boolean;
+  setIsConditionalEditing?: (a: boolean) => void;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
@@ -41,6 +43,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     isDestinationCard,
     filteredPathwayComponent,
     setIsConditionalModalStatus,
+    isConditionalEditing,
+    setIsConditionalEditing,
   } = Props;
   const [componentConditionFields, setComponentConditionFields] = useState<any>(
     new ComponentConditionEntity()
@@ -174,17 +178,27 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
       updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
-       
-      updatedPathwayWrapper.Constraints = [...updatedPathwayWrapper.Constraints, ...constraintRow.map((v:any) => ({...v,
+
+      updatedPathwayWrapper.Constraints = [
+        ...updatedPathwayWrapper.Constraints,
+        ...constraintRow.map((v: any) => ({
+          ...v,
           ParentIdentifier: data.RowId,
           RowId: consRowID,
           Name: componentConditionFields.Name,
           Description: componentConditionFields.Description,
-          }))]
+        })),
+      ];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setConditionalComponent([]);
     }
   }, [conditionalComponent]);
+
+  useEffect(() => {
+    if (isConditionalEditing) {
+      setComponentConditionFields({ ...componentConditionFields, ...data });
+    }
+  }, [isConditionalEditing]);
 
   const constraintRowData = {
     LeftAction: [],
@@ -205,7 +219,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
-  
 
   const onInputChangeHandler = (e: any) => {
     const updatedData = { ...componentConditionFields };
@@ -220,15 +233,17 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   );
 
   useEffect(() => {
-    if (getAllLogicalOperator.valid)
-      setComponentConditionFields({
-        ...componentConditionFields,
-        LogicalOperator: getAllLogicalOperator.data.map((dta: any) => ({
-          ...dta,
-          value: dta.Name,
-          label: dta.Name,
-        })),
-      });
+    if (!isConditionalEditing) {
+      if (getAllLogicalOperator.valid)
+        setComponentConditionFields({
+          ...componentConditionFields,
+          LogicalOperator: getAllLogicalOperator.data.map((dta: any) => ({
+            ...dta,
+            value: dta.Name,
+            label: dta.Name,
+          })),
+        });
+    }
   }, [getAllLogicalOperator]);
 
   useEffect(() => {
@@ -236,48 +251,72 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     dispatch(getAllComparatorsRequest());
     dispatch(getAllArrayConceptsRequest());
   }, []);
- 
+
   const saveCondition = () => {
     const mId = uuidv4();
-    // const addConstraints = constraintRow.map((v:any) => ({...v,
-    //   ParentIdentifier: mId,
-    //    RowId: mId,
-    //   Name: componentConditionFields.Name,
-    //   Description: componentConditionFields.Description,
-    //   }))
-    const Constraint = {
-      ...constraintRow,
-      RowId: mId,
-      Name: componentConditionFields.Name,
-      Description: componentConditionFields.Description,
-    };
 
-    const updatedTargetChild =
-      !!data?.TargetComponent &&
-      data?.TargetComponent.length > 0 &&
-      data?.TargetComponent.filter(
-        (target_card: any) => target_card !== data.RowId
-      );
+    if (data?.Type !== 'conditional' || !isConditionalEditing) {
+      const updatedTargetChild =
+        !!data?.TargetComponent &&
+        data?.TargetComponent.length > 0 &&
+        data?.TargetComponent.filter(
+          (target_card: any) => target_card !== data.RowId
+        );
 
-    const ComponentConditions = {
-      ParentIdentifier: data?.RowId,
-      RowId: mId,
-      Name: componentConditionFields.Name,
-      Description: componentConditionFields.Description,
-      RequiredNumber: componentConditionFields.RequiredNumber,
-      LogicalOperator: componentConditionFields.LogicalOperator,
-      HasCondition: [],
-      HasConstraint: hasConstraints,
-      ColumnNumber: isDestinationCard
-        ? data?.ColumnNumber + 1
-        : data?.ColumnNumber,
-      RowNumber: data?.RowNumber,
-      TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
-    };
-     setConditionalComponent([ComponentConditions]);
-     !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
+      const ComponentConditions = {
+        ParentIdentifier: data?.RowId,
+        RowId: mId,
+        Name: componentConditionFields.Name,
+        Description: componentConditionFields.Description,
+        RequiredNumber: componentConditionFields.RequiredNumber,
+        LogicalOperator: componentConditionFields.LogicalOperator,
+        HasCondition: [],
+        HasConstraint: hasConstraints,
+        ColumnNumber: isDestinationCard
+          ? data?.ColumnNumber + 1
+          : data?.ColumnNumber,
+        RowNumber: data?.RowNumber,
+        TargetComponent:
+          data?.PrecededBy || data.HasChild || updatedTargetChild,
+      };
+      setConditionalComponent([ComponentConditions]);
+    }
 
-     !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+    if (data?.Type === 'conditional' && isConditionalEditing) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+
+      if (pathwayComponent?.ComponentConditions.length > 0) {
+        let currentConditionalComponent = _.get(
+          pathwayComponent?.ComponentConditions?.filter(
+            (condition_card: any) =>
+              condition_card.RowId === _.toString(data.RowId)
+          ),
+          '0'
+        );
+
+        if (
+          !_.isUndefined(currentConditionalComponent) &&
+          !_.isNull(currentConditionalComponent)
+        ) {
+          currentConditionalComponent = { ...componentConditionFields };
+        }
+
+        const remainingCompCond = pathwayComponent?.ComponentConditions?.filter(
+          (item: any) => item?.RowId !== data?.RowId
+        );
+        const cardsToSend = remainingCompCond?.concat(
+          currentConditionalComponent
+        );
+        updatedPathwayWrapper.ComponentConditions = cardsToSend;
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      }
+    }
+
+    !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
+
+    !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+
+    !!setIsConditionalEditing && setIsConditionalEditing(false);
   };
 
   const addConstraintRow = () => {
@@ -291,11 +330,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ? constraintRow[constraintRow.length - 1]?.id + 1
           : 0,
       },
-    ]
-   
+    ];
+
     setConstraintRow(rowCon);
-    setConstRowId(mId)
-    setHasConstraints([...hasConstraints, mId])
+    setConstRowId(mId);
+    setHasConstraints([...hasConstraints, mId]);
   };
 
   const getData = (val: any) => {
