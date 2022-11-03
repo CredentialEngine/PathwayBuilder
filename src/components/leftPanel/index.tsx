@@ -133,6 +133,8 @@ const LeftPanel: React.FC<any> = ({
         isDestinationColumnSelected: false,
         isFirstColumneSelected: false,
         firstColumn: false,
+        RowNumber: 0,
+        ColumnNumber: 0,
       };
       setSelectedtabCards([...selectedTabCards, updatedCard]);
     } else {

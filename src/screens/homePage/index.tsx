@@ -347,36 +347,36 @@ const HomePage: React.FC<Props> = ({
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
 
-      const indestinationColumn = pathwayComponentCards.filter(
-        (el: any) => el.CTID == card.CTID && el.destinationColumn === true
-      );
+      // const indestinationColumn = pathwayComponentCards.filter(
+      //   (el: any) => el.CTID == card.CTID && el.destinationColumn === true
+      // );
 
-      if (indestinationColumn.length > 0) {
-        const updatedPathwayComponentCards: any = _.cloneDeep(
-          pathwayComponentCards
-        );
+      // if (indestinationColumn.length > 0) {
+      //   const updatedPathwayComponentCards: any = _.cloneDeep(
+      //     pathwayComponentCards
+      //   );
 
-        const copiedObj = updatedPathwayComponentCards?.findIndex(
-          (i: any) => i.CTID == restCardProps.CTID
-        );
-        updatedPathwayComponentCards?.splice(copiedObj, 1);
-        setPathwayComponentCards([
-          ...new Set([
-            ...updatedPathwayComponentCards,
-            {
-              ...restCardProps,
-              destinationColumn,
-              HasProgressionLevel,
-              RowNumber,
-              ColumnNumber: 1,
+      //   const copiedObj = updatedPathwayComponentCards?.findIndex(
+      //     (i: any) => i.CTID == restCardProps.CTID
+      //   );
+      //   updatedPathwayComponentCards?.splice(copiedObj, 1);
+      //   setPathwayComponentCards([
+      //     ...new Set([
+      //       ...updatedPathwayComponentCards,
+      //       {
+      //         ...restCardProps,
+      //         destinationColumn,
+      //         HasProgressionLevel,
+      //         RowNumber,
+      //         ColumnNumber: 1,
 
-              firstColumn,
-            },
-          ]),
-        ]);
-      } else {
-        return;
-      }
+      //         firstColumn,
+      //       },
+      //     ]),
+      //   ]);
+      // } else {
+      //   return;
+      // }
 
       return;
     }
