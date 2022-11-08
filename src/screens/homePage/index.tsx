@@ -97,24 +97,36 @@ const HomePage: React.FC<Props> = ({
     {}
   );
   const [isConditionalEditing, setIsConditionalEditing] = useState(false);
-
+  const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
+    useState<string>('');
+  // console.log(
+  //   'pathwayComponentConditionCards --->',
+  //   pathwayComponentConditionCards
+  // );
   useEffect(() => {
     const updatedConditionalComponents: any = [];
 
     pathwayComponentConditionCards.map((conditionalCard: any) => {
       conditionalCard?.TargetComponent?.forEach((target: any) => {
-        pathwayComponentCards.forEach((pathway_card: any) => {
-          if (pathway_card.CTID === target) {
-            updatedConditionalComponents.push({
-              ...conditionalCard,
-              HasProgressionLevel: pathway_card.HasProgressionLevel,
-            });
+        [...pathwayComponentCards, ...pathwayComponentConditionCards].forEach(
+          (pathway_card: any) => {
+            if (pathway_card.CTID === target || pathway_card.RowId === target) {
+              updatedConditionalComponents.push({
+                ...conditionalCard,
+                HasProgressionLevel: pathway_card.HasProgressionLevel,
+              });
+            }
           }
-        });
+        );
       });
     });
 
-    updatedConditionalComponents.map((conditional_comp: any) => {
+    // console.log(
+    //   'updatedConditionalComponents --->',
+    //   updatedConditionalComponents
+    // );
+
+    pathwayComponentConditionCards.map((conditional_comp: any) => {
       const obj: any = {};
       obj[conditional_comp.RowId] = {
         ...conditional_comp,
@@ -163,6 +175,18 @@ const HomePage: React.FC<Props> = ({
     event.stopPropagation();
     setIsConditionalModalStatus(true);
     setConnectionsCTID(connections);
+
+    const filteredEndComponent = [
+      ...pathwayComponentCards,
+      ...updatedPathwayComponentConditionCards,
+    ].filter(
+      (card: any) =>
+        _.toString(card?.CTID) === _.toString(connections?.end) ||
+        _.toString(card?.RowId) === _.toString(connections?.end)
+    );
+    setProgressionLevelForAddComponent(
+      _.get(filteredEndComponent, '0')?.HasProgressionLevel
+    );
   };
 
   const getSemester = (level: any) => {
@@ -542,7 +566,7 @@ const HomePage: React.FC<Props> = ({
         HasCondition: item.HasCondition.filter((e: any) => e !== data.RowId),
       })
     );
-    updatedPathwayWrapper.Constraints = {};
+    updatedPathwayWrapper.Constraints = [];
     updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
       (item: any) =>
         data?.ParentIdentifier === item?.RowId
@@ -790,6 +814,25 @@ const HomePage: React.FC<Props> = ({
                         }}
                       >
                         <Xwrapper>
+                          {
+                            // console.log(
+                            //   'homepage --->',
+                            //   updatedPathwayComponentConditionCards.filter(
+                            //     (conditional_card: any) =>
+                            //       conditional_card.HasProgressionLevel ===
+                            //         column.CTID &&
+                            //       conditional_card.RowNumber ===
+                            //         rowNumber + 1 &&
+                            //       conditional_card.ColumnNumber ===
+                            //         column_num + 1
+                            //   )
+                            // )
+                            // console.log(
+                            //   'updatedPathwayComponentConditionCards --->',
+                            //   updatedPathwayComponentConditionCards
+                            // )
+                          }
+
                           {pathwayComponentCards.length > 0 &&
                             pathwayComponentCards
                               .filter(
@@ -1228,28 +1271,31 @@ const HomePage: React.FC<Props> = ({
           />
         )}
       </Layout>
-      <Modal
-        visible={isConditionalModalStatus || isConditionalEditing}
-        title=""
-        footer={[]}
-        onCancel={() => {
-          setIsConditionalModalStatus(false);
-          setIsConditionalEditing(false);
-        }}
-      >
-        <AddConditionalComponent
-          visibleConstraintConditionProp={setIsConditionalModalStatus}
-          setIsConditionalModalStatus={setIsConditionalModalStatus}
-          allComponentCardsData={allComponentCardsData}
-          allConditionalCardsData={allConditionalCardsData}
-          connectionsCTID={connectionsCTID}
-          updatedPathwayComponentConditionCards={
-            updatedPathwayComponentConditionCards
-          }
-          isConditionalEditing={isConditionalEditing}
-          setIsConditionalEditing={setIsConditionalEditing}
-        />
-      </Modal>
+      {(isConditionalModalStatus || isConditionalEditing) && (
+        <Modal
+          visible={isConditionalModalStatus || isConditionalEditing}
+          title=""
+          footer={[]}
+          onCancel={() => {
+            setIsConditionalModalStatus(false);
+            setIsConditionalEditing(false);
+          }}
+        >
+          <AddConditionalComponent
+            visibleConstraintConditionProp={setIsConditionalModalStatus}
+            setIsConditionalModalStatus={setIsConditionalModalStatus}
+            allComponentCardsData={allComponentCardsData}
+            allConditionalCardsData={allConditionalCardsData}
+            connectionsCTID={connectionsCTID}
+            updatedPathwayComponentConditionCards={
+              updatedPathwayComponentConditionCards
+            }
+            isConditionalEditing={isConditionalEditing}
+            setIsConditionalEditing={setIsConditionalEditing}
+            progressionLevelForAddComponent={progressionLevelForAddComponent}
+          />
+        </Modal>
+      )}
     </>
   );
 };

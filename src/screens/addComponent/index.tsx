@@ -38,6 +38,7 @@ interface Props {
   updatedPathwayComponentConditionCards?: any;
   isConditionalEditing?: boolean;
   setIsConditionalEditing?: (a: boolean) => void;
+  progressionLevelForAddComponent?: string;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
@@ -51,18 +52,17 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     isConditionalEditing,
     setIsConditionalEditing,
     data,
+    progressionLevelForAddComponent,
   } = Props;
   const [componentConditionFields, setComponentConditionFields] = useState<any>(
     new ComponentConditionEntity()
   );
   const [conditionalComponent, setConditionalComponent] = useState<any>([]);
   const [currentComponent, setCurrentComponent] = useState<any>([]);
+  const [cardAlreadyExistOnDropWrapper, setCardAlreadyExistOnDropWrapper] =
+    useState<boolean>(false);
+
   useEffect(() => {
-    // console.log(
-    //   'allComponentCardsData -->',
-    //   allComponentCardsData,
-    //   allConditionalCardsData
-    // );
     const currentPathwayComponent =
       allComponentCardsData[connectionsCTID.start];
     const currentConditionalComponent =
@@ -92,26 +92,13 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
-    if (conditionalComponent.length > 0) {
-      // const currentPathwayComponent = _.get(
-      //   pathwayComponent?.PathwayComponents?.filter(
-      //     (pathway_card: any) => pathway_card.CTID === _.toString(data.CTID)
-      //   ),
-      //   '0'
-      // );
-
-      // console.log('connectionsCTID --->', connectionsCTID);
-      // console.log('allConditionalCardsData --->', allConditionalCardsData);
+    if (conditionalComponent.length > 0 && !cardAlreadyExistOnDropWrapper) {
       const currentPathwayComponent =
         allComponentCardsData[connectionsCTID.start];
       const currentConditionalComponent =
         allConditionalCardsData[connectionsCTID.start];
 
-      // console.log(
-      //   'currentConditionalComponent --->',
-      //   currentConditionalComponent
-      // );
-      // const endPathwayComponent = allComponentCardsData[connectionsCTID.end];
+      /* in the below code we are adding RowId of the newly created conitional component inside the parent component*/
       if (
         !_.isUndefined(currentPathwayComponent) &&
         !_.isNull(currentPathwayComponent)
@@ -127,53 +114,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ];
         }
       }
-      const otherconditionalComponentOutOfProgressionLevel =
-        updatedPathwayComponentConditionCards?.filter((conditional_Card: any) =>
-          conditional_Card?.destinationColumn
-            ? conditional_Card?.HasProgressionLevel !==
-              _.toString(currentConditionalComponent?.HasProgressionLevel)
-            : _.toString(conditional_Card?.HasProgressionLevel) !==
-              _.toString(currentConditionalComponent?.HasProgressionLevel)
-        );
-
-      // console.log(
-      //   'otherconditionalComponentOutOfProgressionLevel ===>',
-      //   otherconditionalComponentOutOfProgressionLevel
-      // );
-
-      // const currentConditionalComponentInProgressionLevel1 = _.get(
-      //   pathwayComponent?.ComponentConditions?.filter((pathway_card: any) => {
-      //     isDestinationCard
-      //       ? pathway_card.HasProgressionLevel ===
-      //         _.toString(data.HasProgressionLevel)
-      //       : pathway_card.HasProgressionLevel ===
-      //         _.toString(currentPathwayComponent.HasProgressionLevel);
-      //   }),
-      //   '0'
-      // );
-
-      const restConditionalComponentInProgressionLevel1 =
-        updatedPathwayComponentConditionCards?.filter(
-          (conditional_Card: any) =>
-            (_.toString(conditional_Card?.HasProgressionLevel) ===
-              _.toString(currentConditionalComponent?.HasProgressionLevel) &&
-              _.toString(conditional_Card.RowId) !==
-                _.toString(currentConditionalComponent.RowId)) ||
-            (_.toString(conditional_Card?.HasProgressionLevel) ===
-              _.toString(currentPathwayComponent?.HasProgressionLevel) &&
-              _.toString(conditional_Card.RowId) !==
-                _.toString(currentPathwayComponent.RowId))
-        );
-
-      // console.log(
-      //   ' pathwayComponent?.ComponentConditions -->',
-      //   pathwayComponent?.ComponentConditions
-      // );
-
-      // console.log(
-      //   'restConditionalComponentInProgressionLevel1 --->',
-      //   restConditionalComponentInProgressionLevel1
-      // );
+      /* in the below code we are adding RowId of the newly created conitional component inside the parent conditional component*/
       if (
         !_.isUndefined(currentConditionalComponent) &&
         !_.isNull(currentConditionalComponent)
@@ -190,6 +131,24 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         }
       }
 
+      /* getting here all the conditional component those are outside the to the current progression level*/
+      const conditionalComponentOutOfProgressionLevel =
+        updatedPathwayComponentConditionCards?.filter(
+          (conditional_Card: any) =>
+            _.toString(conditional_Card?.HasProgressionLevel) !==
+            _.toString(progressionLevelForAddComponent)
+        );
+
+      /* getting here rest conditional component except current conitional component which are inside the to the current progression level*/
+
+      const restConditionalComponentInProgressionLevel1 =
+        updatedPathwayComponentConditionCards?.filter(
+          (conditional_Card: any) =>
+            _.toString(conditional_Card?.HasProgressionLevel) ===
+              _.toString(progressionLevelForAddComponent) &&
+            _.toString(conditional_Card?.RowId) !==
+              _.toString(currentConditionalComponent?.RowId)
+        );
       const uniqueConditionalArray: any =
         !_.isUndefined(currentConditionalComponent) &&
         !_.isNull(currentConditionalComponent)
@@ -200,21 +159,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               ]),
             ]
           : [...new Set([...restConditionalComponentInProgressionLevel1])];
-      // console.log('uniqueConditionalArray --->', uniqueConditionalArray);
-      // const uniqueConditionalArray = [
-      //   ...new Set([
-      //     ...otherconditionalComponentOutOfProgressionLevel,
-      //     ...allConditionalComponent,
-      //   ]),
-      // ];
 
       const componentCardInProgressionLevel =
         pathwayComponent?.PathwayComponents?.filter(
           (card: any) =>
-            card?.HasProgressionLevel ===
-              currentPathwayComponent?.HasProgressionLevel ||
-            card?.HasProgressionLevel ===
-              currentConditionalComponent?.HasProgressionLevel
+            card?.HasProgressionLevel === progressionLevelForAddComponent
         );
 
       const uniquePathwayComponentArray =
@@ -227,11 +176,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               ]),
             ]
           : [...new Set([...componentCardInProgressionLevel])];
-
-      // console.log(
-      //   'uniquePathwayComponentArray --->',
-      //   uniquePathwayComponentArray
-      // );
       const updatedPathwayComponentArray = uniquePathwayComponentArray.map(
         (a: any) => ({
           ...a,
@@ -243,16 +187,14 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         })
       );
 
-      // console.log('uniqueConditionalArray ===>', uniqueConditionalArray);
-
       const updatedConditionalArray = uniqueConditionalArray
         .map((a: any) => ({ ...a, ColumnNumber: a.ColumnNumber + 1 }))
         .concat(conditionalComponent);
-
       const allComponentConditionalCard = [
-        ...otherconditionalComponentOutOfProgressionLevel, // yha rest krne h
+        ...conditionalComponentOutOfProgressionLevel,
         ...updatedConditionalArray,
       ];
+
       const allPathwayComponentCard = [
         ...updatedPathwayWrapper.PathwayComponents,
         ...updatedPathwayComponentArray,
@@ -263,7 +205,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           allPathwayComponentCard.map((item: any) => [item['CTID'], item])
         ).values(),
       ];
-
       const uniqueAllConditionalArray = [
         ...new Map(
           allComponentConditionalCard.map(
@@ -271,12 +212,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           )
         ).values(),
       ];
-
-      // console.log(
-      //   'uniqueAllPathwayComponentArray --->',
-      //   uniqueAllPathwayComponentArray
-      // );
-      // console.log('uniqueAllConditionalArray --->', uniqueAllConditionalArray);
       updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
 
@@ -292,6 +227,23 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       ];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setConditionalComponent([]);
+      !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
+
+      !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+
+      !!setIsConditionalEditing && setIsConditionalEditing(false);
+    } else if (cardAlreadyExistOnDropWrapper) {
+      updatedPathwayWrapper.ComponentConditions = [
+        ...updatedPathwayWrapper.ComponentConditions,
+        ...conditionalComponent,
+      ];
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      setConditionalComponent([]);
+      !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
+
+      !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+
+      !!setIsConditionalEditing && setIsConditionalEditing(false);
     }
   }, [conditionalComponent]);
 
@@ -319,7 +271,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     RightAction: [],
     RightSource: [],
     id: 0,
-    //RowId: data?.RowId,
     Name: componentConditionFields.Name,
     RowId: currentComponent?.RowId,
     name: componentConditionFields.Name,
@@ -347,30 +298,49 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, []);
 
   const saveCondition = () => {
-    // const mId = uuidv4();
-
     if (data?.Type !== 'conditional' || !isConditionalEditing) {
-      // const updatedTargetChild =
-      //   !!data?.TargetComponent &&
-      //   data?.TargetComponent.length > 0 &&
-      //   data?.TargetComponent.filter(
-      //     (target_card: any) => target_card !== data.RowId
-      //   );
+      const conditionalCardAlreadyExistForDestination =
+        updatedPathwayComponentConditionCards?.filter(
+          (condtional_card: any) =>
+            _.toString(condtional_card.ParentIdentifier) ===
+            _.toString(connectionsCTID?.start)
+        );
+
+      const maximumRowNumber = conditionalCardAlreadyExistForDestination.reduce(
+        (acc: any, curr: any) => {
+          if (acc >= curr) {
+            return acc.RowNumber;
+          } else {
+            return curr.RowNumber;
+          }
+        },
+        currentComponent?.RowNumber
+      );
+
+      setCardAlreadyExistOnDropWrapper(
+        conditionalCardAlreadyExistForDestination.length > 0 ? true : false
+      );
       const ComponentConditions = {
         ParentIdentifier: connectionsCTID?.start,
         Description: componentConditionFields.Description,
         RequiredNumber: componentConditionFields.RequiredNumber,
         LogicalOperator: componentConditionFields.LogicalOperator,
         HasConstraint: Constraint,
-        ColumnNumber: currentComponent?.destinationColumn
-          ? currentComponent?.ColumnNumber + 1
-          : currentComponent?.ColumnNumber,
-        RowNumber: currentComponent?.RowNumber,
+        ColumnNumber:
+          conditionalCardAlreadyExistForDestination.length > 0
+            ? conditionalCardAlreadyExistForDestination[0]?.ColumnNumber
+            : currentComponent?.destinationColumn
+            ? currentComponent?.ColumnNumber + 1
+            : currentComponent?.ColumnNumber,
+        RowNumber:
+          conditionalCardAlreadyExistForDestination?.length > 0
+            ? maximumRowNumber + 1
+            : currentComponent?.RowNumber,
         RowId: uuidv4(),
         Name: componentConditionFields.Name,
-        // TargetComponent: data?.PrecededBy || data.HasChild || updatedTargetChild,
         TargetComponent: [connectionsCTID?.end],
         HasCondition: [],
+        HasProgressionLevel: progressionLevelForAddComponent,
       };
       setConditionalComponent([ComponentConditions]);
     }
@@ -405,11 +375,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       }
     }
 
-    !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
+    // !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
 
-    !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+    // !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
 
-    !!setIsConditionalEditing && setIsConditionalEditing(false);
+    // !!setIsConditionalEditing && setIsConditionalEditing(false);
   };
 
   const addConstraintRow = () => {
