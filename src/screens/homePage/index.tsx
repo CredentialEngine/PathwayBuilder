@@ -106,6 +106,7 @@ const HomePage: React.FC<Props> = ({
 
     setUpdatedPathwayComponentConditionCards(updatedConditionalComponents);
     setIsStartFromInitialColumnSelected(false);
+    createConnection();
   }, [pathwayComponentConditionCards]);
 
   const [overlayData, setOverlayData] = useState<any>({
@@ -136,6 +137,8 @@ const HomePage: React.FC<Props> = ({
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
       setIsDestinationColumnSelected(false);
+
+    // createConnection();
   }, [pathwayComponentCards]);
 
   // const onPlusClickHandler = (event: any) => {
@@ -267,6 +270,7 @@ const HomePage: React.FC<Props> = ({
         ]);
       }
     }
+    // createConnection()
   }, [pathwayComponent, isDestinationColumnStatus]);
 
   const onSelectDragElemenet = (elem: HTMLElement) => {
@@ -303,7 +307,8 @@ const HomePage: React.FC<Props> = ({
     firstColumn: boolean
   ) => {
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
-    removeConnection(card?.CTID || card?.RowId);
+    // removeConnection(card?.CTID || card?.RowId);
+    setNewConn([]);
     if (isComponentTab) {
       card = {
         // ...createCard(card),
@@ -473,6 +478,7 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.Pathway = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
+    // createConnection();
   };
 
   const onDeleteHandler = (data: any) => {
@@ -513,6 +519,7 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
+
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -578,8 +585,37 @@ const HomePage: React.FC<Props> = ({
             }
           );
         }
+
+        if (
+          card?.HasCondition?.length > 0 &&
+          pathwayComponent?.ComponentConditions?.length > 0
+        ) {
+          card?.HasCondition?.map((condition: string) => {
+            pathwayComponent?.ComponentConditions?.map((compCond: any) => {
+              if (
+                compCond?.RowId === condition &&
+                card?.PrecededBy?.length > 0 &&
+                compCond?.TargetComponent?.length > 0
+              ) {
+                card?.PrecededBy?.map((preced: string) => {
+                  compCond?.TargetComponent?.map((target: string) => {
+                    if (preced === target) {
+                      const itemToRemove = tempCon?.findIndex(
+                        (item: any) =>
+                          item?.start === card?.CTID ||
+                          (card?.RowId && item?.end === preced)
+                      );
+                      tempCon?.splice(itemToRemove, 1);
+                    }
+                  });
+                });
+              }
+            });
+          });
+        }
       });
     }
+
     const uniqArrConn = tempCon?.filter(
       (value: any, idx: number, self: any) =>
         idx ===

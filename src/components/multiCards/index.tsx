@@ -9,6 +9,7 @@ import _, { noop } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useXarrow } from 'react-xarrows';
 
 import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
 
@@ -106,6 +107,7 @@ const MultiCard: React.FC<Props> = ({
     []
   );
   const [isConditionalEditing, setIsConditionalEditing] = useState(false);
+  const updateXarrow = useXarrow();
 
   const { mappedData: PathwayWrapper } = pathwayWrapper;
   const handledConstraintsModal = (bool: boolean) => {
@@ -167,6 +169,7 @@ const MultiCard: React.FC<Props> = ({
   // };
 
   const onDragStart = (e: any) => {
+    updateXarrow();
     setIsZoomDisabled(true);
     const target = e.target;
     !!setDraggableCardVisible && setDraggableCardVisible(true);
@@ -191,6 +194,7 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragOver = (e: any) => {
+    updateXarrow();
     e.preventDefault();
     e.stopPropagation();
   };
@@ -200,6 +204,7 @@ const MultiCard: React.FC<Props> = ({
     !!setDraggableCardVisible && setDraggableCardVisible(false);
 
     e.target.style.visibility = 'visible';
+    updateXarrow();
   };
 
   useEffect(() => {
