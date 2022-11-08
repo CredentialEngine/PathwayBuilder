@@ -20,7 +20,8 @@ interface Props {
 }
 
 const Constraint: React.FC<Props> = (Props) => {
-  const { RowIndex, getConstraintData, getRequiredDeleteRow } = Props;
+  const { RowIndex, getConstraintData, getRequiredDeleteRow, constraintRow } =
+    Props;
   const getAllComparators = useSelector(
     (state: any) => state.addConditionalComponent.comparatorsData
   );
@@ -37,11 +38,21 @@ const Constraint: React.FC<Props> = (Props) => {
     Comparator: [],
     RightAction: [],
     RightSource: [],
-    id: 0,
+    id: null,
   });
   const [leftSourcedata, setleftSourceData] = useState<any>([]);
   const [rightSourcedata, setRightSourceData] = useState<any>([]);
   const [Comparator, setComparator] = useState<any>([]);
+
+  useEffect(() => {
+    if (
+      constraintRow &&
+      constraintRow?.LeftSource &&
+      constraintRow?.RightSource
+    ) {
+      setConstraintData(constraintRow);
+    }
+  }, [constraintRow]);
 
   //   functions
   const handleConstraintAction = (value: string, label: string) => {
@@ -143,7 +154,9 @@ const Constraint: React.FC<Props> = (Props) => {
   }, [getAllComparators, getAllArrayConcept]);
 
   useEffect(() => {
-    getConstraintData(constraintData);
+    if (constraintData) {
+      getConstraintData(constraintData);
+    }
   }, [constraintData]);
 
   const handleDeselectHnadler = (event: any, name: string) => {
@@ -196,6 +209,7 @@ const Constraint: React.FC<Props> = (Props) => {
   const handleDeleteRow = (RowIndex: any) => {
     getRequiredDeleteRow(RowIndex);
   };
+
   return (
     <>
       <Row gutter={20}>
@@ -207,6 +221,7 @@ const Constraint: React.FC<Props> = (Props) => {
                 placeholder="Left Action"
                 showSearch={false}
                 onChange={(e) => handleConstraintAction(e, 'LeftAction')}
+                defaultValue={constraintData?.RightSource}
               />
             )}
             <Form.Item
@@ -217,7 +232,7 @@ const Constraint: React.FC<Props> = (Props) => {
               <DebounceSelect
                 showSearch
                 mode="tags"
-                value={constraintEntityFields.LeftSource}
+                value={constraintData?.LeftSource}
                 placeholder="Left Sources"
                 fetchOptions={allConstraintOperandfunc}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'LeftSource')}
@@ -256,7 +271,7 @@ const Constraint: React.FC<Props> = (Props) => {
                 <DebounceSelect
                   showSearch
                   mode="tags"
-                  value={constraintEntityFields.RightSource}
+                  value={constraintData?.RightSource}
                   placeholder="Right Sources"
                   fetchOptions={allConstraintOperandfunc}
                   onSelect={(e: any) =>

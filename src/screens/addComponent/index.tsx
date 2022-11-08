@@ -51,6 +51,26 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   );
   const [conditionalComponent, setConditionalComponent] = useState<any>([]);
 
+  const [constraintRow, setConstraintRow] = useState<any>([]);
+  const [consRowID, setConstRowId] = useState<any>([]);
+  const [hasConstraints, setHasConstraints] = useState<any>([]);
+  const dispatch = useDispatch();
+
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
+
+  const onInputChangeHandler = (e: any) => {
+    const updatedData = { ...componentConditionFields };
+    const { name, value } = e.target;
+    updatedData[name] = value;
+
+    setComponentConditionFields(updatedData);
+  };
+
+  const getAllLogicalOperator = useSelector(
+    (state: any) => state.addConditionalComponent.logicalOperatorData
+  );
+
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     if (conditionalComponent.length > 0) {
@@ -196,6 +216,17 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   useEffect(() => {
     if (isConditionalEditing) {
+      const constraintToStore = [] as any;
+      if (data && data?.HasConstraint) {
+        data?.HasConstraint?.map((constraint: any) => {
+          pathwayComponent?.Constraints?.map((pathwayConstraint: any) => {
+            if (pathwayConstraint?.RowId === constraint) {
+              constraintToStore.push(_.cloneDeep(pathwayConstraint));
+            }
+          });
+        });
+      }
+      setConstraintRow(constraintToStore);
       setComponentConditionFields({ ...componentConditionFields, ...data });
     }
   }, [isConditionalEditing]);
@@ -211,26 +242,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     Name: componentConditionFields.Name,
     Description: componentConditionFields.Description,
   };
-
-  const [constraintRow, setConstraintRow] = useState<any>([]);
-  const [consRowID, setConstRowId] = useState<any>([]);
-  const [hasConstraints, setHasConstraints] = useState<any>([]);
-  const dispatch = useDispatch();
-
-  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
-  const { mappedData: pathwayComponent } = pathwayWrapper;
-
-  const onInputChangeHandler = (e: any) => {
-    const updatedData = { ...componentConditionFields };
-    const { name, value } = e.target;
-    updatedData[name] = value;
-
-    setComponentConditionFields(updatedData);
-  };
-
-  const getAllLogicalOperator = useSelector(
-    (state: any) => state.addConditionalComponent.logicalOperatorData
-  );
 
   useEffect(() => {
     if (!isConditionalEditing) {
@@ -339,7 +350,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   const getData = (val: any) => {
     const temp = constraintRow?.map((item: any) => {
-      if (item?.id === val?.id) {
+      if (val?.id !== null && item?.id === val?.id) {
         return (item = val);
       } else {
         return item;
@@ -419,15 +430,16 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           <label>Constraints</label>
           <hr className="min-top" />
         </div>
-        {constraintRow.map((v: any, RowIndex: any) => (
-          <Constraint
-            key={RowIndex}
-            RowIndex={RowIndex}
-            constraintRow={constraintRow}
-            getConstraintData={(val: any) => getData(val)}
-            getRequiredDeleteRow={(val: any) => handleDeleteRow(val)}
-          />
-        ))}
+        {constraintRow &&
+          constraintRow?.map((v: any, RowIndex: any) => (
+            <Constraint
+              key={RowIndex}
+              RowIndex={RowIndex}
+              constraintRow={v}
+              getConstraintData={(val: any) => getData(val)}
+              getRequiredDeleteRow={(val: any) => handleDeleteRow(val)}
+            />
+          ))}
 
         <p>
           <u onClick={() => addConstraintRow()} style={{ cursor: 'pointer' }}>
