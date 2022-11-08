@@ -5,18 +5,17 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Popover } from 'antd';
-import _, { noop } from 'lodash';
+import { noop } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useXarrow } from 'react-xarrows';
 
 import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
 
-import AddConditionalComponent from '../../screens/addComponent';
+// import AddConditionalComponent from '../../screens/addComponent';
 
 import InfoTooltip from '../infoTooltip';
-import Modal from '../modal';
+// import Modal from '../modal';
 import RightPanel from '../rightPanel';
 
 import styles from './index.module.scss';
@@ -28,7 +27,7 @@ interface Props {
   isConditionalCard?: boolean;
   isAddComponentCard?: boolean;
   isCredentialCard?: boolean;
-  data?: any;
+  data: any;
   onClick?: () => void;
   setIsZoomDisabled: (a: any) => void;
   status?: string;
@@ -55,13 +54,17 @@ interface Props {
   isConditionalModalStatus?: boolean;
   setIsConditionalModalStatus?: (a: boolean) => void;
   newConnection?: any;
+  condCardItem?: any;
+  allComponentCardsData?: any;
+  allConditionalCardsData?: any;
+  connectionsCTID?: any;
   skipPreSelect?: boolean;
   destinationColumnSelect?: boolean;
   setDraggableCardVisible?: (a: boolean) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
-  destinationColumnSelect,
+  // condCardItem,
   isAddDestination,
   isDestination,
   isCourseCard,
@@ -80,69 +83,63 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
-  constraintIcon,
+  // constraintIcon,
   onDelete,
   // onMoveItem,
   // number,
   // forwardRef,
   rowNumber,
   columnNumber,
-  updatedPathwayComponentConditionCards,
-  HasProgressionLevel,
-  isConditionalModalStatus,
-  setIsConditionalModalStatus,
-  newConnection,
   skipPreSelect,
   setDraggableCardVisible,
+  // updatedPathwayComponentConditionCards,
+  // HasProgressionLevel,
+  // isConditionalModalStatus,
+  // setIsConditionalModalStatus,
+  // newConnection,
+  // allComponentCardsData,
+  // connectionsCTID,
+  // allConditionalCardsData,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
-  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  // const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const ref = useRef(null);
-  const [visibleConstraintCondition, setVisibleConstraintCondition] =
-    useState(false);
+  // const [visibleConstraintCondition, setVisibleConstraintCondition] =
+  //   useState(false);
   const [showRightPenal, setShowRightPenal] = useState(false);
-  const [filteredConditionalComponent, setFilteredConditionalComponent] =
-    useState<any>([]);
-  const [filteredPathwayComponent, setFilteredPathwayComponent] = useState<any>(
-    []
-  );
-  const [isConditionalEditing, setIsConditionalEditing] = useState(false);
+
   const updateXarrow = useXarrow();
 
-  const { mappedData: PathwayWrapper } = pathwayWrapper;
-  const handledConstraintsModal = (bool: boolean) => {
-    setVisibleConstraintCondition(bool);
-  };
-  useEffect(() => {
-    if (isConditionalModalStatus) {
-      setVisibleConstraintCondition(true);
-    } else {
-      setVisibleConstraintCondition(false);
-    }
-  }, [isConditionalModalStatus]);
+  // useEffect(() => {
+  //   if (isConditionalModalStatus) {
+  //     setVisibleConstraintCondition(true);
+  //   } else {
+  //     setVisibleConstraintCondition(false);
+  //   }
+  // }, [isConditionalModalStatus]);
 
-  useEffect(() => {
-    setFilteredConditionalComponent(
-      updatedPathwayComponentConditionCards?.filter(
-        (condition_card: any) =>
-          condition_card.HasProgressionLevel === _.toString(HasProgressionLevel)
-      )
-    );
+  // useEffect(() => {
+  //   setFilteredConditionalComponent(
+  //     updatedPathwayComponentConditionCards?.filter(
+  //       (condition_card: any) =>
+  //         condition_card.HasProgressionLevel === _.toString(HasProgressionLevel)
+  //     )
+  //   );
 
-    setFilteredPathwayComponent(
-      PathwayWrapper.PathwayComponents?.filter(
-        (pathway_card: any) =>
-          pathway_card.HasProgressionLevel === _.toString(HasProgressionLevel)
-      )
-    );
-  }, [updatedPathwayComponentConditionCards]);
+  //   setFilteredPathwayComponent(
+  //     PathwayWrapper.PathwayComponents?.filter(
+  //       (pathway_card: any) =>
+  //         pathway_card.HasProgressionLevel === _.toString(HasProgressionLevel)
+  //     )
+  //   );
+  // }, [updatedPathwayComponentConditionCards]);
 
   const darkColor = '#0A2942';
 
-  const onCancelHandler = (value: any) => {
-    setVisibleConstraintCondition(value);
-    !!setIsConditionalModalStatus && setIsConditionalModalStatus(value);
-  };
+  // const onCancelHandler = (value: any) => {
+  //   setVisibleConstraintCondition(value);
+  //   !!setIsConditionalModalStatus && setIsConditionalModalStatus(value);
+  // };
 
   const getOnClick = (e: any) => {
     /* 
@@ -220,10 +217,10 @@ const MultiCard: React.FC<Props> = ({
     }
   };
 
-  const onPlusCircleClickHandler = (e: any) => {
-    e.stopPropagation();
-    setVisibleConstraintCondition(true);
-  };
+  // const onPlusCircleClickHandler = (e: any) => {
+  //   e.stopPropagation();
+  //   setVisibleConstraintCondition(true);
+  // };
 
   const renderImage = (data: any) =>
     (data?.Type?.toLowerCase().includes(
@@ -754,8 +751,7 @@ const MultiCard: React.FC<Props> = ({
               </div>
             </>
           )}
-
-          {isAddFirst && firstComponent && (
+          {/* {isAddFirst && firstComponent && (
             <>
               <InfoTooltip
                 title="Great! Add  another component"
@@ -774,7 +770,7 @@ const MultiCard: React.FC<Props> = ({
                 />
               </div>
             </>
-          )}
+          )} */}
 
           {/* {isDestination && (
               <div className={styles.destinationContentWrapper}>
@@ -834,7 +830,7 @@ const MultiCard: React.FC<Props> = ({
 
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
             <>
-              {isDestination && constraintIcon && (
+              {/* {isDestination && constraintIcon && (
                 <div className={styles.addIcon}>
                   <FontAwesomeIcon
                     icon={faCirclePlus}
@@ -850,35 +846,51 @@ const MultiCard: React.FC<Props> = ({
                     }}
                   />
                 </div>
-              )}
+              )} */}
+              {/* {data.firstColumn &&
+                constraintIcon &&
+                PathwayWrapper.PathwayComponents.map(
+                  (component: any) =>
+                    component.HasChild.length > 0 && (
+                      <div className={styles.addIcon + ' ' + styles.rightAlign}>
+                        <FontAwesomeIcon
+                          icon={faCirclePlus}
+                          fill="#000000"
+                          style={{
+                            height: '22px',
+                            width: '22px',
+                            color: '#ffb90b',
+                            cursor: 'pointer',
+                          }}
+                          onClick={(e) => {
+                            onPlusCircleClickHandler(e);
+                          }}
+                        />
+                      </div>
+                    )
+                )} */}
 
-              {newConnection.length > 0 &&
-                newConnection?.map((v: any) =>
-                  v.start == data.CTID
-                    ? !data.destinationColumn && (
-                        <div
-                          className={`${styles.addIcon} ${
-                            !destinationColumnSelect ? styles.rightAlign : ''
-                          }`}
-                        >
-                          {}
-                          <FontAwesomeIcon
-                            icon={faCirclePlus}
-                            fill="#000000"
-                            style={{
-                              height: '22px',
-                              width: '22px',
-                              color: '#ffb90b',
-                              cursor: 'pointer',
-                            }}
-                            onClick={(e) => {
-                              onPlusCircleClickHandler(e);
-                            }}
-                          />
-                        </div>
-                      )
-                    : ''
-                )}
+              {/* {newConnection.length > 0 &&
+                (data.CTID == newConnection[newConnection.length - 1]?.start ? (
+                  <div className={styles.addIcon + ' ' + styles.rightAlign}>
+                    {}
+                    <FontAwesomeIcon
+                      icon={faCirclePlus}
+                      fill="#000000"
+                      style={{
+                        height: '22px',
+                        width: '22px',
+                        color: '#ffb90b',
+                        cursor: 'pointer',
+                      }}
+                      onClick={(e) => {
+                        onPlusCircleClickHandler(e);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  ''
+                ))} */}
 
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}
@@ -1024,7 +1036,7 @@ const MultiCard: React.FC<Props> = ({
 
           {isConditionalCard && (
             <>
-              {isConditionalCard && (
+              {/* {isConditionalCard && (
                 <div
                   className={
                     styles.addIcon + ' ' + styles.isConditionalCardIcon
@@ -1044,7 +1056,7 @@ const MultiCard: React.FC<Props> = ({
                     }}
                   />
                 </div>
-              )}
+              )} */}
               <React.Fragment>
                 <div className={styles.conditionalCardContent}>
                   <FontAwesomeIcon
@@ -1076,7 +1088,7 @@ const MultiCard: React.FC<Props> = ({
                           onClick={(e: any) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            setVisibleConstraintCondition(true);
+                            // setVisibleConstraintCondition(true);
                             setIsConditionalEditing(true);
                             setShowPopover(false);
                           }}
@@ -1143,7 +1155,7 @@ const MultiCard: React.FC<Props> = ({
           )}
         </div>
       )}
-      <Modal
+      {/* <Modal
         visible={visibleConstraintCondition}
         title=""
         footer={[]}
@@ -1151,16 +1163,17 @@ const MultiCard: React.FC<Props> = ({
       >
         <AddConditionalComponent
           visibleConstraintConditionProp={handledConstraintsModal}
-          data={data}
-          filteredConditionalComponent={filteredConditionalComponent}
-          filteredPathwayComponent={filteredPathwayComponent}
+          // data={data}
+          // filteredConditionalComponent={filteredConditionalComponent}
+          // filteredPathwayComponent={filteredPathwayComponent}
           isDestinationCard={isDestination}
           setIsConditionalModalStatus={setIsConditionalModalStatus}
-          HasProgressionLevel={HasProgressionLevel}
-          isConditionalEditing={isConditionalEditing}
-          setIsConditionalEditing={setIsConditionalEditing}
+          // HasProgressionLevel={HasProgressionLevel}
+          allComponentCardsData={allComponentCardsData}
+          allConditionalCardsData={allConditionalCardsData}
+          connectionsCTID={connectionsCTID}
         />
-      </Modal>
+      </Modal> */}
 
       {!!showRightPenal && (
         <RightPanel

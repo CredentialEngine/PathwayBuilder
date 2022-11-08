@@ -1,6 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,9 +18,11 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
+import AddConditionalComponent from '../addComponent';
 
 import Styles from './index.module.scss';
 
@@ -88,11 +91,21 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
+  const [connectionsCTID, setConnectionsCTID] = useState<any>();
+  const [allComponentCardsData, setAllComponentCardData] = useState<any>({});
+  const [allConditionalCardsData, setAllConditionalCardData] = useState<any>(
+    {}
+  );
 
+  // console.log(
+  //   'pathwayComponentConditionCards --->',
+  //   pathwayComponentConditionCards
+  // );
   useEffect(() => {
     const updatedConditionalComponents: any = [];
+
     pathwayComponentConditionCards.map((conditionalCard: any) => {
-      conditionalCard?.TargetComponent.forEach((target: any) => {
+      conditionalCard?.TargetComponent?.forEach((target: any) => {
         pathwayComponentCards.forEach((pathway_card: any) => {
           if (pathway_card.CTID === target) {
             updatedConditionalComponents.push({
@@ -104,6 +117,14 @@ const HomePage: React.FC<Props> = ({
       });
     });
 
+    updatedConditionalComponents.map((conditional_comp: any) => {
+      const obj: any = {};
+      obj[conditional_comp.RowId] = {
+        ...conditional_comp,
+      };
+      setAllConditionalCardData({ ...allConditionalCardsData, ...obj });
+      return conditional_comp;
+    });
     setUpdatedPathwayComponentConditionCards(updatedConditionalComponents);
     setIsStartFromInitialColumnSelected(false);
     createConnection();
@@ -114,6 +135,7 @@ const HomePage: React.FC<Props> = ({
     rowNumber: 0,
     CTID: '',
   });
+  // console.log('allComponentCardsData --->', allComponentCardsData);
 
   const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
   useEffect(() => {
@@ -141,10 +163,11 @@ const HomePage: React.FC<Props> = ({
     // createConnection();
   }, [pathwayComponentCards]);
 
-  // const onPlusClickHandler = (event: any) => {
-  //   event.stopPropagation();
-  //   setIsConditionalModalStatus(true);
-  // };
+  const onPlusClickHandler = (event: any, connections: any) => {
+    event.stopPropagation();
+    setIsConditionalModalStatus(true);
+    setConnectionsCTID(connections);
+  };
 
   const getSemester = (level: any) => {
     if (level?.Narrower?.length > 0) {
@@ -295,6 +318,7 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
+  // console.log('allComponentCardsData --->', allComponentCardsData);
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -415,6 +439,15 @@ const HomePage: React.FC<Props> = ({
       isStartFromInitialColumnSelected &&
       isFirstColumneSelected
     ) {
+      const obj: any = {};
+      obj[card.CTID] = {
+        ...card,
+        RowNumber,
+        ColumnNumber: 1,
+        HasProgressionLevel,
+        destinationColumn,
+      };
+      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards([
         ...pathwayComponentCards,
         {
@@ -432,6 +465,15 @@ const HomePage: React.FC<Props> = ({
       isDestinationColumnSelected &&
       isDestinationColumnStatus
     ) {
+      const obj: any = {};
+      obj[card.CTID] = {
+        ...card,
+        RowNumber,
+        ColumnNumber: 1,
+        HasProgressionLevel,
+        destinationColumn,
+      };
+      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards([
         ...pathwayComponentCards,
         {
@@ -456,6 +498,14 @@ const HomePage: React.FC<Props> = ({
           })
       );
     } else if (pathwayComponentCards.length !== 0) {
+      const obj: any = {};
+      obj[card.CTID] = {
+        ...card,
+        RowNumber,
+        ColumnNumber,
+        HasProgressionLevel,
+      };
+      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards(
         pathwayComponentCards
           .filter((item: any) => item.CTID !== card.CTID)
@@ -659,7 +709,6 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
-
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
@@ -802,7 +851,7 @@ const HomePage: React.FC<Props> = ({
                                                   }
                                                 />
                                               </span>
-                                              {/* <span
+                                              <span
                                                 className={
                                                   Styles.addConditionIcon
                                                 }
@@ -817,10 +866,13 @@ const HomePage: React.FC<Props> = ({
                                                     cursor: 'pointer',
                                                   }}
                                                   onClick={(e: any) => {
-                                                    onPlusClickHandler(e);
+                                                    onPlusClickHandler(
+                                                      e,
+                                                      items
+                                                    );
                                                   }}
                                                 />
-                                              </span> */}
+                                              </span>
                                             </div>
                                           }
                                           startAnchor="auto"
@@ -913,6 +965,13 @@ const HomePage: React.FC<Props> = ({
                                     }
                                     leftpanelSelectedElem={undefined}
                                     ConstraintConditionState={false}
+                                    allComponentCardsData={
+                                      allComponentCardsData
+                                    }
+                                    allConditionalCardsData={
+                                      allConditionalCardsData
+                                    }
+                                    connectionsCTID={connectionsCTID}
                                   />
                                 </>
                               ))}
@@ -1060,115 +1119,141 @@ const HomePage: React.FC<Props> = ({
   };
 
   return (
-    <Layout className={Styles.centralPannel}>
-      <Header
-        setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
-        isLeftPanelVisible={isLeftPanelVisible}
-      />
-      {!!isLeftPanelVisible && (
-        <Layout style={{ display: 'flex', flexDirection: 'row' }}>
-          <Sider trigger={null} collapsible collapsed={collapsed}>
-            <LeftPanel
-              onCloseHandler={() => onCloseHandler}
-              isDraggableCardVisibleMethod={(isDragTure: boolean) =>
-                setDraggableCardVisible(isDragTure)
-              }
-              setLeftpanelSelectedElem={setLeftpanelSelectedElem}
-              onClickPreselectComponent={onClickPreselectComponent}
-            />
-          </Sider>
-          <Layout
-            className="site-layout"
-            style={{
-              marginLeft: !collapsed ? '277px' : '0px',
-            }}
-          >
-            <div className={Styles.leftPanelTrigger}>
-              {collapsed ? (
-                <FontAwesomeIcon
-                  icon={faAngleDoubleRight}
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{ position: 'fixed' }}
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faAngleDoubleLeft}
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{ position: 'fixed' }}
-                />
-              )}
-            </div>
-            <Content className="site-layout-background">
-              <TransformWrapper
-                initialScale={1}
-                disabled={isZoomDisabled}
-                centerZoomedOut={false}
-                centerOnInit={false}
-                panning={{ disabled: true }}
-                wheel={{ disabled: true }}
-              >
-                {({ setTransform, resetTransform }) => (
-                  <React.Fragment>
-                    <div className="zoom-tools">
-                      <button
-                        onClick={() => setTransform(1, 1, 0.8, 400, 'easeOut')}
-                      >
-                        -
-                      </button>
-                      <button onClick={() => resetTransform()}>x</button>
-                    </div>
-                    <TransformComponent>
-                      <div style={{ display: 'flex' }}>
-                        {columnsData &&
-                          columnsData?.map((column: any, index: any) => (
-                            <div
-                              id={column.Id}
-                              key={index}
-                              style={{
-                                textAlign: 'center',
-                                width: 'auto',
-                              }}
-                            >
+    <>
+      <Layout className={Styles.centralPannel}>
+        <Header
+          setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
+          isLeftPanelVisible={isLeftPanelVisible}
+        />
+        {!!isLeftPanelVisible && (
+          <Layout style={{ display: 'flex', flexDirection: 'row' }}>
+            <Sider trigger={null} collapsible collapsed={collapsed}>
+              <LeftPanel
+                onCloseHandler={() => onCloseHandler}
+                isDraggableCardVisibleMethod={(isDragTure: boolean) =>
+                  setDraggableCardVisible(isDragTure)
+                }
+                setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+                onClickPreselectComponent={onClickPreselectComponent}
+              />
+            </Sider>
+            <Layout
+              className="site-layout"
+              style={{
+                marginLeft: !collapsed ? '277px' : '0px',
+              }}
+            >
+              <div className={Styles.leftPanelTrigger}>
+                {collapsed ? (
+                  <FontAwesomeIcon
+                    icon={faAngleDoubleRight}
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{ position: 'fixed' }}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faAngleDoubleLeft}
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{ position: 'fixed' }}
+                  />
+                )}
+              </div>
+              <Content className="site-layout-background">
+                <TransformWrapper
+                  initialScale={1}
+                  disabled={isZoomDisabled}
+                  centerZoomedOut={false}
+                  centerOnInit={false}
+                  panning={{ disabled: true }}
+                  wheel={{ disabled: true }}
+                >
+                  {({ setTransform, resetTransform }) => (
+                    <React.Fragment>
+                      <div className="zoom-tools">
+                        <button
+                          onClick={() =>
+                            setTransform(1, 1, 0.8, 400, 'easeOut')
+                          }
+                        >
+                          -
+                        </button>
+                        <button onClick={() => resetTransform()}>x</button>
+                      </div>
+                      <TransformComponent>
+                        <div style={{ display: 'flex' }}>
+                          {columnsData &&
+                            columnsData?.map((column: any, index: any) => (
                               <div
+                                id={column.Id}
+                                key={index}
                                 style={{
-                                  backgroundColor: `${
-                                    index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
-                                  }`,
+                                  textAlign: 'center',
+                                  width: 'auto',
                                 }}
                               >
-                                <span
+                                <div
                                   style={{
-                                    color: '#000000',
                                     backgroundColor: `${
                                       index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
                                     }`,
                                   }}
                                 >
-                                  {column.Name}
-                                </span>
+                                  <span
+                                    style={{
+                                      color: '#000000',
+                                      backgroundColor: `${
+                                        index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
+                                      }`,
+                                    }}
+                                  >
+                                    {column.Name}
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex' }}>
+                                  {getDropWrapperLayout(column, index)}
+                                </div>
                               </div>
-                              <div style={{ display: 'flex' }}>
-                                {getDropWrapperLayout(column, index)}
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </TransformComponent>
-                  </React.Fragment>
-                )}
-              </TransformWrapper>
-            </Content>
+                            ))}
+                        </div>
+                      </TransformComponent>
+                    </React.Fragment>
+                  )}
+                </TransformWrapper>
+              </Content>
+            </Layout>
           </Layout>
-        </Layout>
-      )}
-      {showRightPanel && (
-        <RightPanel
-          visible={showRightPanel}
-          onCloseHandler={(value: boolean) => setShowRightPanel(value)}
-          panelData={rightPanelData}
+        )}
+        {showRightPanel && (
+          <RightPanel
+            visible={showRightPanel}
+            onCloseHandler={(value: boolean) => setShowRightPanel(value)}
+            panelData={rightPanelData}
+          />
+        )}
+      </Layout>
+      <Modal
+        visible={isConditionalModalStatus}
+        title=""
+        footer={[]}
+        onCancel={() => setIsConditionalModalStatus(false)}
+      >
+        <AddConditionalComponent
+          visibleConstraintConditionProp={setIsConditionalModalStatus}
+          // data={data}
+          // filteredConditionalComponent={filteredConditionalComponent}
+          // filteredPathwayComponent={filteredPathwayComponent}
+          // isDestinationCard={isDestination}
+          setIsConditionalModalStatus={setIsConditionalModalStatus}
+          // HasProgressionLevel={HasProgressionLevel}
+          allComponentCardsData={allComponentCardsData}
+          allConditionalCardsData={allConditionalCardsData}
+          connectionsCTID={connectionsCTID}
+          updatedPathwayComponentConditionCards={
+            updatedPathwayComponentConditionCards
+          }
         />
-      )}
-    </Layout>
+      </Modal>
+    </>
   );
 };
 
