@@ -281,7 +281,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
 
       updatedPathwayWrapper.Constraints = [
-        ...updatedPathwayWrapper.Constraints,
+        ...updatedPathwayWrapper?.Constraints,
         ...constraintRow.map((v: any) => ({
           ...v,
           ParentIdentifier: data.RowId,

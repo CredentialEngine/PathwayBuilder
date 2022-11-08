@@ -96,11 +96,8 @@ const HomePage: React.FC<Props> = ({
   const [allConditionalCardsData, setAllConditionalCardData] = useState<any>(
     {}
   );
+  const [isConditionalEditing, setIsConditionalEditing] = useState(false);
 
-  // console.log(
-  //   'pathwayComponentConditionCards --->',
-  //   pathwayComponentConditionCards
-  // );
   useEffect(() => {
     const updatedConditionalComponents: any = [];
 
@@ -135,7 +132,6 @@ const HomePage: React.FC<Props> = ({
     rowNumber: 0,
     CTID: '',
   });
-  // console.log('allComponentCardsData --->', allComponentCardsData);
 
   const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
   useEffect(() => {
@@ -318,7 +314,6 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
-  // console.log('allComponentCardsData --->', allComponentCardsData);
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -592,7 +587,6 @@ const HomePage: React.FC<Props> = ({
           }
         }
       });
-      // createConnection();
       setConstraintIcon(true);
     } else {
       setPoint({
@@ -972,6 +966,9 @@ const HomePage: React.FC<Props> = ({
                                       allConditionalCardsData
                                     }
                                     connectionsCTID={connectionsCTID}
+                                    setIsConditionalEditing={
+                                      setIsConditionalEditing
+                                    }
                                   />
                                 </>
                               ))}
@@ -1232,25 +1229,25 @@ const HomePage: React.FC<Props> = ({
         )}
       </Layout>
       <Modal
-        visible={isConditionalModalStatus}
+        visible={isConditionalModalStatus || isConditionalEditing}
         title=""
         footer={[]}
-        onCancel={() => setIsConditionalModalStatus(false)}
+        onCancel={() => {
+          setIsConditionalModalStatus(false);
+          setIsConditionalEditing(false);
+        }}
       >
         <AddConditionalComponent
           visibleConstraintConditionProp={setIsConditionalModalStatus}
-          // data={data}
-          // filteredConditionalComponent={filteredConditionalComponent}
-          // filteredPathwayComponent={filteredPathwayComponent}
-          // isDestinationCard={isDestination}
           setIsConditionalModalStatus={setIsConditionalModalStatus}
-          // HasProgressionLevel={HasProgressionLevel}
           allComponentCardsData={allComponentCardsData}
           allConditionalCardsData={allConditionalCardsData}
           connectionsCTID={connectionsCTID}
           updatedPathwayComponentConditionCards={
             updatedPathwayComponentConditionCards
           }
+          isConditionalEditing={isConditionalEditing}
+          setIsConditionalEditing={setIsConditionalEditing}
         />
       </Modal>
     </>

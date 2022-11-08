@@ -11,11 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useXarrow } from 'react-xarrows';
 
 import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
-
-// import AddConditionalComponent from '../../screens/addComponent';
-
 import InfoTooltip from '../infoTooltip';
-// import Modal from '../modal';
 import RightPanel from '../rightPanel';
 
 import styles from './index.module.scss';
@@ -61,10 +57,11 @@ interface Props {
   skipPreSelect?: boolean;
   destinationColumnSelect?: boolean;
   setDraggableCardVisible?: (a: boolean) => void;
+  setIsConditionalEditing?: (a: boolean) => void;
+  isConditionalEditing?: (a: boolean) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
-  // condCardItem,
   isAddDestination,
   isDestination,
   isCourseCard,
@@ -83,7 +80,6 @@ const MultiCard: React.FC<Props> = ({
   firstComponent,
   getEndPoints,
   isDraggableCardVisible,
-  // constraintIcon,
   onDelete,
   // onMoveItem,
   // number,
@@ -100,12 +96,12 @@ const MultiCard: React.FC<Props> = ({
   // allComponentCardsData,
   // connectionsCTID,
   // allConditionalCardsData,
+  setIsConditionalEditing,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
-  // const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+
   const ref = useRef(null);
-  // const [visibleConstraintCondition, setVisibleConstraintCondition] =
-  //   useState(false);
+
   const [showRightPenal, setShowRightPenal] = useState(false);
 
   const updateXarrow = useXarrow();
@@ -135,11 +131,6 @@ const MultiCard: React.FC<Props> = ({
   // }, [updatedPathwayComponentConditionCards]);
 
   const darkColor = '#0A2942';
-
-  // const onCancelHandler = (value: any) => {
-  //   setVisibleConstraintCondition(value);
-  //   !!setIsConditionalModalStatus && setIsConditionalModalStatus(value);
-  // };
 
   const getOnClick = (e: any) => {
     /* 
@@ -216,11 +207,6 @@ const MultiCard: React.FC<Props> = ({
       }
     }
   };
-
-  // const onPlusCircleClickHandler = (e: any) => {
-  //   e.stopPropagation();
-  //   setVisibleConstraintCondition(true);
-  // };
 
   const renderImage = (data: any) =>
     (data?.Type?.toLowerCase().includes(
@@ -466,89 +452,11 @@ const MultiCard: React.FC<Props> = ({
                 </>
               )}
 
-              {/* {isDestination && (
-                <div className={styles.destinationContentWrapper}>
-                  <div className={styles.topDestinationContent}>
-                    <FontAwesomeIcon
-                      color={darkColor}
-                      style={{ height: '20px' }}
-                      icon={faStar}
-                    />
-                    <p className={styles.credentials}>Credential Component</p>
-                    <FontAwesomeIcon
-                      color={darkColor}
-                      style={{ height: '20px', cursor: 'pointer' }}
-                      icon={faEllipsis}
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setShowPopover(!showPopover);
-                      }}
-                    />
-                    {showPopover && (
-                      <Popover
-                        visible={showPopover}
-                        arrowPointAtCenter
-                        placement="bottomRight"
-                        content={
-                          <div className={styles.popoverMenu} ref={ref}>
-                            <span
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                              }}
-                            >
-                              View
-                            </span>
-                            <span
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                              }}
-                            >
-                              Delete
-                            </span>
-                          </div>
-                        }
-                      ></Popover>
-                    )}
-                  </div>
-                  <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
-                  <div className={styles.bottomDestinationContent}>
-                    <p className={styles.title}>
-                      F291-COS BSCH - Bachlor of Science Honours
-                    </p>
-                  </div>
-                </div>
-                )} */}
               {((isCourseCard && !isCredentialCard) ||
                 data.Type === 'course') && (
                 <>
-                  {/* {data.firstColumn && constraintIcon && (
-                    <div className={styles.addIcon + ' ' + styles.rightAlign}>
-                      {}
-                      <FontAwesomeIcon
-                        icon={faCirclePlus}
-                        fill="#000000"
-                        style={{
-                          height: '22px',
-                          width: '22px',
-                          color: '#ffb90b',
-                          cursor: 'pointer',
-                        }}
-                        onClick={(e) => {
-                          onPlusCircleClickHandler(e);
-                        }}
-                      />
-                    </div>
-                  )} */}
-
                   <div className={styles.credentialsCardWrapeer}>
                     <div className={styles.topCourseContent}>
-                      {/* <FontAwesomeIcon
-                        icon={faCubes}
-                        style={{ height: '24px', width: '24px' }}
-                      /> */}
                       {renderImage(data)}
                       <span className={styles.title}>
                         {data.Name.slice(0, 30)}
@@ -614,10 +522,6 @@ const MultiCard: React.FC<Props> = ({
                 <>
                   <div className={styles.courseCredCardWrapper}>
                     <div className={styles.topCourseContent}>
-                      {/* <FontAwesomeIcon
-                        icon={faCubes}
-                        style={{ height: '24px', width: '24px' }}
-                      /> */}
                       {renderImage(data)}
                       <span className={styles.title}>
                         {data.Name.slice(0, 30)}
@@ -751,147 +655,9 @@ const MultiCard: React.FC<Props> = ({
               </div>
             </>
           )}
-          {/* {isAddFirst && firstComponent && (
-            <>
-              <InfoTooltip
-                title="Great! Add  another component"
-                content="Drag your next component into the Pathway by dragging it to a hotspot on the component you just placed."
-                onClose={noop}
-                direction="right"
-              />
-              <div className={styles.addDestinationContent}>
-                <p className={styles.addDestinationTitle}>
-                  Add your next component
-                </p>
-                <FontAwesomeIcon
-                  style={{ height: '28px', marginTop: '20px' }}
-                  color="#ffffff"
-                  icon={faCirclePlus}
-                />
-              </div>
-            </>
-          )} */}
-
-          {/* {isDestination && (
-              <div className={styles.destinationContentWrapper}>
-                <div className={styles.topDestinationContent}>
-                  <FontAwesomeIcon
-                    color={darkColor}
-                    style={{ height: '20px' }}
-                    icon={faStar}
-                  />
-                  <p className={styles.credentials}>Credential Component</p>
-                  <FontAwesomeIcon
-                    color={darkColor}
-                    style={{ height: '20px', cursor: 'pointer' }}
-                    icon={faEllipsis}
-                    onClick={(e: any) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setShowPopover(!showPopover);
-                    }}
-                  />
-                  {showPopover && (
-                    <Popover
-                      visible={showPopover}
-                      arrowPointAtCenter
-                      placement="bottomRight"
-                      content={
-                        <div className={styles.popoverMenu} ref={ref}>
-                          <span
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                            }}
-                          >
-                            View
-                          </span>
-                          <span
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                            }}
-                          >
-                            Delete
-                          </span>
-                        </div>
-                      }
-                    ></Popover>
-                  )}
-                </div>
-                <Divider style={{ backgroundColor: '#4EE5E1', margin: '8px 0px ' }} />
-                <div className={styles.bottomDestinationContent}>
-                  <p className={styles.title}>
-                    F291-COS BSCH - Bachlor of Science Honours
-                  </p>
-                </div>
-              </div>
-              )} */}
 
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
             <>
-              {/* {isDestination && constraintIcon && (
-                <div className={styles.addIcon}>
-                  <FontAwesomeIcon
-                    icon={faCirclePlus}
-                    fill="#000000"
-                    style={{
-                      height: '22px',
-                      width: '22px',
-                      color: '#ffb90b',
-                      cursor: 'pointer',
-                    }}
-                    onClick={(e) => {
-                      onPlusCircleClickHandler(e);
-                    }}
-                  />
-                </div>
-              )} */}
-              {/* {data.firstColumn &&
-                constraintIcon &&
-                PathwayWrapper.PathwayComponents.map(
-                  (component: any) =>
-                    component.HasChild.length > 0 && (
-                      <div className={styles.addIcon + ' ' + styles.rightAlign}>
-                        <FontAwesomeIcon
-                          icon={faCirclePlus}
-                          fill="#000000"
-                          style={{
-                            height: '22px',
-                            width: '22px',
-                            color: '#ffb90b',
-                            cursor: 'pointer',
-                          }}
-                          onClick={(e) => {
-                            onPlusCircleClickHandler(e);
-                          }}
-                        />
-                      </div>
-                    )
-                )} */}
-
-              {/* {newConnection.length > 0 &&
-                (data.CTID == newConnection[newConnection.length - 1]?.start ? (
-                  <div className={styles.addIcon + ' ' + styles.rightAlign}>
-                    {}
-                    <FontAwesomeIcon
-                      icon={faCirclePlus}
-                      fill="#000000"
-                      style={{
-                        height: '22px',
-                        width: '22px',
-                        color: '#ffb90b',
-                        cursor: 'pointer',
-                      }}
-                      onClick={(e) => {
-                        onPlusCircleClickHandler(e);
-                      }}
-                    />
-                  </div>
-                ) : (
-                  ''
-                ))} */}
-
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}
               ></span>
@@ -903,10 +669,6 @@ const MultiCard: React.FC<Props> = ({
                 }
               >
                 <div className={styles.topCourseContent}>
-                  {/* <FontAwesomeIcon
-                    icon={faCubes}
-                    style={{ height: '24px', width: '24px' }}
-                  /> */}
                   {renderImage(data)}
                   <span className={styles.title}>{data.Name.slice(0, 30)}</span>
                   <FontAwesomeIcon
@@ -974,10 +736,6 @@ const MultiCard: React.FC<Props> = ({
             <>
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
-                  {/* <FontAwesomeIcon
-                    icon={faCubes}
-                    style={{ height: '24px', width: '24px' }}
-                  /> */}
                   {renderImage(data)}
                   <span className={styles.title}>{data.Name.slice(0, 30)}</span>
                   <FontAwesomeIcon
@@ -1036,27 +794,6 @@ const MultiCard: React.FC<Props> = ({
 
           {isConditionalCard && (
             <>
-              {/* {isConditionalCard && (
-                <div
-                  className={
-                    styles.addIcon + ' ' + styles.isConditionalCardIcon
-                  }
-                >
-                  <FontAwesomeIcon
-                    icon={faCirclePlus}
-                    fill="#000000"
-                    style={{
-                      height: '22px',
-                      width: '22px',
-                      color: '#ffb90b',
-                      cursor: 'pointer',
-                    }}
-                    onClick={(e) => {
-                      onPlusCircleClickHandler(e);
-                    }}
-                  />
-                </div>
-              )} */}
               <React.Fragment>
                 <div className={styles.conditionalCardContent}>
                   <FontAwesomeIcon
@@ -1089,7 +826,8 @@ const MultiCard: React.FC<Props> = ({
                             e.stopPropagation();
                             e.preventDefault();
                             // setVisibleConstraintCondition(true);
-                            setIsConditionalEditing(true);
+                            !!setIsConditionalEditing &&
+                              setIsConditionalEditing(true);
                             setShowPopover(false);
                           }}
                         >
@@ -1155,25 +893,6 @@ const MultiCard: React.FC<Props> = ({
           )}
         </div>
       )}
-      {/* <Modal
-        visible={visibleConstraintCondition}
-        title=""
-        footer={[]}
-        onCancel={() => onCancelHandler(false)}
-      >
-        <AddConditionalComponent
-          visibleConstraintConditionProp={handledConstraintsModal}
-          // data={data}
-          // filteredConditionalComponent={filteredConditionalComponent}
-          // filteredPathwayComponent={filteredPathwayComponent}
-          isDestinationCard={isDestination}
-          setIsConditionalModalStatus={setIsConditionalModalStatus}
-          // HasProgressionLevel={HasProgressionLevel}
-          allComponentCardsData={allComponentCardsData}
-          allConditionalCardsData={allConditionalCardsData}
-          connectionsCTID={connectionsCTID}
-        />
-      </Modal> */}
 
       {!!showRightPenal && (
         <RightPanel
