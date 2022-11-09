@@ -88,6 +88,7 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
+  const [destinationColumnDrop, setDestinationColumnDrop] = useState<any>(null);
 
   useEffect(() => {
     const updatedConditionalComponents: any = [];
@@ -130,6 +131,9 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
+    if (!destinationColumnDrop) {
+      updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
+    }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
     setDeletedComponentCards([]);
@@ -294,7 +298,6 @@ const HomePage: React.FC<Props> = ({
       });
     }
   };
-
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -306,10 +309,14 @@ const HomePage: React.FC<Props> = ({
     isFirstColumneSelected: boolean,
     firstColumn: boolean
   ) => {
+    setDestinationColumnDrop(destinationColumn);
     setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
     // removeConnection(card?.CTID || card?.RowId);
     setNewConn([]);
+    const isDestinationCardExist = !_.isEmpty(
+      pathwayComponent.Pathway.HasDestinationComponent
+    );
     if (isComponentTab) {
       card = {
         // ...createCard(card),
@@ -346,43 +353,40 @@ const HomePage: React.FC<Props> = ({
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
-    const isDestinationCardExist = !_.isEmpty(
-      pathwayComponent.Pathway.HasDestinationComponent
-    );
 
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
 
-      // const indestinationColumn = pathwayComponentCards.filter(
-      //   (el: any) => el.CTID == card.CTID && el.destinationColumn === true
-      // );
+      const indestinationColumn = pathwayComponentCards.filter(
+        (el: any) => el.CTID == card.CTID && el.destinationColumn === true
+      );
 
-      // if (indestinationColumn.length > 0) {
-      //   const updatedPathwayComponentCards: any = _.cloneDeep(
-      //     pathwayComponentCards
-      //   );
+      if (indestinationColumn.length > 0) {
+        const updatedPathwayComponentCards: any = _.cloneDeep(
+          pathwayComponentCards
+        );
 
-      //   const copiedObj = updatedPathwayComponentCards?.findIndex(
-      //     (i: any) => i.CTID == restCardProps.CTID
-      //   );
-      //   updatedPathwayComponentCards?.splice(copiedObj, 1);
-      //   setPathwayComponentCards([
-      //     ...new Set([
-      //       ...updatedPathwayComponentCards,
-      //       {
-      //         ...restCardProps,
-      //         destinationColumn,
-      //         HasProgressionLevel,
-      //         RowNumber,
-      //         ColumnNumber: 1,
+        const copiedObj = updatedPathwayComponentCards?.findIndex(
+          (i: any) => i.CTID == restCardProps.CTID
+        );
+        updatedPathwayComponentCards?.splice(copiedObj, 1);
+        setPathwayComponentCards([
+          ...new Set([
+            ...updatedPathwayComponentCards,
+            {
+              ...restCardProps,
+              destinationColumn,
+              HasProgressionLevel,
+              RowNumber,
+              ColumnNumber: 1,
 
-      //         firstColumn,
-      //       },
-      //     ]),
-      //   ]);
-      // } else {
-      //   return;
-      // }
+              firstColumn,
+            },
+          ]),
+        ]);
+      } else {
+        return;
+      }
 
       return;
     }
@@ -457,17 +461,53 @@ const HomePage: React.FC<Props> = ({
           })
       );
     } else if (pathwayComponentCards.length !== 0) {
-      setPathwayComponentCards(
-        pathwayComponentCards
-          .filter((item: any) => item.CTID !== card.CTID)
-          .concat({
-            ...restCardProps,
-            HasProgressionLevel,
-            RowNumber,
-            ColumnNumber,
-            firstColumn,
-          })
-      );
+      if (destinationColumn) {
+        const indestinationColumn = pathwayComponentCards.filter(
+          (el: any) => el.CTID == card.CTID && el.destinationColumn === true
+        );
+
+        if (indestinationColumn.length > 0) {
+          const updatedPathwayComponentCards: any = _.cloneDeep(
+            pathwayComponentCards
+          );
+
+          const copiedObj = updatedPathwayComponentCards?.findIndex(
+            (i: any) => i.CTID == restCardProps.CTID
+          );
+          updatedPathwayComponentCards?.splice(copiedObj, 1);
+          setPathwayComponentCards([
+            ...new Set([
+              ...updatedPathwayComponentCards,
+              {
+                ...restCardProps,
+                destinationColumn,
+                HasProgressionLevel,
+                RowNumber,
+                ColumnNumber: 1,
+
+                firstColumn,
+              },
+            ]),
+          ]);
+        }
+        const updatedPathwayWrapper = { ...pathwayComponent };
+        const updatedPathwayComponent = { ...updatedPathwayWrapper.Pathway };
+        updatedPathwayComponent.HasDestinationComponent = card.CTID;
+        updatedPathwayWrapper.Pathway = updatedPathwayComponent;
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      } else {
+        setPathwayComponentCards(
+          pathwayComponentCards
+            .filter((item: any) => item.CTID !== card.CTID)
+            .concat({
+              ...restCardProps,
+              HasProgressionLevel,
+              RowNumber,
+              ColumnNumber,
+              firstColumn,
+            })
+        );
+      }
     } else {
       return;
     }
@@ -506,6 +546,9 @@ const HomePage: React.FC<Props> = ({
           : item
     );
     updatedPathwayWrapper.DeletedComponents = [data];
+    if (data.destinationColumn) {
+      updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
+    }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     setPathwayComponentCards(
       updatedPathwayComponent.map((item: any) => ({
