@@ -21,7 +21,10 @@ import LeftPanel from '../../components/leftPanel';
 import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import { updateMappedDataRequest } from '../../states/actions';
+import {
+  saveDataForPathwayRequest,
+  updateMappedDataRequest,
+} from '../../states/actions';
 import AddConditionalComponent from '../addComponent';
 
 import Styles from './index.module.scss';
@@ -99,32 +102,32 @@ const HomePage: React.FC<Props> = ({
   const [isConditionalEditing, setIsConditionalEditing] = useState(false);
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
-  // console.log(
-  //   'pathwayComponentConditionCards --->',
-  //   pathwayComponentConditionCards
-  // );
   useEffect(() => {
     const updatedConditionalComponents: any = [];
 
     pathwayComponentConditionCards.map((conditionalCard: any) => {
-      conditionalCard?.TargetComponent?.forEach((target: any) => {
-        [...pathwayComponentCards, ...pathwayComponentConditionCards].forEach(
-          (pathway_card: any) => {
-            if (pathway_card.CTID === target || pathway_card.RowId === target) {
-              updatedConditionalComponents.push({
-                ...conditionalCard,
-                HasProgressionLevel: pathway_card.HasProgressionLevel,
-              });
+      if (_.isUndefined(conditionalCard?.HasProgressionLevel)) {
+        conditionalCard?.TargetComponent?.forEach((target: any) => {
+          [...pathwayComponentCards, ...pathwayComponentConditionCards].forEach(
+            (pathway_card: any) => {
+              if (
+                pathway_card.CTID === target ||
+                pathway_card.RowId === target
+              ) {
+                updatedConditionalComponents.push({
+                  ...conditionalCard,
+                  HasProgressionLevel: pathway_card.HasProgressionLevel,
+                });
+              }
             }
-          }
-        );
-      });
+          );
+        });
+      } else {
+        updatedConditionalComponents.push({
+          ...conditionalCard,
+        });
+      }
     });
-
-    // console.log(
-    //   'updatedConditionalComponents --->',
-    //   updatedConditionalComponents
-    // );
 
     pathwayComponentConditionCards.map((conditional_comp: any) => {
       const obj: any = {};
@@ -167,8 +170,6 @@ const HomePage: React.FC<Props> = ({
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
       setIsDestinationColumnSelected(false);
-
-    // createConnection();
   }, [pathwayComponentCards]);
 
   const onPlusClickHandler = (event: any, connections: any) => {
@@ -552,35 +553,125 @@ const HomePage: React.FC<Props> = ({
 
   const onDeleteHandler = (data: any) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
-    const ComponentConditions =
-      updatedPathwayWrapper?.ComponentConditions?.filter(
-        (item: any) => item?.RowId !== data?.RowId
-      );
-    const updatedPathwayComponent = pathwayComponentCards.filter(
-      (item: any) => item.CTID !== data.CTID
-    );
+    const updatedPathway = { ...updatedPathwayWrapper.Pathway };
 
-    updatedPathwayWrapper.ComponentConditions = ComponentConditions.map(
-      (item: any) => ({
-        ...item,
-        HasCondition: item.HasCondition.filter((e: any) => e !== data.RowId),
-      })
-    );
-    updatedPathwayWrapper.Constraints = [];
-    updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
-      (item: any) =>
-        data?.ParentIdentifier === item?.RowId
-          ? { ...item, HasCondition: [] }
-          : item
-    );
-    updatedPathwayWrapper.DeletedComponents = [data];
-    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    setPathwayComponentCards(
-      updatedPathwayComponent.map((item: any) => ({
-        ...item,
-        HasCondition: item.HasCondition.filter((e: any) => e !== data.RowId),
-      }))
-    );
+    const isDestinationCardExist =
+      updatedPathway?.HasDestinationComponent === data?.CTID;
+    if (isDestinationCardExist) {
+      updatedPathway.HasDestinationComponent = '';
+      updatedPathwayWrapper.Pathway = updatedPathway;
+    }
+    if (data?.HasCondition.length > 0) {
+      const existConditionalCard: any = [];
+      data?.HasCondition?.forEach((condition: any) =>
+        updatedPathwayComponentConditionCards?.forEach((item: any) => {
+          if (item?.RowId === condition) {
+            return existConditionalCard.push(item);
+          }
+        })
+      );
+
+      const filteredConditionalComponent =
+        updatedPathwayComponentConditionCards.filter((card: any) =>
+          existConditionalCard.some(
+            (exist_card: any) => exist_card?.RowId !== card?.RowId
+          )
+        );
+      let updatedConditionalCard: any = [];
+      existConditionalCard.forEach((exist_card: any) => {
+        if (exist_card?.HasCondition.length > 0) {
+          const updatedFilteredConditionalCard =
+            filteredConditionalComponent.map((card: any) => {
+              if (exist_card?.HasCondition.includes(card.RowId)) {
+                return { ...card, ParentIdentifier: '' };
+              } else {
+                return card;
+              }
+            });
+          updatedConditionalCard = updatedFilteredConditionalCard;
+        }
+      });
+
+      let updatedPathwayComponent: [] = [];
+      if (data?.Type === 'conditional') {
+        updatedPathwayComponent = updatedPathwayWrapper.PathwayComponents =
+          pathwayComponentCards.map((item: any) =>
+            data?.ParentIdentifier === item?.CTID
+              ? { ...item, HasCondition: [], PrecededBy: data?.TargetComponent }
+              : item
+          );
+      } else {
+        updatedPathwayComponent = pathwayComponentCards.filter(
+          (item: any) => item.CTID !== data.CTID
+        );
+      }
+      updatedPathwayWrapper.ComponentConditions = updatedConditionalCard;
+      updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+    } else {
+      let updatedPathwayComponent: [] = [];
+      if (data?.Type === 'conditional') {
+        updatedPathwayComponent = pathwayComponentCards.map(
+          (pathway_card: any) => {
+            if (data?.ParentIdentifier === pathway_card?.CTID) {
+              return {
+                ...pathway_card,
+                HasCondition: pathway_card?.HasCondition.filter(
+                  (condition: any) => condition !== data?.RowId
+                ),
+              };
+            } else {
+              return { ...pathway_card };
+            }
+          }
+        );
+      } else {
+        updatedPathwayComponent = pathwayComponentCards
+          .filter((item: any) => item.CTID !== data.CTID)
+          .map((component_card: any) => {
+            if (component_card?.PrecededBy.includes(data?.CTID)) {
+              return {
+                ...component_card,
+                PrecededBy: component_card?.PrecededBy.filter(
+                  (preceded: any) => preceded !== data?.CTID
+                ),
+              };
+            } else {
+              return { ...component_card };
+            }
+          });
+      }
+
+      const updatedConditionalComponent = updatedPathwayComponentConditionCards
+        .filter(
+          (conditional_card: any) => conditional_card?.RowId !== data?.RowId
+        )
+        .map((conditional_card: any) => {
+          if (conditional_card?.TargetComponent.includes(data?.CTID)) {
+            return {
+              ...conditional_card,
+              TargetComponent: conditional_card?.TargetComponent.filter(
+                (target: any) => target !== data?.CTID
+              ),
+            };
+          } else if (data?.ParentIdentifier === conditional_card?.RowId) {
+            return {
+              ...conditional_card,
+              HasCondition: conditional_card?.HasCondition.filter(
+                (condition: any) => condition !== data?.RowId
+              ),
+            };
+          } else {
+            return { ...conditional_card };
+          }
+        });
+
+      updatedPathwayWrapper.ComponentConditions = updatedConditionalComponent;
+      updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+    }
   };
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
