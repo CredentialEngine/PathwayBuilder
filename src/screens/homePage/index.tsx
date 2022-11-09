@@ -349,8 +349,6 @@ const HomePage: React.FC<Props> = ({
 
     if (columnNumberEsixt && !isPendingCards) {
       // console.log('columnNumberEsixt && !isPendingCards');
-
-      // console.log('card ---4');
       /* 
         this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
       */
@@ -440,6 +438,30 @@ const HomePage: React.FC<Props> = ({
           });
         setPathwayComponentCards(updatedPathwayComponent);
       }
+      // if (inDestinationColumn.length > 0) {
+      //   const updatedPathwayComponentCards: any = _.cloneDeep(
+      //     pathwayComponentCards
+      //   );
+
+      //   const copiedObj = updatedPathwayComponentCards?.findIndex(
+      //     (i: any) => i.CTID == restCardProps.CTID
+      //   );
+      //   updatedPathwayComponentCards?.splice(copiedObj, 1);
+      //   setPathwayComponentCards([
+      //     ...new Set([
+      //       ...updatedPathwayComponentCards,
+      //       {
+      //         ...restCardProps,
+      //         destinationColumn,
+      //         HasProgressionLevel,
+      //         RowNumber,
+      //         ColumnNumber: 1,
+
+      //         firstColumn,
+      //       },
+      //     ]),
+      //   ]);
+      // }
 
       // console.log('card --3--3');
       // if (inDestinationColumn.length > 0) {
