@@ -88,7 +88,7 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
-  const [destinationColumnDrop, setDestinationColumnDrop] = useState<any>(null);
+  // const [destinationColumnDrop, setDestinationColumnDrop] = useState<any>(null);
 
   useEffect(() => {
     const updatedConditionalComponents: any = [];
@@ -131,9 +131,9 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
-    if (!destinationColumnDrop) {
-      updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
-    }
+    // if (!destinationColumnDrop) {
+    //   updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
+    // }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
     setDeletedComponentCards([]);
@@ -309,7 +309,14 @@ const HomePage: React.FC<Props> = ({
     isFirstColumneSelected: boolean,
     firstColumn: boolean
   ) => {
-    setDestinationColumnDrop(destinationColumn);
+    const updatedPathwayWrapper = { ...pathwayComponent };
+
+    if (!destinationColumn) {
+      card.destinationColumn = false;
+    }
+    // console.log('card --->', card);
+    // console.log('card --destinationColumn --->', destinationColumn);
+    // setDestinationColumnDrop(destinationColumn);
     setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
     // removeConnection(card?.CTID || card?.RowId);
@@ -327,6 +334,7 @@ const HomePage: React.FC<Props> = ({
     }
 
     if (columnNumberEsixt && !isPendingCards) {
+      // console.log('card ---4');
       /* 
         this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
       */
@@ -350,43 +358,87 @@ const HomePage: React.FC<Props> = ({
       card.ColumnNumber === ColumnNumber &&
       card.RowNumber === RowNumber
     ) {
+      // console.log('card ---5');
+
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
 
+    if (!destinationColumn && isDestinationCardExist) {
+      const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+      updatedPathway.HasDestinationComponent = '';
+      updatedPathwayWrapper.Pathway = updatedPathway;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    }
+
+    if (!!destinationColumn && !isDestinationCardExist) {
+      // console.log('card --- ashish');
+      const updatedPathwayComponent =
+        updatedPathwayWrapper?.PathwayComponents?.filter(
+          (pathway_component: any) => pathway_component?.CTID !== card?.CTID
+        ).concat({
+          ...restCardProps,
+          destinationColumn,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+          firstColumn,
+        });
+
+      setPathwayComponentCards(updatedPathwayComponent);
+      const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+      updatedPathway.HasDestinationComponent = card?.CTID;
+      updatedPathwayWrapper.Pathway = updatedPathway;
+      updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+      // console.log('card --updatedPathwayWrapper --->', updatedPathwayWrapper);
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      return;
+    }
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
 
-      const indestinationColumn = pathwayComponentCards.filter(
-        (el: any) => el.CTID == card.CTID && el.destinationColumn === true
+      // console.log('card ---3 --->', true);
+      const isCardAlreadyInDestinationColumn = pathwayComponentCards.filter(
+        (component_card: any) =>
+          component_card.CTID == card.CTID &&
+          component_card.destinationColumn === true
       );
 
-      if (indestinationColumn.length > 0) {
-        const updatedPathwayComponentCards: any = _.cloneDeep(
-          pathwayComponentCards
-        );
-
-        const copiedObj = updatedPathwayComponentCards?.findIndex(
-          (i: any) => i.CTID == restCardProps.CTID
-        );
-        updatedPathwayComponentCards?.splice(copiedObj, 1);
-        setPathwayComponentCards([
-          ...new Set([
-            ...updatedPathwayComponentCards,
-            {
-              ...restCardProps,
-              destinationColumn,
-              HasProgressionLevel,
-              RowNumber,
-              ColumnNumber: 1,
-
-              firstColumn,
-            },
-          ]),
-        ]);
-      } else {
-        return;
+      if (isCardAlreadyInDestinationColumn) {
+        const updatedPathwayComponent =
+          updatedPathwayWrapper?.PathwayComponents?.filter(
+            (pathway_component: any) => pathway_component?.CTID !== card?.CTID
+          ).concat({
+            ...restCardProps,
+            RowNumber,
+            firstColumn,
+          });
+        setPathwayComponentCards(updatedPathwayComponent);
       }
+      // if (inDestinationColumn.length > 0) {
+      //   const updatedPathwayComponentCards: any = _.cloneDeep(
+      //     pathwayComponentCards
+      //   );
+
+      //   const copiedObj = updatedPathwayComponentCards?.findIndex(
+      //     (i: any) => i.CTID == restCardProps.CTID
+      //   );
+      //   updatedPathwayComponentCards?.splice(copiedObj, 1);
+      //   setPathwayComponentCards([
+      //     ...new Set([
+      //       ...updatedPathwayComponentCards,
+      //       {
+      //         ...restCardProps,
+      //         destinationColumn,
+      //         HasProgressionLevel,
+      //         RowNumber,
+      //         ColumnNumber: 1,
+
+      //         firstColumn,
+      //       },
+      //     ]),
+      //   ]);
+      // }
 
       return;
     }
@@ -413,6 +465,7 @@ const HomePage: React.FC<Props> = ({
         },
       ]);
       setIsDropCardAfterEditingForm(false);
+      return;
     }
 
     if (
@@ -420,11 +473,13 @@ const HomePage: React.FC<Props> = ({
       isStartFromInitialColumnSelected &&
       isFirstColumneSelected
     ) {
+      // console.log('card ---6');
+
       setPathwayComponentCards([
         ...pathwayComponentCards,
         {
           ...restCardProps,
-          destinationColumn,
+          destinationColumn: false,
           HasProgressionLevel,
           RowNumber,
           ColumnNumber: 1,
@@ -437,6 +492,8 @@ const HomePage: React.FC<Props> = ({
       isDestinationColumnSelected &&
       isDestinationColumnStatus
     ) {
+      // console.log('card ---7');
+
       setPathwayComponentCards([
         ...pathwayComponentCards,
         {
@@ -449,6 +506,8 @@ const HomePage: React.FC<Props> = ({
         },
       ]);
     } else if (card?.pathwayGameboardCard) {
+      // console.log('card ---8');
+
       setPathwayComponentCards(
         pathwayComponentCards
           .filter((item: any) => item.CTID !== card.CTID)
@@ -461,53 +520,53 @@ const HomePage: React.FC<Props> = ({
           })
       );
     } else if (pathwayComponentCards.length !== 0) {
-      if (destinationColumn) {
-        const indestinationColumn = pathwayComponentCards.filter(
-          (el: any) => el.CTID == card.CTID && el.destinationColumn === true
-        );
+      // if (destinationColumn) {
+      //   const indestinationColumn = pathwayComponentCards.filter(
+      //     (el: any) => el.CTID == card.CTID && el.destinationColumn === true
+      //   );
 
-        if (indestinationColumn.length > 0) {
-          const updatedPathwayComponentCards: any = _.cloneDeep(
-            pathwayComponentCards
-          );
+      //   if (indestinationColumn.length > 0) {
+      //     const updatedPathwayComponentCards: any = _.cloneDeep(
+      //       pathwayComponentCards
+      //     );
 
-          const copiedObj = updatedPathwayComponentCards?.findIndex(
-            (i: any) => i.CTID == restCardProps.CTID
-          );
-          updatedPathwayComponentCards?.splice(copiedObj, 1);
-          setPathwayComponentCards([
-            ...new Set([
-              ...updatedPathwayComponentCards,
-              {
-                ...restCardProps,
-                destinationColumn,
-                HasProgressionLevel,
-                RowNumber,
-                ColumnNumber: 1,
+      //     const copiedObj = updatedPathwayComponentCards?.findIndex(
+      //       (i: any) => i.CTID == restCardProps.CTID
+      //     );
+      //     updatedPathwayComponentCards?.splice(copiedObj, 1);
+      //     setPathwayComponentCards([
+      //       ...new Set([
+      //         ...updatedPathwayComponentCards,
+      //         {
+      //           ...restCardProps,
+      //           destinationColumn,
+      //           HasProgressionLevel,
+      //           RowNumber,
+      //           ColumnNumber: 1,
 
-                firstColumn,
-              },
-            ]),
-          ]);
-        }
-        const updatedPathwayWrapper = { ...pathwayComponent };
-        const updatedPathwayComponent = { ...updatedPathwayWrapper.Pathway };
-        updatedPathwayComponent.HasDestinationComponent = card.CTID;
-        updatedPathwayWrapper.Pathway = updatedPathwayComponent;
-        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      } else {
-        setPathwayComponentCards(
-          pathwayComponentCards
-            .filter((item: any) => item.CTID !== card.CTID)
-            .concat({
-              ...restCardProps,
-              HasProgressionLevel,
-              RowNumber,
-              ColumnNumber,
-              firstColumn,
-            })
-        );
-      }
+      //           firstColumn,
+      //         },
+      //       ]),
+      //     ]);
+      //   }
+      //   const updatedPathwayWrapper = { ...pathwayComponent };
+      //   const updatedPathwayComponent = { ...updatedPathwayWrapper.Pathway };
+      //   updatedPathwayComponent.HasDestinationComponent = card.CTID;
+      //   updatedPathwayWrapper.Pathway = updatedPathwayComponent;
+      //   dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      // } else {
+      setPathwayComponentCards(
+        pathwayComponentCards
+          .filter((item: any) => item.CTID !== card.CTID)
+          .concat({
+            ...restCardProps,
+            HasProgressionLevel,
+            RowNumber,
+            ColumnNumber,
+            firstColumn,
+          })
+      );
+      // }
     } else {
       return;
     }
@@ -538,6 +597,14 @@ const HomePage: React.FC<Props> = ({
         HasCondition: item.HasCondition.filter((e: any) => e !== data.RowId),
       })
     );
+
+    const isDestinationCardExist = !_.isEmpty(data?.HasDestinationComponent);
+    if (isDestinationCardExist) {
+      const updatedPathway = { ...updatedPathwayWrapper };
+      updatedPathway.HasDestinationComponent = '';
+      updatedPathwayWrapper.Pathway = updatedPathway;
+    }
+
     updatedPathwayWrapper.Constraints = {};
     updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
       (item: any) =>
@@ -557,6 +624,7 @@ const HomePage: React.FC<Props> = ({
       }))
     );
   };
+
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {
