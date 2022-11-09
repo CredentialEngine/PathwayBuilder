@@ -19,7 +19,10 @@ import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import { updateMappedDataRequest } from '../../states/actions';
+import {
+  saveDataForPathwayRequest,
+  updateMappedDataRequest,
+} from '../../states/actions';
 
 import Styles from './index.module.scss';
 
@@ -321,9 +324,15 @@ const HomePage: React.FC<Props> = ({
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
     // removeConnection(card?.CTID || card?.RowId);
     setNewConn([]);
-    const isDestinationCardExist = !_.isEmpty(
-      pathwayComponent.Pathway.HasDestinationComponent
-    );
+    // console.log('card ---destination -->', updatedPathwayWrapper);
+
+    const isDestinationCardExist =
+      !_.isEmpty(pathwayComponent.Pathway.HasDestinationComponent) &&
+      updatedPathwayWrapper?.Pathway?.HasDestinationComponent !== '';
+
+    // const isDestinationCardExist =
+    //   updatedPathwayWrapper?.Pathway?.HasDestinationComponent !== '';
+
     if (isComponentTab) {
       card = {
         // ...createCard(card),
@@ -371,6 +380,8 @@ const HomePage: React.FC<Props> = ({
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
 
+    // console.log('card ---isDestinationCardExist -->', isDestinationCardExist);
+
     if (!!destinationColumn && !isDestinationCardExist) {
       // console.log('card --- ashish');
       const updatedPathwayComponent =
@@ -392,6 +403,7 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
       // console.log('card --updatedPathwayWrapper --->', updatedPathwayWrapper);
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       return;
     }
     if (!!destinationColumn && isDestinationCardExist) {
@@ -405,16 +417,21 @@ const HomePage: React.FC<Props> = ({
       );
 
       if (isCardAlreadyInDestinationColumn) {
-        const updatedPathwayComponent =
-          updatedPathwayWrapper?.PathwayComponents?.filter(
+        // console.log('card --3--4');
+
+        const updatedPathwayComponent = pathwayComponentCards
+          ?.filter(
             (pathway_component: any) => pathway_component?.CTID !== card?.CTID
-          ).concat({
+          )
+          .concat({
             ...restCardProps,
             RowNumber,
             firstColumn,
           });
         setPathwayComponentCards(updatedPathwayComponent);
       }
+
+      // console.log('card --3--3');
       // if (inDestinationColumn.length > 0) {
       //   const updatedPathwayComponentCards: any = _.cloneDeep(
       //     pathwayComponentCards
