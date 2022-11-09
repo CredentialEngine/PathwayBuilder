@@ -440,6 +440,8 @@ const HomePage: React.FC<Props> = ({
           });
         setPathwayComponentCards(updatedPathwayComponent);
       }
+
+      // console.log('card --3--3');
       // if (inDestinationColumn.length > 0) {
       //   const updatedPathwayComponentCards: any = _.cloneDeep(
       //     pathwayComponentCards
