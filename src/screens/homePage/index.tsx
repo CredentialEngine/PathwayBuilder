@@ -88,7 +88,7 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
-  const [destinationColumnDrop, setDestinationColumnDrop] = useState<any>(null);
+  // const [destinationColumnDrop, setDestinationColumnDrop] = useState<any>(null);
 
   useEffect(() => {
     const updatedConditionalComponents: any = [];
@@ -131,9 +131,9 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
-    if (!destinationColumnDrop) {
-      updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
-    }
+    // if (!destinationColumnDrop) {
+    //   updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
+    // }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
     setDeletedComponentCards([]);
@@ -309,7 +309,6 @@ const HomePage: React.FC<Props> = ({
     isFirstColumneSelected: boolean,
     firstColumn: boolean
   ) => {
-    setDestinationColumnDrop(destinationColumn);
     setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
     // removeConnection(card?.CTID || card?.RowId);
