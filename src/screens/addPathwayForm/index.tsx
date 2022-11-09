@@ -339,6 +339,7 @@ const AddPathwayForm: React.FC<Props> = ({
     const updatedData = { ...addPathwayFormFields };
     const { name, value } = e.target;
     updatedData[name] = value;
+
     setAddPathwayFormFields(updatedData);
   };
 
@@ -556,6 +557,11 @@ const AddPathwayForm: React.FC<Props> = ({
             PathwayWrapper.PathwayComponents?.length > 0 &&
             PathwayWrapper.PendingComponents?.length > 0
           ) {
+            // console.log(
+            //   { addPathwayFormFields, addPathwayWrapperFields },
+            //   'onOk'
+            // );
+
             dispatch(
               saveDataForPathwayRequest({
                 ...addPathwayWrapperFields,
@@ -577,6 +583,11 @@ const AddPathwayForm: React.FC<Props> = ({
               })
             );
           } else {
+            // console.log(
+            //   { addPathwayFormFields, addPathwayWrapperFields },
+            //   'onOk else'
+            // );
+
             const updatedPathwayWrapper = { ...PathwayWrapper };
 
             const updatedPathway = { ...updatedPathwayWrapper.Pathway };
@@ -595,6 +606,8 @@ const AddPathwayForm: React.FC<Props> = ({
         onCancel: noop,
       });
     } else {
+      // console.log(addPathwayFormFields, 'isEditPathwayFormVisible else');
+
       dispatch(
         saveDataForPathwayRequest({
           ...addPathwayWrapperFields,
