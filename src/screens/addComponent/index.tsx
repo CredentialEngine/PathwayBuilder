@@ -58,7 +58,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     new ComponentConditionEntity()
   );
   const [conditionalComponent, setConditionalComponent] = useState<any>([]);
-  const [currentComponent, setCurrentComponent] = useState<any>([]);
+  const [currentComponent, setCurrentComponent] = useState<any>();
   const [cardAlreadyExistOnDropWrapper, setCardAlreadyExistOnDropWrapper] =
     useState<boolean>(false);
 
@@ -218,7 +218,20 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           )
         ).values(),
       ];
-      updatedPathwayWrapper.ComponentConditions = uniqueAllConditionalArray;
+
+      let finalConditionalComponentsList: any = [];
+      if (currentComponent?.Type === 'conditional') {
+        finalConditionalComponentsList = uniqueAllConditionalArray
+          ?.filter(
+            (conditional_card: any) =>
+              conditional_card.RowId !== currentComponent?.RowId
+          )
+          .concat({ ...currentComponent, TargetComponent: [] });
+      } else {
+        finalConditionalComponentsList = uniqueAllConditionalArray;
+      }
+      updatedPathwayWrapper.ComponentConditions =
+        finalConditionalComponentsList;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
 
       updatedPathwayWrapper.Constraints = [
@@ -243,13 +256,14 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ...updatedPathwayWrapper.ComponentConditions,
         ...conditionalComponent,
       ];
-      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setConditionalComponent([]);
       !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
 
       !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
 
       !!setIsConditionalEditing && setIsConditionalEditing(false);
+
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
   }, [conditionalComponent]);
 
@@ -307,7 +321,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, []);
 
   const saveCondition = () => {
-    if (data?.Type !== 'conditional' || !isConditionalEditing) {
+    if (currentComponent?.Type !== 'conditional' || !isConditionalEditing) {
       const conditionalCardAlreadyExistForDestination =
         updatedPathwayComponentConditionCards?.filter(
           (condtional_card: any) =>
@@ -354,7 +368,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConditionalComponent([ComponentConditions]);
     }
 
-    if (data?.Type === 'conditional' && isConditionalEditing) {
+    if (currentComponent?.Type === 'conditional' && isConditionalEditing) {
       const updatedPathwayWrapper = { ...pathwayComponent };
 
       if (pathwayComponent?.ComponentConditions.length > 0) {
@@ -383,12 +397,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       }
     }
-
-    // !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
-
-    // !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
-
-    // !!setIsConditionalEditing && setIsConditionalEditing(false);
   };
 
   const addConstraintRow = () => {
