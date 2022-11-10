@@ -189,11 +189,11 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         item.ProxyFor === selectedItem?.ProxyFor
     );
 
-    // const pathwayComponentsExists = pathwayComponent?.PathwayComponents?.some(
-    //   (item: any) =>
-    //     item.CTID === selectedItem?.CTID ||
-    //     item.ProxyFor === selectedItem?.ProxyFor
-    // );
+    const pathwayComponentsExists = pathwayComponent?.PathwayComponents?.some(
+      (item: any) =>
+        item.CTID === selectedItem?.CTID ||
+        item.ProxyFor === selectedItem?.ProxyFor
+    );
 
     const PendingComponentsExists =
       pathwayWrapper?.pathwayComponentData?.data?.PendingComponents?.some(
@@ -204,7 +204,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
     if (
       selectedItemExist ||
-      // pathwayComponentsExists ||
+      pathwayComponentsExists ||
       PendingComponentsExists
     ) {
       Modal.confirm({
