@@ -99,6 +99,7 @@ const HomePage: React.FC<Props> = ({
     {}
   );
   const [isConditionalEditing, setIsConditionalEditing] = useState(false);
+  const [componentConditionData, setComponentConditionData] = useState(false);
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
 
@@ -148,6 +149,10 @@ const HomePage: React.FC<Props> = ({
     createConnection();
   }, [pathwayComponentConditionCards]);
 
+  const getComponentConditionData = (data: any) => {
+    setComponentConditionData(data);
+  };
+
   const [overlayData, setOverlayData] = useState<any>({
     columnNumber: 0,
     rowNumber: 0,
@@ -181,7 +186,7 @@ const HomePage: React.FC<Props> = ({
     event.stopPropagation();
     setIsConditionalModalStatus(true);
     setConnectionsCTID(connections);
-
+    getComponentConditionData;
     const filteredEndComponent = [
       ...pathwayComponentCards,
       ...updatedPathwayComponentConditionCards,
@@ -1187,6 +1192,9 @@ const HomePage: React.FC<Props> = ({
                                     setIsConditionalEditing={
                                       setIsConditionalEditing
                                     }
+                                    getComponentConditionData={
+                                      getComponentConditionData
+                                    }
                                   />
                                 </>
                               ))}
@@ -1446,6 +1454,10 @@ const HomePage: React.FC<Props> = ({
           />
         )}
       </Layout>
+      {console.log(
+        { componentConditionData, isConditionalEditing },
+        'asdfghertyrfgf'
+      )}
       {(isConditionalModalStatus || isConditionalEditing) && (
         <Modal
           visible={isConditionalModalStatus || isConditionalEditing}
@@ -1468,6 +1480,7 @@ const HomePage: React.FC<Props> = ({
             isConditionalEditing={isConditionalEditing}
             setIsConditionalEditing={setIsConditionalEditing}
             progressionLevelForAddComponent={progressionLevelForAddComponent}
+            data={isConditionalEditing ? componentConditionData : {}}
           />
         </Modal>
       )}
