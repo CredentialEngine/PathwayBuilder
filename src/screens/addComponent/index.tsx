@@ -219,7 +219,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ...updatedPathwayWrapper?.Constraints,
         ...constraintRow.map((v: any) => ({
           ...v,
-          ParentIdentifier: data.RowId,
+          ParentIdentifier: data?.RowId,
           RowId: consRowID,
           Name: componentConditionFields.Name,
           Description: componentConditionFields.Description,
@@ -250,8 +250,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   useEffect(() => {
     if (isConditionalEditing) {
       const constraintToStore = [] as any;
-      if (data && data?.HasConstraint) {
-        data?.HasConstraint?.map((constraint: any) => {
+      if (currentComponent && currentComponent?.HasConstraint) {
+        currentComponent?.HasConstraint?.map((constraint: any) => {
           pathwayComponent?.Constraints?.map((pathwayConstraint: any) => {
             if (pathwayConstraint?.RowId === constraint) {
               constraintToStore.push(_.cloneDeep(pathwayConstraint));
@@ -260,7 +260,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         });
       }
       setConstraintRow(constraintToStore);
-      setComponentConditionFields({ ...componentConditionFields, ...data });
+      setComponentConditionFields({
+        ...componentConditionFields,
+        ...currentComponent,
+      });
     }
   }, [isConditionalEditing]);
 
