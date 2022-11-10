@@ -431,7 +431,6 @@ const MultiCard: React.FC<Props> = ({
                   </div>
                 </>
               )}
-
               {isAddFirst && firstComponent && data?.Type == 'addFirst' && (
                 <>
                   <InfoTooltip
@@ -655,7 +654,25 @@ const MultiCard: React.FC<Props> = ({
               </div>
             </>
           )}
-
+          {isAddFirst && firstComponent && data?.Type == 'addFirst' && (
+            <>
+              <InfoTooltip
+                title="Add your first component"
+                content="Drag your next component into the space provided, or search for a component to add"
+                onClose={noop}
+              />
+              <div className={styles.addDestinationContent}>
+                <p className={styles.addDestinationTitle}>
+                  Add your next component
+                </p>
+                <FontAwesomeIcon
+                  style={{ height: '28px', marginTop: '20px' }}
+                  color="#ffffff"
+                  icon={faCirclePlus}
+                />
+              </div>
+            </>
+          )}
           {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
             <>
               <span
