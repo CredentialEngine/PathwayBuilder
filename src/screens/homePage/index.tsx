@@ -1454,10 +1454,6 @@ const HomePage: React.FC<Props> = ({
           />
         )}
       </Layout>
-      {console.log(
-        { componentConditionData, isConditionalEditing },
-        'asdfghertyrfgf'
-      )}
       {(isConditionalModalStatus || isConditionalEditing) && (
         <Modal
           visible={isConditionalModalStatus || isConditionalEditing}

@@ -46,7 +46,6 @@ export default (state = initState, action: { type: string; payload: any }) => {
       };
 
     case ADD_COMPONENT_TO_LEFT_PANEL:
-      console.log('payload', action);
       return {
         ...state,
         allLeftPathwayComponent: {

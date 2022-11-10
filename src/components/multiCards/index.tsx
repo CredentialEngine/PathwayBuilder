@@ -216,8 +216,6 @@ const MultiCard: React.FC<Props> = ({
     // setVisibleConstraintCondition(true);
     !!setIsConditionalEditing && setIsConditionalEditing(true);
     setShowPopover(false);
-    console.log(data, 'handleConditionEdit');
-
     if (!_.isEmpty(data)) {
       getComponentConditionData(data);
     }

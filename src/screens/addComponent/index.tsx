@@ -435,8 +435,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConstraintRow([]);
     }
   };
-  console.log(data, 'dataaoisydiyuasiudas');
-
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
