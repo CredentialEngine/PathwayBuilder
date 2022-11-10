@@ -181,14 +181,20 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ...a,
           ColumnNumber: a?.destinationColumn
             ? a?.ColumnNumber
-            : conditionalComponent[0].ColumnNumber > a?.ColumnNumber
-            ? a?.ColumnNumber
-            : a?.ColumnNumber + 1,
+            : conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
+            ? a?.ColumnNumber + 1
+            : a?.ColumnNumber,
         })
       );
 
       const updatedConditionalArray = uniqueConditionalArray
-        .map((a: any) => ({ ...a, ColumnNumber: a.ColumnNumber + 1 }))
+        .map((a: any) => ({
+          ...a,
+          ColumnNumber:
+            conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
+              ? a.ColumnNumber + 1
+              : a.ColumnNumber,
+        }))
         .concat(conditionalComponent);
       const allComponentConditionalCard = [
         ...conditionalComponentOutOfProgressionLevel,
@@ -331,7 +337,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             ? conditionalCardAlreadyExistForDestination[0]?.ColumnNumber
             : currentComponent?.destinationColumn
             ? currentComponent?.ColumnNumber + 1
-            : currentComponent?.ColumnNumber,
+            : currentComponent?.ColumnNumber + 1,
         RowNumber:
           conditionalCardAlreadyExistForDestination?.length > 0
             ? maximumRowNumber + 1

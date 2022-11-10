@@ -181,8 +181,8 @@ const HomePage: React.FC<Props> = ({
       ...updatedPathwayComponentConditionCards,
     ].filter(
       (card: any) =>
-        _.toString(card?.CTID) === _.toString(connections?.end) ||
-        _.toString(card?.RowId) === _.toString(connections?.end)
+        _.toString(card?.CTID) === _.toString(connections?.start) ||
+        _.toString(card?.RowId) === _.toString(connections?.start)
     );
     setProgressionLevelForAddComponent(
       _.get(filteredEndComponent, '0')?.HasProgressionLevel
@@ -313,7 +313,7 @@ const HomePage: React.FC<Props> = ({
         ]);
       }
     }
-    createConnection();
+    // createConnection();
   }, [pathwayComponent, isDestinationColumnStatus]);
 
   const onSelectDragElemenet = (elem: HTMLElement) => {
@@ -599,12 +599,22 @@ const HomePage: React.FC<Props> = ({
               ? { ...item, HasCondition: [], PrecededBy: data?.TargetComponent }
               : item
           );
+
+        updatedPathwayWrapper.DeletedComponentConditions = [
+          ...updatedPathwayWrapper.DeletedComponentConditions,
+          data,
+        ];
       } else {
         updatedPathwayComponent = pathwayComponentCards.filter(
           (item: any) => item.CTID !== data.CTID
         );
+        updatedPathwayWrapper.DeletedComponents = [
+          ...updatedPathwayWrapper.DeletedComponents,
+          data,
+        ];
       }
       updatedPathwayWrapper.ComponentConditions = updatedConditionalCard;
+
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
@@ -625,6 +635,10 @@ const HomePage: React.FC<Props> = ({
             }
           }
         );
+        updatedPathwayWrapper.DeletedComponentConditions = [
+          ...updatedPathwayWrapper.DeletedComponentConditions,
+          data,
+        ];
       } else {
         updatedPathwayComponent = pathwayComponentCards
           .filter((item: any) => item.CTID !== data.CTID)
@@ -640,6 +654,10 @@ const HomePage: React.FC<Props> = ({
               return { ...component_card };
             }
           });
+        updatedPathwayWrapper.DeletedComponents = [
+          ...updatedPathwayWrapper.DeletedComponents,
+          data,
+        ];
       }
 
       const updatedConditionalComponent = updatedPathwayComponentConditionCards

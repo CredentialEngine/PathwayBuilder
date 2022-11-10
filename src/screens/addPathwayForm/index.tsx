@@ -599,6 +599,8 @@ const AddPathwayForm: React.FC<Props> = ({
         saveDataForPathwayRequest({
           ...addPathwayWrapperFields,
           Pathway: addPathwayFormFields,
+          DeletedComponentConditions: [],
+          DeletedComponents: [],
         })
       );
 
@@ -608,6 +610,8 @@ const AddPathwayForm: React.FC<Props> = ({
           Pathway: addPathwayFormFields,
           PathwayComponents: [],
           Constraints: [],
+          DeletedComponentConditions: [],
+          DeletedComponents: [],
         })
       );
     }
