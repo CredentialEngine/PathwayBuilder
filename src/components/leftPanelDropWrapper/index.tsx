@@ -18,6 +18,7 @@ const LeftPanelDropWrapper: React.FC<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData('leftPanel_card'));
+    // const data = e.dataTransfer.getData('leftPanel_card');
     e.stopPropagation();
     onDrop(tabName, data, true);
   };

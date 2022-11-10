@@ -138,14 +138,29 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     );
     const updatedSearchValue = { ...searchFilterValue };
 
-    if (e?.key) {
-      updatedSearchValue.Filters = [
-        {
-          URI: 'meta:pathwayComponentType',
-          ItemTexts: [_.get(selectedCardType, '0').label],
-        },
-      ];
-      setSearchFilterValue(updatedSearchValue);
+    if (
+      e?.key &&
+      !_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)
+    ) {
+      if (checkboxForOrganisation) {
+        updatedSearchValue.Filters = [
+          {
+            URI: 'meta:pathwayComponentType',
+            ItemTexts: [_.get(selectedCardType, '0').label],
+          },
+          {
+            URI: 'search:recordOwnedBy',
+            ItemTexts: [pathwayWrapper.mappedData.Pathway.Organization.CTID],
+          },
+        ];
+        setSearchFilterValue(updatedSearchValue);
+      } else {
+        _.remove(
+          updatedSearchValue.Filters,
+          (item: any) => item.URI == 'search:recordOwnedBy'
+        );
+        setSearchFilterValue(updatedSearchValue);
+      }
     } else {
       _.remove(
         updatedSearchValue.Filters,
@@ -269,7 +284,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     if (!_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)) {
       if (checkboxForOrganisation) {
         updatedSearchValue.Filters = [
-          ...updatedSearchValue.Filters,
           {
             URI: 'search:recordOwnedBy',
             ItemTexts: [pathwayWrapper.mappedData.Pathway.Organization.CTID],
