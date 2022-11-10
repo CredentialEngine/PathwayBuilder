@@ -670,6 +670,7 @@ const MultiCard: React.FC<Props> = ({
           {isAddFirst && firstComponent && data?.Type == 'addFirst' && (
             <>
               <InfoTooltip
+                direction="right"
                 title="Add your first component"
                 content="Drag your next component into the space provided, or search for a component to add"
                 onClose={noop}
