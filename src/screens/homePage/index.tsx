@@ -133,10 +133,12 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
-    updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
+    // updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
     // if (!destinationColumnDrop) {
     //   updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
     // }
+    console.log(deletedComponentCards);
+
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
     setDeletedComponentCards([]);
@@ -314,24 +316,27 @@ const HomePage: React.FC<Props> = ({
   ) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
 
+    // const PendingComponents = updatedPathwayWrapper?.PendingComponents && [...updatedPathwayWrapper?.PendingComponents];
+    updatedPathwayWrapper.PendingComponents =
+      updatedPathwayWrapper?.PendingComponents?.filter(
+        (pending_components: any) => pending_components?.CTID !== card?.CTID
+      );
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+
     if (!destinationColumn) {
       card.destinationColumn = false;
     }
-    // console.log('card --->', card);
-    // console.log('card --destinationColumn --->', destinationColumn);
     // setDestinationColumnDrop(destinationColumn);
     setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
     // removeConnection(card?.CTID || card?.RowId);
     setNewConn([]);
-    // console.log('card ---destination -->', updatedPathwayWrapper);
-
     const isDestinationCardExist =
       !_.isEmpty(pathwayComponent.Pathway.HasDestinationComponent) &&
       updatedPathwayWrapper?.Pathway?.HasDestinationComponent !== '';
-
-    // const isDestinationCardExist =
-    //   updatedPathwayWrapper?.Pathway?.HasDestinationComponent !== '';
+    // const isDestinationCardExist = !_.isEmpty(
+    //   pathwayComponent.Pathway.HasDestinationComponent
+    // );
 
     if (isComponentTab) {
       card = {
@@ -343,13 +348,15 @@ const HomePage: React.FC<Props> = ({
     }
 
     if (columnNumberEsixt && !isPendingCards) {
-      // console.log('card ---4');
+      // console.log('columnNumberEsixt && !isPendingCards');
       /* 
         this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
       */
       return;
     }
     if (card?.Type === 'conditional') {
+      // console.log('card?.Type === conditional');
+
       /* This Function add only conditional cards*/
       setUpdatedPathwayComponentConditionCards(
         updatedPathwayComponentConditionCards
@@ -374,6 +381,8 @@ const HomePage: React.FC<Props> = ({
     }
 
     if (!destinationColumn && isDestinationCardExist) {
+      // console.log('!destinationColumn && isDestinationCardExist');
+
       const updatedPathway = { ...updatedPathwayWrapper.Pathway };
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
@@ -383,7 +392,7 @@ const HomePage: React.FC<Props> = ({
     // console.log('card ---isDestinationCardExist -->', isDestinationCardExist);
 
     if (!!destinationColumn && !isDestinationCardExist) {
-      // console.log('card --- ashish');
+      // console.log('!!destinationColumn && !isDestinationCardExist');
       const updatedPathwayComponent =
         updatedPathwayWrapper?.PathwayComponents?.filter(
           (pathway_component: any) => pathway_component?.CTID !== card?.CTID
@@ -409,7 +418,7 @@ const HomePage: React.FC<Props> = ({
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
 
-      // console.log('card ---3 --->', true);
+      // console.log('!!destinationColumn && isDestinationCardExist');
       const isCardAlreadyInDestinationColumn = pathwayComponentCards.filter(
         (component_card: any) =>
           component_card.CTID == card.CTID &&
@@ -417,13 +426,12 @@ const HomePage: React.FC<Props> = ({
       );
 
       if (isCardAlreadyInDestinationColumn) {
-        // console.log('card --3--4');
+        // console.log('isCardAlreadyInDestinationColumn');
 
-        const updatedPathwayComponent = pathwayComponentCards
-          ?.filter(
+        const updatedPathwayComponent =
+          updatedPathwayWrapper?.PathwayComponents?.filter(
             (pathway_component: any) => pathway_component?.CTID !== card?.CTID
-          )
-          .concat({
+          ).concat({
             ...restCardProps,
             RowNumber,
             firstColumn,
@@ -599,6 +607,8 @@ const HomePage: React.FC<Props> = ({
   };
 
   const onDeleteHandler = (data: any) => {
+    // console.log(data, '--data');
+
     const updatedPathwayWrapper = { ...pathwayComponent };
     const ComponentConditions =
       updatedPathwayWrapper?.ComponentConditions?.filter(
@@ -607,6 +617,10 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayComponent = pathwayComponentCards.filter(
       (item: any) => item.CTID !== data.CTID
     );
+    updatedPathwayWrapper.PendingComponents =
+      updatedPathwayWrapper?.PendingComponents?.filter(
+        (item: any) => item.CTID !== data.CTID
+      );
 
     updatedPathwayWrapper.ComponentConditions = ComponentConditions.map(
       (item: any) => ({
