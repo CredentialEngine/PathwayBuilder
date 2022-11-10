@@ -166,7 +166,6 @@ const HomePage: React.FC<Props> = ({
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
     setDeletedComponentCards([]);
-
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
       setIsDestinationColumnSelected(false);
@@ -314,7 +313,7 @@ const HomePage: React.FC<Props> = ({
         ]);
       }
     }
-    // createConnection()
+    createConnection();
   }, [pathwayComponent, isDestinationColumnStatus]);
 
   const onSelectDragElemenet = (elem: HTMLElement) => {
