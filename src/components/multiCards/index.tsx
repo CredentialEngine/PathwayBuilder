@@ -5,7 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Popover } from 'antd';
-import { noop } from 'lodash';
+import _, { noop } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useXarrow } from 'react-xarrows';
@@ -59,6 +59,7 @@ interface Props {
   setDraggableCardVisible?: (a: boolean) => void;
   setIsConditionalEditing?: (a: boolean) => void;
   isConditionalEditing?: (a: boolean) => void;
+  getComponentConditionData?: (data: any) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -97,6 +98,7 @@ const MultiCard: React.FC<Props> = ({
   // connectionsCTID,
   // allConditionalCardsData,
   setIsConditionalEditing,
+  getComponentConditionData,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
 
@@ -205,6 +207,17 @@ const MultiCard: React.FC<Props> = ({
       if (!ref?.current?.contains(e.target)) {
         setShowPopover(false);
       }
+    }
+  };
+
+  const handleConditionEdit = (e: any) => {
+    e.stopPropagation();
+    e.preventDefault();
+    // setVisibleConstraintCondition(true);
+    !!setIsConditionalEditing && setIsConditionalEditing(true);
+    setShowPopover(false);
+    if (!_.isEmpty(data)) {
+      getComponentConditionData(data);
     }
   };
 
@@ -838,16 +851,7 @@ const MultiCard: React.FC<Props> = ({
                     placement="bottomRight"
                     content={
                       <div className={styles.popoverMenu} ref={ref}>
-                        <span
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            // setVisibleConstraintCondition(true);
-                            !!setIsConditionalEditing &&
-                              setIsConditionalEditing(true);
-                            setShowPopover(false);
-                          }}
-                        >
+                        <span onClick={(e: any) => handleConditionEdit(e)}>
                           Edit
                         </span>
                         <span
