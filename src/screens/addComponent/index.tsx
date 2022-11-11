@@ -68,7 +68,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     const currentConditionalComponent =
       allConditionalCardsData[connectionsCTID.start];
     setCurrentComponent(currentPathwayComponent || currentConditionalComponent);
-  }, [allComponentCardsData, connectionsCTID]);
+  }, [allComponentCardsData, connectionsCTID, allConditionalCardsData]);
 
   const [constraintRow, setConstraintRow] = useState<any>([]);
   const [consRowID, setConstRowId] = useState<any>([]);
@@ -394,6 +394,12 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           currentConditionalComponent
         );
         updatedPathwayWrapper.ComponentConditions = cardsToSend;
+        !!visibleConstraintConditionProp &&
+          visibleConstraintConditionProp(false);
+
+        !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+
+        !!setIsConditionalEditing && setIsConditionalEditing(false);
         dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       }
     }

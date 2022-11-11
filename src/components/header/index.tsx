@@ -53,7 +53,7 @@ const Header = (props: Props) => {
         type: 'success',
       });
       setHasConflicts(false);
-      setConflictMessages(savePathwayResult.data);
+      setConflictMessages(savePathwayResult?.data || []);
       dispatch(
         savePathwaySuccess({
           loading: false,
@@ -73,7 +73,7 @@ const Header = (props: Props) => {
         })
       );
       setHasConflicts(true);
-      setConflictMessages(savePathwayResult.data);
+      setConflictMessages(savePathwayResult?.data || []);
       setApproveDisable(true);
     }
   }, [savePathwayResult]);

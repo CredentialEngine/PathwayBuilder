@@ -22,7 +22,7 @@ import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import {
-  saveDataForPathwayRequest,
+  // saveDataForPathwayRequest,
   updateMappedDataRequest,
 } from '../../states/actions';
 import AddConditionalComponent from '../addComponent';
@@ -135,15 +135,15 @@ const HomePage: React.FC<Props> = ({
         });
       }
     });
+    const obj: any = {};
 
     pathwayComponentConditionCards.map((conditional_comp: any) => {
-      const obj: any = {};
       obj[conditional_comp.RowId] = {
         ...conditional_comp,
       };
-      setAllConditionalCardData({ ...allConditionalCardsData, ...obj });
       return conditional_comp;
     });
+    setAllConditionalCardData({ ...allConditionalCardsData, ...obj });
     setUpdatedPathwayComponentConditionCards(updatedConditionalComponents);
     setIsStartFromInitialColumnSelected(false);
     createConnection();
@@ -445,7 +445,7 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.Pathway = updatedPathway;
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+      // dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       return;
     }
     if (!!destinationColumn && isDestinationCardExist) {
@@ -620,6 +620,26 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
+  let conditionalComponent: any = [];
+
+  const checkHasCondition = (card: any) => {
+    if (card?.HasCondition.length > 0) {
+      const nextConditionalComponent =
+        updatedPathwayComponentConditionCards.filter((condition_card: any) =>
+          card?.HasCondition.includes(condition_card?.RowId)
+        );
+
+      conditionalComponent = [
+        ...conditionalComponent,
+        ...nextConditionalComponent,
+      ];
+      checkHasCondition(nextConditionalComponent[0]);
+    } else {
+      return conditionalComponent;
+    }
+    return conditionalComponent;
+  };
+
   const onDeleteHandler = (data: any) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     const updatedPathway = { ...updatedPathwayWrapper.Pathway };
@@ -630,135 +650,97 @@ const HomePage: React.FC<Props> = ({
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
     }
-    if (data?.HasCondition.length > 0) {
-      const existConditionalCard: any = [];
-      data?.HasCondition?.forEach((condition: any) =>
-        updatedPathwayComponentConditionCards?.forEach((item: any) => {
-          if (item?.RowId === condition) {
-            return existConditionalCard.push(item);
-          }
-        })
+
+    const result = checkHasCondition(data);
+    let updatedPathwayComponent: [] = [];
+    let updatedPathwayConditionalComponent: [] = [];
+
+    if (data?.Type === 'conditional') {
+      const filteredConditionalComponent =
+        updatedPathwayComponentConditionCards.filter(
+          (conditional_card: any) =>
+            ![...result, data].find(
+              (element: any) => element.RowId === conditional_card.RowId
+            )
+        );
+
+      updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
+        data?.ParentIdentifier === item?.CTID
+          ? {
+              ...item,
+              HasCondition: item?.HasCondition.filter(
+                (condition: any) => condition !== data?.RowId
+              ),
+              PrecededBy: data?.TargetComponent,
+            }
+          : item
       );
 
-      const filteredConditionalComponent =
-        updatedPathwayComponentConditionCards.filter((card: any) =>
-          existConditionalCard.some(
-            (exist_card: any) => exist_card?.RowId !== card?.RowId
-          )
-        );
-      let updatedConditionalCard: any = [];
-      existConditionalCard.forEach((exist_card: any) => {
-        if (exist_card?.HasCondition.length > 0) {
-          const updatedFilteredConditionalCard =
-            filteredConditionalComponent.map((card: any) => {
-              if (exist_card?.HasCondition.includes(card.RowId)) {
-                return { ...card, ParentIdentifier: '' };
-              } else {
-                return card;
+      updatedPathwayConditionalComponent = filteredConditionalComponent.map(
+        (item: any) =>
+          data?.ParentIdentifier === item?.RowId
+            ? {
+                ...item,
+                HasCondition: [],
+                TargetComponent: data?.TargetComponent,
               }
-            });
-          updatedConditionalCard = updatedFilteredConditionalCard;
-        }
-      });
+            : item
+      );
 
-      let updatedPathwayComponent: [] = [];
-      if (data?.Type === 'conditional') {
-        updatedPathwayComponent = updatedPathwayWrapper.PathwayComponents =
-          pathwayComponentCards.map((item: any) =>
-            data?.ParentIdentifier === item?.CTID
-              ? { ...item, HasCondition: [], PrecededBy: data?.TargetComponent }
-              : item
-          );
+      updatedPathwayWrapper.DeletedComponentConditions = [
+        ...updatedPathwayWrapper.DeletedComponentConditions,
+        ...result,
+        data,
+      ];
 
-        updatedPathwayWrapper.DeletedComponentConditions = [
-          ...updatedPathwayWrapper.DeletedComponentConditions,
-          data,
-        ];
-      } else {
-        updatedPathwayComponent = pathwayComponentCards.filter(
-          (item: any) => item.CTID !== data.CTID
-        );
-        updatedPathwayWrapper.DeletedComponents = [
-          ...updatedPathwayWrapper.DeletedComponents,
-          data,
-        ];
-      }
-      updatedPathwayWrapper.ComponentConditions = updatedConditionalCard;
+      updatedPathwayWrapper.ComponentConditions =
+        updatedPathwayConditionalComponent;
 
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
-      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
     } else {
-      let updatedPathwayComponent: [] = [];
-      if (data?.Type === 'conditional') {
-        updatedPathwayComponent = pathwayComponentCards.map(
-          (pathway_card: any) => {
-            if (data?.ParentIdentifier === pathway_card?.CTID) {
-              return {
-                ...pathway_card,
-                HasCondition: pathway_card?.HasCondition.filter(
-                  (condition: any) => condition !== data?.RowId
-                ),
-              };
-            } else {
-              return { ...pathway_card };
-            }
-          }
-        );
-        updatedPathwayWrapper.DeletedComponentConditions = [
-          ...updatedPathwayWrapper.DeletedComponentConditions,
-          data,
-        ];
-      } else {
-        updatedPathwayComponent = pathwayComponentCards
-          .filter((item: any) => item.CTID !== data.CTID)
-          .map((component_card: any) => {
-            if (component_card?.PrecededBy.includes(data?.CTID)) {
-              return {
-                ...component_card,
-                PrecededBy: component_card?.PrecededBy.filter(
-                  (preceded: any) => preceded !== data?.CTID
-                ),
-              };
-            } else {
-              return { ...component_card };
-            }
-          });
-        updatedPathwayWrapper.DeletedComponents = [
-          ...updatedPathwayWrapper.DeletedComponents,
-          data,
-        ];
-      }
-
-      const updatedConditionalComponent = updatedPathwayComponentConditionCards
+      const filteredConditionalComponent = updatedPathwayComponentConditionCards
         .filter(
-          (conditional_card: any) => conditional_card?.RowId !== data?.RowId
+          (conditional_card: any) =>
+            !result.find(
+              (element: any) => element.RowId === conditional_card.RowId
+            )
         )
-        .map((conditional_card: any) => {
-          if (conditional_card?.TargetComponent.includes(data?.CTID)) {
+        .map((card: any) =>
+          card?.TargetComponent.includes(data?.CTID)
+            ? { ...card, TargetComponent: data.PrecededBy }
+            : { ...card }
+        );
+
+      updatedPathwayComponent = pathwayComponentCards
+        .filter((item: any) => item.CTID !== data.CTID)
+        .map((component_card: any) => {
+          if (component_card?.PrecededBy.includes(data?.CTID)) {
             return {
-              ...conditional_card,
-              TargetComponent: conditional_card?.TargetComponent.filter(
-                (target: any) => target !== data?.CTID
-              ),
-            };
-          } else if (data?.ParentIdentifier === conditional_card?.RowId) {
-            return {
-              ...conditional_card,
-              HasCondition: conditional_card?.HasCondition.filter(
-                (condition: any) => condition !== data?.RowId
+              ...component_card,
+              PrecededBy: component_card?.PrecededBy.filter(
+                (preceded: any) => preceded !== data?.CTID
               ),
             };
           } else {
-            return { ...conditional_card };
+            return { ...component_card };
           }
         });
 
-      updatedPathwayWrapper.ComponentConditions = updatedConditionalComponent;
+      updatedPathwayWrapper.ComponentConditions = filteredConditionalComponent;
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
-      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+      updatedPathwayWrapper.DeletedComponentConditions = [
+        ...updatedPathwayWrapper.DeletedComponentConditions,
+        ...result,
+      ];
+
+      updatedPathwayWrapper.DeletedComponents = [
+        ...updatedPathwayWrapper.DeletedComponents,
+        data,
+      ];
     }
+
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    // dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
   };
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
@@ -1358,6 +1340,8 @@ const HomePage: React.FC<Props> = ({
                 }
                 setLeftpanelSelectedElem={setLeftpanelSelectedElem}
                 onClickPreselectComponent={onClickPreselectComponent}
+                pathwayComponentCards={pathwayComponentCards}
+                pathwayComponentConditionCards={pathwayComponentConditionCards}
               />
             </Sider>
             <Layout
