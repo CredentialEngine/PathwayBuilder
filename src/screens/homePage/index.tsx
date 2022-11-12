@@ -59,7 +59,6 @@ const HomePage: React.FC<Props> = ({
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
   const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
-  const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
 
@@ -173,10 +172,10 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
-    updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
+    // updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
-    setDeletedComponentCards([]);
+    // setDeletedComponentCards([]);
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
       setIsDestinationColumnSelected(false);
@@ -667,7 +666,6 @@ const HomePage: React.FC<Props> = ({
               (element: any) => element.RowId === conditional_card.RowId
             )
         );
-
       updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
         data?.ParentIdentifier === item?.CTID
           ? {
