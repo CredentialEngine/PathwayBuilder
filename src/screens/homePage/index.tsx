@@ -314,7 +314,7 @@ const HomePage: React.FC<Props> = ({
         ]);
       } else {
         setColumnsData([
-          { Id: 0, Name: 'Stage 1', CTID: generatedUuid.firstStageCTID },
+          { Id: 0, Name: 'Pathway', CTID: generatedUuid.firstStageCTID },
           {
             isDestinationColumnSelected: isDestinationColumnStatus,
             Id: 1,
@@ -655,6 +655,10 @@ const HomePage: React.FC<Props> = ({
     let updatedPathwayComponent: [] = [];
     let updatedPathwayConditionalComponent: [] = [];
 
+    const targetComponent = [...result, data]?.find(
+      (result: any) => result?.TargetComponent?.length > 0
+    );
+
     if (data?.Type === 'conditional') {
       const filteredConditionalComponent =
         updatedPathwayComponentConditionCards.filter(
@@ -682,7 +686,7 @@ const HomePage: React.FC<Props> = ({
             ? {
                 ...item,
                 HasCondition: [],
-                TargetComponent: data?.TargetComponent,
+                TargetComponent: targetComponent?.TargetComponent,
               }
             : item
       );
