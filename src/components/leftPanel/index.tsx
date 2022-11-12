@@ -39,6 +39,7 @@ const LeftPanel: React.FC<any> = ({
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
     useState(false);
+  const [droppedCard, setDroppedCard] = useState<any>();
 
   const dispatch = useDispatch();
 
@@ -49,16 +50,16 @@ const LeftPanel: React.FC<any> = ({
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
-  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
-  const { mappedData: pathwayComponent } = pathwayWrapper;
 
   const [selectedTabCards, setSelectedtabCards] =
     useState<any>(selectedTabCardData);
   const [selectedPathwayComponents, setSelectedPathwayComponents] =
     useState<any>([]);
+
   useEffect(() => {
     if (selectedTabCardData && selectedTabCardData.length > 0) {
-      const updatedPathwayWrapper = { ...pathwayComponent };
+      const updatedPathwayWrapper = { ...result.mappedData };
+
       if (
         updatedPathwayWrapper.PathwayComponents.length > 0 &&
         selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
@@ -78,11 +79,28 @@ const LeftPanel: React.FC<any> = ({
       } else {
         setSelectedtabCards(selectedTabCardData);
       }
+      const conditionalCard = checkHasCondition(droppedCard);
+
+      const filteredConditionalComponent =
+        updatedPathwayWrapper.ComponentConditions.filter(
+          (conditional_card: any) =>
+            !conditionalCard.find(
+              (element: any) => element.RowId === conditional_card.RowId
+            )
+        ).map((card: any) =>
+          card?.TargetComponent.includes(droppedCard?.CTID)
+            ? { ...card, TargetComponent: droppedCard.PrecededBy }
+            : { ...card }
+        );
+      updatedPathwayWrapper.ComponentConditions = filteredConditionalComponent;
+      updatedPathwayWrapper.DeletedComponentConditions = [
+        ...updatedPathwayWrapper.DeletedComponentConditions,
+        ...conditionalCard,
+      ];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
     }
-  }, [selectedTabCardData, pathwayComponent.PathwayComponents]);
+  }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
 
   const createCard = (card: any) => {
     const CTID = `ce-${uuidv4()}`;
@@ -109,17 +127,35 @@ const LeftPanel: React.FC<any> = ({
     if (allComponentTabCards.valid)
       setComponentTabCards(
         allComponentTabCards.data.map((comp_data: any) => ({
-          // ...comp_data,
           ...createCard(comp_data),
           Type: comp_data.URI,
         }))
       );
   }, [allComponentTabCards]);
+  let conditionalComponent: any = [];
+
+  const checkHasCondition = (card: any) => {
+    const updatedPathwayWrapper = { ...result.mappedData };
+
+    if (card?.HasCondition.length > 0) {
+      const nextConditionalComponent =
+        updatedPathwayWrapper.ComponentConditions.filter(
+          (condition_card: any) =>
+            card?.HasCondition.includes(condition_card?.RowId)
+        );
+
+      conditionalComponent = [
+        ...conditionalComponent,
+        ...nextConditionalComponent,
+      ];
+      checkHasCondition(nextConditionalComponent[0]);
+    }
+    return conditionalComponent;
+  };
 
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
   };
-
   const onDropHandler = (
     tab: string,
     card: any,
@@ -135,7 +171,10 @@ const LeftPanel: React.FC<any> = ({
         firstColumn: false,
         RowNumber: 0,
         ColumnNumber: 0,
+        HasCondition: [],
+        PrecededBy: [],
       };
+      setDroppedCard(card);
       setSelectedtabCards([...selectedTabCards, updatedCard]);
     } else {
       return;
@@ -145,7 +184,7 @@ const LeftPanel: React.FC<any> = ({
       (component_card: any) => component_card.CTID !== card.CTID
     );
 
-    const updatedPathwayWrapper = { ...pathwayComponent };
+    const updatedPathwayWrapper = { ...result.mappedData };
 
     const updatedPathway = { ...updatedPathwayWrapper.Pathway };
     if (card.destinationColumn || card.isDestinationColumnSelected) {
@@ -210,9 +249,11 @@ const LeftPanel: React.FC<any> = ({
               selectedTabCards.length > 0 &&
               selectedTabCards
                 ?.filter((v: any) =>
-                  v?.Description?.toLocaleLowerCase().includes(
-                    searchValue?.toLocaleLowerCase()
-                  )
+                  !_.isEmpty(searchValue)
+                    ? v?.Description?.toLocaleLowerCase().includes(
+                        searchValue?.toLocaleLowerCase()
+                      )
+                    : true
                 )
                 .map((v: any, i: any) => (
                   <CardWithLeftIcon
@@ -221,7 +262,7 @@ const LeftPanel: React.FC<any> = ({
                     key={i}
                     name={v?.Name}
                     type={v?.Type}
-                    description={v?.Description.slice(0, 30)}
+                    description={v?.Description?.slice(0, 30)}
                     codedNotation={v?.CodedNotation}
                     IconColor="black"
                     id={v?.Id}

@@ -217,7 +217,7 @@ const MultiCard: React.FC<Props> = ({
     !!setIsConditionalEditing && setIsConditionalEditing(true);
     setShowPopover(false);
     if (!_.isEmpty(data)) {
-      getComponentConditionData(data);
+      !!getComponentConditionData && getComponentConditionData(data);
     }
   };
 
@@ -403,7 +403,7 @@ const MultiCard: React.FC<Props> = ({
               data-cardType="multiCard"
               data-columnNumber={columnNumber}
               data-rowNumber={rowNumber}
-              data-CTID={data.CTID}
+              data-CTID={data?.CTID}
             >
               {skipPreSelect && destinationComponent && isAddDestination && (
                 <>
@@ -465,13 +465,13 @@ const MultiCard: React.FC<Props> = ({
               )}
 
               {((isCourseCard && !isCredentialCard) ||
-                data.Type === 'course') && (
+                data?.Type === 'course') && (
                 <>
                   <div className={styles.credentialsCardWrapeer}>
                     <div className={styles.topCourseContent}>
                       {renderImage(data)}
                       <span className={styles.title}>
-                        {data.Name.slice(0, 30)}
+                        {data?.Name?.slice(0, 30)}
                       </span>
                       <FontAwesomeIcon
                         color={darkColor}
@@ -519,8 +519,8 @@ const MultiCard: React.FC<Props> = ({
                       }}
                     />
                     <div className={styles.courseNameContainter}>
-                      <span>{data.CodedNotation}</span>
-                      <span>{data.Description.slice(0, 40)}</span>
+                      <span>{data?.CodedNotation}</span>
+                      <span>{data?.Description?.slice(0, 40)}</span>
                     </div>
                     <div className={styles.creditSection}>
                       <span>Credits: 3</span>
@@ -536,7 +536,7 @@ const MultiCard: React.FC<Props> = ({
                     <div className={styles.topCourseContent}>
                       {renderImage(data)}
                       <span className={styles.title}>
-                        {data.Name.slice(0, 30)}
+                        {data?.Name?.slice(0, 30)}
                       </span>
                       <FontAwesomeIcon
                         color={darkColor}
@@ -552,8 +552,8 @@ const MultiCard: React.FC<Props> = ({
                       }}
                     />
                     <div className={styles.courseNameContainter}>
-                      <span>{data.CodedNotation}</span>
-                      <span>{data.Description.slice(0, 40)}</span>
+                      <span>{data?.CodedNotation}</span>
+                      <span>{data?.Description?.slice(0, 40)}</span>
                     </div>
                   </div>
                 </>
@@ -577,7 +577,7 @@ const MultiCard: React.FC<Props> = ({
                     />
                   </div>
                   <div className={styles.requiredSection}>
-                    <span>{data.Description}</span>
+                    <span>{data?.Description}</span>
                   </div>
                 </React.Fragment>
               )}
@@ -645,7 +645,7 @@ const MultiCard: React.FC<Props> = ({
           id={CTID?.toString()}
           data-columnNumber={columnNumber}
           data-rowNumber={rowNumber}
-          data-CTID={data.CTID}
+          data-CTID={data?.CTID}
         >
           {skipPreSelect && destinationComponent && isAddDestination && (
             <>
@@ -687,7 +687,7 @@ const MultiCard: React.FC<Props> = ({
               </div>
             </>
           )}
-          {((isCourseCard && !isCredentialCard) || data.Type === 'course') && (
+          {((isCourseCard && !isCredentialCard) || data?.Type === 'course') && (
             <>
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}
@@ -701,7 +701,9 @@ const MultiCard: React.FC<Props> = ({
               >
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
-                  <span className={styles.title}>{data.Name.slice(0, 30)}</span>
+                  <span className={styles.title}>
+                    {data?.Name?.slice(0, 30)}
+                  </span>
                   <FontAwesomeIcon
                     color={darkColor}
                     style={{ height: '20px', cursor: 'pointer' }}
@@ -749,8 +751,8 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.courseNameContainter}>
-                  <span>{data.CodedNotation}</span>
-                  <span>{data.Description.slice(0, 40)}</span>
+                  <span>{data?.CodedNotation}</span>
+                  <span>{data?.Description?.slice(0, 40)}</span>
                 </div>
                 <div className={styles.creditSection}>
                   <span>Credits: 3</span>
@@ -768,7 +770,9 @@ const MultiCard: React.FC<Props> = ({
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
-                  <span className={styles.title}>{data.Name.slice(0, 30)}</span>
+                  <span className={styles.title}>
+                    {data?.Name?.slice(0, 30)}
+                  </span>
                   <FontAwesomeIcon
                     color={darkColor}
                     style={{ height: '20px', cursor: 'pointer' }}
@@ -816,8 +820,8 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.courseNameContainter}>
-                  <span>{data.CodedNotation}</span>
-                  <span>{data.Description.slice(0, 40)}</span>
+                  <span>{data?.CodedNotation}</span>
+                  <span>{data?.Description.slice(0, 40)}</span>
                 </div>
               </div>
             </>
@@ -875,7 +879,7 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.requiredSection}>
-                  <span>{data.Description}</span>
+                  <span>{data?.Description}</span>
                 </div>
               </React.Fragment>
             </>
