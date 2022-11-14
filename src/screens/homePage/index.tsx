@@ -1038,7 +1038,7 @@ const HomePage: React.FC<Props> = ({
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
-        .filter((card: any) => card.HasProgressionLevel === column.CTID)
+        ?.filter((card: any) => card.HasProgressionLevel === column.CTID)
         .reduce((acc: any, curr: any) => {
           if (acc >= curr.ColumnNumber) {
             return acc;
