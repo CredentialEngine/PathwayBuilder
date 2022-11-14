@@ -388,15 +388,16 @@ const HomePage: React.FC<Props> = ({
     }
     if (card?.Type === 'conditional') {
       /* This Function add only conditional cards*/
-      setUpdatedPathwayComponentConditionCards(
-        updatedPathwayComponentConditionCards
-          .filter((item: any) => item.RowId !== card.RowId)
-          .concat({
-            ...card,
-            RowNumber,
-            ColumnNumber,
-          })
-      );
+      const updatedCards = updatedPathwayComponentConditionCards
+        .filter((item: any) => item.RowId !== card.RowId)
+        .concat({
+          ...card,
+          RowNumber,
+          ColumnNumber,
+        });
+      setUpdatedPathwayComponentConditionCards(updatedCards);
+      updatedPathwayWrapper.ComponentConditions = updatedCards;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       return;
     }
     if (
