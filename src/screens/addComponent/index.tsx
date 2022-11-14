@@ -348,7 +348,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         Description: componentConditionFields.Description,
         RequiredNumber: componentConditionFields.RequiredNumber,
         LogicalOperator: componentConditionFields.LogicalOperator,
-        HasConstraint: Constraint,
+        HasConstraint: hasConstraints,
         ColumnNumber:
           conditionalCardAlreadyExistForDestination.length > 0
             ? conditionalCardAlreadyExistForDestination[0]?.ColumnNumber
