@@ -612,11 +612,45 @@ const AddPathwayForm: React.FC<Props> = ({
         );
         setIsEditPathwayFormVisible(false);
         setIsDropCardAfterEditingForm(true);
+      } else if (
+        _.toString(_.get(addPathwayFormFields?.HasProgressionModel, '0')) ==
+          '' &&
+        (pathwayWrapper.mappedData?.ProgressionModels == undefined ||
+          pathwayWrapper.mappedData?.ProgressionModels.length == 0)
+      ) {
+        dispatch(
+          saveDataForPathwayRequest({
+            ...addPathwayWrapperFields,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
+            PendingComponents: addPathwayWrapperFields.PendingComponents,
+            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+          })
+        );
+        dispatch(
+          updateMappedDataRequest({
+            ...addPathwayWrapperFields,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: addPathwayWrapperFields.PendingComponents,
+            PendingComponents: addPathwayWrapperFields.PendingComponents,
+            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+          })
+        );
+        setIsEditPathwayFormVisible(false);
+        setIsDropCardAfterEditingForm(true);
       } else {
         const updatedPathwayWrapper = { ...PathwayWrapper };
         const updatedPathway = { ...updatedPathwayWrapper.Pathway };
-        // console.log({ updatedPathway, addPathwayFormFields, PathwayWrapper }, 'else');
-
+        // console.log(
+        //   {
+        //     updatedPathway,
+        //     addPathwayFormFields,
+        //     PathwayWrapper,
+        //   },
+        //   'else'
+        // );
         Modal.confirm({
           title: 'By clicking on Save all existing data will be lost.',
           okText: 'Save',
@@ -630,12 +664,11 @@ const AddPathwayForm: React.FC<Props> = ({
 
             dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
             dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-
-            setIsEditPathwayFormVisible(false);
-            setIsDropCardAfterEditingForm(true);
           },
           onCancel: noop,
         });
+        setIsEditPathwayFormVisible(false);
+        setIsDropCardAfterEditingForm(true);
       }
     } else {
       dispatch(
