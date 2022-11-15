@@ -378,6 +378,8 @@ const HomePage: React.FC<Props> = ({
     }
     if (card?.Type === 'conditional') {
       /* This Function add only conditional cards*/
+      const updatedPathwayWrapper = { ...pathwayComponent };
+
       const updatedCards = updatedPathwayComponentConditionCards
         .filter((item: any) => item.RowId !== card.RowId)
         .concat({
@@ -399,7 +401,13 @@ const HomePage: React.FC<Props> = ({
       return;
     }
 
-    if (!destinationColumn && isDestinationCardExist) {
+    if (
+      !destinationColumn &&
+      isDestinationCardExist &&
+      card?.CTID === updatedPathwayWrapper?.Pathway?.HasDestinationComponent
+    ) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+
       const updatedPathway = { ...updatedPathwayWrapper.Pathway };
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
@@ -407,6 +415,8 @@ const HomePage: React.FC<Props> = ({
     }
 
     if (!!destinationColumn && !isDestinationCardExist) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+
       const updatedPathwayComponent =
         updatedPathwayWrapper?.PathwayComponents?.filter(
           (pathway_component: any) => pathway_component?.CTID !== card?.CTID
@@ -447,7 +457,7 @@ const HomePage: React.FC<Props> = ({
           component_card.destinationColumn === true
       );
 
-      if (isCardAlreadyInDestinationColumn) {
+      if (isCardAlreadyInDestinationColumn.length > 0) {
         const updatedPathwayComponent =
           updatedPathwayWrapper?.PathwayComponents?.filter(
             (pathway_component: any) => pathway_component?.CTID !== card?.CTID
