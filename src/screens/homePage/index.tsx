@@ -361,6 +361,9 @@ const HomePage: React.FC<Props> = ({
     firstColumn: boolean
   ) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
+    if (!destinationColumn) {
+      card.destinationColumn = false;
+    }
     setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
     setNewConn([]);
@@ -383,6 +386,7 @@ const HomePage: React.FC<Props> = ({
       return;
     }
     if (card?.Type === 'conditional') {
+      const updatedPathwayWrapper = { ...pathwayComponent };
       /* This Function add only conditional cards*/
       const updatedCards = updatedPathwayComponentConditionCards
         .filter((item: any) => item.RowId !== card.RowId)
@@ -454,17 +458,19 @@ const HomePage: React.FC<Props> = ({
           firstColumn,
         });
       setPathwayComponentCards(updatedPathwayComponent);
+    }
 
+    if (
+      !destinationColumn &&
+      isDestinationCardExist &&
+      card?.CTID === updatedPathwayWrapper?.Pathway?.HasDestinationComponent
+    ) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
       const updatedPathway = { ...updatedPathwayWrapper.Pathway };
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
-      updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+      // updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-
-      return;
-    }
-    if (!destinationColumn) {
-      card.destinationColumn = false;
     }
     if (!!destinationColumn && !isDestinationCardExist) {
       const updatedPathwayComponent =
@@ -507,6 +513,7 @@ const HomePage: React.FC<Props> = ({
       // dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       return;
     }
+
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
 
@@ -515,8 +522,9 @@ const HomePage: React.FC<Props> = ({
           component_card.CTID == card.CTID &&
           component_card.destinationColumn === true
       );
+      if (isCardAlreadyInDestinationColumn.length > 0) {
+        const updatedPathwayWrapper = { ...pathwayComponent };
 
-      if (isCardAlreadyInDestinationColumn) {
         const updatedPathwayComponent =
           updatedPathwayWrapper?.PathwayComponents?.filter(
             (pathway_component: any) => pathway_component?.CTID !== card?.CTID
@@ -590,6 +598,7 @@ const HomePage: React.FC<Props> = ({
         },
       ]);
       setIsDropCardAfterEditingForm(false);
+
       return;
     }
 
