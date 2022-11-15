@@ -469,7 +469,6 @@ const HomePage: React.FC<Props> = ({
       const updatedPathway = { ...updatedPathwayWrapper.Pathway };
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
-      // updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
     if (!!destinationColumn && !isDestinationCardExist) {
