@@ -241,7 +241,7 @@ const AddPathwayForm: React.FC<Props> = ({
         PathwayWrapper.Pathway.HasProgressionModel;
       updatedPathwayFormFields.IndustryType =
         PathwayWrapper.Pathway.IndustryType;
-      updatedPathwayFormFields.InstructionalType =
+      updatedPathwayFormFields.InstructionalProgramType =
         PathwayWrapper.Pathway.InstructionalType;
       updatedPathwayFormFields.OccupationType =
         PathwayWrapper.Pathway.OccupationType;
@@ -287,7 +287,7 @@ const AddPathwayForm: React.FC<Props> = ({
   //     updatedData.IndustryType = industrySelectedValue;
   //   }
   //   if (instructionalProgramSelectedValue.length > 0) {
-  //     updatedData.InstructionalType = industrySelectedValue;
+  //     updatedData.InstructionalProgramType= industrySelectedValue;
   //   }
   //   if (!isEditPathwayFormVisible) {
   //     setAddPathwayFormFields(updatedData);
@@ -512,8 +512,8 @@ const AddPathwayForm: React.FC<Props> = ({
         allInstructionalProgramTypeData?.filter(
           (data: any) => data.Name === e.value
         );
-      const insData = addPathwayFormFields?.InstructionalType ?? [];
-      updatedData.InstructionalType = [
+      const insData = addPathwayFormFields?.InstructionalProgramType ?? [];
+      updatedData.InstructionalProgramType = [
         ...insData,
         ...filteredInstructionalProgram,
       ];
@@ -534,9 +534,10 @@ const AddPathwayForm: React.FC<Props> = ({
       );
     }
     if (name === 'InstructionalProgram') {
-      updatedData.InstructionalType = updatedData?.InstructionalType?.filter(
-        (item: any) => item.Name !== e.key
-      );
+      updatedData.InstructionalProgramType =
+        updatedData?.InstructionalType?.filter(
+          (item: any) => item.Name !== e.key
+        );
     }
     setAddPathwayFormFields(updatedData);
   };

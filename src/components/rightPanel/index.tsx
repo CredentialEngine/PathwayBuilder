@@ -1,10 +1,10 @@
 import { CaretRightOutlined } from '@ant-design/icons';
-import { faCubes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Drawer, Row, Collapse } from 'antd';
 import _, { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
 
 const { Panel } = Collapse;
 import Button from '../button';
@@ -94,6 +94,7 @@ const RightPanel: React.FC<Props> = ({
       'noopener,noreferrer'
     );
   };
+  console.log(panelData, 'panelData');
 
   return (
     <Drawer visible={visible} closable={true} className={styles.right_drawer}>
@@ -107,11 +108,141 @@ const RightPanel: React.FC<Props> = ({
         <Row className={styles.topRow}>
           <Row>
             <div style={{ flexDirection: 'row', display: 'flex' }}>
-              <FontAwesomeIcon
-                icon={faCubes}
-                style={{ height: '30px' }}
-                onClick={() => onCloseHandler(false)}
-              />
+              <span className={styles.iconwrapper + ' customicon'}>
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'credential'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CredentialComponent.png`}
+                    alt="CredentialComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'course'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CourseComponent.png`}
+                    alt="courseComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'Basic'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/BasicComponent.png`}
+                    alt="BasicComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'competency'.toLocaleLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CompetencyComponent.png`}
+                    alt="CompetencyComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'assessment'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/AssessmentComponent.png`}
+                    alt="AssessmentComponent"
+                  />
+                )}
+
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'Cocurricular'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/CocurricularComponent.png`}
+                    alt="CocurricularComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'Extracurricular'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/ExtracurricularComponent.png`}
+                    alt="ExtracurricularComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'selection'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/SelectionComponent.png`}
+                    alt="SelectionComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'WorkExperience'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/WorkExperienceComponent.png`}
+                    alt="WorkExperienceComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'JobComponent'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/JobComponent.png`}
+                    alt="JobComponent"
+                  />
+                )}
+                {rightPanelData?.Type?.toLowerCase().includes(
+                  'Addressing'.toLowerCase()
+                ) && (
+                  <img
+                    src={`${
+                      process.env.NODE_ENV !== 'production'
+                        ? sanboxSetting.api.url
+                        : productionSetting.api.url
+                    }Images/PathwayBuilder/AddressingComponent.png`}
+                    alt="AddressingConflictComponent"
+                  />
+                )}
+              </span>
               <span className={styles.name}>
                 {rightPanelData && rightPanelData?.Name}
               </span>
@@ -139,7 +270,9 @@ const RightPanel: React.FC<Props> = ({
             {rightPanelData?.Type?.split(':')[1]} Type
           </p>
           <p className={styles.value}>
-            {extractComponentType(rightPanelData?.Type)}
+            {extractComponentType(rightPanelData?.Type) == 'CredentialComponent'
+              ? extractComponentType(rightPanelData?.CredentialType)
+              : extractComponentType(rightPanelData?.Type)}
           </p>
         </Row>
         <Row className={styles.infoContainer}>
