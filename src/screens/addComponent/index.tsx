@@ -61,6 +61,9 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const [currentComponent, setCurrentComponent] = useState<any>();
   const [cardAlreadyExistOnDropWrapper, setCardAlreadyExistOnDropWrapper] =
     useState<boolean>(false);
+  const [isTouched, setisTouched] = useState({
+    requiredNumber: false,
+  });
 
   useEffect(() => {
     const currentPathwayComponent =
@@ -485,20 +488,41 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </Form.Item>
         <Row gutter={20}>
           <Col span="12">
-            <Form.Item>
-              <label>Required Number</label>
+            <Form.Item
+              required={true}
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Required Number"
+              validateTrigger="onBlur"
+              help={
+                (_.isEmpty(componentConditionFields.RequiredNumber) ||
+                  _.isNull(componentConditionFields.RequiredNumber)) &&
+                isTouched.requiredNumber
+                  ? 'Number is Required'
+                  : null
+              }
+            >
               <InputBox
                 type="number"
                 onChange={onInputChangeHandler}
                 min={1}
                 name="RequiredNumber"
                 value={componentConditionFields.RequiredNumber}
+                required={true}
+                onBlur={() =>
+                  isTouched.requiredNumber === true
+                    ? null
+                    : setisTouched({ ...isTouched, requiredNumber: true })
+                }
               />
             </Form.Item>
           </Col>
           <Col span="12">
-            <Form.Item>
-              <label>Logical Operator</label>
+            <Form.Item
+              label="Logical Operator"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
               <Dropdown
                 options={componentConditionFields?.LogicalOperator}
                 defaultValue="And"
@@ -532,6 +556,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           size="medium"
           text="Save Condition"
           type="primary"
+          disabled={_.isEmpty(componentConditionFields.RequiredNumber)}
           onClick={saveCondition}
         />
       </Form>

@@ -102,12 +102,6 @@ const HomePage: React.FC<Props> = ({
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
 
-  // useEffect(() => {
-  //   if (!isConditionalModalStatus) {
-  //     createConnection();
-  //   }
-  // }, [isConditionalModalStatus]);
-
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     setNewConn([]);
@@ -172,10 +166,8 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
-    // updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
-    // setDeletedComponentCards([]);
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
       setIsDestinationColumnSelected(false);
@@ -741,7 +733,6 @@ const HomePage: React.FC<Props> = ({
     }
 
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    // dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
   };
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
