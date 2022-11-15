@@ -61,6 +61,9 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const [currentComponent, setCurrentComponent] = useState<any>();
   const [cardAlreadyExistOnDropWrapper, setCardAlreadyExistOnDropWrapper] =
     useState<boolean>(false);
+  const [isTouched, setisTouched] = useState({
+    requiredNumber: false,
+  });
 
   useEffect(() => {
     const currentPathwayComponent =
@@ -92,12 +95,13 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
-    if (conditionalComponent.length > 0 && !cardAlreadyExistOnDropWrapper) {
-      const currentPathwayComponent =
-        allComponentCardsData[connectionsCTID.start];
-      const currentConditionalComponent =
-        allConditionalCardsData[connectionsCTID.start];
 
+    const currentPathwayComponent =
+      allComponentCardsData[connectionsCTID.start];
+    const currentConditionalComponent =
+      allConditionalCardsData[connectionsCTID.start];
+
+    if (conditionalComponent.length > 0) {
       /* in the below code we are adding RowId of the newly created conitional component inside the parent component*/
       if (
         !_.isUndefined(currentPathwayComponent) &&
@@ -114,6 +118,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ];
         }
       }
+
       /* in the below code we are adding RowId of the newly created conitional component inside the parent conditional component*/
       if (
         !_.isUndefined(currentConditionalComponent) &&
@@ -176,26 +181,39 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               ]),
             ]
           : [...new Set([...componentCardInProgressionLevel])];
-      const updatedPathwayComponentArray = uniquePathwayComponentArray.map(
-        (a: any) => ({
-          ...a,
-          ColumnNumber: a?.destinationColumn
-            ? a?.ColumnNumber
-            : conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
-            ? a?.ColumnNumber + 1
-            : a?.ColumnNumber,
-        })
-      );
 
-      const updatedConditionalArray = uniqueConditionalArray
-        .map((a: any) => ({
-          ...a,
-          ColumnNumber:
-            conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
-              ? a.ColumnNumber + 1
-              : a.ColumnNumber,
-        }))
-        .concat(conditionalComponent);
+      let updatedPathwayComponentArray: any = [];
+      let updatedConditionalArray: any = [];
+      if (!cardAlreadyExistOnDropWrapper) {
+        updatedPathwayComponentArray = uniquePathwayComponentArray.map(
+          (a: any) => ({
+            ...a,
+            ColumnNumber: a?.destinationColumn
+              ? a?.ColumnNumber
+              : conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
+              ? a?.ColumnNumber + 1
+              : a?.ColumnNumber,
+          })
+        );
+
+        updatedConditionalArray = uniqueConditionalArray
+          .map((a: any) => ({
+            ...a,
+            ColumnNumber:
+              conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
+                ? a.ColumnNumber + 1
+                : a.ColumnNumber,
+          }))
+          .concat(conditionalComponent);
+      } else {
+        updatedConditionalArray = [
+          ...uniqueConditionalArray,
+          ...conditionalComponent,
+        ];
+
+        updatedPathwayComponentArray = uniquePathwayComponentArray;
+      }
+
       const allComponentConditionalCard = [
         ...conditionalComponentOutOfProgressionLevel,
         ...updatedConditionalArray,
@@ -251,19 +269,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
 
       !!setIsConditionalEditing && setIsConditionalEditing(false);
-    } else if (cardAlreadyExistOnDropWrapper) {
-      updatedPathwayWrapper.ComponentConditions = [
-        ...updatedPathwayWrapper.ComponentConditions,
-        ...conditionalComponent,
-      ];
-      setConditionalComponent([]);
-      !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
-
-      !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
-
-      !!setIsConditionalEditing && setIsConditionalEditing(false);
-
-      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
   }, [conditionalComponent]);
 
@@ -298,6 +303,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     RowId: currentComponent?.RowId,
     name: componentConditionFields.Name,
     Description: componentConditionFields.Description,
+    ParentIdentifier: connectionsCTID?.start,
   };
 
   useEffect(() => {
@@ -348,7 +354,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         Description: componentConditionFields.Description,
         RequiredNumber: componentConditionFields.RequiredNumber,
         LogicalOperator: componentConditionFields.LogicalOperator,
-        HasConstraint: Constraint,
+        HasConstraint: hasConstraints,
         ColumnNumber:
           conditionalCardAlreadyExistForDestination.length > 0
             ? conditionalCardAlreadyExistForDestination[0]?.ColumnNumber
@@ -361,7 +367,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             : currentComponent?.RowNumber,
         RowId: uuidv4(),
         Name: componentConditionFields.Name,
-        TargetComponent: [connectionsCTID?.end],
+        TargetComponent:
+          conditionalCardAlreadyExistForDestination.length > 0
+            ? []
+            : [connectionsCTID?.end],
         HasCondition: [],
         HasProgressionLevel: progressionLevelForAddComponent,
       };
@@ -479,20 +488,41 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </Form.Item>
         <Row gutter={20}>
           <Col span="12">
-            <Form.Item>
-              <label>Required Number</label>
+            <Form.Item
+              required={true}
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Required Number"
+              validateTrigger="onBlur"
+              help={
+                (_.isEmpty(componentConditionFields.RequiredNumber) ||
+                  _.isNull(componentConditionFields.RequiredNumber)) &&
+                isTouched.requiredNumber
+                  ? 'Number is Required'
+                  : null
+              }
+            >
               <InputBox
                 type="number"
                 onChange={onInputChangeHandler}
                 min={1}
                 name="RequiredNumber"
                 value={componentConditionFields.RequiredNumber}
+                required={true}
+                onBlur={() =>
+                  isTouched.requiredNumber === true
+                    ? null
+                    : setisTouched({ ...isTouched, requiredNumber: true })
+                }
               />
             </Form.Item>
           </Col>
           <Col span="12">
-            <Form.Item>
-              <label>Logical Operator</label>
+            <Form.Item
+              label="Logical Operator"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
               <Dropdown
                 options={componentConditionFields?.LogicalOperator}
                 defaultValue="And"
@@ -526,6 +556,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           size="medium"
           text="Save Condition"
           type="primary"
+          disabled={_.isEmpty(componentConditionFields.RequiredNumber)}
           onClick={saveCondition}
         />
       </Form>

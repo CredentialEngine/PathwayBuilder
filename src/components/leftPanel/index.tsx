@@ -88,7 +88,7 @@ const LeftPanel: React.FC<any> = ({
               (element: any) => element.RowId === conditional_card.RowId
             )
         ).map((card: any) =>
-          card?.TargetComponent.includes(droppedCard?.CTID)
+          card?.TargetComponent?.includes(droppedCard?.CTID)
             ? { ...card, TargetComponent: droppedCard.PrecededBy }
             : { ...card }
         );

@@ -568,7 +568,7 @@ const MultiCard: React.FC<Props> = ({
                       icon={faSitemap}
                       onClick={noop}
                     />
-                    <span>Required {}</span>
+                    <span>Required: {}</span>
                     <FontAwesomeIcon
                       color="#ffffff"
                       style={{ height: '20px', cursor: 'pointer' }}
@@ -702,7 +702,7 @@ const MultiCard: React.FC<Props> = ({
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
                   <span className={styles.title}>
-                    {data?.Name?.slice(0, 30)}
+                    {data?.Type?.split(':')[1]}
                   </span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -755,8 +755,8 @@ const MultiCard: React.FC<Props> = ({
                   <span>{data?.Description?.slice(0, 40)}</span>
                 </div>
                 <div className={styles.creditSection}>
-                  <span>Credits: 3</span>
-                  <span>Level 10</span>
+                  <span>Credits: {data?.CreditValue?.[0]?.CreditUnitType}</span>
+                  <span>Level {data?.CreditValue?.[0]?.CreditLevelType}</span>
                 </div>
               </div>
               <span
@@ -771,7 +771,7 @@ const MultiCard: React.FC<Props> = ({
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
                   <span className={styles.title}>
-                    {data?.Name?.slice(0, 30)}
+                    {data?.Type?.split(':')[1]}
                   </span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -837,7 +837,7 @@ const MultiCard: React.FC<Props> = ({
                     icon={faSitemap}
                     onClick={noop}
                   />
-                  <span>Required {data?.RequiredNumber}</span>
+                  <span>Required: {data?.RequiredNumber}</span>
                   <FontAwesomeIcon
                     color="#000000"
                     style={{ height: '20px', cursor: 'pointer' }}
