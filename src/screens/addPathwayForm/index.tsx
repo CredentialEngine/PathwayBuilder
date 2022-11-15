@@ -255,7 +255,7 @@ const AddPathwayForm: React.FC<Props> = ({
         ...updatedPathwayFormFields,
       });
     }
-    // console.log({ PathwayWrapper, addPathwayFormFields }, 'useeffect');
+    // console.log({ PathwayWrapper, addPathwayFormFields }, 'useeffec');
 
     setCheckboxvalues({
       ...checkboxValues,
@@ -263,8 +263,9 @@ const AddPathwayForm: React.FC<Props> = ({
     });
 
     if (
+      PathwayWrapper.Pathway?.HasProgressionModel &&
       PathwayWrapper.Pathway?.HasProgressionModel[0] !==
-      _.get(PathwayWrapper?.ProgressionModels, '0')?.CTID
+        _.get(PathwayWrapper?.ProgressionModels, '0')?.CTID
     ) {
       const selectedProgressionModel = allProgressionModel?.filter(
         (model: any) =>
@@ -280,8 +281,14 @@ const AddPathwayForm: React.FC<Props> = ({
       });
 
       // console.log(
-      //   { PathwayWrapper, allProgressionModel, selectedProgressionModelName,addPathwayFormFields },
-      //   'if'
+      //   {
+      //     PathwayWrapper,
+      //     allProgressionModel,
+      //     selectedProgressionModelname: _.get(selectedProgressionModel, '0')
+      //       ?.Name,
+      //     addPathwayFormFields,
+      //   },
+      //   'useEffect updatde'
       // );
     } else {
       if (PathwayWrapper?.ProgressionModels?.length > 0) {
@@ -389,8 +396,6 @@ const AddPathwayForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (searchFilterValue.keywords !== '') {
-      // console.log(searchFilterValue, 'searchFilterValue');
-
       getHasProgressionModel();
     }
   }, [searchFilterValue]);
@@ -573,48 +578,50 @@ const AddPathwayForm: React.FC<Props> = ({
 
   const onAddPathwayOkHandler = () => {
     if (isEditPathwayFormVisible) {
-      Modal.confirm({
-        title: 'By clicking on Save all existing data will be lost.',
-        okText: 'Save',
-        cancelText: 'Cancel',
-        onOk: () => {
-          if (
-            _.toString(
-              _.get(addPathwayFormFields?.HasProgressionModel, '0')
-            ) ===
-              _.toString(_.get(PathwayWrapper?.ProgressionModels, '0')?.CTID) &&
-            pathwayWrapper.mappedData?.ProgressionLevels?.length > 0 &&
-            pathwayWrapper.mappedData?.ProgressionModels?.length > 0
-            // PathwayWrapper.PathwayComponents?.length > 0 &&
-            // PathwayWrapper.PendingComponents?.length > 0
-          ) {
-            // console.log({ addPathwayFormFields, PathwayWrapper }, 'if');
-            dispatch(
-              saveDataForPathwayRequest({
-                ...addPathwayWrapperFields,
-                Pathway: addPathwayFormFields,
-                PathwayComponents: addPathwayWrapperFields.PathwayComponents,
-                PendingComponents: addPathwayWrapperFields.PendingComponents,
-                ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
-                ProgressionModels: addPathwayWrapperFields.ProgressionModels,
-              })
-            );
-            dispatch(
-              updateMappedDataRequest({
-                ...addPathwayWrapperFields,
-                Pathway: addPathwayFormFields,
-                PathwayComponents: addPathwayWrapperFields.PendingComponents,
-                PendingComponents: addPathwayWrapperFields.PendingComponents,
-                ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
-                ProgressionModels: addPathwayWrapperFields.ProgressionModels,
-              })
-            );
-          } else {
-            const updatedPathwayWrapper = { ...PathwayWrapper };
+      if (
+        _.toString(_.get(addPathwayFormFields?.HasProgressionModel, '0')) ===
+          _.toString(_.get(PathwayWrapper?.ProgressionModels, '0')?.CTID) &&
+        pathwayWrapper.mappedData?.ProgressionLevels?.length > 0 &&
+        pathwayWrapper.mappedData?.ProgressionModels?.length > 0
+        // PathwayWrapper.PathwayComponents?.length > 0 &&
+        // PathwayWrapper.PendingComponents?.length > 0
+      ) {
+        // console.log(
+        //   { addPathwayFormFields, PathwayWrapper },
+        //   'if onAddPathwayOkHandler'
+        // );
+        dispatch(
+          saveDataForPathwayRequest({
+            ...addPathwayWrapperFields,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
+            PendingComponents: addPathwayWrapperFields.PendingComponents,
+            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+          })
+        );
+        dispatch(
+          updateMappedDataRequest({
+            ...addPathwayWrapperFields,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: addPathwayWrapperFields.PendingComponents,
+            PendingComponents: addPathwayWrapperFields.PendingComponents,
+            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+          })
+        );
+        setIsEditPathwayFormVisible(false);
+        setIsDropCardAfterEditingForm(true);
+      } else {
+        const updatedPathwayWrapper = { ...PathwayWrapper };
+        const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+        // console.log({ updatedPathway, addPathwayFormFields, PathwayWrapper }, 'else');
 
-            const updatedPathway = { ...updatedPathwayWrapper.Pathway };
-            // console.log({ updatedPathway, addPathwayFormFields }, 'else');
-
+        Modal.confirm({
+          title: 'By clicking on Save all existing data will be lost.',
+          okText: 'Save',
+          cancelText: 'Cancel',
+          onOk: () => {
             updatedPathway.HasDestinationComponent = '';
             updatedPathwayWrapper.Pathway =
               addPathwayFormFields /* updatedPathway */;
@@ -623,12 +630,13 @@ const AddPathwayForm: React.FC<Props> = ({
 
             dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
             dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-          }
-          setIsEditPathwayFormVisible(false);
-          setIsDropCardAfterEditingForm(true);
-        },
-        onCancel: noop,
-      });
+
+            setIsEditPathwayFormVisible(false);
+            setIsDropCardAfterEditingForm(true);
+          },
+          onCancel: noop,
+        });
+      }
     } else {
       dispatch(
         saveDataForPathwayRequest({
@@ -984,8 +992,7 @@ const AddPathwayForm: React.FC<Props> = ({
               label="This Pathway Contains a Progression Model"
             />
           </Col>
-          {(!!checkboxValues.progressionModel ||
-            addPathwayFormFields?.HasProgressionModel?.length > 0) && (
+          {!!checkboxValues.progressionModel && (
             <Col span={24}>
               <Form.Item
                 label="Progression Model"
