@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { useState } from 'react';
 
 interface Props {
@@ -30,8 +29,6 @@ interface Props {
   colNumber: number;
   columnNumber: number;
   column_num: number;
-  setOverlayData: (a: any) => void;
-  overlayData: any;
   updatedPathwayComponentConditionCards: any;
   isFirstColumneSelected: boolean;
   firstColumn: boolean;
@@ -51,8 +48,6 @@ const DropWrapper: React.FC<Props> = ({
   rowNumber,
   columnNumber,
   column_num,
-  setOverlayData,
-  overlayData,
   updatedPathwayComponentConditionCards,
   isFirstColumneSelected,
   firstColumn,
@@ -110,23 +105,6 @@ const DropWrapper: React.FC<Props> = ({
 
   const onDragEnterHandler = (event: any) => {
     if (event.currentTarget.contains(event.relatedTarget)) {
-      const columnNumber =
-        event.relatedTarget.getAttribute('data-columnNumber');
-      const rowNumber = event.relatedTarget.getAttribute('data-rowNumber');
-      const onHoverCTID = event.relatedTarget.getAttribute('data-CTID');
-
-      if (
-        !_.isNull(columnNumber) &&
-        !_.isNull(rowNumber) &&
-        onHoverCTID !== ''
-      ) {
-        setOverlayData({
-          ...overlayData,
-          columnNumber: columnNumber + 1,
-          rowNumber,
-          CTID: onHoverCTID,
-        });
-      }
       setColumnNumber(true);
     } else {
       setColumnNumber(false);
@@ -154,7 +132,6 @@ const DropWrapper: React.FC<Props> = ({
       ref={(element: any) => {
         forwardRef.current[number] = element;
       }}
-      data-cardType="multiCard"
     >
       {children}
     </div>

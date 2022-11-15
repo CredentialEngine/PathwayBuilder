@@ -24,12 +24,7 @@ const LeftPanelDropWrapper: React.FC<Props> = ({
   };
 
   return (
-    <div
-      onDragOver={allowDrop}
-      onDrop={handleDrop}
-      className={className}
-      data-cardType="leftPanel"
-    >
+    <div onDragOver={allowDrop} onDrop={handleDrop} className={className}>
       {children}
     </div>
   );
