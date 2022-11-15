@@ -767,9 +767,6 @@ const MultiCard: React.FC<Props> = ({
 
           {isCredentialCard && (
             <>
-              <span
-                className={styles.ornageSection + ' ' + styles.leftSide}
-              ></span>
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
@@ -786,10 +783,45 @@ const MultiCard: React.FC<Props> = ({
                       setShowPopover(true);
                     }}
                   />
-                  <div className={styles.courseNameContainter}>
-                    <span>{data?.CodedNotation}</span>
-                    <span>{data?.Description.slice(0, 40)}</span>
-                  </div>
+                  {showPopover && !showRightPenal && (
+                    <Popover
+                      visible={showPopover}
+                      arrowPointAtCenter
+                      placement="bottomRight"
+                      content={
+                        <div className={styles.popoverMenu} ref={ref}>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setShowRightPenal(true);
+                            }}
+                          >
+                            View
+                          </span>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              onDelete(data);
+                            }}
+                          >
+                            Delete
+                          </span>
+                        </div>
+                      }
+                    ></Popover>
+                  )}
+                </div>
+                <Divider
+                  style={{
+                    backgroundColor: '#6EFFFF',
+                    margin: '8px 0px 4px 0px',
+                  }}
+                />
+                <div className={styles.courseNameContainter}>
+                  <span>{data?.CodedNotation}</span>
+                  <span>{data?.Description.slice(0, 40)}</span>
                 </div>
               </div>
               <span
