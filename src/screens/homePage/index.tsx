@@ -145,13 +145,6 @@ const HomePage: React.FC<Props> = ({
   const getComponentConditionData = (data: any) => {
     setComponentConditionData(data);
   };
-
-  const [overlayData, setOverlayData] = useState<any>({
-    columnNumber: 0,
-    rowNumber: 0,
-    CTID: '',
-  });
-
   const wrapperRef = useRef<Array<HTMLDivElement | null>>([]);
   useEffect(() => {
     setGeneratedUuid({
@@ -1094,8 +1087,6 @@ const HomePage: React.FC<Props> = ({
                       columnNumber={columnNumber}
                       colNumber={columnNumber || 1}
                       column_num={column_num}
-                      setOverlayData={setOverlayData}
-                      overlayData={overlayData}
                       updatedPathwayComponentConditionCards={
                         updatedPathwayComponentConditionCards
                       }

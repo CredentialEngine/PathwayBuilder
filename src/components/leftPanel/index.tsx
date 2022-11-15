@@ -61,12 +61,12 @@ const LeftPanel: React.FC<any> = ({
       const updatedPathwayWrapper = { ...result.mappedData };
 
       if (
-        updatedPathwayWrapper.PathwayComponents.length > 0 &&
+        updatedPathwayWrapper?.PathwayComponents?.length > 0 &&
         selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
       ) {
         const filteredPendingCards = selectedTabCards?.filter(
           (selected_card: any) =>
-            !updatedPathwayWrapper.PathwayComponents.some(
+            !updatedPathwayWrapper?.PathwayComponents?.some(
               (pathway_card: any) =>
                 _.toString(pathway_card.CTID) === _.toString(selected_card.CTID)
             )
@@ -82,7 +82,7 @@ const LeftPanel: React.FC<any> = ({
       const conditionalCard = checkHasCondition(droppedCard);
 
       const filteredConditionalComponent =
-        updatedPathwayWrapper.ComponentConditions.filter(
+        updatedPathwayWrapper?.ComponentConditions?.filter(
           (conditional_card: any) =>
             !conditionalCard.find(
               (element: any) => element.RowId === conditional_card.RowId
@@ -94,7 +94,7 @@ const LeftPanel: React.FC<any> = ({
         );
       updatedPathwayWrapper.ComponentConditions = filteredConditionalComponent;
       updatedPathwayWrapper.DeletedComponentConditions = [
-        ...updatedPathwayWrapper.DeletedComponentConditions,
+        ...updatedPathwayWrapper?.DeletedComponentConditions,
         ...conditionalCard,
       ];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
@@ -139,7 +139,7 @@ const LeftPanel: React.FC<any> = ({
 
     if (card?.HasCondition.length > 0) {
       const nextConditionalComponent =
-        updatedPathwayWrapper.ComponentConditions.filter(
+        updatedPathwayWrapper?.ComponentConditions?.filter(
           (condition_card: any) =>
             card?.HasCondition.includes(condition_card?.RowId)
         );

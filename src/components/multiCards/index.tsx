@@ -85,8 +85,6 @@ const MultiCard: React.FC<Props> = ({
   // onMoveItem,
   // number,
   // forwardRef,
-  rowNumber,
-  columnNumber,
   skipPreSelect,
   setDraggableCardVisible,
   // updatedPathwayComponentConditionCards,
@@ -400,10 +398,6 @@ const MultiCard: React.FC<Props> = ({
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
               id={CTID?.toString()}
-              data-cardType="multiCard"
-              data-columnNumber={columnNumber}
-              data-rowNumber={rowNumber}
-              data-CTID={data?.CTID}
             >
               {skipPreSelect && destinationComponent && isAddDestination && (
                 <>
@@ -643,9 +637,6 @@ const MultiCard: React.FC<Props> = ({
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
           id={CTID?.toString()}
-          data-columnNumber={columnNumber}
-          data-rowNumber={rowNumber}
-          data-CTID={data?.CTID}
         >
           {skipPreSelect && destinationComponent && isAddDestination && (
             <>
