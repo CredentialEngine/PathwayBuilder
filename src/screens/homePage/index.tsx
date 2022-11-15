@@ -102,11 +102,11 @@ const HomePage: React.FC<Props> = ({
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
 
-  useEffect(() => {
-    if (!isConditionalModalStatus) {
-      createConnection();
-    }
-  }, [isConditionalModalStatus]);
+  // useEffect(() => {
+  //   if (!isConditionalModalStatus) {
+  //     createConnection();
+  //   }
+  // }, [isConditionalModalStatus]);
 
   useEffect(() => {
     const updatedConditionalComponents: any = [];
@@ -229,7 +229,6 @@ const HomePage: React.FC<Props> = ({
 
   useEffect(() => {
     if (pathwayComponent) {
-      setNewConn([]);
       if (pathwayComponent?.ComponentConditions?.length > -1) {
         setPathwayComponentConditionCards(
           pathwayComponent.ComponentConditions.map((card: any) => ({
@@ -324,7 +323,6 @@ const HomePage: React.FC<Props> = ({
         ]);
       }
     }
-    createConnection();
   }, [pathwayComponent, isDestinationColumnStatus]);
 
   const onSelectDragElemenet = (elem: HTMLElement) => {
@@ -880,12 +878,14 @@ const HomePage: React.FC<Props> = ({
     setNewConn(uniqArrConn);
   };
   useEffect(() => {
+    setNewConn([]);
     if (point && point?.start?.length > 0 && point?.end?.length > 0) {
       setPoint({
         start: '',
         end: '',
       });
     }
+    createConnection();
   }, [point]);
 
   const removeConnection = (item: any) => {
