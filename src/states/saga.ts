@@ -35,9 +35,9 @@ export function* getCurrentUserData(): Generator {
       headers: {
         'Content-Type': 'application/json',
       },
-      params: {
-        userCreds: `${BASE_USER_CREDS}`,
-      },
+      // params: {
+      //   userCreds: `${BASE_USER_CREDS}`,
+      // },
     });
     yield put(getCurrentUserDataSuccess(result));
   } catch (error) {
