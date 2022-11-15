@@ -1122,7 +1122,7 @@ const HomePage: React.FC<Props> = ({
                         }}
                       >
                         <Xwrapper>
-                          {pathwayComponentCards.length > 0 &&
+                          {pathwayComponentCards?.length > 0 &&
                             pathwayComponentCards
                               .filter(
                                 (card: any) =>
