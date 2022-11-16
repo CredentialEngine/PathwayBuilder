@@ -475,9 +475,11 @@ const HomePage: React.FC<Props> = ({
     if (!destinationColumn) {
       card.destinationColumn = false;
     }
-    if (!!destinationColumn && !isDestinationCardExist) {
-      const updatedPathwayWrapper = { ...pathwayComponent };
-
+    if (
+      !!destinationColumn &&
+      !isDestinationCardExist &&
+      !isStartFromInitialColumnSelected
+    ) {
       const updatedPathwayComponent =
         updatedPathwayWrapper?.PathwayComponents?.filter(
           (pathway_component: any) => pathway_component?.CTID !== card?.CTID
