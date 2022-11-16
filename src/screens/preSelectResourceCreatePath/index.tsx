@@ -132,17 +132,39 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     },
   ];
 
+  useEffect(() => {
+    const updatedSearchValue = { ...searchFilterValue };
+    if (!_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)) {
+      if (checkboxForOrganisation) {
+        updatedSearchValue.Filters = [
+          ...updatedSearchValue.Filters,
+          {
+            URI: 'search:recordOwnedBy',
+            ItemTexts: [pathwayWrapper.mappedData.Pathway.Organization.CTID],
+          },
+        ];
+        setSearchFilterValue(updatedSearchValue);
+      } else {
+        _.remove(
+          updatedSearchValue.Filters,
+          (item: any) => item.URI == 'search:recordOwnedBy'
+        );
+        setSearchFilterValue(updatedSearchValue);
+      }
+    }
+  }, [checkboxForOrganisation]);
+
   const onMenuClickHandler = (e: any) => {
     const selectedCardType = allComponentTypes.filter(
       (comp_type: any) => comp_type.key === _.toNumber(e.key)
     );
     const updatedSearchValue = { ...searchFilterValue };
 
-    if (
-      e?.key &&
-      !_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)
-    ) {
-      if (checkboxForOrganisation) {
+    if (e?.key) {
+      if (
+        !_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID) &&
+        checkboxForOrganisation
+      ) {
         updatedSearchValue.Filters = [
           {
             URI: 'meta:pathwayComponentType',
@@ -155,10 +177,12 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         ];
         setSearchFilterValue(updatedSearchValue);
       } else {
-        _.remove(
-          updatedSearchValue.Filters,
-          (item: any) => item.URI == 'search:recordOwnedBy'
-        );
+        updatedSearchValue.Filters = [
+          {
+            URI: 'meta:pathwayComponentType',
+            ItemTexts: [_.get(selectedCardType, '0').label],
+          },
+        ];
         setSearchFilterValue(updatedSearchValue);
       }
     } else {
@@ -278,27 +302,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const handleCheckBox = () => {
     setCheckboxForOrganisation(!checkboxForOrganisation);
   };
-
-  useEffect(() => {
-    const updatedSearchValue = { ...searchFilterValue };
-    if (!_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)) {
-      if (checkboxForOrganisation) {
-        updatedSearchValue.Filters = [
-          {
-            URI: 'search:recordOwnedBy',
-            ItemTexts: [pathwayWrapper.mappedData.Pathway.Organization.CTID],
-          },
-        ];
-        setSearchFilterValue(updatedSearchValue);
-      } else {
-        _.remove(
-          updatedSearchValue.Filters,
-          (item: any) => item.URI == 'search:recordOwnedBy'
-        );
-        setSearchFilterValue(updatedSearchValue);
-      }
-    }
-  }, [checkboxForOrganisation]);
 
   const arrangeAlphabetically = (value: string) => {
     const clonedSelectedResource = _.cloneDeep(selectedResource);

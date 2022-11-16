@@ -85,3 +85,11 @@
     }
   }
 }
+.iconwrapper {
+  display: inline-block;
+  min-width: 40px;
+  max-width: 40px;
+  img {
+    width: 100%;
+  }
+}

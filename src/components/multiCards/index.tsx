@@ -767,6 +767,9 @@ const MultiCard: React.FC<Props> = ({
 
           {isCredentialCard && (
             <>
+              <span
+                className={styles.ornageSection + ' ' + styles.leftSide}
+              ></span>
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
@@ -824,6 +827,9 @@ const MultiCard: React.FC<Props> = ({
                   <span>{data?.Description.slice(0, 40)}</span>
                 </div>
               </div>
+              <span
+                className={styles.ornageSection + ' ' + styles.right}
+              ></span>
             </>
           )}
 

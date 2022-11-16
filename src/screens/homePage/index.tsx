@@ -338,7 +338,6 @@ const HomePage: React.FC<Props> = ({
       });
     }
   };
-
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -451,13 +450,13 @@ const HomePage: React.FC<Props> = ({
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
 
-      const isCardAlreadyInDestinationColumn = pathwayComponentCards.filter(
+      const isCardAlreadyInDestinationColumn = pathwayComponentCards?.filter(
         (component_card: any) =>
           component_card.CTID == card.CTID &&
           component_card.destinationColumn === true
       );
 
-      if (isCardAlreadyInDestinationColumn.length > 0) {
+      if (isCardAlreadyInDestinationColumn?.length > 0) {
         const updatedPathwayComponent =
           updatedPathwayWrapper?.PathwayComponents?.filter(
             (pathway_component: any) => pathway_component?.CTID !== card?.CTID
@@ -480,7 +479,7 @@ const HomePage: React.FC<Props> = ({
 
       return;
     }
-    const islastDropWrapperUsed = pathwayComponentCards.some(
+    const islastDropWrapperUsed = pathwayComponentCards?.some(
       (card: any) => card.RowNumber === numberOfDropWrapper
     );
 
@@ -916,7 +915,7 @@ const HomePage: React.FC<Props> = ({
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
-        .filter((card: any) => card.HasProgressionLevel === column.CTID)
+        ?.filter((card: any) => card.HasProgressionLevel === column.CTID)
         .reduce((acc: any, curr: any) => {
           if (acc >= curr.ColumnNumber) {
             return acc;
@@ -1000,7 +999,7 @@ const HomePage: React.FC<Props> = ({
                         }}
                       >
                         <Xwrapper>
-                          {pathwayComponentCards.length > 0 &&
+                          {pathwayComponentCards?.length > 0 &&
                             pathwayComponentCards
                               .filter(
                                 (card: any) =>

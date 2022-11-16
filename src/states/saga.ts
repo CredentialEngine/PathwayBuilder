@@ -31,14 +31,18 @@ export function* getCurrentUserData(): Generator {
   try {
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
+
       method: 'GET',
+
       headers: {
         'Content-Type': 'application/json',
       },
-      // params: {
-      //   userCreds: `${BASE_USER_CREDS}`,
-      // },
+
+      params: {
+        userCreds: `${BASE_USER_CREDS}`,
+      },
     });
+
     yield put(getCurrentUserDataSuccess(result));
   } catch (error) {
     yield put(getCurrentUserDataFailure(error));
