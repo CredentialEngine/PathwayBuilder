@@ -806,7 +806,7 @@ const AddPathwayForm: React.FC<Props> = ({
               <InputBox
                 placeholder="Add a Pathway Name"
                 name="Name"
-                defaultValue="names"
+                // defaultValue="names"
                 required={true}
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields?.Name}
@@ -837,7 +837,7 @@ const AddPathwayForm: React.FC<Props> = ({
               <Textarea
                 placeholder="Add a Pathway Description"
                 name="Description"
-                defaultValue="asdasdsadsadsadasdsad"
+                // defaultValue="asdasdsadsadsadasdsad"
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields.Description}
                 required={true}
@@ -1004,7 +1004,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 maxLength={75}
                 value={addPathwayFormFields?.SubjectWebpage}
                 name="SubjectWebpage"
-                defaultValue="http://www.abc.com"
+                // defaultValue="http://www.abc.com"
                 onChange={onInputChangeHandler}
                 onBlur={() =>
                   isTouched.SubjectWebpage === true
