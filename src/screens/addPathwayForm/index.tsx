@@ -604,7 +604,7 @@ const AddPathwayForm: React.FC<Props> = ({
           updateMappedDataRequest({
             ...addPathwayWrapperFields,
             Pathway: addPathwayFormFields,
-            PathwayComponents: addPathwayWrapperFields.PendingComponents,
+            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
             PendingComponents: addPathwayWrapperFields.PendingComponents,
             ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
             ProgressionModels: addPathwayWrapperFields.ProgressionModels,
@@ -632,7 +632,7 @@ const AddPathwayForm: React.FC<Props> = ({
           updateMappedDataRequest({
             ...addPathwayWrapperFields,
             Pathway: addPathwayFormFields,
-            PathwayComponents: addPathwayWrapperFields.PendingComponents,
+            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
             PendingComponents: addPathwayWrapperFields.PendingComponents,
             ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
             ProgressionModels: addPathwayWrapperFields.ProgressionModels,
