@@ -94,8 +94,6 @@ const RightPanel: React.FC<Props> = ({
       'noopener,noreferrer'
     );
   };
-  console.log(panelData, 'panelData');
-
   return (
     <Drawer visible={visible} closable={true} className={styles.right_drawer}>
       <div ref={ref} className={styles.rightPanelContainer}>

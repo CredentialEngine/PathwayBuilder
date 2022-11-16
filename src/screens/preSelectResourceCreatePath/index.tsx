@@ -165,8 +165,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         !_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID) &&
         checkboxForOrganisation
       ) {
-        console.log('1');
-
         updatedSearchValue.Filters = [
           {
             URI: 'meta:pathwayComponentType',
@@ -179,7 +177,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         ];
         setSearchFilterValue(updatedSearchValue);
       } else {
-        console.log('2');
         updatedSearchValue.Filters = [
           {
             URI: 'meta:pathwayComponentType',

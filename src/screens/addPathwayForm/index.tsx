@@ -242,7 +242,7 @@ const AddPathwayForm: React.FC<Props> = ({
       updatedPathwayFormFields.IndustryType =
         PathwayWrapper.Pathway.IndustryType;
       updatedPathwayFormFields.InstructionalProgramType =
-        PathwayWrapper.Pathway.InstructionalType;
+        PathwayWrapper.Pathway.InstructionalProgramType;
       updatedPathwayFormFields.OccupationType =
         PathwayWrapper.Pathway.OccupationType;
       updatedPathwayFormFields.SubjectWebpage =
@@ -569,7 +569,7 @@ const AddPathwayForm: React.FC<Props> = ({
     }
     if (name === 'InstructionalProgram') {
       updatedData.InstructionalProgramType =
-        updatedData?.InstructionalType?.filter(
+        updatedData?.InstructionalProgramType?.filter(
           (item: any) => item.Name !== e.key
         );
     }
@@ -942,7 +942,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   tagRender={tagRender}
                   value={
                     isEditPathwayFormVisible
-                      ? addPathwayFormFields?.InstructionalType
+                      ? addPathwayFormFields?.InstructionalProgramType
                       : undefined
                   }
                   placeholder="Select Instructional Program"
