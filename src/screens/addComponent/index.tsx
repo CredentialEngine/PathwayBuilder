@@ -256,7 +256,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ...updatedPathwayWrapper?.Constraints,
         ...constraintRow.map((v: any) => ({
           ...v,
-          ParentIdentifier: data?.RowId,
           RowId: consRowID,
           Name: componentConditionFields.Name,
           Description: componentConditionFields.Description,
@@ -275,15 +274,15 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   useEffect(() => {
     if (isConditionalEditing) {
       const constraintToStore = [] as any;
-      // if (data && data?.HasConstraint) {
-      //   data?.HasConstraint?.map((constraint: any) => {
-      //     pathwayComponent?.Constraints?.map((pathwayConstraint: any) => {
-      //       if (pathwayConstraint?.RowId === constraint) {
-      //         constraintToStore.push(_.cloneDeep(pathwayConstraint));
-      //       }
-      //     });
-      //   });
-      // }
+      if (data && data?.HasConstraint) {
+        data?.HasConstraint?.map((constraint: any) => {
+          pathwayComponent?.Constraints?.map((pathwayConstraint: any) => {
+            if (pathwayConstraint?.RowId === constraint) {
+              constraintToStore.push(_.cloneDeep(pathwayConstraint));
+            }
+          });
+        });
+      }
       setConstraintRow(constraintToStore);
       setComponentConditionFields({
         ...componentConditionFields,
@@ -301,7 +300,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     id: 0,
     Name: componentConditionFields.Name,
     RowId: currentComponent?.RowId,
-    name: componentConditionFields.Name,
     Description: componentConditionFields.Description,
     ParentIdentifier: connectionsCTID?.start,
   };
@@ -377,7 +375,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       setConditionalComponent([ComponentConditions]);
     }
 
-    if (currentComponent?.Type === 'conditional' && isConditionalEditing) {
+    if (data?.Type === 'conditional' && isConditionalEditing) {
       const updatedPathwayWrapper = { ...pathwayComponent };
 
       if (pathwayComponent?.ComponentConditions.length > 0) {

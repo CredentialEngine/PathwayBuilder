@@ -154,7 +154,12 @@ const Constraint: React.FC<Props> = (Props) => {
   }, [getAllComparators, getAllArrayConcept]);
 
   useEffect(() => {
-    if (constraintData) {
+    if (
+      constraintData &&
+      constraintData?.LeftSource?.length > 0 &&
+      constraintData?.RightSource?.length > 0 &&
+      constraintData?.Comparator?.length > 0
+    ) {
       getConstraintData(constraintData);
     }
   }, [constraintData]);
@@ -215,7 +220,7 @@ const Constraint: React.FC<Props> = (Props) => {
       <Row gutter={20}>
         <Col span="8">
           <>
-            {constraintData?.LeftSource?.length > 1 && (
+            {constraintData?.LeftSource?.length > 0 && (
               <Dropdown
                 options={constraintEntityFields.LeftAction}
                 placeholder="Left Action"
