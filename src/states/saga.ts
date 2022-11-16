@@ -37,7 +37,6 @@ export function* getCurrentUserData(): Generator {
       headers: {
         'Content-Type': 'application/json',
       },
-
       params: {
         userCreds: `${BASE_USER_CREDS}`,
       },
