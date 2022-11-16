@@ -384,6 +384,7 @@ const HomePage: React.FC<Props> = ({
         .concat({
           ...card,
           RowNumber,
+          HasProgressionLevel,
           ColumnNumber,
         });
       setUpdatedPathwayComponentConditionCards(updatedCards);
