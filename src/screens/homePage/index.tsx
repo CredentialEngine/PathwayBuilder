@@ -450,13 +450,13 @@ const HomePage: React.FC<Props> = ({
     if (!!destinationColumn && isDestinationCardExist) {
       /*  Prevent to drop multiple destination cards inside destination component*/
 
-      const isCardAlreadyInDestinationColumn = pathwayComponentCards.filter(
+      const isCardAlreadyInDestinationColumn = pathwayComponentCards?.filter(
         (component_card: any) =>
           component_card.CTID == card.CTID &&
           component_card.destinationColumn === true
       );
 
-      if (isCardAlreadyInDestinationColumn.length > 0) {
+      if (isCardAlreadyInDestinationColumn?.length > 0) {
         const updatedPathwayComponent =
           updatedPathwayWrapper?.PathwayComponents?.filter(
             (pathway_component: any) => pathway_component?.CTID !== card?.CTID
@@ -479,7 +479,7 @@ const HomePage: React.FC<Props> = ({
 
       return;
     }
-    const islastDropWrapperUsed = pathwayComponentCards.some(
+    const islastDropWrapperUsed = pathwayComponentCards?.some(
       (card: any) => card.RowNumber === numberOfDropWrapper
     );
 
