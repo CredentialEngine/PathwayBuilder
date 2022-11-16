@@ -179,6 +179,14 @@ const HomePage: React.FC<Props> = ({
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
       setIsDestinationColumnSelected(false);
+
+    const islastDropWrapperUsed = pathwayComponentCards?.some(
+      (card: any) => card?.RowNumber === numberOfDropWrapper
+    );
+    if (islastDropWrapperUsed) {
+      /* here we are increasing number of DropWrapper */
+      setNumberOfDropWrapper((prevState) => prevState + 1);
+    }
   }, [pathwayComponentCards]);
 
   const onPlusClickHandler = (event: any, connections: any) => {
@@ -467,14 +475,6 @@ const HomePage: React.FC<Props> = ({
       }
 
       return;
-    }
-    const islastDropWrapperUsed = pathwayComponentCards?.some(
-      (card: any) => card.RowNumber === numberOfDropWrapper
-    );
-
-    if (islastDropWrapperUsed) {
-      /* here we are increasing number of DropWrapper */
-      setNumberOfDropWrapper((prevState) => prevState + 1);
     }
 
     if (isDropCardAfterEditingForm) {
@@ -902,7 +902,8 @@ const HomePage: React.FC<Props> = ({
                 key={index}
                 style={{
                   display: 'flex',
-                  height: '100vh',
+                  height: 'auto',
+                  minHeight: '100vh',
                   flexDirection: 'column',
                   backgroundColor: `${index % 2 !== 0 ? '#f3f4f6' : '#e1e5e8'}`,
                 }}
@@ -938,7 +939,7 @@ const HomePage: React.FC<Props> = ({
                     >
                       <div
                         style={{
-                          height: '100vh',
+                          height: 'auto',
                           display: 'flex',
                           alignItems: 'center',
                           flexDirection: 'column',
