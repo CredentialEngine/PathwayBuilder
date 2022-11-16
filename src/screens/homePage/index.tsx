@@ -107,21 +107,19 @@ const HomePage: React.FC<Props> = ({
     setNewConn([]);
     pathwayComponentConditionCards.map((conditionalCard: any) => {
       if (_.isUndefined(conditionalCard?.HasProgressionLevel)) {
-        conditionalCard?.TargetComponent?.forEach((target: any) => {
-          [...pathwayComponentCards, ...pathwayComponentConditionCards].forEach(
-            (pathway_card: any) => {
-              if (
-                pathway_card.CTID === target ||
-                pathway_card.RowId === target
-              ) {
-                updatedConditionalComponents.push({
-                  ...conditionalCard,
-                  HasProgressionLevel: pathway_card.HasProgressionLevel,
-                });
-              }
+        [...pathwayComponentCards, ...pathwayComponentConditionCards].forEach(
+          (pathway_card: any) => {
+            if (
+              pathway_card.CTID === conditionalCard?.TargetComponent?.[0] ||
+              pathway_card.RowId === conditionalCard?.TargetComponent?.[0]
+            ) {
+              updatedConditionalComponents.push({
+                ...conditionalCard,
+                HasProgressionLevel: pathway_card.HasProgressionLevel,
+              });
             }
-          );
-        });
+          }
+        );
       } else {
         updatedConditionalComponents.push({
           ...conditionalCard,
@@ -167,6 +165,16 @@ const HomePage: React.FC<Props> = ({
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+
+    const obj: any = {};
+
+    pathwayComponentCards.map((component_card: any) => {
+      obj[component_card.CTID] = {
+        ...component_card,
+      };
+      return component_card;
+    });
+    setAllComponentCardData({ ...allComponentCardsData, ...obj });
 
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
@@ -428,17 +436,6 @@ const HomePage: React.FC<Props> = ({
           ColumnNumber: 1,
           firstColumn,
         });
-
-      const obj: any = {};
-      obj[card.CTID] = {
-        ...card,
-        RowNumber,
-        ColumnNumber: 1,
-        HasProgressionLevel,
-        destinationColumn,
-      };
-      setAllComponentCardData({ ...allComponentCardsData, ...obj });
-
       setPathwayComponentCards(updatedPathwayComponent);
       const updatedPathway = { ...updatedPathwayWrapper.Pathway };
       updatedPathway.HasDestinationComponent = card?.CTID;
@@ -466,15 +463,6 @@ const HomePage: React.FC<Props> = ({
             RowNumber,
             firstColumn,
           });
-        const obj: any = {};
-        obj[card.CTID] = {
-          ...card,
-          RowNumber,
-          ColumnNumber: 1,
-          HasProgressionLevel,
-          destinationColumn,
-        };
-        setAllComponentCardData({ ...allComponentCardsData, ...obj });
         setPathwayComponentCards(updatedPathwayComponent);
       }
 
@@ -490,15 +478,6 @@ const HomePage: React.FC<Props> = ({
     }
 
     if (isDropCardAfterEditingForm) {
-      const obj: any = {};
-      obj[card.CTID] = {
-        ...card,
-        RowNumber,
-        ColumnNumber: 1,
-        HasProgressionLevel,
-        destinationColumn,
-      };
-      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards([
         ...pathwayComponentCards,
         {
@@ -520,15 +499,6 @@ const HomePage: React.FC<Props> = ({
       isStartFromInitialColumnSelected &&
       isFirstColumneSelected
     ) {
-      const obj: any = {};
-      obj[card.CTID] = {
-        ...card,
-        RowNumber,
-        ColumnNumber: 1,
-        HasProgressionLevel,
-        destinationColumn,
-      };
-      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards([
         ...pathwayComponentCards,
         {
@@ -546,15 +516,6 @@ const HomePage: React.FC<Props> = ({
       isDestinationColumnSelected &&
       isDestinationColumnStatus
     ) {
-      const obj: any = {};
-      obj[card.CTID] = {
-        ...card,
-        RowNumber,
-        ColumnNumber: 1,
-        HasProgressionLevel,
-        destinationColumn,
-      };
-      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards([
         ...pathwayComponentCards,
         {
@@ -567,15 +528,6 @@ const HomePage: React.FC<Props> = ({
         },
       ]);
     } else if (card?.pathwayGameboardCard) {
-      const obj: any = {};
-      obj[card.CTID] = {
-        ...card,
-        RowNumber,
-        ColumnNumber: 1,
-        HasProgressionLevel,
-        destinationColumn,
-      };
-      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards(
         pathwayComponentCards
           .filter((item: any) => item.CTID !== card.CTID)
@@ -588,14 +540,6 @@ const HomePage: React.FC<Props> = ({
           })
       );
     } else if (pathwayComponentCards.length !== 0) {
-      const obj: any = {};
-      obj[card.CTID] = {
-        ...card,
-        RowNumber,
-        ColumnNumber,
-        HasProgressionLevel,
-      };
-      setAllComponentCardData({ ...allComponentCardsData, ...obj });
       setPathwayComponentCards(
         pathwayComponentCards
           .filter((item: any) => item.CTID !== card.CTID)
@@ -684,7 +628,9 @@ const HomePage: React.FC<Props> = ({
           data?.ParentIdentifier === item?.RowId
             ? {
                 ...item,
-                HasCondition: [],
+                HasCondition: item?.HasCondition.filter(
+                  (condition: any) => condition !== data?.RowId
+                ),
                 TargetComponent: targetComponent?.TargetComponent,
               }
             : item
