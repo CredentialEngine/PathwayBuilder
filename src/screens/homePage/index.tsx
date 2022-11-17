@@ -99,6 +99,7 @@ const HomePage: React.FC<Props> = ({
   );
   const [isConditionalEditing, setIsConditionalEditing] = useState(false);
   const [componentConditionData, setComponentConditionData] = useState(false);
+  const [currentCardData, setCurrentCardData] = useState<any>();
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
 
@@ -714,6 +715,7 @@ const HomePage: React.FC<Props> = ({
       ]);
       pathwayComponentCards?.map((card: any) => {
         if (point?.start === card?.CTID) {
+          setCurrentCardData(card);
           if (!card?.PrecededBy?.includes(id)) {
             card?.PrecededBy.push(id);
           }
@@ -1021,6 +1023,7 @@ const HomePage: React.FC<Props> = ({
                                                       e,
                                                       items
                                                     );
+                                                    setCurrentCardData(item);
                                                   }}
                                                 />
                                               </span>
@@ -1411,7 +1414,9 @@ const HomePage: React.FC<Props> = ({
             isConditionalEditing={isConditionalEditing}
             setIsConditionalEditing={setIsConditionalEditing}
             progressionLevelForAddComponent={progressionLevelForAddComponent}
-            data={isConditionalEditing ? componentConditionData : {}}
+            data={
+              isConditionalEditing ? componentConditionData : currentCardData
+            }
           />
         </Modal>
       )}
