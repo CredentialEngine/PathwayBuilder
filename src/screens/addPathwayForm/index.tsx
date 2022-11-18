@@ -259,7 +259,7 @@ const AddPathwayForm: React.FC<Props> = ({
 
     setCheckboxvalues({
       ...checkboxValues,
-      progressionModel: PathwayWrapper.Pathway?.HasProgressionModel?.length,
+      progressionModel: PathwayWrapper.Pathway?.HasProgressionModel?.length > 0,
     });
 
     if (
@@ -395,12 +395,14 @@ const AddPathwayForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (searchFilterValue.keywords !== '') {
-      getHasProgressionModel();
+      getHasProgressionModel(searchFilterValue);
+    } else {
+      getHasProgressionModel('');
     }
   }, [searchFilterValue]);
 
-  const getHasProgressionModel = async () => {
-    const result = await fetchProgressionList(searchFilterValue);
+  const getHasProgressionModel = async (val: any) => {
+    const result = await fetchProgressionList(val);
     if (result?.updatedProgressionModel.length > 0) {
       dispatch(
         getDataForProgressionModelSuccess(result?.updatedProgressionModel)
@@ -439,6 +441,7 @@ const AddPathwayForm: React.FC<Props> = ({
       ...addPathwayFormFields,
       HasProgressionModel: [_.get(selectedProgressionModel, '0').CTID],
     });
+    setSearchFilterValue('');
   };
 
   async function fetchOccupationList(e: string): Promise<any[]> {
@@ -617,26 +620,24 @@ const AddPathwayForm: React.FC<Props> = ({
         (pathwayWrapper.mappedData?.ProgressionModels == undefined ||
           pathwayWrapper.mappedData?.ProgressionModels.length == 0)
       ) {
-        // console.log('elseif');
-
         dispatch(
           saveDataForPathwayRequest({
             ...PathwayWrapper,
             Pathway: addPathwayFormFields,
-            PathwayComponents: PathwayWrapper.PathwayComponents,
-            PendingComponents: PathwayWrapper.PendingComponents,
-            ProgressionLevels: PathwayWrapper.ProgressionLevels,
-            ProgressionModels: PathwayWrapper.ProgressionModels,
+            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
+            PendingComponents: addPathwayWrapperFields.PendingComponents,
+            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
           })
         );
         dispatch(
           updateMappedDataRequest({
             ...PathwayWrapper,
             Pathway: addPathwayFormFields,
-            PathwayComponents: PathwayWrapper.PathwayComponents,
-            PendingComponents: PathwayWrapper.PendingComponents,
-            ProgressionLevels: PathwayWrapper.ProgressionLevels,
-            ProgressionModels: PathwayWrapper.ProgressionModels,
+            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
+            PendingComponents: addPathwayWrapperFields.PendingComponents,
+            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
+            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
           })
         );
         setIsEditPathwayFormVisible(false);
@@ -658,21 +659,27 @@ const AddPathwayForm: React.FC<Props> = ({
             const updatedPathwayWrapper = { ...PathwayWrapper };
             // const updatedPathway = { ...updatedPathwayWrapper.Pathway };
             // updatedPathway.HasDestinationComponent = '';
-            updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
-            updatedPathwayWrapper.Pathway =
-              addPathwayFormFields /* updatedPathway */;
+            // updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
+            updatedPathwayWrapper.Pathway = {
+              ...addPathwayFormFields /* updatedPathway */,
+              HasDestinationComponent: '',
+            };
             updatedPathwayWrapper.PathwayComponents = [];
             updatedPathwayWrapper.PendingComponents = [];
-            // console.log(
-            //   {
-            //     updatedPathwayWrapper,
-            //     addPathwayFormFields,
-            //     PathwayWrapper,
-            //     allProgressionModel
-            //   },
-            //   'Modal.confirm'
-            // );
-            setAddPathwayFormFields({ ...updatedPathwayWrapper.Pathway });
+            (updatedPathwayWrapper.ProgressionLevels =
+              addPathwayWrapperFields.ProgressionLevels),
+              (updatedPathwayWrapper.ProgressionModels =
+                addPathwayWrapperFields.ProgressionModels),
+              // console.log(
+              //   {
+              //     updatedPathwayWrapper,
+              //     addPathwayFormFields,
+              //     PathwayWrapper,
+              //     allProgressionModel
+              //   },
+              //   'Modal.confirm'
+              // );
+              setAddPathwayFormFields({ ...updatedPathwayWrapper.Pathway });
             dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
             dispatch(updateMappedDataRequest(updatedPathwayWrapper));
           },
