@@ -70,6 +70,8 @@ const Constraint: React.FC<Props> = (Props) => {
     }
   };
   const funcSelectedComparators = (value: any) => {
+    // console.log(value, 'funcSelectedComparators');
+
     setConstraintData({
       ...constraintData,
       Comparator: value,
@@ -88,7 +90,7 @@ const Constraint: React.FC<Props> = (Props) => {
       return updatedBody;
     }
   };
-  const onDebounceSelectHnadler = (e: any, name: string) => {
+  const onDebounceSelectHandler = (e: any, name: string) => {
     if (name === 'LeftSource') {
       leftSourcedata.map((val: any) => {
         if (e.value == val.Name) {
@@ -164,7 +166,7 @@ const Constraint: React.FC<Props> = (Props) => {
     }
   }, [constraintData]);
 
-  const handleDeselectHnadler = (event: any, name: string) => {
+  const handleDeselectHandler = (event: any, name: string) => {
     if (name === 'LeftSource') {
       const index = constraintData?.LeftSource?.findIndex(
         (item: any) => item?.Name == event?.value
@@ -226,7 +228,7 @@ const Constraint: React.FC<Props> = (Props) => {
                 placeholder="Left Action"
                 showSearch={false}
                 onChange={(e) => handleConstraintAction(e, 'LeftAction')}
-                defaultValue={constraintData?.RightSource}
+                defaultValue={constraintData?.LeftAction}
               />
             )}
             <Form.Item
@@ -240,8 +242,8 @@ const Constraint: React.FC<Props> = (Props) => {
                 value={constraintData?.LeftSource}
                 placeholder="Left Sources"
                 fetchOptions={allConstraintOperandfunc}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'LeftSource')}
-                onDeselect={(e: any) => handleDeselectHnadler(e, 'LeftSource')}
+                onSelect={(e: any) => onDebounceSelectHandler(e, 'LeftSource')}
+                onDeselect={(e: any) => handleDeselectHandler(e, 'LeftSource')}
               />
             </Form.Item>
           </>
@@ -251,6 +253,7 @@ const Constraint: React.FC<Props> = (Props) => {
             <Dropdown
               options={Comparator}
               defaultValue={constraintData?.Comparator}
+              value={constraintData?.Comparator}
               showSearch={false}
               onChange={(e) => funcSelectedComparators(e)}
               placeholder="Select Comparator"
@@ -266,6 +269,7 @@ const Constraint: React.FC<Props> = (Props) => {
                   placeholder="Right Action"
                   showSearch={false}
                   onChange={(e) => handleConstraintAction(e, 'RightAction')}
+                  defaultValue={constraintData?.RightAction}
                 />
               )}
               <Form.Item
@@ -280,10 +284,10 @@ const Constraint: React.FC<Props> = (Props) => {
                   placeholder="Right Sources"
                   fetchOptions={allConstraintOperandfunc}
                   onSelect={(e: any) =>
-                    onDebounceSelectHnadler(e, 'RightSource')
+                    onDebounceSelectHandler(e, 'RightSource')
                   }
                   onDeselect={(e: any) =>
-                    handleDeselectHnadler(e, 'RightSource')
+                    handleDeselectHandler(e, 'RightSource')
                   }
                 />
               </Form.Item>
