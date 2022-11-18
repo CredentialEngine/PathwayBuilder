@@ -612,8 +612,9 @@ const HomePage: React.FC<Props> = ({
               (element: any) => element.RowId === conditional_card.RowId
             )
         );
+
       updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
-        data?.ParentIdentifier === item?.CTID
+        data?.ParentIdentifier === item?.RowId
           ? {
               ...item,
               HasCondition: item?.HasCondition.filter(
@@ -632,7 +633,10 @@ const HomePage: React.FC<Props> = ({
                 HasCondition: item?.HasCondition.filter(
                   (condition: any) => condition !== data?.RowId
                 ),
-                TargetComponent: targetComponent?.TargetComponent,
+                TargetComponent:
+                  targetComponent?.TargetComponent?.length > 0
+                    ? targetComponent?.TargetComponent
+                    : item?.TargetComponent,
               }
             : item
       );
@@ -697,7 +701,6 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
-
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -717,7 +720,7 @@ const HomePage: React.FC<Props> = ({
         if (point?.start === card?.CTID) {
           setCurrentCardData(card);
           if (!card?.PrecededBy?.includes(id)) {
-            card?.PrecededBy.push(id);
+            card?.PrecededBy?.push(id);
           }
         }
       });
