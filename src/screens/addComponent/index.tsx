@@ -330,8 +330,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       const conditionalCardAlreadyExistForDestination =
         updatedPathwayComponentConditionCards?.filter(
           (condtional_card: any) =>
-            _.toString(condtional_card.ParentIdentifier) ===
-            _.toString(connectionsCTID?.start)
+            _.toString(condtional_card?.ParentIdentifier) ===
+            _.toString(currentComponent?.RowId)
         );
 
       const maximumRowNumber = conditionalCardAlreadyExistForDestination.reduce(
@@ -349,7 +349,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         conditionalCardAlreadyExistForDestination.length > 0 ? true : false
       );
       const ComponentConditions = {
-        ParentIdentifier: connectionsCTID?.start,
+        ParentIdentifier:
+          conditionalCardAlreadyExistForDestination?.length > 0
+            ? conditionalCardAlreadyExistForDestination[0]?.ParentIdentifier
+            : currentComponent?.RowId,
         Description: componentConditionFields.Description,
         RequiredNumber: componentConditionFields.RequiredNumber,
         LogicalOperator: componentConditionFields.LogicalOperator,

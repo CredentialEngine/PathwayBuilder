@@ -99,6 +99,7 @@ const HomePage: React.FC<Props> = ({
   );
   const [isConditionalEditing, setIsConditionalEditing] = useState(false);
   const [componentConditionData, setComponentConditionData] = useState(false);
+  const [currentCardData, setCurrentCardData] = useState<any>();
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
 
@@ -611,8 +612,9 @@ const HomePage: React.FC<Props> = ({
               (element: any) => element.RowId === conditional_card.RowId
             )
         );
+
       updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
-        data?.ParentIdentifier === item?.CTID
+        data?.ParentIdentifier === item?.RowId
           ? {
               ...item,
               HasCondition: item?.HasCondition.filter(
@@ -631,7 +633,10 @@ const HomePage: React.FC<Props> = ({
                 HasCondition: item?.HasCondition.filter(
                   (condition: any) => condition !== data?.RowId
                 ),
-                TargetComponent: targetComponent?.TargetComponent,
+                TargetComponent:
+                  targetComponent?.TargetComponent?.length > 0
+                    ? targetComponent?.TargetComponent
+                    : item?.TargetComponent,
               }
             : item
       );
@@ -696,7 +701,6 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
-
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -714,8 +718,9 @@ const HomePage: React.FC<Props> = ({
       ]);
       pathwayComponentCards?.map((card: any) => {
         if (point?.start === card?.CTID) {
+          setCurrentCardData(card);
           if (!card?.PrecededBy?.includes(id)) {
-            card?.PrecededBy.push(id);
+            card?.PrecededBy?.push(id);
           }
         }
       });
@@ -1021,6 +1026,7 @@ const HomePage: React.FC<Props> = ({
                                                       e,
                                                       items
                                                     );
+                                                    setCurrentCardData(item);
                                                   }}
                                                 />
                                               </span>
@@ -1411,7 +1417,9 @@ const HomePage: React.FC<Props> = ({
             isConditionalEditing={isConditionalEditing}
             setIsConditionalEditing={setIsConditionalEditing}
             progressionLevelForAddComponent={progressionLevelForAddComponent}
-            data={isConditionalEditing ? componentConditionData : {}}
+            data={
+              isConditionalEditing ? componentConditionData : currentCardData
+            }
           />
         </Modal>
       )}
