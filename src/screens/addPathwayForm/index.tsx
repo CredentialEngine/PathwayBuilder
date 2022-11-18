@@ -42,17 +42,6 @@ import {
   getDataForProgressionModelSuccess,
 } from './state/actions';
 
-// interface ComponentTypesValue {
-//   label: string;
-//   value: string;
-//   RowId?: string;
-//   Id?: number;
-//   CodedNotation?: string;
-//   Name?: string;
-//   Description?: string;
-//   URI?: string;
-// }
-
 export interface Props {
   addPathwayWrapperFields?: any;
   setAddPathwayWrapeprFields: (a: any) => void;
@@ -104,19 +93,12 @@ const AddPathwayForm: React.FC<Props> = ({
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
-  // const [occupationSelectedValue, setOccupationSelectedValue] = useState<
-  //   ComponentTypesValue[]
-  // >([]);
+
   const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
-  // const [industrySelectedValue, setIndustrySelectedValue] = useState<
-  //   ComponentTypesValue[]
-  // >([]);
+
   const [allInstructionalProgramTypeData, setAllInstructionalProgramTypeData] =
     useState<[]>([]);
-  // const [
-  //   instructionalProgramSelectedValue,
-  //   setInstructionalProgramSelectedValue,
-  // ] = useState<ComponentTypesValue[]>([]);
+
   const [
     isAddPathwayFormNextButtonDisable,
     setIsAddPathwayFormNextButtonDisable,
@@ -217,15 +199,6 @@ const AddPathwayForm: React.FC<Props> = ({
     (state: any) => state.initalReducer?.currentUserData?.data?.Organizations
   );
 
-  // const pathwayData = useSelector(
-  //   (state: any) => state.initalReducer?.pathwayComponentData
-  // );
-  // useEffect(() => {
-  //   if (pathwayData?.data) {
-  //     PathwayWrapper = pathwayData?.data;
-  //   }
-  // }, [pathwayData]);
-
   useEffect(() => {
     if (!_.isNull(PathwayWrapper.Pathway)) {
       const updatedPathwayFormFields = { ...PathwayWrapper.Pathway };
@@ -255,7 +228,6 @@ const AddPathwayForm: React.FC<Props> = ({
         ...updatedPathwayFormFields,
       });
     }
-    // console.log({ PathwayWrapper, addPathwayFormFields, allProgressionModel }, 'useeffec');
 
     setCheckboxvalues({
       ...checkboxValues,
@@ -279,17 +251,6 @@ const AddPathwayForm: React.FC<Props> = ({
         ...PathwayWrapper.Pathway,
         HasProgressionModel: [_.get(selectedProgressionModel, '0')?.CTID],
       });
-
-      // console.log(
-      //   {
-      //     PathwayWrapper,
-      //     allProgressionModel,
-      //     selectedProgressionModelname: _.get(selectedProgressionModel, '0')
-      //       ?.Name,
-      //     addPathwayFormFields,
-      //   },
-      //   'useEffect updatde'
-      // );
     } else {
       if (PathwayWrapper?.ProgressionModels?.length > 0) {
         setSelectedProgressionModelValue(
@@ -308,23 +269,6 @@ const AddPathwayForm: React.FC<Props> = ({
     );
   }, [addPathwayFormFields]);
 
-  // useEffect(() => {
-  //   const updatedData = { ...addPathwayFormFields };
-
-  //   if (occupationSelectedValue.length > 0) {
-  //     updatedData.OccupationType = occupationSelectedValue;
-  //   }
-  //   if (industrySelectedValue.length > 0) {
-  //     updatedData.IndustryType = industrySelectedValue;
-  //   }
-  //   if (instructionalProgramSelectedValue.length > 0) {
-  //     updatedData.InstructionalProgramType= industrySelectedValue;
-  //   }
-  //   if (!isEditPathwayFormVisible) {
-  //     setAddPathwayFormFields(updatedData);
-  //   }
-  // }, [occupationSelectedValue, industrySelectedValue]);
-
   const allHasProgressionModel = useSelector(
     (state: any) => state.addPathwayFormReducer.allHasProgressionModel
   );
@@ -333,8 +277,6 @@ const AddPathwayForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (allHasProgressionModel.data?.length > 0) {
-      // console.log(allHasProgressionModel, 'allHasProgressionModel');
-
       setAllProgressionModel(allHasProgressionModel.data);
     }
     if (!isEditPathwayFormVisible) {
@@ -585,13 +527,7 @@ const AddPathwayForm: React.FC<Props> = ({
           _.toString(_.get(PathwayWrapper?.ProgressionModels, '0')?.CTID) &&
         pathwayWrapper.mappedData?.ProgressionLevels?.length > 0 &&
         pathwayWrapper.mappedData?.ProgressionModels?.length > 0
-        // PathwayWrapper.PathwayComponents?.length > 0 &&
-        // PathwayWrapper.PendingComponents?.length > 0
       ) {
-        // console.log(
-        //   { addPathwayFormFields, PathwayWrapper, addPathwayWrapperFields },
-        //   'if onAddPathwayOkHandler'
-        // );
         dispatch(
           saveDataForPathwayRequest({
             ...PathwayWrapper,
@@ -643,23 +579,13 @@ const AddPathwayForm: React.FC<Props> = ({
         setIsEditPathwayFormVisible(false);
         setIsDropCardAfterEditingForm(true);
       } else {
-        // console.log(
-        //   {
-        //     addPathwayFormFields,
-        //     PathwayWrapper,
-        //     allProgressionModel
-        //   },
-        //   'else'
-        // );
         Modal.confirm({
           title: 'By clicking on Save all existing data will be lost.',
           okText: 'Save',
           cancelText: 'Cancel',
           onOk: () => {
             const updatedPathwayWrapper = { ...PathwayWrapper };
-            // const updatedPathway = { ...updatedPathwayWrapper.Pathway };
-            // updatedPathway.HasDestinationComponent = '';
-            // updatedPathwayWrapper.Pathway.HasDestinationComponent = '';
+
             updatedPathwayWrapper.Pathway = {
               ...addPathwayFormFields /* updatedPathway */,
               HasDestinationComponent: '',
@@ -670,15 +596,6 @@ const AddPathwayForm: React.FC<Props> = ({
               addPathwayWrapperFields.ProgressionLevels),
               (updatedPathwayWrapper.ProgressionModels =
                 addPathwayWrapperFields.ProgressionModels),
-              // console.log(
-              //   {
-              //     updatedPathwayWrapper,
-              //     addPathwayFormFields,
-              //     PathwayWrapper,
-              //     allProgressionModel
-              //   },
-              //   'Modal.confirm'
-              // );
               setAddPathwayFormFields({ ...updatedPathwayWrapper.Pathway });
             dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
             dispatch(updateMappedDataRequest(updatedPathwayWrapper));
@@ -824,7 +741,6 @@ const AddPathwayForm: React.FC<Props> = ({
               <InputBox
                 placeholder="Add a Pathway Name"
                 name="Name"
-                // defaultValue="names"
                 required={true}
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields?.Name}
@@ -855,7 +771,6 @@ const AddPathwayForm: React.FC<Props> = ({
               <Textarea
                 placeholder="Add a Pathway Description"
                 name="Description"
-                // defaultValue="asdasdsadsadsadasdsad"
                 onChange={onInputChangeHandler}
                 value={addPathwayFormFields.Description}
                 required={true}
@@ -1022,7 +937,6 @@ const AddPathwayForm: React.FC<Props> = ({
                 maxLength={75}
                 value={addPathwayFormFields?.SubjectWebpage}
                 name="SubjectWebpage"
-                // defaultValue="http://www.abc.com"
                 onChange={onInputChangeHandler}
                 onBlur={() =>
                   isTouched.SubjectWebpage === true
