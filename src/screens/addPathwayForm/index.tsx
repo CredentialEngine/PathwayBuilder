@@ -519,7 +519,6 @@ const AddPathwayForm: React.FC<Props> = ({
     }
     setAddPathwayFormFields(updatedData);
   };
-
   const onAddPathwayOkHandler = () => {
     if (isEditPathwayFormVisible) {
       if (
@@ -560,20 +559,20 @@ const AddPathwayForm: React.FC<Props> = ({
           saveDataForPathwayRequest({
             ...PathwayWrapper,
             Pathway: addPathwayFormFields,
-            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
-            PendingComponents: addPathwayWrapperFields.PendingComponents,
-            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
-            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+            PathwayComponents: PathwayWrapper.PathwayComponents,
+            PendingComponents: PathwayWrapper.PendingComponents,
+            ProgressionLevels: PathwayWrapper.ProgressionLevels,
+            ProgressionModels: PathwayWrapper.ProgressionModels,
           })
         );
         dispatch(
           updateMappedDataRequest({
             ...PathwayWrapper,
             Pathway: addPathwayFormFields,
-            PathwayComponents: addPathwayWrapperFields.PathwayComponents,
-            PendingComponents: addPathwayWrapperFields.PendingComponents,
-            ProgressionLevels: addPathwayWrapperFields.ProgressionLevels,
-            ProgressionModels: addPathwayWrapperFields.ProgressionModels,
+            PathwayComponents: PathwayWrapper.PathwayComponents,
+            PendingComponents: PathwayWrapper.PendingComponents,
+            ProgressionLevels: PathwayWrapper.ProgressionLevels,
+            ProgressionModels: PathwayWrapper.ProgressionModels,
           })
         );
         setIsEditPathwayFormVisible(false);
@@ -591,6 +590,7 @@ const AddPathwayForm: React.FC<Props> = ({
               HasDestinationComponent: '',
             };
             updatedPathwayWrapper.PathwayComponents = [];
+            updatedPathwayWrapper.ComponentConditions = [];
             updatedPathwayWrapper.PendingComponents = [];
             (updatedPathwayWrapper.ProgressionLevels =
               addPathwayWrapperFields.ProgressionLevels),
