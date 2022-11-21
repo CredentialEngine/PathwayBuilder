@@ -35,8 +35,8 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   } = props;
   const {
     Name,
-    Description,
-    CodedNotation,
+    // Description,
+    // CodedNotation,
     inlineStyles,
     id,
     disabledItem,
@@ -372,12 +372,8 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
         </Col>
         <Col span="19">
           <>
-            <p>{Name}</p>
-            <h5>
-              {(CodedNotation ? CodedNotation : '') +
-                ' ' +
-                Description?.slice(0, 30)}
-            </h5>
+            <p>{data?.Type?.split(':')[1]}</p>
+            <h5>{Name?.slice(0, 30)}</h5>
           </>
         </Col>
       </Row>

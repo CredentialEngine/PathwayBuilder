@@ -101,7 +101,6 @@
     flex-direction: row;
     margin: 0px 8px 0px 8px;
     justify-content: space-between;
-
     > span {
       color: $primary-dark;
       font-size: 12px;
@@ -159,6 +158,7 @@
     flex-direction: row;
     margin: 0px 8px 0px 8px;
     justify-content: space-between;
+    margin-top: 15px;
 
     > span {
       color: $primary-dark-color;

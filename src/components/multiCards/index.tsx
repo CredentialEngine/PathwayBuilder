@@ -8,6 +8,7 @@ import { Divider, Popover } from 'antd';
 import _, { noop } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useXarrow } from 'react-xarrows';
 
 import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
@@ -104,6 +105,9 @@ const MultiCard: React.FC<Props> = ({
 
   const ref = useRef(null);
 
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
+
   const [showRightPenal, setShowRightPenal] = useState(false);
 
   const updateXarrow = useXarrow();
@@ -133,7 +137,6 @@ const MultiCard: React.FC<Props> = ({
   // }, [updatedPathwayComponentConditionCards]);
 
   const darkColor = '#0A2942';
-
   const getOnClick = (e: any) => {
     /* 
     Below commented code is for increasing width for dropWrapper
@@ -366,6 +369,16 @@ const MultiCard: React.FC<Props> = ({
         style={{ height: '26px', width: '26px' }}
       />
     ));
+
+  const ProgressionLevelName =
+    _.toString(pathwayComponent?.Pathway?.HasDestinationComponent) ===
+    _.toString(data?.CTID)
+      ? 'Destination'
+      : pathwayComponent?.ProgressionLevels?.length > 0
+      ? pathwayComponent?.ProgressionLevels?.find(
+          (level: any) => data?.HasProgressionLevel === level?.CTID
+        )?.Name
+      : 'Pathway';
 
   return (
     <>
@@ -751,12 +764,12 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.courseNameContainter}>
-                  <span>{data?.CodedNotation}</span>
-                  <span>{data?.Description?.slice(0, 40)}</span>
+                  <span>{data?.Name?.slice(0, 40)}</span>
+                  {/* <span>{data?.Description?.slice(0, 40)}</span> */}
                 </div>
                 <div className={styles.creditSection}>
-                  <span>Credits: {data?.CreditValue?.[0]?.CreditUnitType}</span>
-                  <span>Level {data?.CreditValue?.[0]?.CreditLevelType}</span>
+                  <span>Credits: {data?.CreditValue?.[0]?.Value || 0}</span>
+                  <span>Level {ProgressionLevelName}</span>
                 </div>
               </div>
               <span
@@ -823,8 +836,12 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.courseNameContainter}>
-                  <span>{data?.CodedNotation}</span>
-                  <span>{data?.Description.slice(0, 40)}</span>
+                  <span>{data?.Name?.slice(0, 40)}</span>
+                  {/* <span>{data?.Description.slice(0, 40)}</span> */}
+                </div>
+                <div className={styles.creditSection}>
+                  <span>Credits: {data?.CreditValue?.[0]?.Value}</span>
+                  <span>Level {ProgressionLevelName?.slice(0, 20)}</span>
                 </div>
               </div>
               <span
