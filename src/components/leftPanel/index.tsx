@@ -3,17 +3,17 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { v4 as uuidv4 } from 'uuid';
-
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
 import {
   saveDataForPathwayRequest,
   updateMappedDataRequest,
 } from '../../states/actions';
+import { getTooltipContent } from '../../utils/object';
 
 import CardWithLeftIcon from '../cardWithLeftIcon';
 import SearchBox from '../formFields/searchBox';
+import InfoTooltip from '../infoTooltip';
 import LeftPanelDropWrapper from '../leftPanelDropWrapper';
 import Tab, { TabPane } from '../tab';
 
@@ -36,6 +36,8 @@ const LeftPanel: React.FC<any> = ({
   const propsChildrenData = [];
 
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
+  const [showToolTip, setShowToolTip] = useState(false);
+  const [tooltipType, setTooltipType] = useState('');
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
     useState(false);
@@ -103,9 +105,7 @@ const LeftPanel: React.FC<any> = ({
   }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
 
   const createCard = (card: any) => {
-    const CTID = `ce-${uuidv4()}`;
     const newCard = {
-      CTID,
       Created: '',
       Description: card?.Description,
       HasChild: [],
@@ -115,9 +115,7 @@ const LeftPanel: React.FC<any> = ({
       Name: card?.Name,
       OccupationType: [],
       PrecededBy: [],
-      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
       ProxyForLabel: card?.Name,
-      RowId: uuidv4(),
       Type: card?.URI,
     };
     return newCard;
@@ -285,19 +283,40 @@ const LeftPanel: React.FC<any> = ({
         <>
           <div className={Styles.cardwrapper}>
             {componentTabCards.map((card: any, index: any) => (
-              <CardWithLeftIcon
-                isComponentTab={true}
-                draggable={true}
-                key={index}
-                data={card}
-                name={card.Name}
-                description={card.Description}
-                uri={card?.URI}
-                CTID={card?.CTID}
-                id={card.Id}
-                type={card?.URI}
-                setLeftpanelSelectedElem={setLeftpanelSelectedElem}
-              />
+              <>
+                <CardWithLeftIcon
+                  isComponentTab={true}
+                  draggable={true}
+                  key={index}
+                  data={card}
+                  name={card.Name}
+                  description={card.Description}
+                  uri={card?.URI}
+                  CTID={card?.CTID}
+                  id={card.Id}
+                  type={card?.URI}
+                  setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+                  isShowToolTip={showToolTip}
+                  setIsShowToolTip={(val: any) => setShowToolTip(val)}
+                  getTooltipType={(val: any) => setTooltipType(val)}
+                />
+                {showToolTip && tooltipType === card?.Type && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      right: -80,
+                      marginTop: '-100px',
+                    }}
+                  >
+                    <InfoTooltip
+                      content={getTooltipContent(card?.Type)}
+                      title=""
+                      onClose={(val: any) => setShowToolTip(!!val)}
+                      direction="right"
+                    />
+                  </div>
+                )}
+              </>
             ))}
           </div>
         </>

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   onDrop: (
@@ -78,7 +79,16 @@ const DropWrapper: React.FC<Props> = ({
           }
         }, 1);
 
-    const data = JSON.parse(e.dataTransfer.getData('card_id'));
+    let data = JSON.parse(e.dataTransfer.getData('card_id'));
+
+    if (data?.isComponentTab === true) {
+      const CTID = `ce-${uuidv4()}`;
+      data = {
+        ...data,
+        CTID,
+        RowId: uuidv4(),
+      };
+    }
     e.stopPropagation();
 
     columnNumberEsixt

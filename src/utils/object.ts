@@ -75,3 +75,27 @@ export const getErrorMessage = (error: any): string => {
     else return error?.message;
   }
 };
+
+export const getTooltipContent = (type: any) => {
+  if (type?.includes('ComponentCondition')) {
+    return 'Resource that describes what must be done to complete a PathwayComponent, or part thereof, as determined by the issuer of the Pathway.';
+  } else if (type?.includes('AssessmentComponent')) {
+    return 'Resource that identifies a direct, indirect, formative, and summative evaluation or estimation of the nature, ability, or quality of a resource, performance, or outcome of an action.';
+  } else if (type?.includes('BasicComponent')) {
+    return 'Resource that identifies a resource not otherwise covered by the enumerated PathwayComponent subclasses.';
+  } else if (type?.includes('CocurricularComponent')) {
+    return 'Resource that identifies an activity, program, or informal learning experience such as a civic or service activity that supplements and complements the curriculum.';
+  } else if (type?.includes('CompetencyComponent')) {
+    return 'Resource that identifies a measurable or observable knowledge, skill, or ability necessary to successful performance of a person in a given context.';
+  } else if (type?.includes('CourseComponent')) {
+    return 'Resource that identifies a structured sequence of one or more learning activities that aims to develop a prescribed set of knowledge, skill, or ability of learners.';
+  } else if (type?.includes('CredentialComponent')) {
+    return 'Resource that identifies another resource that describes qualification, achievement, personal or organizational quality, or aspect of an identity typically used to indicate suitability.';
+  } else if (type?.includes('ExtracurricularComponent')) {
+    return 'Resource that identifies an activity, program, or informal learning experience that may be offered or provided by a school, college, or other organization that is not connected to a curriculum.';
+  } else if (type?.includes('JobComponent')) {
+    return 'Resource that identifies a work position, employment, or occupation.';
+  } else if (type?.includes('WorkExperienceComponent')) {
+    return 'Resource describing an activity or training through which a person gains job experience.';
+  } else return 'N/A';
+};
