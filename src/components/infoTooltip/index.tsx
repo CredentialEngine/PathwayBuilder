@@ -8,7 +8,7 @@ import styles from './index.module.scss';
 interface Props {
   title: string;
   content: string;
-  onClose: () => void;
+  onClose: (val: any) => void;
   isDestination?: boolean;
   direction?: 'left' | 'right';
 }
@@ -36,7 +36,7 @@ const InfoTooltip: React.FC<Props> = ({
         <FontAwesomeIcon
           icon={faXmark}
           style={{ height: '16px' }}
-          onClick={onClose}
+          onClick={() => onClose(false)}
         />
       </div>
       <div className={styles.tooltipContent}>
