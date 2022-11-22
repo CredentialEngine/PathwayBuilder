@@ -586,8 +586,11 @@ const HomePage: React.FC<Props> = ({
   };
 
   const onDeleteHandler = (data: any) => {
+    // console.log(data, 'onDeleteHandler');
+
     const updatedPathwayWrapper = { ...pathwayComponent };
     const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+    // console.log(updatedPathwayWrapper, 'onDeleteHandler');
 
     const isDestinationCardExist =
       updatedPathway?.HasDestinationComponent === data?.CTID;
@@ -612,6 +615,9 @@ const HomePage: React.FC<Props> = ({
               (element: any) => element.RowId === conditional_card.RowId
             )
         );
+      const filteredconstraint = updatedPathwayWrapper?.Constraints?.filter(
+        (constraint: any) => !data?.HasConstraint.includes(constraint?.RowId)
+      );
 
       updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
         data?.ParentIdentifier === item?.RowId
@@ -646,9 +652,11 @@ const HomePage: React.FC<Props> = ({
         ...result,
         data,
       ];
+      // console.log(filteredconstraint, 'filteredconstraint');
 
       updatedPathwayWrapper.ComponentConditions =
         updatedPathwayConditionalComponent;
+      updatedPathwayWrapper.Constraints = filteredconstraint;
 
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
     } else {
