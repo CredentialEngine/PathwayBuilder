@@ -265,7 +265,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           Description: componentConditionFields.Description,
         })),
       ];
-
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setConditionalComponent([]);
       !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
@@ -663,6 +662,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
             >
+              {/* {console.log({logicalOperator,componentConditionFields}, 'logicalOperator')} */}
               <Dropdown
                 options={allogicalOperator?.LogicalOperator}
                 showSearch={false}
