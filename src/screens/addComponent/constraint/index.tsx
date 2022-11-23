@@ -222,7 +222,7 @@ const Constraint: React.FC<Props> = (Props) => {
       <Row gutter={20}>
         <Col span="8">
           <>
-            {constraintData?.LeftSource?.length > 0 && (
+            {constraintData?.LeftSource?.length > 1 && (
               <Dropdown
                 options={constraintEntityFields.LeftAction}
                 placeholder="Left Action"
