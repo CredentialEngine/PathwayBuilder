@@ -65,23 +65,32 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     requiredNumber: false,
     Name: false,
   });
-
+  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const { mappedData: pathwayComponent } = pathwayWrapper;
   useEffect(() => {
-    const currentPathwayComponent =
-      allComponentCardsData[connectionsCTID.start];
-    const currentConditionalComponent =
-      allConditionalCardsData[connectionsCTID.start];
-    setCurrentComponent(currentPathwayComponent || currentConditionalComponent);
+    const pathwayComponentCards = [...pathwayComponent.PathwayComponents];
+    if (isConditionalEditing) {
+      const parentCard = pathwayComponentCards?.filter(
+        (card: any) => card.RowId == data?.ParentIdentifier
+      );
+      setCurrentComponent(parentCard[0]);
+    } else {
+      const currentPathwayComponent =
+        allComponentCardsData[connectionsCTID.start];
+      const currentConditionalComponent =
+        allConditionalCardsData[connectionsCTID.start];
+      setCurrentComponent(
+        currentPathwayComponent || currentConditionalComponent
+      );
+    }
   }, [allComponentCardsData, connectionsCTID, allConditionalCardsData]);
+
   const [constraintRow, setConstraintRow] = useState<any>([]);
   const [consRowID, setConstRowId] = useState<any>([]);
   const [logicalOperator, setLogicalOperator] = useState<string>('');
   const [allogicalOperator, setAllLogicalOperator] = useState<any>({});
   const [hasConstraints, setHasConstraints] = useState<any>([]);
   const dispatch = useDispatch();
-
-  const pathwayWrapper = useSelector((state: any) => state.initalReducer);
-  const { mappedData: pathwayComponent } = pathwayWrapper;
 
   const onInputChangeHandler = (e: any) => {
     const updatedData = { ...componentConditionFields };
@@ -623,6 +632,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             rows={3}
             name="Description"
             value={componentConditionFields.Description}
+            placeholder="Description"
           />
         </Form.Item>
         <Row gutter={20}>
@@ -698,7 +708,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           size="medium"
           text="Save Condition"
           type="primary"
-          disabled={_.isEmpty(componentConditionFields.RequiredNumber)}
+          disabled={_.isEmpty(
+            componentConditionFields.RequiredNumber &&
+              componentConditionFields.Name
+          )}
           onClick={saveCondition}
         />
       </Form>
