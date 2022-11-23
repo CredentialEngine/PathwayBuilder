@@ -282,112 +282,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     }
   }, [conditionalComponent]);
 
-  useEffect(() => {
-    if (isConditionalEditing) {
-      const constraintToStore = [] as any;
-      const updatedPathwayWrapper = { ...pathwayComponent };
-      // console.log('datadata useEffectt---2 ', { data, updatedPathwayWrapper });
-
-      if (data && data?.HasConstraint) {
-        data?.HasConstraint?.map((constraint: any) => {
-          pathwayComponent?.Constraints?.map((pathwayConstraint: any) => {
-            if (pathwayConstraint?.RowId === constraint) {
-              constraintToStore.push(_.cloneDeep(pathwayConstraint));
-            }
-          });
-        });
-      } /* else if (!data?.HasConstraint) {
-        console.log('!data?.HasConstraint');
-
-        updatedPathwayWrapper.ComponentConditions[0].HasConstraint =
-          updatedPathwayWrapper.Constraints[0].RowId;
-        constraintToStore.push(
-          _.cloneDeep(updatedPathwayWrapper.Constraints[0])
-        );
-      } */
-      updatedPathwayWrapper.Constraints = [
-        ...updatedPathwayWrapper?.Constraints,
-        ...constraintRow.map((v: any) => ({
-          ...v,
-          RowId: consRowID,
-          Name: componentConditionFields.Name,
-          Description: componentConditionFields.Description,
-        })),
-      ];
-      // console.log('useeffect---2', {
-      //   constraintRow,
-      //   pathwayComponent,
-      //   updatedPathwayWrapper,
-      //   conditionalComponent,
-      //   componentConditionFields,
-      //   data,
-      //   constraintToStore,
-      // });
-      const currentConditionalComponent = _.get(
-        pathwayComponent?.ComponentConditions?.filter(
-          (condition_card: any) =>
-            condition_card.RowId === _.toString(data.RowId)
-        ),
-        '0'
-      );
-      // const updatedPathwayComponent =
-      // updatedPathwayWrapper?.ComponentConditions?.filter(
-      //   (component_card: any) =>
-      //     component_card?.RowId !== currentConditionalComponent?.RowId
-      // ).concat({
-      //   ...data,
-      //   LogicalOperator: getLogicalOperatorURI[0]?.URI,
-      //   HasConstraint: [constraintRow[0]?.RowId]
-      //     ? [constraintRow[0]?.RowId]
-      //     : hasConstraints,
-      // });
-
-      setConstraintRow(constraintToStore);
-      setLogicalOperator(currentConditionalComponent?.LogicalOperator);
-      setComponentConditionFields({
-        ...componentConditionFields,
-        ...data,
-      });
-      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    }
-  }, [isConditionalEditing]);
-
-  const constraintRowData = {
-    LeftAction: [],
-    LeftSource: [],
-    Comparator: [],
-    RightAction: [],
-    RightSource: [],
-    id: 0,
-    Name: componentConditionFields.Name,
-    RowId: currentComponent?.RowId,
-    Description: componentConditionFields.Description,
-    ParentIdentifier: connectionsCTID?.start,
-  };
-
-  useEffect(() => {
-    if (getAllLogicalOperator.valid)
-      setAllLogicalOperator({
-        LogicalOperator: getAllLogicalOperator.data?.map((dta: any) => ({
-          ...dta,
-          value: dta.Name,
-          label: dta.Name,
-        })),
-      });
-  }, [getAllLogicalOperator]);
-
-  useEffect(() => {
-    dispatch(getLogicalOperatorsRequest());
-    dispatch(getAllComparatorsRequest());
-    dispatch(getAllArrayConceptsRequest());
-  }, []);
-
   const saveCondition = () => {
     if (currentComponent?.Type !== 'conditional' && !isConditionalEditing) {
-      // console.log(
-      //   "currentComponent?.Type !== 'conditional' && !isConditionalEditing"
-      // );
-
       const conditionalCardAlreadyExistForDestination =
         updatedPathwayComponentConditionCards?.filter(
           (condtional_card: any) =>
@@ -446,11 +342,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     }
 
     if (data?.Type === 'conditional' && isConditionalEditing) {
-      // console.log(
-      //   { hasConstraints, constraintRow },
-      //   "data?.Type === 'conditional' && isConditionalEditing"
-      // );
-
       const updatedPathwayWrapper = { ...pathwayComponent };
 
       if (pathwayComponent?.ComponentConditions.length > 0) {
@@ -476,11 +367,14 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           currentConditionalComponent
         );
         updatedPathwayWrapper.ComponentConditions = cardsToSend;
-
-        const getLogicalOperatorURI =
-          allogicalOperator?.LogicalOperator?.filter(
-            (getURI: any) => logicalOperator === getURI?.Name
+        let getLogicalOperatorURI = [];
+        if (logicalOperator) {
+          getLogicalOperatorURI = allogicalOperator?.LogicalOperator?.filter(
+            (getURI: any) =>
+              logicalOperator == getURI?.Name || logicalOperator == getURI?.URI
           );
+        }
+
         const hasConstraintsIds: string[] = [];
 
         constraintRow.map((constraintRow: any) =>
@@ -492,7 +386,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             (component_card: any) =>
               component_card?.RowId !== currentConditionalComponent?.RowId
           ).concat({
-            ...data,
+            ...componentConditionFields,
             LogicalOperator: getLogicalOperatorURI[0]?.URI,
             HasConstraint: hasConstraintsIds
               ? _.uniq(hasConstraintsIds)
@@ -510,21 +404,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           ...updatedPathwayComponent,
         ];
         updatedPathwayWrapper.Constraints = [...updatedPathwayConstraint];
-        // console.log(
-        //   {
-        //     currentConditionalComponent,
-        //     logicalOperator,
-        //     updatedPathwayWrapper,
-        //     constraintRow,
-        //     hasConstraintsIds,
-        //     data,
-        //     pathwayComponent,
-        //     conditionalComponent,
-        //     componentConditionFields,
-        //   },
-        //   'updatedPathwayWrapper'
-        // );
-
         !!visibleConstraintConditionProp &&
           visibleConstraintConditionProp(false);
         !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
@@ -534,6 +413,76 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (isConditionalEditing) {
+      const constraintToStore = [] as any;
+      const updatedPathwayWrapper = { ...pathwayComponent };
+      if (data && data?.HasConstraint) {
+        data?.HasConstraint?.map((constraint: any) => {
+          pathwayComponent?.Constraints?.map((pathwayConstraint: any) => {
+            if (pathwayConstraint?.RowId === constraint) {
+              constraintToStore.push(_.cloneDeep(pathwayConstraint));
+            }
+          });
+        });
+      }
+      updatedPathwayWrapper.Constraints = [
+        ...updatedPathwayWrapper?.Constraints,
+        ...constraintRow.map((v: any) => ({
+          ...v,
+          RowId: consRowID,
+          Name: componentConditionFields.Name,
+          Description: componentConditionFields.Description,
+        })),
+      ];
+      const currentConditionalComponent = _.get(
+        pathwayComponent?.ComponentConditions?.filter(
+          (condition_card: any) =>
+            condition_card.RowId === _.toString(data.RowId)
+        ),
+        '0'
+      );
+
+      setConstraintRow(constraintToStore);
+      setLogicalOperator(currentConditionalComponent?.LogicalOperator);
+      setComponentConditionFields({
+        ...componentConditionFields,
+        ...data,
+      });
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    }
+  }, [isConditionalEditing]);
+
+  const constraintRowData = {
+    LeftAction: [],
+    LeftSource: [],
+    Comparator: [],
+    RightAction: [],
+    RightSource: [],
+    id: 0,
+    Name: componentConditionFields.Name,
+    RowId: currentComponent?.RowId,
+    Description: componentConditionFields.Description,
+    ParentIdentifier: connectionsCTID?.start,
+  };
+
+  useEffect(() => {
+    if (getAllLogicalOperator.valid)
+      setAllLogicalOperator({
+        LogicalOperator: getAllLogicalOperator.data?.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        })),
+      });
+  }, [getAllLogicalOperator]);
+
+  useEffect(() => {
+    dispatch(getLogicalOperatorsRequest());
+    dispatch(getAllComparatorsRequest());
+    dispatch(getAllArrayConceptsRequest());
+  }, []);
 
   const addConstraintRow = () => {
     const mId = uuidv4();
@@ -653,6 +602,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             >
               <InputBox
                 type="number"
+                placeholder="Required Number"
                 onChange={onInputChangeHandler}
                 min={1}
                 name="RequiredNumber"
@@ -672,7 +622,6 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
             >
-              {/* {console.log({logicalOperator,componentConditionFields}, 'logicalOperator')} */}
               <Dropdown
                 options={allogicalOperator?.LogicalOperator}
                 showSearch={false}
