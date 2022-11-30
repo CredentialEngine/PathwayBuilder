@@ -918,6 +918,7 @@ const HomePage: React.FC<Props> = ({
                     <DropWrapper
                       id={column.id}
                       onDrop={onDropHandler}
+                      setDraggableCardVisible={setDraggableCardVisible}
                       key={column.Id}
                       index={index}
                       column={column.Name}
@@ -1142,7 +1143,6 @@ const HomePage: React.FC<Props> = ({
                               skipPreSelect={skipPreSelect}
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}
-                              //id={0}
                               isAddDestination={
                                 column?.isDestinationColumnSelected
                                   ? true
@@ -1174,8 +1174,7 @@ const HomePage: React.FC<Props> = ({
                             pathwayComponentCards?.length <= 1 && (
                               <MultiCard
                                 onClick={() => setShowRightPanel(true)}
-                                key={0}
-                                //id={0}
+                                key={index}
                                 firstComponent={
                                   column?.CTID === getLastColumn('first')
                                     ? true
