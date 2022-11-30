@@ -20,7 +20,6 @@ const TestComponent = (props: Props) => {
           left: '30px',
           zIndex: 9,
         }}
-        // onClick={onLeftDrawerClickHandler}
       >
         <FontAwesomeIcon
           icon={faAngleDoubleLeft}

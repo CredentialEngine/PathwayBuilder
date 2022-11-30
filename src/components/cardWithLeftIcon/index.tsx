@@ -33,15 +33,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     isDraggableCardVisibleMethod,
     setLeftpanelSelectedElem,
   } = props;
-  const {
-    Name,
-    // Description,
-    // CodedNotation,
-    inlineStyles,
-    id,
-    disabledItem,
-    Type,
-  } = props.data;
+  const { Name, inlineStyles, id, disabledItem, Type } = props.data;
   const onDragStart = (e: any) => {
     const target = e.target;
     !!setLeftpanelSelectedElem && setLeftpanelSelectedElem(e.target);
@@ -69,11 +61,6 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const onDragEnd = (e: any) => {
     e.target.style.visibility = 'visible';
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(false);
-    // e.target.style.visibility = 'visible';
-
-    // e.target.style.position = 'absolute';
-    // e.target.style.left = `${e.pageX + 75} px`;
-    // e.target.style.top = `${e.pageY - 75}px`;
   };
 
   return (

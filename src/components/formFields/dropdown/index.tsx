@@ -34,8 +34,6 @@ export const Dropdown = (props: DropdownProps) => {
       {showSearch ? (
         <Select
           showSearch
-          // onChange={onChange}
-          // onSearch={onSearch}
           options={options}
           defaultValue={defaultValue}
           placeholder={placeholder}

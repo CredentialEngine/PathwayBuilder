@@ -33,16 +33,6 @@ export function fetchPostsApi(value: any) {
 export function* getAllProxyForResources(payload: any): Generator {
   try {
     const fetchedProxyResources = yield call(fetchPostsApi, payload.payload);
-
-    // const result: any = yield call(request, {
-    //   url: `${BASE_URL}${PATHWAY_COMPONENT_PROXY_FOR}`,
-    //   method: 'post',
-    //   params: {
-    //     userCreds: {BASE_USER_CREDS},
-    //   },
-    //   // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    //   data: payload.payload,
-    // });
     yield put(getAllProxyForResourcesSuccess(fetchedProxyResources));
   } catch (error) {
     yield put(getAllProxyForResourcesFailure(error));

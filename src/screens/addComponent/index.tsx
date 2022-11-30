@@ -68,17 +68,25 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
   useEffect(() => {
-    const pathwayComponentCards = [...pathwayComponent.PathwayComponents];
+    const allGameboardCards = [
+      ...pathwayComponent.PathwayComponents,
+
+      ...pathwayComponent.ComponentConditions,
+    ];
+
     if (isConditionalEditing) {
-      const parentCard = pathwayComponentCards?.filter(
+      const parentCard = allGameboardCards?.filter(
         (card: any) => card.RowId == data?.ParentIdentifier
       );
+
       setCurrentComponent(parentCard[0]);
     } else {
       const currentPathwayComponent =
         allComponentCardsData[connectionsCTID.start];
+
       const currentConditionalComponent =
         allConditionalCardsData[connectionsCTID.start];
+
       setCurrentComponent(
         currentPathwayComponent || currentConditionalComponent
       );
@@ -283,7 +291,9 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   }, [conditionalComponent]);
 
   const saveCondition = () => {
-    if (currentComponent?.Type !== 'conditional' && !isConditionalEditing) {
+    if (
+      /* currentComponent?.Type !== 'conditional' && */ !isConditionalEditing
+    ) {
       const conditionalCardAlreadyExistForDestination =
         updatedPathwayComponentConditionCards?.filter(
           (condtional_card: any) =>
@@ -501,21 +511,21 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     setConstRowId(mId);
     setHasConstraints([...hasConstraints, mId]);
   };
-  const funcSelectedComparators = (value: any) => {
+  const selectedComparators = (value: any) => {
     setLogicalOperator(value);
   };
-  const getData = (val: any) => {
-    const temp = constraintRow?.map((item: any) => {
+  const getConstraintData = (val: any) => {
+    const filteredConstraintRow = constraintRow?.map((item: any) => {
       if (val?.id !== null && item?.id === val?.id) {
         return (item = val);
       } else {
         return item;
       }
     });
-    setConstraintRow([...temp]);
+    setConstraintRow([...filteredConstraintRow]);
   };
-  const handleDeleteRow = (deleteRow: number) => {
-    const deletedRow = constraintRow.splice(deleteRow, 1);
+  const handleDeleteRow = (rowIndex: number) => {
+    const deletedRow = constraintRow.splice(rowIndex, 1);
     const updatedPathwayWrapper = { ...pathwayComponent };
     _.remove(
       updatedPathwayWrapper?.Constraints,
@@ -523,7 +533,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     );
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
-    if (deleteRow !== 0) {
+    if (rowIndex !== 0) {
       setConstraintRow([...constraintRow]);
     } else {
       setConstraintRow([]);
@@ -627,7 +637,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                 showSearch={false}
                 placeholder="Select Logical Operator"
                 value={logicalOperator}
-                onChange={(e) => funcSelectedComparators(e)}
+                onChange={(e) => selectedComparators(e)}
               />
             </Form.Item>
           </Col>
@@ -642,8 +652,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               key={RowIndex}
               RowIndex={RowIndex}
               constraintRow={constraintRowData}
-              getConstraintData={(val: any) => getData(val)}
-              getRequiredDeleteRow={(val: any) => handleDeleteRow(val)}
+              getConstraintData={(val: any) => getConstraintData(val)}
+              getRowIndex={(rowIndex: any) => handleDeleteRow(rowIndex)}
             />
           ))}
 

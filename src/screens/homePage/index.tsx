@@ -21,10 +21,7 @@ import LeftPanel from '../../components/leftPanel';
 import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import {
-  // saveDataForPathwayRequest,
-  updateMappedDataRequest,
-} from '../../states/actions';
+import { updateMappedDataRequest } from '../../states/actions';
 import AddConditionalComponent from '../addComponent';
 
 import Styles from './index.module.scss';
@@ -451,12 +448,9 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.Pathway = updatedPathway;
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      // dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       return;
     }
     if (!!destinationColumn && isDestinationCardExist) {
-      /*  Prevent to drop multiple destination cards inside destination component*/
-
       const isCardAlreadyInDestinationColumn = pathwayComponentCards?.filter(
         (component_card: any) =>
           component_card.CTID == card.CTID &&
@@ -586,12 +580,8 @@ const HomePage: React.FC<Props> = ({
   };
 
   const onDeleteHandler = (data: any) => {
-    // console.log(data, 'onDeleteHandler');
-
     const updatedPathwayWrapper = { ...pathwayComponent };
     const updatedPathway = { ...updatedPathwayWrapper.Pathway };
-    // console.log(updatedPathwayWrapper, 'onDeleteHandler');
-
     const isDestinationCardExist =
       updatedPathway?.HasDestinationComponent === data?.CTID;
     if (isDestinationCardExist) {
@@ -652,8 +642,6 @@ const HomePage: React.FC<Props> = ({
         ...result,
         data,
       ];
-      // console.log(filteredconstraint, 'filteredconstraint');
-
       updatedPathwayWrapper.ComponentConditions =
         updatedPathwayConditionalComponent;
       updatedPathwayWrapper.Constraints = filteredconstraint;
@@ -1150,7 +1138,6 @@ const HomePage: React.FC<Props> = ({
                               skipPreSelect={skipPreSelect}
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}
-                              //id={0}
                               isAddDestination={
                                 column?.isDestinationColumnSelected
                                   ? true
@@ -1183,7 +1170,6 @@ const HomePage: React.FC<Props> = ({
                               <MultiCard
                                 onClick={() => setShowRightPanel(true)}
                                 key={0}
-                                //id={0}
                                 firstComponent={
                                   column?.CTID === getLastColumn('first')
                                     ? true

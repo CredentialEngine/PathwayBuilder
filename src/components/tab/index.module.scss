@@ -16,22 +16,6 @@
     justify-content: center;
     flex: 1;
     padding: 2px 10px;
-    // border: 1px solid $inactive1;
-    // border-radius: $button-radius;
-    // color: $primary-dark;
-    // padding: 2px 8px;
-    // text-align: center;
-    // flex: 1 0;
-    // margin-right: 10px;
-    // cursor: pointer;
-    // &:hover {
-    //   background-color: $inactive-outline-btn;
-    //   border: 1px solid $primary-dark;
-    //   color: $primary-dark;
-    // }
-    // &:last-child {
-    //   margin-right: 0;
-    // }
   }
   .inkBar {
     position: absolute;
@@ -49,15 +33,6 @@
   font-weight: 700;
   border-left-color: transparent !important;
   border-bottom: 2px solid $primary;
-  // background-color: $primary-dark;
-  // color: $white-color;
-  // border-radius: $button-radius;
-  // border: 1px solid $primary-dark;
-  // color: $white-color !important;
-  // padding: 5px 16px;
-  // &:hover {
-  //   background-color: $primary !important;
-  // }
 }
 :global {
   .customTabs:nth-last-child(2) {
