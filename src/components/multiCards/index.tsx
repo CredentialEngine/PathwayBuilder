@@ -463,6 +463,7 @@ const MultiCard: React.FC<Props> = ({
                                   e.stopPropagation();
                                   e.preventDefault();
                                   setShowRightPenal(true);
+                                  setShowPopover(false);
                                 }}
                               >
                                 View
@@ -694,6 +695,7 @@ const MultiCard: React.FC<Props> = ({
                               e.stopPropagation();
                               e.preventDefault();
                               setShowRightPenal(true);
+                              setShowPopover(false);
                             }}
                           >
                             View
@@ -765,6 +767,7 @@ const MultiCard: React.FC<Props> = ({
                               e.stopPropagation();
                               e.preventDefault();
                               setShowRightPenal(true);
+                              setShowPopover(false);
                             }}
                           >
                             View
