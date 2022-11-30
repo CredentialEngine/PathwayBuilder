@@ -16,12 +16,11 @@ interface Props {
   RowIndex?: number;
   constraintRow?: any;
   getConstraintData: (val: any) => void;
-  getRequiredDeleteRow: (val: any) => void;
+  getRowIndex: (val: any) => void;
 }
 
 const Constraint: React.FC<Props> = (Props) => {
-  const { RowIndex, getConstraintData, getRequiredDeleteRow, constraintRow } =
-    Props;
+  const { RowIndex, getConstraintData, getRowIndex, constraintRow } = Props;
   const getAllComparators = useSelector(
     (state: any) => state.addConditionalComponent.comparatorsData
   );
@@ -69,9 +68,7 @@ const Constraint: React.FC<Props> = (Props) => {
       });
     }
   };
-  const funcSelectedComparators = (value: any) => {
-    // console.log(value, 'funcSelectedComparators');
-
+  const selectedComparators = (value: any) => {
     setConstraintData({
       ...constraintData,
       Comparator: value,
@@ -175,7 +172,6 @@ const Constraint: React.FC<Props> = (Props) => {
       setConstraintData({
         ...constraintData,
         LeftSource: [...constraintData?.LeftSource],
-        // id: RowIndex,
       });
       if (
         constraintData?.LeftSource.length === 0 &&
@@ -197,7 +193,6 @@ const Constraint: React.FC<Props> = (Props) => {
       setConstraintData({
         ...constraintData,
         RightSource: [...constraintData?.RightSource],
-        // id: RowIndex,
       });
 
       if (
@@ -214,7 +209,7 @@ const Constraint: React.FC<Props> = (Props) => {
     }
   };
   const handleDeleteRow = (RowIndex: any) => {
-    getRequiredDeleteRow(RowIndex);
+    getRowIndex(RowIndex);
   };
 
   return (
@@ -255,7 +250,7 @@ const Constraint: React.FC<Props> = (Props) => {
               defaultValue={constraintData?.Comparator}
               value={constraintData?.Comparator}
               showSearch={false}
-              onChange={(e) => funcSelectedComparators(e)}
+              onChange={(e) => selectedComparators(e)}
               placeholder="Select Comparator"
             />
           </Form.Item>

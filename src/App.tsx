@@ -107,7 +107,6 @@ const App = () => {
     process.env.NODE_ENV !== 'production'
       ? (window.location.href = sanboxSetting.api.url)
       : (window.location.href = productionSetting.api.url);
-    // setIsCreatePathwayVisible(false);
   };
 
   const onCloseHandler = () => {
