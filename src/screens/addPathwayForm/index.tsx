@@ -387,9 +387,6 @@ const AddPathwayForm: React.FC<Props> = ({
   };
 
   async function fetchOccupationList(e: string): Promise<any[]> {
-    // const data = new FormData();
-    // data.append('json', JSON.stringify({ Keywords: e }));
-
     return fetch(`${TEMP_BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`, {
       method: 'POST',
       headers: {
@@ -684,7 +681,6 @@ const AddPathwayForm: React.FC<Props> = ({
       color="rgb(220,250,249)"
       style={{
         width: '100%',
-        // wordWrap: 'break-word',
         padding: 10,
         paddingRight: 20,
         marginTop: 10,

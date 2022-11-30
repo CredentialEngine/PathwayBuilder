@@ -43,8 +43,7 @@ export const Icon: React.FC<Props> = ({
   const isRemix = (iconName: string) =>
     ['fill', 'line'].some((status) => iconName.indexOf(status) !== -1);
   const iconSrc = isRemix(name)
-    ? // ? require(`src/assets/images/remix/${name}.svg`).default
-      require(`../../assets/images/remix/${name}.svg`).default
+    ? require(`../../assets/images/remix/${name}.svg`).default
     : require(`../../assets/images/remix/${name}.svg`).default;
   return (
     <i

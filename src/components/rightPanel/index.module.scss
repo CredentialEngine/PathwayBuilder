@@ -4,16 +4,13 @@
   font-family: $app-font-primary;
   font-weight: $normal-weight;
   line-height: 1.2rem;
-  // width: 100%;
   color: #0a2942;
   margin-right: 15px;
   margin-left: 25px;
   .topRow {
     align-items: center;
-    // justify-content: space-between;
     .name {
       font-size: 18px;
-      //width: 112px;
       margin-left: 10px;
     }
     .button {
@@ -30,7 +27,6 @@
   }
   .infoContainer {
     margin-top: 18px;
-    // margin-right: 18px;
 
     > p {
       margin: 4px 0px 0px 0px;

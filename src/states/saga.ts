@@ -74,9 +74,6 @@ export function* approvePathway(payload: any): Generator {
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}${payload?.id}`,
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      // },
       params: {
         userCreds: `${BASE_USER_CREDS}`,
       },
@@ -90,26 +87,6 @@ export function* approvePathway(payload: any): Generator {
     yield put(approvePathwayFailure(error));
   }
 }
-// export async function savePathwayWrapper(data: any) {
-//   try {
-//     const res = await fetch(
-//       'https://sandbox.credentialengine.org/publisher/PathwayBuilderApi/PathwayBuilderApi/Save/Pathway',
-//       {
-//         method: 'post', // *GET, POST, PUT, DELETE, etc.
-//         body: JSON.stringify(data), // body data type must match "Content-Type" header
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       }
-//     ).then(async (response) => {
-//       const json = await response.json();
-//       return json;
-//     });
-//     return res;
-//   } catch (error: any) {
-//     noop;
-//   }
-// }
 export function* getSavePathwayWrapper(payload: any): Generator {
   try {
     const result: any = yield call(request, {

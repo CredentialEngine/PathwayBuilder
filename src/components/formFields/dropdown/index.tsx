@@ -7,6 +7,7 @@ export type DropdownProps = {
   onClick?: (event: any) => void;
   children?: React.ReactNode;
   defaultValue?: string;
+  value?: string;
   style?: any;
   placeholder?: string;
   showSearch?: boolean;
@@ -25,6 +26,7 @@ export const Dropdown = (props: DropdownProps) => {
     options,
     onChange,
     onSearch,
+    value,
   } = props;
 
   return (
@@ -32,8 +34,6 @@ export const Dropdown = (props: DropdownProps) => {
       {showSearch ? (
         <Select
           showSearch
-          // onChange={onChange}
-          // onSearch={onSearch}
           options={options}
           defaultValue={defaultValue}
           placeholder={placeholder}
@@ -50,6 +50,7 @@ export const Dropdown = (props: DropdownProps) => {
       ) : (
         <Select
           onChange={onChange}
+          value={value}
           onSearch={onSearch}
           options={options}
           defaultValue={defaultValue}

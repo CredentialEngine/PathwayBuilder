@@ -16,12 +16,11 @@ interface Props {
   RowIndex?: number;
   constraintRow?: any;
   getConstraintData: (val: any) => void;
-  getRequiredDeleteRow: (val: any) => void;
+  getRowIndex: (val: any) => void;
 }
 
 const Constraint: React.FC<Props> = (Props) => {
-  const { RowIndex, getConstraintData, getRequiredDeleteRow, constraintRow } =
-    Props;
+  const { RowIndex, getConstraintData, getRowIndex, constraintRow } = Props;
   const getAllComparators = useSelector(
     (state: any) => state.addConditionalComponent.comparatorsData
   );
@@ -69,7 +68,7 @@ const Constraint: React.FC<Props> = (Props) => {
       });
     }
   };
-  const funcSelectedComparators = (value: any) => {
+  const selectedComparators = (value: any) => {
     setConstraintData({
       ...constraintData,
       Comparator: value,
@@ -88,7 +87,7 @@ const Constraint: React.FC<Props> = (Props) => {
       return updatedBody;
     }
   };
-  const onDebounceSelectHnadler = (e: any, name: string) => {
+  const onDebounceSelectHandler = (e: any, name: string) => {
     if (name === 'LeftSource') {
       leftSourcedata.map((val: any) => {
         if (e.value == val.Name) {
@@ -164,7 +163,7 @@ const Constraint: React.FC<Props> = (Props) => {
     }
   }, [constraintData]);
 
-  const handleDeselectHnadler = (event: any, name: string) => {
+  const handleDeselectHandler = (event: any, name: string) => {
     if (name === 'LeftSource') {
       const index = constraintData?.LeftSource?.findIndex(
         (item: any) => item?.Name == event?.value
@@ -173,7 +172,6 @@ const Constraint: React.FC<Props> = (Props) => {
       setConstraintData({
         ...constraintData,
         LeftSource: [...constraintData?.LeftSource],
-        // id: RowIndex,
       });
       if (
         constraintData?.LeftSource.length === 0 &&
@@ -195,7 +193,6 @@ const Constraint: React.FC<Props> = (Props) => {
       setConstraintData({
         ...constraintData,
         RightSource: [...constraintData?.RightSource],
-        // id: RowIndex,
       });
 
       if (
@@ -212,7 +209,7 @@ const Constraint: React.FC<Props> = (Props) => {
     }
   };
   const handleDeleteRow = (RowIndex: any) => {
-    getRequiredDeleteRow(RowIndex);
+    getRowIndex(RowIndex);
   };
 
   return (
@@ -220,13 +217,13 @@ const Constraint: React.FC<Props> = (Props) => {
       <Row gutter={20}>
         <Col span="8">
           <>
-            {constraintData?.LeftSource?.length > 0 && (
+            {constraintData?.LeftSource?.length > 1 && (
               <Dropdown
                 options={constraintEntityFields.LeftAction}
                 placeholder="Left Action"
                 showSearch={false}
                 onChange={(e) => handleConstraintAction(e, 'LeftAction')}
-                defaultValue={constraintData?.RightSource}
+                defaultValue={constraintData?.LeftAction}
               />
             )}
             <Form.Item
@@ -240,8 +237,8 @@ const Constraint: React.FC<Props> = (Props) => {
                 value={constraintData?.LeftSource}
                 placeholder="Left Sources"
                 fetchOptions={allConstraintOperandfunc}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'LeftSource')}
-                onDeselect={(e: any) => handleDeselectHnadler(e, 'LeftSource')}
+                onSelect={(e: any) => onDebounceSelectHandler(e, 'LeftSource')}
+                onDeselect={(e: any) => handleDeselectHandler(e, 'LeftSource')}
               />
             </Form.Item>
           </>
@@ -251,8 +248,9 @@ const Constraint: React.FC<Props> = (Props) => {
             <Dropdown
               options={Comparator}
               defaultValue={constraintData?.Comparator}
+              value={constraintData?.Comparator}
               showSearch={false}
-              onChange={(e) => funcSelectedComparators(e)}
+              onChange={(e) => selectedComparators(e)}
               placeholder="Select Comparator"
             />
           </Form.Item>
@@ -266,6 +264,7 @@ const Constraint: React.FC<Props> = (Props) => {
                   placeholder="Right Action"
                   showSearch={false}
                   onChange={(e) => handleConstraintAction(e, 'RightAction')}
+                  defaultValue={constraintData?.RightAction}
                 />
               )}
               <Form.Item
@@ -280,10 +279,10 @@ const Constraint: React.FC<Props> = (Props) => {
                   placeholder="Right Sources"
                   fetchOptions={allConstraintOperandfunc}
                   onSelect={(e: any) =>
-                    onDebounceSelectHnadler(e, 'RightSource')
+                    onDebounceSelectHandler(e, 'RightSource')
                   }
                   onDeselect={(e: any) =>
-                    handleDeselectHnadler(e, 'RightSource')
+                    handleDeselectHandler(e, 'RightSource')
                   }
                 />
               </Form.Item>
