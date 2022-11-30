@@ -5,7 +5,8 @@ export const sanboxSetting = {
 };
 export const productionSetting = {
   api: {
-    url: 'https://apps.credentialengine.org/publisher/',
+    url: 'https://sandbox.credentialengine.org/publisher/',
+    /* for production url */
   },
 };
 export const stagingSetting = {

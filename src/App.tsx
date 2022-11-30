@@ -1,5 +1,8 @@
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { productionSetting, sanboxSetting } from './apiConfig/setting';
 import './App.scss';
 
 import Button from './components/button';
@@ -50,10 +53,16 @@ const App = () => {
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState<any>();
   const [fromPreSelect, setFromPreselect] = useState<any>(false);
+  const [skipPreSelect, setSkipPreSelect] = useState<any>(false);
+  const [destinationColumnSelect, setDestinationColumnSelected] =
+    useState<any>(false);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
+  const [pathwayId, setPathwayId] = useState('');
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
+    useState<boolean>(false);
+  const [isDropCardAfterEditingForm, setIsDropCardAfterEditingForm] =
     useState<boolean>(false);
 
   const {
@@ -85,6 +94,7 @@ const App = () => {
   useEffect(() => {
     if (userData) {
       setOrganisationList(userData?.Organizations);
+      setPathwayId(userData?.Id);
     }
   }, [userData]);
 
@@ -94,7 +104,10 @@ const App = () => {
   };
 
   const onCreatePathwayCancelHandler = () => {
-    setIsCreatePathwayVisible(false);
+    process.env.NODE_ENV !== 'production'
+      ? (window.location.href = sanboxSetting.api.url)
+      : (window.location.href = productionSetting.api.url);
+    // setIsCreatePathwayVisible(false);
   };
 
   const onCloseHandler = () => {
@@ -134,6 +147,13 @@ const App = () => {
     </div>
   );
 
+  const onPreSelectResourceCancelHandler = () => {
+    setIsPreSelectedCreateResourceVisible(false);
+    !fromPreSelect &&
+      !!setIsDestinationColumnSelected &&
+      setIsDestinationColumnSelected(true);
+  };
+
   const closeCreatePathwayModal = () => {
     Modal.confirm({
       cancelText: 'No',
@@ -143,6 +163,12 @@ const App = () => {
     });
   };
 
+  const getSkipValueOfPreSelectResources = (skipedValue: boolean) => {
+    setSkipPreSelect(skipedValue);
+  };
+  const destinationColumnSelected = (value: boolean) => {
+    setDestinationColumnSelected(value);
+  };
   return (
     <div>
       <MainContainer>
@@ -168,6 +194,11 @@ const App = () => {
             setIsStartFromInitialColumnSelected
           }
           setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+          skipPreSelect={skipPreSelect}
+          destinationColumnSelect={destinationColumnSelect}
+          isEditPathwayFormVisible={isEditPathwayFormVisible}
+          isDropCardAfterEditingForm={isDropCardAfterEditingForm}
+          setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
         />
         <Modal
           visible={isCreatePathwayVisible}
@@ -197,12 +228,14 @@ const App = () => {
             }
             setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
             setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
+            setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
           />
         </Modal>
         <Modal
           visible={isPreSelectedCreateResourceVisible}
           width="650px"
           footer={[]}
+          onCancel={onPreSelectResourceCancelHandler}
           title="Pre-Select Resources to Create Your Pathway"
         >
           <PreSelectResourceCreatePath
@@ -215,6 +248,7 @@ const App = () => {
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
             }
+            getSkipValueOfPreSelectResources={getSkipValueOfPreSelectResources}
           />
         </Modal>
         <CustomDrawer
@@ -232,6 +266,7 @@ const App = () => {
           footer={[]}
         >
           <SelectDestination
+            destinationColumnSelected={destinationColumnSelected}
             setIsAddPathwayDestinationVisible={
               setIsAddPathwayDestinationVisible
             }
@@ -253,7 +288,10 @@ const App = () => {
                 onClick={selectOrgOkHandler}
                 text="Confirm"
                 disabled={
-                  selectedOrganisationValue === 'Select an organization'
+                  !(
+                    !_.isUndefined(selectedOrganisationValue) ||
+                    _.isNull(selectedOrganisationValue)
+                  )
                 }
               />
             </>,
@@ -264,6 +302,7 @@ const App = () => {
             getSelectedOrganisation={(value: string) =>
               setSelectedOrganisationValue(value)
             }
+            pathwayId={pathwayId}
           />
         </Modal>
       </MainContainer>

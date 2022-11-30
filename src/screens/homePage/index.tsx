@@ -1,6 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faCirclePlus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,9 +18,14 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import { updateMappedDataRequest } from '../../states/actions';
+import {
+  // saveDataForPathwayRequest,
+  updateMappedDataRequest,
+} from '../../states/actions';
+import AddConditionalComponent from '../addComponent';
 
 import Styles from './index.module.scss';
 
@@ -31,6 +37,11 @@ interface Props {
   isStartFromInitialColumnSelected: boolean;
   setIsStartFromInitialColumnSelected: (a: boolean) => void;
   setIsDestinationColumnSelected: (a: boolean) => void;
+  skipPreSelect?: boolean;
+  destinationColumnSelect?: boolean;
+  isEditPathwayFormVisible?: boolean;
+  setIsDropCardAfterEditingForm: (a: boolean) => void;
+  isDropCardAfterEditingForm: boolean;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
@@ -40,11 +51,14 @@ const HomePage: React.FC<Props> = ({
   isStartFromInitialColumnSelected,
   setIsStartFromInitialColumnSelected,
   setIsDestinationColumnSelected,
+  skipPreSelect,
+  destinationColumnSelect,
+  setIsDropCardAfterEditingForm,
+  isDropCardAfterEditingForm,
 }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
   const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
-  const [deletedComponentCards, setDeletedComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
 
@@ -62,6 +76,7 @@ const HomePage: React.FC<Props> = ({
     start: '',
     end: '',
   });
+  const [newConn, setNewConn] = useState<any>([]);
   const [connection, setConnection] = useState<any>([]);
   const [constraintIcon, setConstraintIcon] = useState<boolean>(false);
   const { mappedData: pathwayComponent } = pathwayWrapper;
@@ -77,29 +92,58 @@ const HomePage: React.FC<Props> = ({
     destinationCTID: '',
     firstStageCTID: '',
   });
+  const [connectionsCTID, setConnectionsCTID] = useState<any>();
+  const [allComponentCardsData, setAllComponentCardData] = useState<any>({});
+  const [allConditionalCardsData, setAllConditionalCardData] = useState<any>(
+    {}
+  );
+  const [isConditionalEditing, setIsConditionalEditing] = useState(false);
+  const [componentConditionData, setComponentConditionData] = useState(false);
+  const [currentCardData, setCurrentCardData] = useState<any>();
+  const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
+    useState<string>('');
 
   useEffect(() => {
     const updatedConditionalComponents: any = [];
+    setNewConn([]);
     pathwayComponentConditionCards.map((conditionalCard: any) => {
-      // connection.push({
-      //   start: conditionalCard.ParentIdentifier,
-      //   end: conditionalCard.RowId,
-      // });
-      conditionalCard?.TargetComponent.forEach((target: any) => {
-        pathwayComponentCards.forEach((pathway_card: any) => {
-          if (pathway_card.CTID === target) {
-            updatedConditionalComponents.push({
-              ...conditionalCard,
-              HasProgressionLevel: pathway_card.HasProgressionLevel,
-            });
+      if (_.isUndefined(conditionalCard?.HasProgressionLevel)) {
+        [...pathwayComponentCards, ...pathwayComponentConditionCards].forEach(
+          (pathway_card: any) => {
+            if (
+              pathway_card.CTID === conditionalCard?.TargetComponent?.[0] ||
+              pathway_card.RowId === conditionalCard?.TargetComponent?.[0]
+            ) {
+              updatedConditionalComponents.push({
+                ...conditionalCard,
+                HasProgressionLevel: pathway_card.HasProgressionLevel,
+              });
+            }
           }
+        );
+      } else {
+        updatedConditionalComponents.push({
+          ...conditionalCard,
         });
-      });
+      }
     });
+    const obj: any = {};
 
+    pathwayComponentConditionCards.map((conditional_comp: any) => {
+      obj[conditional_comp.RowId] = {
+        ...conditional_comp,
+      };
+      return conditional_comp;
+    });
+    setAllConditionalCardData({ ...allConditionalCardsData, ...obj });
     setUpdatedPathwayComponentConditionCards(updatedConditionalComponents);
     setIsStartFromInitialColumnSelected(false);
+    createConnection();
   }, [pathwayComponentConditionCards]);
+
+  const getComponentConditionData = (data: any) => {
+    setComponentConditionData(data);
+  };
 
   const [overlayData, setOverlayData] = useState<any>({
     columnNumber: 0,
@@ -114,25 +158,55 @@ const HomePage: React.FC<Props> = ({
       destinationCTID: uuidv4(),
       firstStageCTID: uuidv4(),
     });
+    createConnection();
   }, []);
 
   let count = 0;
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
-    updatedPathwayWrapper.DeletedComponents = deletedComponentCards;
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    setDeletedComponentCards([]);
+
+    const obj: any = {};
+
+    pathwayComponentCards.map((component_card: any) => {
+      obj[component_card.CTID] = {
+        ...component_card,
+      };
+      return component_card;
+    });
+    setAllComponentCardData({ ...allComponentCardsData, ...obj });
 
     pathwayComponentCards?.length > 0 &&
       setIsStartFromInitialColumnSelected(false),
       setIsDestinationColumnSelected(false);
+
+    const islastDropWrapperUsed = pathwayComponentCards?.some(
+      (card: any) => card?.RowNumber === numberOfDropWrapper
+    );
+    if (islastDropWrapperUsed) {
+      /* here we are increasing number of DropWrapper */
+      setNumberOfDropWrapper((prevState) => prevState + 1);
+    }
   }, [pathwayComponentCards]);
 
-  // const onPlusClickHandler = (event: any) => {
-  //   event.stopPropagation();
-  //   setIsConditionalModalStatus(true);
-  // };
+  const onPlusClickHandler = (event: any, connections: any) => {
+    event.stopPropagation();
+    setIsConditionalModalStatus(true);
+    setConnectionsCTID(connections);
+    getComponentConditionData;
+    const filteredEndComponent = [
+      ...pathwayComponentCards,
+      ...updatedPathwayComponentConditionCards,
+    ].filter(
+      (card: any) =>
+        _.toString(card?.CTID) === _.toString(connections?.start) ||
+        _.toString(card?.RowId) === _.toString(connections?.start)
+    );
+    setProgressionLevelForAddComponent(
+      _.get(filteredEndComponent, '0')?.HasProgressionLevel
+    );
+  };
 
   const getSemester = (level: any) => {
     if (level?.Narrower?.length > 0) {
@@ -247,7 +321,7 @@ const HomePage: React.FC<Props> = ({
         ]);
       } else {
         setColumnsData([
-          { Id: 0, Name: 'Stage 1', CTID: generatedUuid.firstStageCTID },
+          { Id: 0, Name: 'Pathway', CTID: generatedUuid.firstStageCTID },
           {
             isDestinationColumnSelected: isDestinationColumnStatus,
             Id: 1,
@@ -263,7 +337,6 @@ const HomePage: React.FC<Props> = ({
   const onSelectDragElemenet = (elem: HTMLElement) => {
     setDragElem(elem);
   };
-
   const onMoveItem = (elem: any) => {
     if (!_.isNull(dragElem) && !_.isUndefined(dragElem)) {
       setPathwayComponentCards((prevState: any) => {
@@ -282,28 +355,6 @@ const HomePage: React.FC<Props> = ({
       });
     }
   };
-
-  const createCard = (card: any) => {
-    const CTID = `ce-${uuidv4()}`;
-    const newCard = {
-      CTID,
-      Created: '',
-      Description: card?.Description,
-      HasChild: [],
-      HasCondition: [],
-      IndustryType: [],
-      IsChildOf: [],
-      Name: card?.Name,
-      OccupationType: [],
-      PrecededBy: [],
-      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
-      ProxyForLabel: card?.Name,
-      RowId: uuidv4(),
-      Type: card?.URI,
-    };
-    return newCard;
-  };
-
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,
@@ -315,11 +366,20 @@ const HomePage: React.FC<Props> = ({
     isFirstColumneSelected: boolean,
     firstColumn: boolean
   ) => {
+    const updatedPathwayWrapper = { ...pathwayComponent };
+
+    if (!destinationColumn) {
+      card.destinationColumn = false;
+    }
+    setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
+    setNewConn([]);
+    const isDestinationCardExist =
+      !_.isEmpty(pathwayComponent.Pathway.HasDestinationComponent) &&
+      updatedPathwayWrapper?.Pathway?.HasDestinationComponent !== '';
 
     if (isComponentTab) {
       card = {
-        ...createCard(card),
         HasProgressionLevel,
         RowNumber,
         ColumnNumber: ColumnNumber - 1,
@@ -334,15 +394,19 @@ const HomePage: React.FC<Props> = ({
     }
     if (card?.Type === 'conditional') {
       /* This Function add only conditional cards*/
-      setUpdatedPathwayComponentConditionCards(
-        updatedPathwayComponentConditionCards
-          .filter((item: any) => item.RowId !== card.RowId)
-          .concat({
-            ...card,
-            RowNumber,
-            ColumnNumber,
-          })
-      );
+      const updatedPathwayWrapper = { ...pathwayComponent };
+
+      const updatedCards = updatedPathwayComponentConditionCards
+        .filter((item: any) => item.RowId !== card.RowId)
+        .concat({
+          ...card,
+          RowNumber,
+          HasProgressionLevel,
+          ColumnNumber,
+        });
+      setUpdatedPathwayComponentConditionCards(updatedCards);
+      updatedPathwayWrapper.ComponentConditions = updatedCards;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       return;
     }
     if (
@@ -353,29 +417,142 @@ const HomePage: React.FC<Props> = ({
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
-    const isDestinationCardExist = !_.isEmpty(
-      pathwayComponent.Pathway.HasDestinationComponent
-    );
-    if (!!destinationColumn && isDestinationCardExist) {
-      /*  Prevent to drop multiple destination cards inside destination component*/
+
+    if (
+      !destinationColumn &&
+      isDestinationCardExist &&
+      card?.CTID === updatedPathwayWrapper?.Pathway?.HasDestinationComponent
+    ) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+
+      const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+      updatedPathway.HasDestinationComponent = '';
+      updatedPathwayWrapper.Pathway = updatedPathway;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    }
+
+    if (!!destinationColumn && !isDestinationCardExist) {
+      const updatedPathwayWrapper = { ...pathwayComponent };
+
+      const updatedPathwayComponent =
+        updatedPathwayWrapper?.PathwayComponents?.filter(
+          (pathway_component: any) => pathway_component?.CTID !== card?.CTID
+        ).concat({
+          ...restCardProps,
+          destinationColumn,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+          firstColumn,
+        });
+      setPathwayComponentCards(updatedPathwayComponent);
+      const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+      updatedPathway.HasDestinationComponent = card?.CTID;
+      updatedPathwayWrapper.Pathway = updatedPathway;
+      updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      // dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       return;
     }
-    const islastDropWrapperUsed = pathwayComponentCards.some(
-      (card: any) => card.RowNumber === numberOfDropWrapper
-    );
+    if (!!destinationColumn && isDestinationCardExist) {
+      /*  Prevent to drop multiple destination cards inside destination component*/
 
-    if (islastDropWrapperUsed) {
-      /* here we are increasing number of DropWrapper */
-      setNumberOfDropWrapper((prevState) => prevState + 1);
+      const isCardAlreadyInDestinationColumn = pathwayComponentCards?.filter(
+        (component_card: any) =>
+          component_card.CTID == card.CTID &&
+          component_card.destinationColumn === true
+      );
+
+      if (isCardAlreadyInDestinationColumn?.length > 0) {
+        const updatedPathwayComponent =
+          updatedPathwayWrapper?.PathwayComponents?.filter(
+            (pathway_component: any) => pathway_component?.CTID !== card?.CTID
+          ).concat({
+            ...restCardProps,
+            RowNumber,
+            firstColumn,
+          });
+        setPathwayComponentCards(updatedPathwayComponent);
+      }
+
+      return;
     }
+
+    if (isDropCardAfterEditingForm) {
+      setPathwayComponentCards([
+        ...pathwayComponentCards,
+        {
+          ...restCardProps,
+          destinationColumn,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+
+          firstColumn,
+        },
+      ]);
+      setIsDropCardAfterEditingForm(false);
+      return;
+    }
+
     if (
-      !isDestinationColumnSelected &&
-      !isFirstColumneSelected &&
-      pathwayComponentCards.length === 0
+      pathwayComponentCards.length === 0 &&
+      isStartFromInitialColumnSelected &&
+      isFirstColumneSelected
     ) {
-      /*
-        this block is to prevent to drop a card anywhere before dropping a card in destination column and first column
-      */
+      setPathwayComponentCards([
+        ...pathwayComponentCards,
+        {
+          ...restCardProps,
+          destinationColumn: false,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+
+          firstColumn,
+        },
+      ]);
+    } else if (
+      pathwayComponentCards.length === 0 &&
+      isDestinationColumnSelected &&
+      isDestinationColumnStatus
+    ) {
+      setPathwayComponentCards([
+        ...pathwayComponentCards,
+        {
+          ...restCardProps,
+          destinationColumn,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: 1,
+          firstColumn,
+        },
+      ]);
+    } else if (card?.pathwayGameboardCard) {
+      setPathwayComponentCards(
+        pathwayComponentCards
+          .filter((item: any) => item.CTID !== card.CTID)
+          .concat({
+            ...restCardProps,
+            HasProgressionLevel,
+            RowNumber,
+            ColumnNumber,
+            firstColumn,
+          })
+      );
+    } else if (pathwayComponentCards.length !== 0) {
+      setPathwayComponentCards(
+        pathwayComponentCards
+          .filter((item: any) => item.CTID !== card.CTID)
+          .concat({
+            ...restCardProps,
+            HasProgressionLevel,
+            RowNumber,
+            ColumnNumber,
+            firstColumn,
+          })
+      );
+    } else {
       return;
     }
 
@@ -386,63 +563,144 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.Pathway = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
+  };
 
-    pathwayComponentCards.length === 0
-      ? setPathwayComponentCards([
-          ...pathwayComponentCards,
-          {
-            ...restCardProps,
-            destinationColumn,
-            HasProgressionLevel,
-            RowNumber,
-            ColumnNumber: 1,
+  let conditionalComponent: any = [];
 
-            firstColumn,
-          },
-        ])
-      : setPathwayComponentCards(
-          pathwayComponentCards
-            .filter((item: any) => item.CTID !== card.CTID)
-            .concat({
-              ...restCardProps,
-              HasProgressionLevel,
-              RowNumber,
-              ColumnNumber,
-              firstColumn,
-            })
+  const checkHasCondition = (card: any) => {
+    if (card?.HasCondition.length > 0) {
+      const nextConditionalComponent =
+        updatedPathwayComponentConditionCards.filter((condition_card: any) =>
+          card?.HasCondition.includes(condition_card?.RowId)
         );
+
+      conditionalComponent = [
+        ...conditionalComponent,
+        ...nextConditionalComponent,
+      ];
+      checkHasCondition(nextConditionalComponent[0]);
+    } else {
+      return conditionalComponent;
+    }
+    return conditionalComponent;
   };
 
   const onDeleteHandler = (data: any) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
-    const ComponentConditions =
-      updatedPathwayWrapper?.ComponentConditions?.filter(
-        (item: any) => item?.RowId !== data?.RowId
-      );
-    const updatedPathwayComponent = pathwayComponentCards.filter(
-      (item: any) => item.CTID !== data.CTID
+    const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+
+    const isDestinationCardExist =
+      updatedPathway?.HasDestinationComponent === data?.CTID;
+    if (isDestinationCardExist) {
+      updatedPathway.HasDestinationComponent = '';
+      updatedPathwayWrapper.Pathway = updatedPathway;
+    }
+
+    const result = checkHasCondition(data);
+    let updatedPathwayComponent: [] = [];
+    let updatedPathwayConditionalComponent: [] = [];
+
+    const targetComponent = [...result, data]?.find(
+      (result: any) => result?.TargetComponent?.length > 0
     );
 
-    updatedPathwayWrapper.ComponentConditions = ComponentConditions;
-    updatedPathwayWrapper.Constraints = {};
-    updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent.filter(
-      (item: any) =>
+    if (data?.Type === 'conditional') {
+      const filteredConditionalComponent =
+        updatedPathwayComponentConditionCards.filter(
+          (conditional_card: any) =>
+            ![...result, data].find(
+              (element: any) => element.RowId === conditional_card.RowId
+            )
+        );
+
+      updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
         data?.ParentIdentifier === item?.RowId
-          ? { ...item, HasCondition: [] }
+          ? {
+              ...item,
+              HasCondition: item?.HasCondition.filter(
+                (condition: any) => condition !== data?.RowId
+              ),
+              PrecededBy: data?.TargetComponent,
+            }
           : item
-    );
-    updatedPathwayWrapper.DeletedComponents = [data];
-    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    setPathwayComponentCards(updatedPathwayComponent);
-  };
+      );
 
+      updatedPathwayConditionalComponent = filteredConditionalComponent.map(
+        (item: any) =>
+          data?.ParentIdentifier === item?.RowId
+            ? {
+                ...item,
+                HasCondition: item?.HasCondition.filter(
+                  (condition: any) => condition !== data?.RowId
+                ),
+                TargetComponent:
+                  targetComponent?.TargetComponent?.length > 0
+                    ? targetComponent?.TargetComponent
+                    : item?.TargetComponent,
+              }
+            : item
+      );
+
+      updatedPathwayWrapper.DeletedComponentConditions = [
+        ...updatedPathwayWrapper.DeletedComponentConditions,
+        ...result,
+        data,
+      ];
+
+      updatedPathwayWrapper.ComponentConditions =
+        updatedPathwayConditionalComponent;
+
+      updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+    } else {
+      const filteredConditionalComponent = updatedPathwayComponentConditionCards
+        .filter(
+          (conditional_card: any) =>
+            !result.find(
+              (element: any) => element.RowId === conditional_card.RowId
+            )
+        )
+        .map((card: any) =>
+          card?.TargetComponent.includes(data?.CTID)
+            ? { ...card, TargetComponent: data.PrecededBy }
+            : { ...card }
+        );
+
+      updatedPathwayComponent = pathwayComponentCards
+        .filter((item: any) => item.CTID !== data.CTID)
+        .map((component_card: any) => {
+          if (component_card?.PrecededBy.includes(data?.CTID)) {
+            return {
+              ...component_card,
+              PrecededBy: component_card?.PrecededBy.filter(
+                (preceded: any) => preceded !== data?.CTID
+              ),
+            };
+          } else {
+            return { ...component_card };
+          }
+        });
+
+      updatedPathwayWrapper.ComponentConditions = filteredConditionalComponent;
+      updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+      updatedPathwayWrapper.DeletedComponentConditions = [
+        ...updatedPathwayWrapper.DeletedComponentConditions,
+        ...result,
+      ];
+
+      updatedPathwayWrapper.DeletedComponents = [
+        ...updatedPathwayWrapper.DeletedComponents,
+        data,
+      ];
+    }
+
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+  };
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
     if (element != null) {
       element.style.display = 'none';
     }
   };
-
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -451,8 +709,8 @@ const HomePage: React.FC<Props> = ({
         end: id,
       });
       e?.target?.classList?.add('active');
-      setConnection([
-        ...connection,
+      setNewConn([
+        ...newConn,
         {
           start: point.start,
           end: id,
@@ -460,8 +718,9 @@ const HomePage: React.FC<Props> = ({
       ]);
       pathwayComponentCards?.map((card: any) => {
         if (point?.start === card?.CTID) {
-          if (!card?.HasChild?.includes(id)) {
-            card?.HasChild.push(id);
+          setCurrentCardData(card);
+          if (!card?.PrecededBy?.includes(id)) {
+            card?.PrecededBy?.push(id);
           }
         }
       });
@@ -475,14 +734,110 @@ const HomePage: React.FC<Props> = ({
       e?.target?.classList?.add('active');
     }
   };
+  const createConnection = () => {
+    const tempCon = [] as any;
+    if (pathwayComponentCards) {
+      pathwayComponentCards?.map((card: any) => {
+        if (card?.HasCondition.length === 0) {
+          if (card?.PrecededBy?.length > 0) {
+            card?.PrecededBy?.map((child: string) => {
+              tempCon.push({ start: card?.CTID || card?.RowId, end: child });
+            });
+          }
+        }
 
+        if (card?.HasCondition?.length > 0) {
+          card?.HasCondition?.map((condition: string) => {
+            tempCon?.push({ start: card?.CTID || card?.RowId, end: condition });
+          });
+        }
+
+        if (pathwayComponent) {
+          pathwayComponent?.ComponentConditions?.map(
+            (componentCondition: any) => {
+              if (componentCondition?.HasCondition?.length > 0) {
+                componentCondition?.HasCondition?.map((_cond: any) => {
+                  tempCon?.push({
+                    start:
+                      componentCondition?.CTID || componentCondition?.RowId,
+                    end: _cond,
+                  });
+                });
+              }
+              if (componentCondition?.TargetComponent?.length > 0) {
+                componentCondition?.TargetComponent?.map((target: string) => {
+                  if (
+                    tempCon?.includes({
+                      start: componentCondition?.ParentIdentifier,
+                      end: target,
+                    })
+                  ) {
+                    const itemToRemove = tempCon?.findIndex(
+                      (item: any) =>
+                        item?.start === componentCondition?.ParentIdentifier &&
+                        item?.end === target
+                    );
+                    tempCon?.splice(itemToRemove, 1);
+                  }
+                  tempCon?.push({
+                    start:
+                      componentCondition?.CTID || componentCondition?.RowId,
+                    end: target,
+                  });
+                });
+              }
+            }
+          );
+        }
+
+        if (
+          card?.HasCondition?.length > 0 &&
+          pathwayComponent?.ComponentConditions?.length > 0
+        ) {
+          card?.HasCondition?.map((condition: string) => {
+            pathwayComponent?.ComponentConditions?.map((compCond: any) => {
+              if (
+                compCond?.RowId === condition &&
+                card?.PrecededBy?.length > 0 &&
+                compCond?.TargetComponent?.length > 0
+              ) {
+                card?.PrecededBy?.map((preced: string) => {
+                  compCond?.TargetComponent?.map((target: string) => {
+                    if (preced === target) {
+                      const itemToRemove = tempCon?.findIndex(
+                        (item: any) =>
+                          item?.start === card?.CTID ||
+                          (card?.RowId && item?.end === preced)
+                      );
+                      tempCon?.splice(itemToRemove, 1);
+                    }
+                  });
+                });
+              }
+            });
+          });
+        }
+      });
+    }
+
+    const uniqArrConn = tempCon?.filter(
+      (value: any, idx: number, self: any) =>
+        idx ===
+        self.findIndex(
+          (t: any) => t.start === value?.start && t?.end === value?.end
+        )
+    );
+    setNewConn(uniqArrConn);
+  };
   useEffect(() => {
+    setNewConn([]);
     if (point && point?.start?.length > 0 && point?.end?.length > 0) {
       setPoint({
         start: '',
         end: '',
       });
     }
+    createConnection();
   }, [point]);
 
   const removeConnection = (item: any) => {
@@ -490,21 +845,29 @@ const HomePage: React.FC<Props> = ({
     const index = newarray.findIndex((items: any) => items === item);
     pathwayComponentCards?.map((card: any) => {
       if (card?.CTID === item?.start) {
-        const idx = card?.HasChild.findIndex((i: any) => i === item?.end);
-        card?.HasChild.splice(idx, 1);
+        const idx = card?.PrecededBy?.findIndex((i: any) => i === item?.end);
+        card?.PrecededBy?.splice(idx, 1);
+      }
+    });
+    updatedPathwayComponentConditionCards?.map((conditionCard: any) => {
+      if (conditionCard?.CTID || conditionCard?.RowId === item?.start) {
+        const idx = conditionCard?.TargetComponent.findIndex(
+          (i: any) => i === item?.end
+        );
+        conditionCard?.TargetComponent.splice(idx, 1);
       }
     });
     newarray.splice(index, 1);
     setConnection([...newarray]);
+    createConnection();
     document.getElementById(item?.start)?.classList?.remove('active');
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
-
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
-        .filter((card: any) => card.HasProgressionLevel === column.CTID)
+        ?.filter((card: any) => card.HasProgressionLevel === column.CTID)
         .reduce((acc: any, curr: any) => {
           if (acc >= curr.ColumnNumber) {
             return acc;
@@ -526,7 +889,6 @@ const HomePage: React.FC<Props> = ({
 
       const destinationComponent =
         pathwayComponent?.Pathway?.HasDestinationComponent;
-
       {
         return (
           <div
@@ -545,7 +907,8 @@ const HomePage: React.FC<Props> = ({
                 key={index}
                 style={{
                   display: 'flex',
-                  height: '100vh',
+                  height: 'auto',
+                  minHeight: '100vh',
                   flexDirection: 'column',
                   backgroundColor: `${index % 2 !== 0 ? '#f3f4f6' : '#e1e5e8'}`,
                 }}
@@ -555,6 +918,7 @@ const HomePage: React.FC<Props> = ({
                     <DropWrapper
                       id={column.id}
                       onDrop={onDropHandler}
+                      setDraggableCardVisible={setDraggableCardVisible}
                       key={column.Id}
                       index={index}
                       column={column.Name}
@@ -581,7 +945,7 @@ const HomePage: React.FC<Props> = ({
                     >
                       <div
                         style={{
-                          height: '100vh',
+                          height: 'auto',
                           display: 'flex',
                           alignItems: 'center',
                           flexDirection: 'column',
@@ -589,7 +953,7 @@ const HomePage: React.FC<Props> = ({
                         }}
                       >
                         <Xwrapper>
-                          {pathwayComponentCards.length > 0 &&
+                          {pathwayComponentCards?.length > 0 &&
                             pathwayComponentCards
                               .filter(
                                 (card: any) =>
@@ -616,38 +980,35 @@ const HomePage: React.FC<Props> = ({
                               )
                               .map((item: any) => (
                                 <>
-                                  {connection.length
-                                    ? connection.map(
-                                        (items: any, idx: number) => (
-                                          <Xarrow
-                                            path="grid"
-                                            strokeWidth={1}
-                                            zIndex={1000}
-                                            headSize={16}
-                                            color="black"
-                                            start={items?.start}
-                                            end={items?.end}
-                                            key={idx}
-                                            labels={
-                                              <div
-                                                className={Styles.tempwrapper}
+                                  {newConn.length > 0
+                                    ? newConn.map((items: any, idx: number) => (
+                                        <Xarrow
+                                          path="grid"
+                                          strokeWidth={1}
+                                          zIndex={1000}
+                                          headSize={16}
+                                          color="black"
+                                          start={items?.start}
+                                          end={items?.end}
+                                          key={idx}
+                                          labels={
+                                            <div className={Styles.tempwrapper}>
+                                              <span
+                                                className={
+                                                  Styles.addConditionIcon
+                                                }
                                               >
-                                                <span
-                                                  className={
-                                                    Styles.addConditionIcon
+                                                <FontAwesomeIcon
+                                                  icon={faXmarkCircle}
+                                                  style={{
+                                                    cursor: 'pointer',
+                                                  }}
+                                                  onClick={() =>
+                                                    removeConnection(items)
                                                   }
-                                                >
-                                                  <FontAwesomeIcon
-                                                    icon={faXmarkCircle}
-                                                    style={{
-                                                      cursor: 'pointer',
-                                                    }}
-                                                    onClick={() =>
-                                                      removeConnection(items)
-                                                    }
-                                                  />
-                                                </span>
-                                                {/* <span
+                                                />
+                                              </span>
+                                              <span
                                                 className={
                                                   Styles.addConditionIcon
                                                 }
@@ -662,23 +1023,33 @@ const HomePage: React.FC<Props> = ({
                                                     cursor: 'pointer',
                                                   }}
                                                   onClick={(e: any) => {
-                                                    onPlusClickHandler(e);
+                                                    onPlusClickHandler(
+                                                      e,
+                                                      items
+                                                    );
+                                                    setCurrentCardData(item);
                                                   }}
                                                 />
-                                              </span> */}
-                                              </div>
-                                            }
-                                            startAnchor="auto"
-                                            endAnchor="auto"
-                                            // gridBreak="20%"
-                                          />
-                                        )
-                                      )
+                                              </span>
+                                            </div>
+                                          }
+                                          startAnchor="auto"
+                                          endAnchor="auto"
+                                        />
+                                      ))
                                     : ''}
                                   <MultiCard
+                                    skipPreSelect={skipPreSelect}
+                                    destinationColumnSelect={
+                                      destinationColumnSelect
+                                    }
+                                    setDraggableCardVisible={
+                                      setDraggableCardVisible
+                                    }
                                     isDraggableCardVisible={
                                       isDraggableCardVisible
                                     }
+                                    newConnection={newConn}
                                     constraintIcon={constraintIcon}
                                     number={column.number}
                                     forwardRef={wrapperRef}
@@ -698,6 +1069,27 @@ const HomePage: React.FC<Props> = ({
                                       ) ||
                                       item?.Type?.toLowerCase().includes(
                                         'AssessmentComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CompetencyComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CocurricularComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CocurricularComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'CourseComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'ExtracurricularComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'JobComponent'.toLowerCase()
+                                      ) ||
+                                      item?.Type?.toLowerCase().includes(
+                                        'WorkExperienceComponent'.toLowerCase()
                                       )
                                     }
                                     isConditionalCard={item?.Type?.toLowerCase().includes(
@@ -722,9 +1114,6 @@ const HomePage: React.FC<Props> = ({
                                     updatedPathwayComponentConditionCards={
                                       updatedPathwayComponentConditionCards
                                     }
-                                    pathwayComponentCards={
-                                      pathwayComponentCards
-                                    }
                                     isConditionalModalStatus={
                                       isConditionalModalStatus
                                     }
@@ -733,15 +1122,27 @@ const HomePage: React.FC<Props> = ({
                                     }
                                     leftpanelSelectedElem={undefined}
                                     ConstraintConditionState={false}
+                                    allComponentCardsData={
+                                      allComponentCardsData
+                                    }
+                                    allConditionalCardsData={
+                                      allConditionalCardsData
+                                    }
+                                    connectionsCTID={connectionsCTID}
+                                    setIsConditionalEditing={
+                                      setIsConditionalEditing
+                                    }
+                                    getComponentConditionData={
+                                      getComponentConditionData
+                                    }
                                   />
                                 </>
                               ))}
-
                           {!!isDestinationColumnStatus && index === 1 && (
                             <MultiCard
+                              skipPreSelect={skipPreSelect}
                               onClick={() => setShowRightPanel(true)}
                               key={uuidv4()}
-                              //id={0}
                               isAddDestination={
                                 column?.isDestinationColumnSelected
                                   ? true
@@ -765,7 +1166,6 @@ const HomePage: React.FC<Props> = ({
                               columnNumber={0}
                               HasProgressionLevel=""
                               ConstraintConditionState={false}
-                              pathwayComponentCards={[]}
                             />
                           )}
                           {!!isStartFromInitialColumnSelected &&
@@ -774,8 +1174,7 @@ const HomePage: React.FC<Props> = ({
                             pathwayComponentCards?.length <= 1 && (
                               <MultiCard
                                 onClick={() => setShowRightPanel(true)}
-                                key={0}
-                                //id={0}
+                                key={index}
                                 firstComponent={
                                   column?.CTID === getLastColumn('first')
                                     ? true
@@ -787,7 +1186,7 @@ const HomePage: React.FC<Props> = ({
                                     ? true
                                     : false
                                 }
-                                data={{ Type: 'addDestination' }}
+                                data={{ Type: 'addFirst' }}
                                 destinationComponent={
                                   column?.isDestinationColumnSelected
                                 }
@@ -803,7 +1202,6 @@ const HomePage: React.FC<Props> = ({
                                 columnNumber={0}
                                 HasProgressionLevel=""
                                 ConstraintConditionState={false}
-                                pathwayComponentCards={[]}
                               />
                             )}
                         </Xwrapper>
@@ -882,114 +1280,149 @@ const HomePage: React.FC<Props> = ({
   };
 
   return (
-    <Layout className={Styles.centralPannel}>
-      <Header
-        setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
-        isLeftPanelVisible={isLeftPanelVisible}
-      />
-      {!!isLeftPanelVisible && (
-        <Layout style={{ display: 'flex', flexDirection: 'row' }}>
-          <Sider trigger={null} collapsible collapsed={collapsed}>
-            <LeftPanel
-              onCloseHandler={() => onCloseHandler}
-              isDraggableCardVisibleMethod={(isDragTure: boolean) =>
-                setDraggableCardVisible(isDragTure)
-              }
-              setLeftpanelSelectedElem={setLeftpanelSelectedElem}
-              onClickPreselectComponent={onClickPreselectComponent}
-            />
-          </Sider>
-          <Layout
-            className="site-layout"
-            style={{
-              marginLeft: !collapsed ? '277px' : '0px',
-            }}
-          >
-            <div className={Styles.leftPanelTrigger}>
-              {collapsed ? (
-                <FontAwesomeIcon
-                  icon={faAngleDoubleRight}
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{ position: 'fixed' }}
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faAngleDoubleLeft}
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{ position: 'fixed' }}
-                />
-              )}
-            </div>
-            <Content className="site-layout-background">
-              <TransformWrapper
-                initialScale={1}
-                disabled={isZoomDisabled}
-                centerZoomedOut={false}
-                centerOnInit={false}
-                wheel={{ disabled: true }}
-              >
-                {({ setTransform, resetTransform }) => (
-                  <React.Fragment>
-                    <div className="zoom-tools">
-                      <button
-                        onClick={() => setTransform(1, 1, 0.8, 400, 'easeOut')}
-                      >
-                        -
-                      </button>
-                      <button onClick={() => resetTransform()}>x</button>
-                    </div>
-                    <TransformComponent>
-                      <div style={{ display: 'flex' }}>
-                        {columnsData &&
-                          columnsData?.map((column: any, index: any) => (
-                            <div
-                              id={column.Id}
-                              key={index}
-                              style={{
-                                textAlign: 'center',
-                                width: 'auto',
-                              }}
-                            >
+    <>
+      <Layout className={Styles.centralPannel}>
+        <Header
+          setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
+          isLeftPanelVisible={isLeftPanelVisible}
+        />
+        {!!isLeftPanelVisible && (
+          <Layout style={{ display: 'flex', flexDirection: 'row' }}>
+            <Sider trigger={null} collapsible collapsed={collapsed}>
+              <LeftPanel
+                onCloseHandler={() => onCloseHandler}
+                isDraggableCardVisibleMethod={(isDragTure: boolean) =>
+                  setDraggableCardVisible(isDragTure)
+                }
+                setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+                onClickPreselectComponent={onClickPreselectComponent}
+                pathwayComponentCards={pathwayComponentCards}
+                pathwayComponentConditionCards={pathwayComponentConditionCards}
+              />
+            </Sider>
+            <Layout
+              className="site-layout"
+              style={{
+                marginLeft: !collapsed ? '277px' : '0px',
+              }}
+            >
+              <div className={Styles.leftPanelTrigger}>
+                {collapsed ? (
+                  <FontAwesomeIcon
+                    icon={faAngleDoubleRight}
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{ position: 'fixed' }}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faAngleDoubleLeft}
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{ position: 'fixed' }}
+                  />
+                )}
+              </div>
+              <Content className="site-layout-background">
+                <TransformWrapper
+                  initialScale={1}
+                  disabled={isZoomDisabled}
+                  centerZoomedOut={false}
+                  centerOnInit={false}
+                  panning={{ disabled: true }}
+                  wheel={{ disabled: true }}
+                >
+                  {({ setTransform, resetTransform }) => (
+                    <React.Fragment>
+                      <div className="zoom-tools">
+                        <button
+                          onClick={() =>
+                            setTransform(1, 1, 0.8, 400, 'easeOut')
+                          }
+                        >
+                          -
+                        </button>
+                        <button onClick={() => resetTransform()}>x</button>
+                      </div>
+                      <TransformComponent>
+                        <div style={{ display: 'flex' }}>
+                          {columnsData &&
+                            columnsData?.map((column: any, index: any) => (
                               <div
+                                id={column.Id}
+                                key={index}
                                 style={{
-                                  backgroundColor: `${
-                                    index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
-                                  }`,
+                                  textAlign: 'center',
+                                  width: 'auto',
                                 }}
                               >
-                                <span
+                                <div
                                   style={{
-                                    color: '#000000',
                                     backgroundColor: `${
                                       index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
                                     }`,
                                   }}
                                 >
-                                  {column.Name}
-                                </span>
+                                  <span
+                                    style={{
+                                      color: '#000000',
+                                      backgroundColor: `${
+                                        index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
+                                      }`,
+                                    }}
+                                  >
+                                    {column.Name}
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex' }}>
+                                  {getDropWrapperLayout(column, index)}
+                                </div>
                               </div>
-                              <div style={{ display: 'flex' }}>
-                                {getDropWrapperLayout(column, index)}
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </TransformComponent>
-                  </React.Fragment>
-                )}
-              </TransformWrapper>
-            </Content>
+                            ))}
+                        </div>
+                      </TransformComponent>
+                    </React.Fragment>
+                  )}
+                </TransformWrapper>
+              </Content>
+            </Layout>
           </Layout>
-        </Layout>
+        )}
+        {showRightPanel && (
+          <RightPanel
+            visible={showRightPanel}
+            onCloseHandler={(value: boolean) => setShowRightPanel(value)}
+            panelData={rightPanelData}
+          />
+        )}
+      </Layout>
+      {(isConditionalModalStatus || isConditionalEditing) && (
+        <Modal
+          visible={isConditionalModalStatus || isConditionalEditing}
+          title=""
+          footer={[]}
+          onCancel={() => {
+            setIsConditionalModalStatus(false);
+            setIsConditionalEditing(false);
+          }}
+        >
+          <AddConditionalComponent
+            visibleConstraintConditionProp={setIsConditionalModalStatus}
+            setIsConditionalModalStatus={setIsConditionalModalStatus}
+            allComponentCardsData={allComponentCardsData}
+            allConditionalCardsData={allConditionalCardsData}
+            connectionsCTID={connectionsCTID}
+            updatedPathwayComponentConditionCards={
+              updatedPathwayComponentConditionCards
+            }
+            isConditionalEditing={isConditionalEditing}
+            setIsConditionalEditing={setIsConditionalEditing}
+            progressionLevelForAddComponent={progressionLevelForAddComponent}
+            data={
+              isConditionalEditing ? componentConditionData : currentCardData
+            }
+          />
+        </Modal>
       )}
-      {showRightPanel && (
-        <RightPanel
-          visible={showRightPanel}
-          onCloseHandler={(value: boolean) => setShowRightPanel(value)}
-          panelData={rightPanelData}
-        />
-      )}
-    </Layout>
+    </>
   );
 };
 

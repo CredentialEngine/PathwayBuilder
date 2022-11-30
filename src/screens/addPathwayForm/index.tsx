@@ -1,9 +1,9 @@
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, Col, Form, Divider, Tag } from 'antd';
+import { Row, Col, Form, Divider, Tag, Modal } from 'antd';
 
-import _ from 'lodash';
+import _, { noop } from 'lodash';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import React, { useEffect, useState } from 'react';
 
@@ -42,17 +42,6 @@ import {
   getDataForProgressionModelSuccess,
 } from './state/actions';
 
-interface ComponentTypesValue {
-  label: string;
-  value: string;
-  RowId?: string;
-  Id?: number;
-  CodedNotation?: string;
-  Name?: string;
-  Description?: string;
-  URI?: string;
-}
-
 export interface Props {
   addPathwayWrapperFields?: any;
   setAddPathwayWrapeprFields: (a: any) => void;
@@ -60,6 +49,7 @@ export interface Props {
   setIsPreSelectedCreateResourceVisible: (a: boolean) => void;
   setIsAddPathwayFormVisible: (a: boolean) => void;
   setIsEditPathwayFormVisible: (a: boolean) => void;
+  setIsDropCardAfterEditingForm: (a: boolean) => void;
 }
 
 const tagRender = (props: CustomTagProps) => {
@@ -89,6 +79,7 @@ const AddPathwayForm: React.FC<Props> = ({
   setIsPreSelectedCreateResourceVisible,
   setIsAddPathwayFormVisible,
   setIsEditPathwayFormVisible,
+  setIsDropCardAfterEditingForm,
 }) => {
   const [addPathwayFormFields, setAddPathwayFormFields] = useState<any>(
     new PathwayEntity()
@@ -102,19 +93,12 @@ const AddPathwayForm: React.FC<Props> = ({
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
-  const [occupationSelectedValue, setOccupationSelectedValue] = useState<
-    ComponentTypesValue[]
-  >([]);
+
   const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
-  const [industrySelectedValue, setIndustrySelectedValue] = useState<
-    ComponentTypesValue[]
-  >([]);
+
   const [allInstructionalProgramTypeData, setAllInstructionalProgramTypeData] =
     useState<[]>([]);
-  const [
-    instructionalProgramSelectedValue,
-    setInstructionalProgramSelectedValue,
-  ] = useState<ComponentTypesValue[]>([]);
+
   const [
     isAddPathwayFormNextButtonDisable,
     setIsAddPathwayFormNextButtonDisable,
@@ -208,21 +192,12 @@ const AddPathwayForm: React.FC<Props> = ({
     }
   }, [savePathwayResult]);
 
-  let { mappedData: PathwayWrapper } = pathwayWrapper;
+  const { mappedData: PathwayWrapper } = pathwayWrapper;
   const dispatch = useDispatch();
 
   const userOrganizations = useSelector(
     (state: any) => state.initalReducer?.currentUserData?.data?.Organizations
   );
-
-  const pathwayData = useSelector(
-    (state: any) => state.initalReducer?.pathwayComponentData
-  );
-  useEffect(() => {
-    if (pathwayData?.data) {
-      PathwayWrapper = pathwayData?.data;
-    }
-  }, [pathwayData]);
 
   useEffect(() => {
     if (!_.isNull(PathwayWrapper.Pathway)) {
@@ -239,6 +214,8 @@ const AddPathwayForm: React.FC<Props> = ({
         PathwayWrapper.Pathway.HasProgressionModel;
       updatedPathwayFormFields.IndustryType =
         PathwayWrapper.Pathway.IndustryType;
+      updatedPathwayFormFields.InstructionalProgramType =
+        PathwayWrapper.Pathway.InstructionalProgramType;
       updatedPathwayFormFields.OccupationType =
         PathwayWrapper.Pathway.OccupationType;
       updatedPathwayFormFields.SubjectWebpage =
@@ -254,13 +231,32 @@ const AddPathwayForm: React.FC<Props> = ({
 
     setCheckboxvalues({
       ...checkboxValues,
-      progressionModel: PathwayWrapper?.ProgressionModels?.length,
+      progressionModel: PathwayWrapper.Pathway?.HasProgressionModel?.length > 0,
     });
 
-    if (PathwayWrapper?.ProgressionModels?.length > 0) {
-      setSelectedProgressionModelValue(
-        _.get(PathwayWrapper?.ProgressionModels, '0').Name
+    if (
+      PathwayWrapper.Pathway?.HasProgressionModel &&
+      PathwayWrapper.Pathway?.HasProgressionModel[0] !==
+        _.get(PathwayWrapper?.ProgressionModels, '0')?.CTID
+    ) {
+      const selectedProgressionModel = allProgressionModel?.filter(
+        (model: any) =>
+          model.CTID === PathwayWrapper.Pathway?.HasProgressionModel[0]
       );
+
+      setSelectedProgressionModelValue(
+        _.get(selectedProgressionModel, '0')?.Name
+      );
+      setAddPathwayFormFields({
+        ...PathwayWrapper.Pathway,
+        HasProgressionModel: [_.get(selectedProgressionModel, '0')?.CTID],
+      });
+    } else {
+      if (PathwayWrapper?.ProgressionModels?.length > 0) {
+        setSelectedProgressionModelValue(
+          _.get(PathwayWrapper?.ProgressionModels, '0').Name
+        );
+      }
     }
   }, [PathwayWrapper.Pathway]);
 
@@ -273,23 +269,6 @@ const AddPathwayForm: React.FC<Props> = ({
     );
   }, [addPathwayFormFields]);
 
-  useEffect(() => {
-    const updatedData = { ...addPathwayFormFields };
-
-    if (occupationSelectedValue.length > 0) {
-      updatedData.OccupationType = occupationSelectedValue;
-    }
-    if (industrySelectedValue.length > 0) {
-      updatedData.IndustryType = industrySelectedValue;
-    }
-    if (instructionalProgramSelectedValue.length > 0) {
-      updatedData.InstructionalType = industrySelectedValue;
-    }
-    if (!isEditPathwayFormVisible) {
-      setAddPathwayFormFields(updatedData);
-    }
-  }, [occupationSelectedValue, industrySelectedValue]);
-
   const allHasProgressionModel = useSelector(
     (state: any) => state.addPathwayFormReducer.allHasProgressionModel
   );
@@ -297,8 +276,8 @@ const AddPathwayForm: React.FC<Props> = ({
   const { selectedOrganization } = pathwayWrapper;
 
   useEffect(() => {
-    if (allHasProgressionModel.valid) {
-      setAllProgressionModel(allHasProgressionModel.data?.Results);
+    if (allHasProgressionModel.data?.length > 0) {
+      setAllProgressionModel(allHasProgressionModel.data);
     }
     if (!isEditPathwayFormVisible) {
       if (userOrganizations?.length > 0 && selectedOrganization) {
@@ -358,12 +337,14 @@ const AddPathwayForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (searchFilterValue.keywords !== '') {
-      getHasProgressionModel();
+      getHasProgressionModel(searchFilterValue);
+    } else {
+      getHasProgressionModel('');
     }
   }, [searchFilterValue]);
 
-  const getHasProgressionModel = async () => {
-    const result = await fetchProgressionList(searchFilterValue);
+  const getHasProgressionModel = async (val: any) => {
+    const result = await fetchProgressionList(val);
     if (result?.updatedProgressionModel.length > 0) {
       dispatch(
         getDataForProgressionModelSuccess(result?.updatedProgressionModel)
@@ -402,6 +383,7 @@ const AddPathwayForm: React.FC<Props> = ({
       ...addPathwayFormFields,
       HasProgressionModel: [_.get(selectedProgressionModel, '0').CTID],
     });
+    setSearchFilterValue('');
   };
 
   async function fetchOccupationList(e: string): Promise<any[]> {
@@ -487,56 +469,163 @@ const AddPathwayForm: React.FC<Props> = ({
         return updatedBody;
       });
   }
-
   const onDebounceSelectHnadler = (e: any, name: string) => {
+    const updatedData = { ...addPathwayFormFields };
     if (name === 'Occupation') {
-      const filteredOccupations = allOccupationTypeData.filter(
+      const filteredOccupations = allOccupationTypeData?.filter(
         (data: any) => data.Name === e.value
       );
-
-      setOccupationSelectedValue((prevState: any) => [
-        ...prevState,
-        ...filteredOccupations,
-      ]);
+      const occData = addPathwayFormFields?.OccupationType ?? [];
+      updatedData.OccupationType = [...occData, ...filteredOccupations];
     }
     if (name === 'Industry') {
-      const filteredIndustry = allIndustryTypeData.filter(
+      const filteredIndustry = allIndustryTypeData?.filter(
         (data: any) => data.Name === e.value
       );
-
-      setIndustrySelectedValue((prevState: any) => [
-        ...prevState,
-        ...filteredIndustry,
-      ]);
+      const indData = addPathwayFormFields?.IndustryType ?? [];
+      updatedData.IndustryType = [...indData, ...filteredIndustry];
     }
-    if (name === 'instructionalProgram') {
+    if (name === 'InstructionalProgram') {
       const filteredInstructionalProgram =
-        allInstructionalProgramTypeData.filter(
+        allInstructionalProgramTypeData?.filter(
           (data: any) => data.Name === e.value
         );
-
-      setInstructionalProgramSelectedValue((prevState: any) => [
-        ...prevState,
+      const insData = addPathwayFormFields?.InstructionalProgramType ?? [];
+      updatedData.InstructionalProgramType = [
+        ...insData,
         ...filteredInstructionalProgram,
-      ]);
+      ];
     }
+    setAddPathwayFormFields(updatedData);
   };
 
+  const onDebounceDeSelectHnadler = (e: any, name: string) => {
+    const updatedData = { ...addPathwayFormFields };
+    if (name === 'Occupation') {
+      updatedData.OccupationType = updatedData?.OccupationType?.filter(
+        (item: any) => item.Name !== e.key
+      );
+    }
+    if (name === 'Industry') {
+      updatedData.IndustryType = updatedData.IndustryType?.filter(
+        (item: any) => item.Name !== e.key
+      );
+    }
+    if (name === 'InstructionalProgram') {
+      updatedData.InstructionalProgramType =
+        updatedData?.InstructionalProgramType?.filter(
+          (item: any) => item.Name !== e.key
+        );
+    }
+    setAddPathwayFormFields(updatedData);
+  };
   const onAddPathwayOkHandler = () => {
-    dispatch(
-      saveDataForPathwayRequest({
-        ...addPathwayWrapperFields,
-        Pathway: addPathwayFormFields,
-      })
-    );
+    if (isEditPathwayFormVisible) {
+      if (
+        _.toString(_.get(addPathwayFormFields?.HasProgressionModel, '0')) ===
+          _.toString(_.get(PathwayWrapper?.ProgressionModels, '0')?.CTID) &&
+        pathwayWrapper.mappedData?.ProgressionLevels?.length > 0 &&
+        pathwayWrapper.mappedData?.ProgressionModels?.length > 0
+      ) {
+        dispatch(
+          saveDataForPathwayRequest({
+            ...PathwayWrapper,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: PathwayWrapper.PathwayComponents,
+            PendingComponents: PathwayWrapper.PendingComponents,
+            ProgressionLevels: PathwayWrapper.ProgressionLevels,
+            ProgressionModels: PathwayWrapper.ProgressionModels,
+          })
+        );
+        dispatch(
+          updateMappedDataRequest({
+            ...PathwayWrapper,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: PathwayWrapper.PathwayComponents,
+            PendingComponents: PathwayWrapper.PendingComponents,
+            ProgressionLevels: PathwayWrapper.ProgressionLevels,
+            ProgressionModels: PathwayWrapper.ProgressionModels,
+          })
+        );
+        setIsEditPathwayFormVisible(false);
+        setIsDropCardAfterEditingForm(true);
+      } else if (
+        _.toString(_.get(addPathwayFormFields?.HasProgressionModel, '0')) ==
+          '' &&
+        (pathwayWrapper.mappedData?.ProgressionModels == undefined ||
+          pathwayWrapper.mappedData?.ProgressionModels.length == 0)
+      ) {
+        dispatch(
+          saveDataForPathwayRequest({
+            ...PathwayWrapper,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: PathwayWrapper.PathwayComponents,
+            PendingComponents: PathwayWrapper.PendingComponents,
+            ProgressionLevels: PathwayWrapper.ProgressionLevels,
+            ProgressionModels: PathwayWrapper.ProgressionModels,
+          })
+        );
+        dispatch(
+          updateMappedDataRequest({
+            ...PathwayWrapper,
+            Pathway: addPathwayFormFields,
+            PathwayComponents: PathwayWrapper.PathwayComponents,
+            PendingComponents: PathwayWrapper.PendingComponents,
+            ProgressionLevels: PathwayWrapper.ProgressionLevels,
+            ProgressionModels: PathwayWrapper.ProgressionModels,
+          })
+        );
+        setIsEditPathwayFormVisible(false);
+        setIsDropCardAfterEditingForm(true);
+      } else {
+        Modal.confirm({
+          title: 'By clicking on Save all existing data will be lost.',
+          okText: 'Save',
+          cancelText: 'Cancel',
+          onOk: () => {
+            const updatedPathwayWrapper = { ...PathwayWrapper };
 
-    dispatch(
-      updateMappedDataRequest({
-        ...addPathwayWrapperFields,
-        Pathway: addPathwayFormFields,
-        PathwayComponents: [],
-      })
-    );
+            updatedPathwayWrapper.Pathway = {
+              ...addPathwayFormFields /* updatedPathway */,
+              HasDestinationComponent: '',
+            };
+            updatedPathwayWrapper.PathwayComponents = [];
+            updatedPathwayWrapper.ComponentConditions = [];
+            updatedPathwayWrapper.PendingComponents = [];
+            (updatedPathwayWrapper.ProgressionLevels =
+              addPathwayWrapperFields.ProgressionLevels),
+              (updatedPathwayWrapper.ProgressionModels =
+                addPathwayWrapperFields.ProgressionModels),
+              setAddPathwayFormFields({ ...updatedPathwayWrapper.Pathway });
+            dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+            dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+          },
+          onCancel: noop,
+        });
+        setIsEditPathwayFormVisible(false);
+        setIsDropCardAfterEditingForm(true);
+      }
+    } else {
+      dispatch(
+        saveDataForPathwayRequest({
+          ...addPathwayWrapperFields,
+          Pathway: addPathwayFormFields,
+          DeletedComponentConditions: [],
+          DeletedComponents: [],
+        })
+      );
+
+      dispatch(
+        updateMappedDataRequest({
+          ...addPathwayWrapperFields,
+          Pathway: addPathwayFormFields,
+          PathwayComponents: [],
+          Constraints: [],
+          DeletedComponentConditions: [],
+          DeletedComponents: [],
+        })
+      );
+    }
   };
 
   const customToolTipIcon = (type: any) => (
@@ -556,36 +645,68 @@ const AddPathwayForm: React.FC<Props> = ({
     </span>
   );
 
+  const getToolTipText = (value: string) => {
+    let text = '';
+    switch (value) {
+      case 'Industry':
+        text =
+          'Identify the specific industries that apply to this pathway. We recommend using the NAICS codes.';
+        break;
+      case 'Keywords':
+        text =
+          'Enter keywords or phrases that describe this pathway. Press the enter key after each word or phrase to enter it as a keyword.';
+        break;
+      case 'Occupations':
+        text =
+          'Identify the specific occupations that apply to this pathway. We recommend using the SOC codes.';
+        break;
+      case 'Instructional':
+        text =
+          'Identify the specific instructional program classifications that apply to this pathway. We recommend using the CIP codes.';
+        break;
+      case 'Subjects':
+        text =
+          'Enter subjects or topics that this pathway covers. Press the enter key after each word or phrase to enter it as a subject.';
+        break;
+      case 'Website':
+        text =
+          'Provide a URL to the web page, PDF, or other source documentation where this pathway is described.';
+        break;
+      case 'Model':
+        text = 'Select an applicable Progression Model for this pathway.';
+        break;
+    }
+    return text;
+  };
+
   const customToolTip = (type: any) => (
     <Tag
       color="rgb(220,250,249)"
       style={{
         width: '100%',
-        wordWrap: 'break-word',
+        // wordWrap: 'break-word',
         padding: 10,
         paddingRight: 20,
         marginTop: 10,
         blockOverflow: 'ellipsis',
         whiteSpace: 'pre-wrap',
+        position: 'relative',
       }}
     >
-      <CloseOutlined
-        style={{
-          marginLeft: 3,
-          fontSize: '10',
-          position: 'absolute',
-          right: 5,
-          top: 55,
-          cursor: 'pointer',
-        }}
-        onClick={() => onShowCloseToolTip(type, false)}
-      />
-      {`Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-      Lorem Ipsum has been the industry's standard dummy text ever since the
-      1500s, when an unknown printer took a galley of type and scrambled it to
-      make a type specimen book. It has survived not only five centuries, but
-      also the leap into electronic typesetting, remaining essentially
-      unchanged.`}
+      <>
+        <CloseOutlined
+          style={{
+            marginLeft: 3,
+            fontSize: '10',
+            position: 'absolute',
+            right: 5,
+            top: 5,
+            cursor: 'pointer',
+          }}
+          onClick={() => onShowCloseToolTip(type, false)}
+        />
+        {getToolTipText(type)}
+      </>
     </Tag>
   );
 
@@ -668,16 +789,22 @@ const AddPathwayForm: React.FC<Props> = ({
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
-              // tooltip="This is a required field"
             >
               {customToolTipIcon('Industry')}
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={addPathwayFormFields?.IndustryType}
+                value={
+                  isEditPathwayFormVisible
+                    ? addPathwayFormFields?.IndustryType
+                    : undefined
+                }
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Industry')
+                }
               />
 
               {toolTip.find((item: any) => item.type === 'Industry')
@@ -717,10 +844,17 @@ const AddPathwayForm: React.FC<Props> = ({
               <DebounceSelect
                 mode="multiple"
                 tagRender={tagRender}
-                value={addPathwayFormFields?.OccupationType}
+                value={
+                  isEditPathwayFormVisible
+                    ? addPathwayFormFields?.OccupationType
+                    : undefined
+                }
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Occupation')
+                }
               />
               {toolTip.find((item: any) => item.type === 'Occupations')
                 .isVisible && customToolTip('Occupations')}
@@ -739,11 +873,18 @@ const AddPathwayForm: React.FC<Props> = ({
                 <DebounceSelect
                   mode="multiple"
                   tagRender={tagRender}
-                  value={addPathwayFormFields?.InstructionalProgram}
+                  value={
+                    isEditPathwayFormVisible
+                      ? addPathwayFormFields?.InstructionalProgramType
+                      : undefined
+                  }
                   placeholder="Select Instructional Program"
                   fetchOptions={fetchInstructionalProgramList}
                   onSelect={(e: any) =>
                     onDebounceSelectHnadler(e, 'InstructionalProgram')
+                  }
+                  onDeselect={(e: any) =>
+                    onDebounceDeSelectHnadler(e, 'InstructionalProgram')
                   }
                 />
               </>
@@ -790,7 +931,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   : null
               }
             >
-              {/* {customToolTipIcon("Website")} */}
+              {customToolTipIcon('Website')}
               <InputBox
                 placeholder="add a URL"
                 maxLength={75}
@@ -803,8 +944,8 @@ const AddPathwayForm: React.FC<Props> = ({
                     : setisTouched({ ...isTouched, SubjectWebpage: true })
                 }
               />
-              {/* {toolTip.find((item:any) => item.type === 'Website').isVisible &&
-              customToolTip("Website")} */}
+              {toolTip.find((item: any) => item.type === 'Website').isVisible &&
+                customToolTip('Website')}
             </Form.Item>
           </Col>
           <Divider className={styles.divider} />
@@ -816,8 +957,7 @@ const AddPathwayForm: React.FC<Props> = ({
               label="This Pathway Contains a Progression Model"
             />
           </Col>
-          {(!!checkboxValues.progressionModel ||
-            addPathwayFormFields?.HasProgressionModel?.length > 0) && (
+          {!!checkboxValues.progressionModel && (
             <Col span={24}>
               <Form.Item
                 label="Progression Model"
@@ -826,6 +966,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 labelCol={{ span: 24 }}
                 validateTrigger="onBlur"
               >
+                {customToolTipIcon('Model')}
                 <AutoCompleteBox
                   {...SelectAutoCompleteProps(
                     allProgressionModel,
@@ -840,6 +981,8 @@ const AddPathwayForm: React.FC<Props> = ({
                   onSelect={(e: any) => onProgressionModelSelectHandler(e)}
                   onChange={(e: any) => onProgressionModelHandler(e)}
                 />
+                {toolTip.find((item: any) => item.type === 'Model').isVisible &&
+                  customToolTip('Model')}
               </Form.Item>
             </Col>
           )}

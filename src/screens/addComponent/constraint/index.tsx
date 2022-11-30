@@ -20,7 +20,8 @@ interface Props {
 }
 
 const Constraint: React.FC<Props> = (Props) => {
-  const { RowIndex, getConstraintData, getRequiredDeleteRow } = Props;
+  const { RowIndex, getConstraintData, getRequiredDeleteRow, constraintRow } =
+    Props;
   const getAllComparators = useSelector(
     (state: any) => state.addConditionalComponent.comparatorsData
   );
@@ -37,11 +38,21 @@ const Constraint: React.FC<Props> = (Props) => {
     Comparator: [],
     RightAction: [],
     RightSource: [],
-    id: 0,
+    id: null,
   });
   const [leftSourcedata, setleftSourceData] = useState<any>([]);
   const [rightSourcedata, setRightSourceData] = useState<any>([]);
   const [Comparator, setComparator] = useState<any>([]);
+
+  useEffect(() => {
+    if (
+      constraintRow &&
+      constraintRow?.LeftSource &&
+      constraintRow?.RightSource
+    ) {
+      setConstraintData(constraintRow);
+    }
+  }, [constraintRow]);
 
   //   functions
   const handleConstraintAction = (value: string, label: string) => {
@@ -88,6 +99,13 @@ const Constraint: React.FC<Props> = (Props) => {
           });
         }
       });
+      if (e.label === undefined) {
+        setConstraintData({
+          ...constraintData,
+          LeftSource: [...constraintData?.LeftSource, e.value],
+          id: RowIndex,
+        });
+      }
     }
     if (name === 'RightSource') {
       rightSourcedata.map((val: any) => {
@@ -99,6 +117,13 @@ const Constraint: React.FC<Props> = (Props) => {
           });
         }
       });
+      if (e.label === undefined) {
+        setConstraintData({
+          ...constraintData,
+          RightSource: [...constraintData?.RightSource, e.value],
+          id: RowIndex,
+        });
+      }
     }
   };
 
@@ -129,7 +154,14 @@ const Constraint: React.FC<Props> = (Props) => {
   }, [getAllComparators, getAllArrayConcept]);
 
   useEffect(() => {
-    getConstraintData(constraintData);
+    if (
+      constraintData &&
+      constraintData?.LeftSource?.length > 0 &&
+      constraintData?.RightSource?.length > 0 &&
+      constraintData?.Comparator?.length > 0
+    ) {
+      getConstraintData(constraintData);
+    }
   }, [constraintData]);
 
   const handleDeselectHnadler = (event: any, name: string) => {
@@ -188,12 +220,13 @@ const Constraint: React.FC<Props> = (Props) => {
       <Row gutter={20}>
         <Col span="8">
           <>
-            {constraintData?.LeftSource?.length > 1 && (
+            {constraintData?.LeftSource?.length > 0 && (
               <Dropdown
                 options={constraintEntityFields.LeftAction}
-                defaultValue="Any Of"
+                placeholder="Left Action"
                 showSearch={false}
                 onChange={(e) => handleConstraintAction(e, 'LeftAction')}
+                defaultValue={constraintData?.RightSource}
               />
             )}
             <Form.Item
@@ -204,7 +237,7 @@ const Constraint: React.FC<Props> = (Props) => {
               <DebounceSelect
                 showSearch
                 mode="tags"
-                value={constraintEntityFields.LeftSource}
+                value={constraintData?.LeftSource}
                 placeholder="Left Sources"
                 fetchOptions={allConstraintOperandfunc}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'LeftSource')}
@@ -230,7 +263,7 @@ const Constraint: React.FC<Props> = (Props) => {
               {constraintData?.RightSource?.length > 1 && (
                 <Dropdown
                   options={constraintEntityFields.RightAction}
-                  defaultValue="Any Of"
+                  placeholder="Right Action"
                   showSearch={false}
                   onChange={(e) => handleConstraintAction(e, 'RightAction')}
                 />
@@ -243,7 +276,7 @@ const Constraint: React.FC<Props> = (Props) => {
                 <DebounceSelect
                   showSearch
                   mode="tags"
-                  value={constraintEntityFields.RightSource}
+                  value={constraintData?.RightSource}
                   placeholder="Right Sources"
                   fetchOptions={allConstraintOperandfunc}
                   onSelect={(e: any) =>

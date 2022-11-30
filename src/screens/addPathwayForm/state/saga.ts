@@ -2,6 +2,7 @@ import { call, put, debounce, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../../../apiConfig/api';
 import {
+  BASE_USER_CREDS,
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
   SEARCH_FOR_PROGRESSION_MODAL,
@@ -31,7 +32,7 @@ export function* getAllProgressionModelData(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
       data: payload.payload,
     });
@@ -66,7 +67,7 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
       url: `${TEMP_BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`,
       method: 'POST',
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${`${BASE_USER_CREDS}`}`,
       },
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +79,6 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
     yield put(getDataForOccupationTypeCodeFailure(error));
   }
 }
-
 function* pathwayFormsaga() {
   yield debounce(
     400,

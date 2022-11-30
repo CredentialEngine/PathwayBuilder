@@ -2,6 +2,7 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../apiConfig/api';
 import {
+  BASE_USER_CREDS,
   GET_DATA_FOR_CURRENT_USER,
   GET_DATA_FOR_PATHWAY,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY,
@@ -10,6 +11,8 @@ import {
 import { TEMP_BASE_URL } from '../apiConfig/setting';
 
 import {
+  approvePathwayFailure,
+  approvePathwaySuccess,
   getCurrentUserDataFailure,
   getCurrentUserDataSuccess,
   getDataForPathwayAndComponentsFailure,
@@ -28,14 +31,17 @@ export function* getCurrentUserData(): Generator {
   try {
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
+
       method: 'GET',
+
       headers: {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
+
     yield put(getCurrentUserDataSuccess(result));
   } catch (error) {
     yield put(getCurrentUserDataFailure(error));
@@ -51,7 +57,7 @@ export function* getPathwayAndComponentData(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
     if (result.Valid) {
@@ -72,12 +78,16 @@ export function* approvePathway(payload: any): Generator {
       //   'Content-Type': 'application/json',
       // },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
     });
-    yield put(getDataForPathwayAndComponentsSuccess(result));
+    if (result.Data.Messages.length === 0) {
+      yield put(approvePathwaySuccess(result));
+    } else if (!result.Data.Valid && result.Data.Messages.length > 0) {
+      yield put(approvePathwayFailure(result));
+    }
   } catch (error) {
-    yield put(getDataForPathwayAndComponentsFailure(error));
+    yield put(approvePathwayFailure(error));
   }
 }
 // export async function savePathwayWrapper(data: any) {
@@ -109,7 +119,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: 'tara.mueller@protiviti.com~ceI$Awesome',
+        userCreds: `${BASE_USER_CREDS}`,
       },
       data: JSON.stringify(payload.payload),
     });

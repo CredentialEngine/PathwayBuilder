@@ -153,6 +153,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
           data: action.payload.Data,
           valid: action?.payload?.Valid,
         },
+        // mappedData: action?.payload?.Data
       };
     case GET_DATA_FOR_PATHWAY_AND_COMPONENTS_FAILURE:
       return {
@@ -208,6 +209,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
+          error: true,
         },
       };
     case SAVE_PATHWAY_SUCCESS:
@@ -219,7 +221,6 @@ export default (state = initState, action: { type: string; payload: any }) => {
           data: action.payload.Messages,
           PathwayId: action.payload.PathwayId,
           valid: action?.payload?.Valid,
-          error: false,
         },
       };
     case SAVE_PATHWAY_FAILURE:

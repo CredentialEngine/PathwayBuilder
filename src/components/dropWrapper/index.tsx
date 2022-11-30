@@ -35,6 +35,7 @@ interface Props {
   updatedPathwayComponentConditionCards: any;
   isFirstColumneSelected: boolean;
   firstColumn: boolean;
+  setDraggableCardVisible: (a: any) => void;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -56,6 +57,7 @@ const DropWrapper: React.FC<Props> = ({
   updatedPathwayComponentConditionCards,
   isFirstColumneSelected,
   firstColumn,
+  setDraggableCardVisible,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   const [columnNumberEsixt, setColumnNumber] = useState<boolean>(false);
@@ -133,7 +135,10 @@ const DropWrapper: React.FC<Props> = ({
     }
   };
 
-  const onDragEndHandler = () => {
+  const onDragEndHandler = (e: any) => {
+    e.target.style.visibility = 'visible';
+    !!setDraggableCardVisible && setDraggableCardVisible(false);
+
     setColumnNumber(false);
   };
 
