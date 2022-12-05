@@ -233,6 +233,37 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
+  const [hasProgressionLevelList, setHasProgressionLevelList] = useState<any>(
+    []
+  );
+  useEffect(() => {
+    setHasProgressionLevelList(
+      columnsData.reduce((acc: any, curr: any) => {
+        if (acc.length > 0) {
+          if (!_.isUndefined(curr?.CTID)) {
+            if (curr?.semesters?.length > 0) {
+              const semestersCTID = curr.semesters.map((sem: any) => sem.CTID);
+              semestersCTID.unshift(curr?.CTID);
+              return [...acc, ...semestersCTID];
+            } else {
+              return [...acc, curr?.CTID];
+            }
+          } else {
+            return acc;
+          }
+        } else {
+          if (curr?.semesters?.length > 0) {
+            const semestersCTID = curr.semesters.map((sem: any) => sem.CTID);
+            semestersCTID.unshift(curr?.CTID);
+            return semestersCTID;
+          } else {
+            return [curr?.CTID];
+          }
+        }
+      }, [])
+    );
+  }, [columnsData]);
+
   useEffect(() => {
     if (pathwayComponent) {
       setNewConn([]); //added to fix
@@ -698,6 +729,7 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
+
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -706,21 +738,58 @@ const HomePage: React.FC<Props> = ({
         end: id,
       });
       e?.target?.classList?.add('active');
-      setNewConn([
-        ...newConn,
-        {
-          start: point.start,
-          end: id,
-        },
-      ]);
-      pathwayComponentCards?.map((card: any) => {
-        if (point?.start === card?.CTID) {
-          setCurrentCardData(card);
-          if (!card?.PrecededBy?.includes(id)) {
-            card?.PrecededBy?.push(id);
+
+      const startCardProgressionLevel: any = _.get(
+        [
+          ...pathwayComponentCards,
+          ...updatedPathwayComponentConditionCards,
+        ].filter(
+          (card: any) =>
+            card?.RowId === point?.start || card?.CTID === point?.start
+        ),
+        '0'
+      ).HasProgressionLevel;
+      const endCardProgressionLevel: any = _.get(
+        [
+          ...pathwayComponentCards,
+          ...updatedPathwayComponentConditionCards,
+        ].filter((card: any) => card?.RowId === id || card?.CTID === id),
+        '0'
+      )?.HasProgressionLevel;
+
+      let startCardIndex = hasProgressionLevelList.findIndex(
+        (level: any) => level === startCardProgressionLevel
+      );
+      let lastCardIndex = hasProgressionLevelList.findIndex(
+        (level: any) => level === endCardProgressionLevel
+      );
+
+      if (startCardIndex == -1) {
+        startCardIndex = 99;
+      }
+
+      if (lastCardIndex == -1) {
+        lastCardIndex = 99;
+      }
+
+      if (startCardIndex < lastCardIndex) {
+        setNewConn([
+          ...newConn,
+          {
+            start: point.start,
+            end: id,
+          },
+        ]);
+
+        pathwayComponentCards?.map((card: any) => {
+          if (point?.start === card?.CTID) {
+            setCurrentCardData(card);
+            if (!card?.PrecededBy?.includes(id)) {
+              card?.PrecededBy?.push(id);
+            }
           }
-        }
-      });
+        });
+      }
       setConstraintIcon(true);
     } else {
       setPoint({
