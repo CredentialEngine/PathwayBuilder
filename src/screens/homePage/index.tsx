@@ -807,13 +807,13 @@ const HomePage: React.FC<Props> = ({
     const tempCon = [] as any;
     if (pathwayComponentCards) {
       pathwayComponentCards?.map((card: any) => {
-        // if (card?.HasCondition.length === 0) {
-        if (card?.PrecededBy?.length > 0) {
-          card?.PrecededBy?.map((child: string) => {
-            tempCon.push({ start: card?.CTID || card?.RowId, end: child });
-          });
+        if (card?.HasCondition.length === 0) {
+          if (card?.PrecededBy?.length > 0) {
+            card?.PrecededBy?.map((child: string) => {
+              tempCon.push({ start: card?.CTID || card?.RowId, end: child });
+            });
+          }
         }
-        // }
 
         if (card?.HasCondition?.length > 0) {
           card?.HasCondition?.map((condition: string) => {
