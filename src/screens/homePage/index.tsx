@@ -739,7 +739,7 @@ const HomePage: React.FC<Props> = ({
       });
       e?.target?.classList?.add('active');
 
-      const startCardProgressionLevel: any = _.get(
+      const startCard: any = _.get(
         [
           ...pathwayComponentCards,
           ...updatedPathwayComponentConditionCards,
@@ -748,20 +748,20 @@ const HomePage: React.FC<Props> = ({
             card?.RowId === point?.start || card?.CTID === point?.start
         ),
         '0'
-      ).HasProgressionLevel;
-      const endCardProgressionLevel: any = _.get(
+      );
+      const endCard: any = _.get(
         [
           ...pathwayComponentCards,
           ...updatedPathwayComponentConditionCards,
         ].filter((card: any) => card?.RowId === id || card?.CTID === id),
         '0'
-      )?.HasProgressionLevel;
+      );
 
       let startCardIndex = hasProgressionLevelList.findIndex(
-        (level: any) => level === startCardProgressionLevel
+        (level: any) => level === startCard?.HasProgressionLevel
       );
       let lastCardIndex = hasProgressionLevelList.findIndex(
-        (level: any) => level === endCardProgressionLevel
+        (level: any) => level === endCard?.HasProgressionLevel
       );
 
       if (startCardIndex == -1) {
@@ -771,8 +771,11 @@ const HomePage: React.FC<Props> = ({
       if (lastCardIndex == -1) {
         lastCardIndex = 99;
       }
-
-      if (startCardIndex < lastCardIndex) {
+      if (
+        startCardIndex < lastCardIndex ||
+        (endCard?.HasProgressionLevel === startCard?.HasProgressionLevel &&
+          startCard?.ColumnNumber < endCard?.ColumnNumber)
+      ) {
         setNewConn([
           ...newConn,
           {
@@ -804,13 +807,13 @@ const HomePage: React.FC<Props> = ({
     const tempCon = [] as any;
     if (pathwayComponentCards) {
       pathwayComponentCards?.map((card: any) => {
-        if (card?.HasCondition.length === 0) {
-          if (card?.PrecededBy?.length > 0) {
-            card?.PrecededBy?.map((child: string) => {
-              tempCon.push({ start: card?.CTID || card?.RowId, end: child });
-            });
-          }
+        // if (card?.HasCondition.length === 0) {
+        if (card?.PrecededBy?.length > 0) {
+          card?.PrecededBy?.map((child: string) => {
+            tempCon.push({ start: card?.CTID || card?.RowId, end: child });
+          });
         }
+        // }
 
         if (card?.HasCondition?.length > 0) {
           card?.HasCondition?.map((condition: string) => {
