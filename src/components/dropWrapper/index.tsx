@@ -111,11 +111,21 @@ const DropWrapper: React.FC<Props> = ({
   };
 
   const onDragEnterHandler = (event: any) => {
-    if (event.currentTarget.contains(event.relatedTarget)) {
+    const spanTagExist =
+      event?.nativeEvent?.fromElement?.innerHTML?.includes('span') ||
+      event?.target?.innerHTML?.includes('span');
+    if (spanTagExist) {
+      setColumnNumber(true);
+    }
+
+    if (
+      event.currentTarget.contains(event.relatedTarget) ||
+      event?.target?.innerHTML?.includes('span')
+    ) {
       const columnNumber =
-        event.relatedTarget.getAttribute('data-columnNumber');
-      const rowNumber = event.relatedTarget.getAttribute('data-rowNumber');
-      const onHoverCTID = event.relatedTarget.getAttribute('data-CTID');
+        event?.relatedTarget?.getAttribute('data-columnNumber');
+      const rowNumber = event?.relatedTarget?.getAttribute('data-rowNumber');
+      const onHoverCTID = event?.relatedTarget?.getAttribute('data-CTID');
 
       if (
         !_.isNull(columnNumber) &&
@@ -160,6 +170,7 @@ const DropWrapper: React.FC<Props> = ({
         forwardRef.current[number] = element;
       }}
       data-cardType="multiCard"
+      data-ColumnNumber={children?.CTID}
     >
       {children}
     </div>

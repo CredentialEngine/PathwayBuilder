@@ -419,6 +419,7 @@ const HomePage: React.FC<Props> = ({
       /* 
         this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
       */
+      createConnection();
       return;
     }
     if (card?.Type === 'conditional') {
@@ -443,6 +444,7 @@ const HomePage: React.FC<Props> = ({
       card.ColumnNumber === ColumnNumber &&
       card.RowNumber === RowNumber
     ) {
+      createConnection();
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
