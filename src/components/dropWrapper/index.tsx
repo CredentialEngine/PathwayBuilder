@@ -116,6 +116,7 @@ const DropWrapper: React.FC<Props> = ({
       event?.target?.innerHTML?.includes('span');
     if (spanTagExist) {
       setColumnNumber(true);
+      return;
     }
 
     if (
