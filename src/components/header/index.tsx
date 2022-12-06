@@ -191,7 +191,6 @@ const Header = (props: Props) => {
             </Col>
           </Row>
         </div>
-        {console.log(approveDisable, 'approveDisable')}
         <div className={styles.titleDescriptionContainer + ' headermiddle'}>
           <div className={styles.headerCenter}>
             <div className={styles.titleContainer}>
@@ -218,15 +217,6 @@ const Header = (props: Props) => {
               >
                 Save
               </AntdButton>
-              {/*
-            Commenting this code for now,
-            may be in future we need this
-            <Button
-              className={styles.publishButtonSpecification}
-              text="Publish Pathway"
-              onClick={() => setHasPublishVisible(!hasPublishVisible)}
-            />
-            */}
             </div>
           </div>
 

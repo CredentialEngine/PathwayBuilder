@@ -233,9 +233,40 @@ const HomePage: React.FC<Props> = ({
     }
   };
 
+  const [hasProgressionLevelList, setHasProgressionLevelList] = useState<any>(
+    []
+  );
+  useEffect(() => {
+    setHasProgressionLevelList(
+      columnsData.reduce((acc: any, curr: any) => {
+        if (acc.length > 0) {
+          if (!_.isUndefined(curr?.CTID)) {
+            if (curr?.semesters?.length > 0) {
+              const semestersCTID = curr.semesters.map((sem: any) => sem.CTID);
+              semestersCTID.unshift(curr?.CTID);
+              return [...acc, ...semestersCTID];
+            } else {
+              return [...acc, curr?.CTID];
+            }
+          } else {
+            return acc;
+          }
+        } else {
+          if (curr?.semesters?.length > 0) {
+            const semestersCTID = curr.semesters.map((sem: any) => sem.CTID);
+            semestersCTID.unshift(curr?.CTID);
+            return semestersCTID;
+          } else {
+            return [curr?.CTID];
+          }
+        }
+      }, [])
+    );
+  }, [columnsData]);
+
   useEffect(() => {
     if (pathwayComponent) {
-      setNewConn([]); //added to fix
+      setNewConn([]);
       if (pathwayComponent?.ComponentConditions?.length > -1) {
         setPathwayComponentConditionCards(
           pathwayComponent.ComponentConditions.map((card: any) => ({
@@ -388,6 +419,7 @@ const HomePage: React.FC<Props> = ({
       /* 
         this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
       */
+      createConnection();
       return;
     }
     if (card?.Type === 'conditional') {
@@ -412,6 +444,7 @@ const HomePage: React.FC<Props> = ({
       card.ColumnNumber === ColumnNumber &&
       card.RowNumber === RowNumber
     ) {
+      createConnection();
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
@@ -698,6 +731,7 @@ const HomePage: React.FC<Props> = ({
       element.style.display = 'none';
     }
   };
+
   const setEndpoints = (e: any, id: any) => {
     e.stopPropagation();
     if (point.start && point.start !== id) {
@@ -706,21 +740,61 @@ const HomePage: React.FC<Props> = ({
         end: id,
       });
       e?.target?.classList?.add('active');
-      setNewConn([
-        ...newConn,
-        {
-          start: point.start,
-          end: id,
-        },
-      ]);
-      pathwayComponentCards?.map((card: any) => {
-        if (point?.start === card?.CTID) {
-          setCurrentCardData(card);
-          if (!card?.PrecededBy?.includes(id)) {
-            card?.PrecededBy?.push(id);
+
+      const startCard: any = _.get(
+        [
+          ...pathwayComponentCards,
+          ...updatedPathwayComponentConditionCards,
+        ].filter(
+          (card: any) =>
+            card?.RowId === point?.start || card?.CTID === point?.start
+        ),
+        '0'
+      );
+      const endCard: any = _.get(
+        [
+          ...pathwayComponentCards,
+          ...updatedPathwayComponentConditionCards,
+        ].filter((card: any) => card?.RowId === id || card?.CTID === id),
+        '0'
+      );
+
+      let startCardIndex = hasProgressionLevelList.findIndex(
+        (level: any) => level === startCard?.HasProgressionLevel
+      );
+      let lastCardIndex = hasProgressionLevelList.findIndex(
+        (level: any) => level === endCard?.HasProgressionLevel
+      );
+
+      if (startCardIndex == -1) {
+        startCardIndex = 99;
+      }
+
+      if (lastCardIndex == -1) {
+        lastCardIndex = 99;
+      }
+      if (
+        startCardIndex < lastCardIndex ||
+        (endCard?.HasProgressionLevel === startCard?.HasProgressionLevel &&
+          startCard?.ColumnNumber < endCard?.ColumnNumber)
+      ) {
+        setNewConn([
+          ...newConn,
+          {
+            start: point.start,
+            end: id,
+          },
+        ]);
+
+        pathwayComponentCards?.map((card: any) => {
+          if (point?.start === card?.CTID) {
+            setCurrentCardData(card);
+            if (!card?.PrecededBy?.includes(id)) {
+              card?.PrecededBy?.push(id);
+            }
           }
-        }
-      });
+        });
+      }
       setConstraintIcon(true);
     } else {
       setPoint({

@@ -34,7 +34,6 @@ const LeftPanel: React.FC<any> = ({
   } = result;
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
-
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
@@ -161,7 +160,7 @@ const LeftPanel: React.FC<any> = ({
     card: any,
     pathwayGameboardCard: boolean
   ) => {
-    if (tab === LeftPanelTabKey.Selected) {
+    if (card?.Type !== 'conditional' && tab === LeftPanelTabKey.Selected) {
       const updatedCard = {
         ...card,
         pathwayGameboardCard,
