@@ -583,12 +583,13 @@ const AddPathwayForm: React.FC<Props> = ({
             const updatedPathwayWrapper = { ...PathwayWrapper };
 
             updatedPathwayWrapper.Pathway = {
-              ...addPathwayFormFields /* updatedPathway */,
+              ...addPathwayFormFields,
               HasDestinationComponent: '',
             };
             updatedPathwayWrapper.PathwayComponents = [];
             updatedPathwayWrapper.ComponentConditions = [];
-            updatedPathwayWrapper.PendingComponents = [];
+            updatedPathwayWrapper.PendingComponents =
+              addPathwayWrapperFields.PendingComponents;
             (updatedPathwayWrapper.ProgressionLevels =
               addPathwayWrapperFields.ProgressionLevels),
               (updatedPathwayWrapper.ProgressionModels =

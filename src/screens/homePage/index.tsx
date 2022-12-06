@@ -266,7 +266,7 @@ const HomePage: React.FC<Props> = ({
 
   useEffect(() => {
     if (pathwayComponent) {
-      setNewConn([]); //added to fix
+      setNewConn([]);
       if (pathwayComponent?.ComponentConditions?.length > -1) {
         setPathwayComponentConditionCards(
           pathwayComponent.ComponentConditions.map((card: any) => ({
