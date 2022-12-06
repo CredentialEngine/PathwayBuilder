@@ -32,14 +32,12 @@ export function* getCurrentUserData(): Generator {
     const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : '';
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
-
       method: 'GET',
-
       headers: {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: `${userCreds}`,
+        userCreds,
       },
     });
 
@@ -51,7 +49,7 @@ export function* getCurrentUserData(): Generator {
 
 export function* getPathwayAndComponentData(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : '';
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_DATA_FOR_PATHWAY}${payload?.id}`,
       method: 'GET',
@@ -59,7 +57,7 @@ export function* getPathwayAndComponentData(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: `${userCreds}`,
+        userCreds,
       },
     });
     if (result.Valid) {
@@ -73,12 +71,12 @@ export function* getPathwayAndComponentData(payload: any): Generator {
 }
 export function* approvePathway(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : '';
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}${payload?.id}`,
       method: 'POST',
       params: {
-        userCreds: `${userCreds}`,
+        userCreds,
       },
     });
     if (result.Data.Messages.length === 0) {
@@ -92,7 +90,7 @@ export function* approvePathway(payload: any): Generator {
 }
 export function* getSavePathwayWrapper(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : '';
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SAVE_DATA_FOR_PATHWAY}`,
       method: 'POST',
@@ -100,7 +98,7 @@ export function* getSavePathwayWrapper(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: `${userCreds}`,
+        userCreds,
       },
       data: JSON.stringify(payload.payload),
     });
