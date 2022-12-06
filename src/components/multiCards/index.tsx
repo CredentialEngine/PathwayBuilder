@@ -83,21 +83,10 @@ const MultiCard: React.FC<Props> = ({
   getEndPoints,
   isDraggableCardVisible,
   onDelete,
-  // onMoveItem,
-  // number,
-  // forwardRef,
   rowNumber,
   columnNumber,
   skipPreSelect,
   setDraggableCardVisible,
-  // updatedPathwayComponentConditionCards,
-  // HasProgressionLevel,
-  // isConditionalModalStatus,
-  // setIsConditionalModalStatus,
-  // newConnection,
-  // allComponentCardsData,
-  // connectionsCTID,
-  // allConditionalCardsData,
   setIsConditionalEditing,
   getComponentConditionData,
 }) => {
@@ -111,30 +100,6 @@ const MultiCard: React.FC<Props> = ({
   const [showRightPenal, setShowRightPenal] = useState(false);
 
   const updateXarrow = useXarrow();
-
-  // useEffect(() => {
-  //   if (isConditionalModalStatus) {
-  //     setVisibleConstraintCondition(true);
-  //   } else {
-  //     setVisibleConstraintCondition(false);
-  //   }
-  // }, [isConditionalModalStatus]);
-
-  // useEffect(() => {
-  //   setFilteredConditionalComponent(
-  //     updatedPathwayComponentConditionCards?.filter(
-  //       (condition_card: any) =>
-  //         condition_card.HasProgressionLevel === _.toString(HasProgressionLevel)
-  //     )
-  //   );
-
-  //   setFilteredPathwayComponent(
-  //     PathwayWrapper.PathwayComponents?.filter(
-  //       (pathway_card: any) =>
-  //         pathway_card.HasProgressionLevel === _.toString(HasProgressionLevel)
-  //     )
-  //   );
-  // }, [updatedPathwayComponentConditionCards]);
 
   const darkColor = '#0A2942';
   const getOnClick = (e: any) => {
@@ -152,14 +117,6 @@ const MultiCard: React.FC<Props> = ({
     onClick;
     getEndPoints(e, CTID);
   };
-
-  // const onDragEnterHandler = () => {
-  //   const getElement = forwardRef.current[number];
-  //   if (!_.isNull(getElement)) {
-  //     const rect = getElement.getBoundingClientRect();
-  //     getElement.style.width = `${rect.width * 2}px`;
-  //   }
-  // };
 
   const onDragStart = (e: any) => {
     updateXarrow();
@@ -216,7 +173,6 @@ const MultiCard: React.FC<Props> = ({
   const handleConditionEdit = (e: any) => {
     e.stopPropagation();
     e.preventDefault();
-    // setVisibleConstraintCondition(true);
     !!setIsConditionalEditing && setIsConditionalEditing(true);
     setShowPopover(false);
     if (!_.isEmpty(data)) {
@@ -409,7 +365,6 @@ const MultiCard: React.FC<Props> = ({
               onClick={(e: any) => {
                 getOnClick(e);
               }}
-              // onDragEnter={onDragEnterHandler}
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
               id={CTID?.toString()}
@@ -508,6 +463,7 @@ const MultiCard: React.FC<Props> = ({
                                   e.stopPropagation();
                                   e.preventDefault();
                                   setShowRightPenal(true);
+                                  setShowPopover(false);
                                 }}
                               >
                                 View
@@ -739,6 +695,7 @@ const MultiCard: React.FC<Props> = ({
                               e.stopPropagation();
                               e.preventDefault();
                               setShowRightPenal(true);
+                              setShowPopover(false);
                             }}
                           >
                             View
@@ -765,7 +722,6 @@ const MultiCard: React.FC<Props> = ({
                 />
                 <div className={styles.courseNameContainter}>
                   <span>{data?.Name?.slice(0, 40)}</span>
-                  {/* <span>{data?.Description?.slice(0, 40)}</span> */}
                 </div>
                 <div className={styles.creditSection}>
                   <span>Credits: {data?.CreditValue?.[0]?.Value || 0}</span>
@@ -811,6 +767,7 @@ const MultiCard: React.FC<Props> = ({
                               e.stopPropagation();
                               e.preventDefault();
                               setShowRightPenal(true);
+                              setShowPopover(false);
                             }}
                           >
                             View
@@ -837,7 +794,6 @@ const MultiCard: React.FC<Props> = ({
                 />
                 <div className={styles.courseNameContainter}>
                   <span>{data?.Name?.slice(0, 40)}</span>
-                  {/* <span>{data?.Description.slice(0, 40)}</span> */}
                 </div>
                 <div className={styles.creditSection}>
                   <span>Credits: {data?.CreditValue?.[0]?.Value}</span>

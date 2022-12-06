@@ -21,10 +21,7 @@ import LeftPanel from '../../components/leftPanel';
 import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
-import {
-  // saveDataForPathwayRequest,
-  updateMappedDataRequest,
-} from '../../states/actions';
+import { updateMappedDataRequest } from '../../states/actions';
 import AddConditionalComponent from '../addComponent';
 
 import Styles from './index.module.scss';
@@ -158,7 +155,7 @@ const HomePage: React.FC<Props> = ({
       destinationCTID: uuidv4(),
       firstStageCTID: uuidv4(),
     });
-    createConnection();
+    // createConnection();
   }, []);
 
   let count = 0;
@@ -238,6 +235,7 @@ const HomePage: React.FC<Props> = ({
 
   useEffect(() => {
     if (pathwayComponent) {
+      setNewConn([]); //added to fix
       if (pathwayComponent?.ComponentConditions?.length > -1) {
         setPathwayComponentConditionCards(
           pathwayComponent.ComponentConditions.map((card: any) => ({
@@ -451,12 +449,9 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.Pathway = updatedPathway;
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      // dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
       return;
     }
     if (!!destinationColumn && isDestinationCardExist) {
-      /*  Prevent to drop multiple destination cards inside destination component*/
-
       const isCardAlreadyInDestinationColumn = pathwayComponentCards?.filter(
         (component_card: any) =>
           component_card.CTID == card.CTID &&
@@ -588,7 +583,6 @@ const HomePage: React.FC<Props> = ({
   const onDeleteHandler = (data: any) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     const updatedPathway = { ...updatedPathwayWrapper.Pathway };
-
     const isDestinationCardExist =
       updatedPathway?.HasDestinationComponent === data?.CTID;
     if (isDestinationCardExist) {
@@ -612,6 +606,9 @@ const HomePage: React.FC<Props> = ({
               (element: any) => element.RowId === conditional_card.RowId
             )
         );
+      const filteredconstraint = updatedPathwayWrapper?.Constraints?.filter(
+        (constraint: any) => !data?.HasConstraint.includes(constraint?.RowId)
+      );
 
       updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
         data?.ParentIdentifier === item?.RowId
@@ -646,9 +643,9 @@ const HomePage: React.FC<Props> = ({
         ...result,
         data,
       ];
-
       updatedPathwayWrapper.ComponentConditions =
         updatedPathwayConditionalComponent;
+      updatedPathwayWrapper.Constraints = filteredconstraint;
 
       updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
     } else {

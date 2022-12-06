@@ -13,13 +13,6 @@ export interface RequestConfig<T> extends AxiosRequestConfig {
   data?: T;
 }
 
-// export const instance = axios.create({
-//   baseURL: 'https://www.google.com',
-// });
-
-// instance.defaults.headers.common['Authorization'] =
-//   'Auth Token from local storage';
-
 const noResponseError = {
   message: 'Unexpected error occurred. Please try again.',
 };

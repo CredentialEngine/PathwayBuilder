@@ -46,7 +46,10 @@ const Header = (props: Props) => {
   const delay = 10;
 
   useEffect(() => {
-    if (savePathwayResult?.valid) {
+    if (
+      savePathwayResult?.valid &&
+      pathwayWrapper?.PathwayComponents?.length > 0
+    ) {
       setLoadings(false);
       Message({
         description: 'The Pathway has been saved successfully',
@@ -59,7 +62,7 @@ const Header = (props: Props) => {
           loading: false,
           data: [],
           PathwayId: savePathwayResult?.PathwayId,
-          valid: false,
+          valid: true,
           error: false,
         })
       );
@@ -188,6 +191,7 @@ const Header = (props: Props) => {
             </Col>
           </Row>
         </div>
+        {console.log(approveDisable, 'approveDisable')}
         <div className={styles.titleDescriptionContainer + ' headermiddle'}>
           <div className={styles.headerCenter}>
             <div className={styles.titleContainer}>

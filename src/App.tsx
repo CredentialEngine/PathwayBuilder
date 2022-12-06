@@ -18,6 +18,7 @@ import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
+import TokenManager from './services/tokenManager';
 import {
   getCurrentUserDataRequest,
   saveSelectedOrganization,
@@ -93,6 +94,7 @@ const App = () => {
 
   useEffect(() => {
     if (userData) {
+      TokenManager.setToken(userData?.Token);
       setOrganisationList(userData?.Organizations);
       setPathwayId(userData?.Id);
     }
@@ -107,7 +109,6 @@ const App = () => {
     process.env.NODE_ENV !== 'production'
       ? (window.location.href = sanboxSetting.api.url)
       : (window.location.href = productionSetting.api.url);
-    // setIsCreatePathwayVisible(false);
   };
 
   const onCloseHandler = () => {
