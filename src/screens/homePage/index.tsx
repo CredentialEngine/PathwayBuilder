@@ -785,12 +785,38 @@ const HomePage: React.FC<Props> = ({
             end: id,
           },
         ]);
-
         pathwayComponentCards?.map((card: any) => {
-          if (point?.start === card?.CTID) {
+          const hasCondComp = updatedPathwayComponentConditionCards?.find(
+            (cond: any) =>
+              point?.start === (card?.CTID || card?.RowId) &&
+              id === (cond?.RowId || cond?.CTID)
+          );
+          if (hasCondComp) {
+            if (!card?.HasCondition?.includes(id)) {
+              card?.HasCondition?.push(id);
+            }
+          }
+          if (point?.start === card?.CTID && !hasCondComp) {
             setCurrentCardData(card);
             if (!card?.PrecededBy?.includes(id)) {
               card?.PrecededBy?.push(id);
+            }
+          }
+        });
+        // for connecting conditional to basic
+        updatedPathwayComponentConditionCards?.map((_cond: any) => {
+          if (point?.start === _cond?.RowId || point?.start === _cond?.CTID) {
+            const cardToUpdate = pathwayComponentCards?.find(
+              (_card: any) => id === _card?.CTID || id === _card?.RowId
+            );
+            if (cardToUpdate) {
+              if (!_cond?.TargetComponent?.includes(id)) {
+                _cond?.TargetComponent?.push(id);
+              }
+            } else {
+              if (!_cond?.HasCondition?.includes(id)) {
+                _cond?.HasCondition?.push(id);
+              }
             }
           }
         });
@@ -805,6 +831,7 @@ const HomePage: React.FC<Props> = ({
       e?.target?.classList?.add('active');
     }
   };
+
   const createConnection = () => {
     const tempCon = [] as any;
     if (pathwayComponentCards) {
@@ -837,6 +864,16 @@ const HomePage: React.FC<Props> = ({
               }
               if (componentCondition?.TargetComponent?.length > 0) {
                 componentCondition?.TargetComponent?.map((target: string) => {
+                  if (card?.PrecededBy?.length > 0) {
+                    card?.PrecededBy?.map((_preceded: any) => {
+                      if (_preceded !== target) {
+                        tempCon?.push({
+                          start: card?.CTID || card?.RowId,
+                          end: _preceded,
+                        });
+                      }
+                    });
+                  }
                   if (
                     tempCon?.includes({
                       start: componentCondition?.ParentIdentifier,
@@ -915,17 +952,39 @@ const HomePage: React.FC<Props> = ({
     const newarray = connection;
     const index = newarray.findIndex((items: any) => items === item);
     pathwayComponentCards?.map((card: any) => {
-      if (card?.CTID === item?.start) {
+      const hasCondComp = updatedPathwayComponentConditionCards?.find(
+        (cond: any) =>
+          item?.start === (card?.CTID || card?.RowId) &&
+          item?.end === (cond?.RowId || cond?.CTID)
+      );
+      if (hasCondComp) {
+        const idx = card?.HasCondition?.findIndex((i: any) => i === item?.end);
+        card?.HasCondition?.splice(idx, 1);
+      }
+
+      if (card?.CTID === item?.start && !hasCondComp) {
         const idx = card?.PrecededBy?.findIndex((i: any) => i === item?.end);
         card?.PrecededBy?.splice(idx, 1);
       }
     });
     updatedPathwayComponentConditionCards?.map((conditionCard: any) => {
-      if (conditionCard?.CTID || conditionCard?.RowId === item?.start) {
-        const idx = conditionCard?.TargetComponent.findIndex(
-          (i: any) => i === item?.end
-        );
-        conditionCard?.TargetComponent.splice(idx, 1);
+      if (
+        conditionCard?.CTID === item?.start ||
+        conditionCard?.RowId === item?.start
+      ) {
+        pathwayComponentCards?.map((card: any) => {
+          if (item?.end === card?.CTID || item?.end === card?.RowId) {
+            const idx = conditionCard?.TargetComponent.findIndex(
+              (i: any) => i === item?.end
+            );
+            conditionCard?.TargetComponent.splice(idx, 1);
+          } else {
+            const idx = conditionCard?.HasCondition.findIndex(
+              (i: any) => i === item?.end
+            );
+            conditionCard?.HasCondition.splice(idx, 1);
+          }
+        });
       }
     });
     newarray.splice(index, 1);
