@@ -29,7 +29,7 @@ import {
 
 export function* getCurrentUserData(): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : '';
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
       method: 'GET',
