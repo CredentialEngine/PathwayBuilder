@@ -335,7 +335,6 @@ const MultiCard: React.FC<Props> = ({
           (level: any) => data?.HasProgressionLevel === level?.CTID
         )?.Name
       : 'Pathway';
-
   return (
     <>
       {isDraggableCardVisible ? (
@@ -345,8 +344,11 @@ const MultiCard: React.FC<Props> = ({
             draggable={true}
             className={styles.draggableAreaBox}
           ></div>
-          <div>
-            <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
+          <div id="multiCard-Wrapper">
+            <div
+              id="horizontalBorder"
+              className={styles.draggableAreaBox + ' ' + styles.hori}
+            ></div>
             <div
               className={`${styles.multiCardWrapper} ${
                 (skipPreSelect && isAddDestination && destinationComponent) ||
@@ -584,7 +586,10 @@ const MultiCard: React.FC<Props> = ({
                 </div>
               )}
             </div>
-            <div className={styles.draggableAreaBox + ' ' + styles.hori}></div>
+            <div
+              id="horizontalBorder"
+              className={styles.draggableAreaBox + ' ' + styles.hori}
+            ></div>
           </div>
           <div className={styles.draggableAreaBox}></div>
         </div>

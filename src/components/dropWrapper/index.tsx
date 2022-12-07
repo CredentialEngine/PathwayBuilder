@@ -111,10 +111,10 @@ const DropWrapper: React.FC<Props> = ({
   };
 
   const onDragEnterHandler = (event: any) => {
-    const spanTagExist =
-      event?.nativeEvent?.fromElement?.innerHTML?.includes('span') ||
-      event?.target?.innerHTML?.includes('span');
-    if (spanTagExist) {
+    if (
+      event?.target?.id === 'multiCard-Wrapper' ||
+      event?.target?.id === 'horizontalBorder'
+    ) {
       setColumnNumber(true);
       return;
     }
