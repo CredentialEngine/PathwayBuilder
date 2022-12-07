@@ -1,6 +1,6 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Row, Button as AntdButton } from 'antd';
+import { Col, Row } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,17 +40,17 @@ const Header = (props: Props) => {
   const [hasConflicts, setHasConflicts] = useState<boolean>(false);
   const [approveDisable, setApproveDisable] = useState<boolean>(true);
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
-  const [loadings, setLoadings] = useState<boolean>(false);
+  // const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
-  const delay = 10;
+  // const delay = 10;
 
   useEffect(() => {
     if (
       savePathwayResult?.valid &&
       pathwayWrapper?.PathwayComponents?.length > 0
     ) {
-      setLoadings(false);
+      // setLoadings(false);
       Message({
         description: 'The Pathway has been saved successfully',
         type: 'success',
@@ -68,7 +68,7 @@ const Header = (props: Props) => {
       );
       setApproveDisable(false);
     } else if (savePathwayResult?.error) {
-      setLoadings(false);
+      // setLoadings(false);
       savePathwayResult?.data?.map((message: any) =>
         Message({
           description: message,
@@ -81,7 +81,7 @@ const Header = (props: Props) => {
     }
   }, [savePathwayResult]);
 
-  setTimeout(() => setLoadings(false), delay * 1000);
+  // setTimeout(() => setLoadings(false), delay * 1000);
 
   useEffect(() => {
     if (approvePathwayResult?.error) {
@@ -141,7 +141,7 @@ const Header = (props: Props) => {
   }, [JSON.stringify(pathwayWrapper)]);
 
   const savePathwayWrapper = () => {
-    setLoadings(true);
+    // setLoadings(true);
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
   };
 
@@ -207,16 +207,14 @@ const Header = (props: Props) => {
                 onClick={exitWithSaving}
                 text="Exit Without Saving"
               />
-              <AntdButton
+              <Button
                 className={styles.saveButtonSpecification}
-                type="primary"
+                type={Type.PRIMARY}
                 size="small"
-                loading={loadings}
                 onClick={() => savePathwayWrapper()}
                 key="save"
-              >
-                Save
-              </AntdButton>
+                text="Save"
+              ></Button>
             </div>
           </div>
 
