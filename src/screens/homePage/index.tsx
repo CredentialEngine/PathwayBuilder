@@ -776,7 +776,7 @@ const HomePage: React.FC<Props> = ({
       if (
         startCardIndex < lastCardIndex ||
         (endCard?.HasProgressionLevel === startCard?.HasProgressionLevel &&
-          startCard?.ColumnNumber < endCard?.ColumnNumber)
+          startCard?.ColumnNumber <= endCard?.ColumnNumber)
       ) {
         setNewConn([
           ...newConn,
