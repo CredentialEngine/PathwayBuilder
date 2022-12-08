@@ -352,14 +352,17 @@ const MultiCard: React.FC<Props> = ({
             id="verticalBorder"
             draggable={true}
             onDrop={(e: any) => onDropHandler(e, 'left')}
-            // onDragOver={(e: any) => onDropHandler(e, 'left')}
             className={styles.draggableAreaBox}
           ></div>
           <div id="multiCard-Wrapper">
-            <div
-              id="horizontalBorder"
-              className={styles.draggableAreaBox + ' ' + styles.hori}
-            ></div>
+            {data.RowNumber > 1 && (
+              <div
+                id="horizontalBorder"
+                draggable
+                onDrop={(e: any) => onDropHandler(e, 'upper')}
+                className={styles.draggableAreaBox + ' ' + styles.hori}
+              ></div>
+            )}
             <div
               className={`${styles.multiCardWrapper} ${
                 (skipPreSelect && isAddDestination && destinationComponent) ||
@@ -599,6 +602,7 @@ const MultiCard: React.FC<Props> = ({
             </div>
             <div
               id="horizontalBorder"
+              onDrop={(e: any) => onDropHandler(e, 'lower')}
               className={styles.draggableAreaBox + ' ' + styles.hori}
             ></div>
           </div>

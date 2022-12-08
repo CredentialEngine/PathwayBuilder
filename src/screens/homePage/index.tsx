@@ -412,11 +412,6 @@ const HomePage: React.FC<Props> = ({
             _.toString(xyz?.HasProgressionLevel)
         );
 
-      const componentCardInProgressionLevel =
-        pathwayComponent?.PathwayComponents?.filter(
-          (card: any) => card?.HasProgressionLevel === xyz?.HasProgressionLevel
-        );
-
       let updatedPathwayComponentArray: any = [];
       let updatedConditionalArray: any = [];
       let updatedCard: any;
@@ -436,27 +431,182 @@ const HomePage: React.FC<Props> = ({
           HasProgressionLevel: xyz.HasProgressionLevel,
         };
       }
+      if (draggableSide === 'lower') {
+        updatedCard = {
+          ...card,
+          ColumnNumber: xyz.ColumnNumber,
+          RowNumber: xyz.RowNumber + 1,
+          HasProgressionLevel: xyz.HasProgressionLevel,
+        };
 
-      updatedPathwayComponentArray = componentCardInProgressionLevel.map(
-        (a: any) => ({
-          ...a,
-          ColumnNumber: a?.destinationColumn
-            ? a?.ColumnNumber
-            : updatedCard.ColumnNumber <= a?.ColumnNumber
-            ? a?.ColumnNumber + 1
-            : a?.ColumnNumber,
-        })
-      );
-      updatedConditionalArray = restConditionalComponentInProgressionLevel.map(
-        (a: any) => ({
-          ...a,
-          ColumnNumber:
-            updatedCard.ColumnNumber <= a?.ColumnNumber
-              ? a.ColumnNumber + 1
-              : a.ColumnNumber,
-        })
-      );
+        const componentCardInProgressionLevel =
+          pathwayComponent?.PathwayComponents?.filter(
+            (card: any) =>
+              card?.HasProgressionLevel === xyz?.HasProgressionLevel &&
+              card.ColumnNumber === xyz.ColumnNumber
+          );
+        updatedPathwayComponentArray = componentCardInProgressionLevel.map(
+          (a: any) => ({
+            ...a,
+            RowNumber: a?.destinationColumn
+              ? a?.RowNumber
+              : updatedCard.RowNumber <= a?.RowNumber
+              ? a?.RowNumber + 1
+              : a?.RowNumber,
+          })
+        );
 
+        const conditionalCardInProgressionLevel =
+          restConditionalComponentInProgressionLevel.filter(
+            (card: any) =>
+              card?.HasProgressionLevel === xyz?.HasProgressionLevel &&
+              card.ColumnNumber === xyz.ColumnNumber
+          );
+
+        const conditionalCardOutOfColumn =
+          restConditionalComponentInProgressionLevel.filter(
+            (card: any) =>
+              card?.HasProgressionLevel === xyz?.HasProgressionLevel &&
+              card.ColumnNumber !== xyz.ColumnNumber
+          );
+
+        updatedConditionalArray = conditionalCardInProgressionLevel.map(
+          (a: any) => ({
+            ...a,
+            RowNumber:
+              updatedCard.RowNumber <= a?.RowNumber
+                ? a.RowNumber + 1
+                : a.RowNumber,
+          })
+        );
+
+        const allComponentConditionalCard = [
+          ...conditionalComponentOutOfProgressionLevel,
+          ...updatedConditionalArray,
+          ...conditionalCardOutOfColumn,
+        ];
+
+        const allPathwayComponentCard = [
+          ...updatedPathwayWrapper.PathwayComponents,
+          ...updatedPathwayComponentArray,
+          updatedCard,
+        ];
+
+        const uniqueAllPathwayComponentArray = [
+          ...new Map(
+            allPathwayComponentCard.map((item: any) => [item['CTID'], item])
+          ).values(),
+        ];
+        updatedPathwayWrapper.ComponentConditions = allComponentConditionalCard;
+        updatedPathwayWrapper.PathwayComponents =
+          uniqueAllPathwayComponentArray;
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+
+        return;
+      }
+
+      if (draggableSide === 'upper') {
+        updatedCard = {
+          ...card,
+          ColumnNumber: xyz.ColumnNumber,
+          RowNumber: xyz.RowNumber - 1,
+          HasProgressionLevel: xyz.HasProgressionLevel,
+        };
+
+        const componentCardInProgressionLevel =
+          pathwayComponent?.PathwayComponents?.filter(
+            (card: any) =>
+              card?.HasProgressionLevel === xyz?.HasProgressionLevel &&
+              card.ColumnNumber === xyz.ColumnNumber
+          );
+        if (
+          componentCardInProgressionLevel.some(
+            (card: any) => card.RowNumber === updatedCard.RowNumber
+          )
+        ) {
+          updatedCard = {
+            ...card,
+            ColumnNumber: xyz.ColumnNumber,
+            RowNumber: xyz.RowNumber,
+            HasProgressionLevel: xyz.HasProgressionLevel,
+          };
+
+          updatedPathwayComponentArray = componentCardInProgressionLevel.map(
+            (a: any) => ({
+              ...a,
+              RowNumber: a?.destinationColumn
+                ? a?.RowNumber
+                : updatedCard.RowNumber <= a?.RowNumber
+                ? a?.RowNumber + 1
+                : a?.RowNumber,
+            })
+          );
+
+          const conditionalCardInProgressionLevel =
+            restConditionalComponentInProgressionLevel.filter(
+              (card: any) =>
+                card?.HasProgressionLevel === xyz?.HasProgressionLevel &&
+                card.ColumnNumber === xyz.ColumnNumber
+            );
+
+          const conditionalCardOutOfColumn =
+            restConditionalComponentInProgressionLevel.filter(
+              (card: any) =>
+                card?.HasProgressionLevel === xyz?.HasProgressionLevel &&
+                card.ColumnNumber !== xyz.ColumnNumber
+            );
+
+          updatedConditionalArray = conditionalCardInProgressionLevel.map(
+            (a: any) => ({
+              ...a,
+              RowNumber:
+                updatedCard.RowNumber <= a?.RowNumber
+                  ? a.RowNumber + 1
+                  : a.RowNumber,
+            })
+          );
+
+          const allComponentConditionalCard = [
+            ...conditionalComponentOutOfProgressionLevel,
+            ...updatedConditionalArray,
+            ...conditionalCardOutOfColumn,
+          ];
+
+          const allPathwayComponentCard = [
+            ...updatedPathwayWrapper.PathwayComponents,
+            ...updatedPathwayComponentArray,
+            updatedCard,
+          ];
+
+          const uniqueAllPathwayComponentArray = [
+            ...new Map(
+              allPathwayComponentCard.map((item: any) => [item['CTID'], item])
+            ).values(),
+          ];
+          updatedPathwayWrapper.ComponentConditions =
+            allComponentConditionalCard;
+          updatedPathwayWrapper.PathwayComponents =
+            uniqueAllPathwayComponentArray;
+          dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+          return;
+        } else {
+          const allPathwayComponentCard = [
+            ...updatedPathwayWrapper.PathwayComponents,
+            updatedCard,
+          ];
+
+          const uniqueAllPathwayComponentArray = [
+            ...new Map(
+              allPathwayComponentCard.map((item: any) => [item['CTID'], item])
+            ).values(),
+          ];
+
+          updatedPathwayWrapper.PathwayComponents =
+            uniqueAllPathwayComponentArray;
+          dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+          return;
+        }
+      }
       const allComponentConditionalCard = [
         ...conditionalComponentOutOfProgressionLevel,
         ...updatedConditionalArray,
@@ -477,7 +627,6 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper.ComponentConditions = allComponentConditionalCard;
       updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      !!setIsConditionalEditing && setIsConditionalEditing(false);
 
       return;
     }
