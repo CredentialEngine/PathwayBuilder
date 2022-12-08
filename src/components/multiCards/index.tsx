@@ -61,6 +61,7 @@ interface Props {
   setIsConditionalEditing?: (a: boolean) => void;
   isConditionalEditing?: (a: boolean) => void;
   getComponentConditionData?: (data: any) => void;
+  abc: (a: any) => void;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -89,6 +90,7 @@ const MultiCard: React.FC<Props> = ({
   setDraggableCardVisible,
   setIsConditionalEditing,
   getComponentConditionData,
+  abc,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
 
@@ -119,6 +121,7 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragStart = (e: any) => {
+    abc(null);
     updateXarrow();
     setIsZoomDisabled(true);
     const target = e.target;
@@ -154,6 +157,7 @@ const MultiCard: React.FC<Props> = ({
     !!setDraggableCardVisible && setDraggableCardVisible(false);
 
     e.target.style.visibility = 'visible';
+
     updateXarrow();
   };
 
@@ -335,6 +339,11 @@ const MultiCard: React.FC<Props> = ({
           (level: any) => data?.HasProgressionLevel === level?.CTID
         )?.Name
       : 'Pathway';
+
+  const onDropHandler = (e: any, draggableSide: string) => {
+    abc({ ...data, draggableSide });
+  };
+
   return (
     <>
       {isDraggableCardVisible ? (
@@ -342,6 +351,8 @@ const MultiCard: React.FC<Props> = ({
           <div
             id="verticalBorder"
             draggable={true}
+            onDrop={(e: any) => onDropHandler(e, 'left')}
+            // onDragOver={(e: any) => onDropHandler(e, 'left')}
             className={styles.draggableAreaBox}
           ></div>
           <div id="multiCard-Wrapper">
@@ -591,7 +602,11 @@ const MultiCard: React.FC<Props> = ({
               className={styles.draggableAreaBox + ' ' + styles.hori}
             ></div>
           </div>
-          <div className={styles.draggableAreaBox}></div>
+          <div
+            className={styles.draggableAreaBox}
+            id="verticalBorder"
+            onDrop={(e: any) => onDropHandler(e, 'right')}
+          ></div>
         </div>
       ) : (
         <div

@@ -191,7 +191,6 @@ const HomePage: React.FC<Props> = ({
     event.stopPropagation();
     setIsConditionalModalStatus(true);
     setConnectionsCTID(connections);
-    getComponentConditionData;
     const filteredEndComponent = [
       ...pathwayComponentCards,
       ...updatedPathwayComponentConditionCards,
@@ -397,6 +396,91 @@ const HomePage: React.FC<Props> = ({
   ) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
 
+    if (!_.isUndefined(xyz) && !_.isNull(xyz) && !xyz.destinationColumn) {
+      const { draggableSide } = xyz;
+      const conditionalComponentOutOfProgressionLevel =
+        updatedPathwayComponentConditionCards?.filter(
+          (conditional_Card: any) =>
+            _.toString(conditional_Card?.HasProgressionLevel) !==
+            _.toString(xyz?.HasProgressionLevel)
+        );
+
+      const restConditionalComponentInProgressionLevel =
+        updatedPathwayComponentConditionCards?.filter(
+          (conditional_Card: any) =>
+            _.toString(conditional_Card?.HasProgressionLevel) ===
+            _.toString(xyz?.HasProgressionLevel)
+        );
+
+      const componentCardInProgressionLevel =
+        pathwayComponent?.PathwayComponents?.filter(
+          (card: any) => card?.HasProgressionLevel === xyz?.HasProgressionLevel
+        );
+
+      let updatedPathwayComponentArray: any = [];
+      let updatedConditionalArray: any = [];
+      let updatedCard: any;
+      if (draggableSide === 'right') {
+        updatedCard = {
+          ...card,
+          ColumnNumber: xyz.ColumnNumber + 1,
+          RowNumber: xyz.RowNumber,
+          HasProgressionLevel: xyz.HasProgressionLevel,
+        };
+      }
+      if (draggableSide === 'left') {
+        updatedCard = {
+          ...card,
+          ColumnNumber: xyz.ColumnNumber,
+          RowNumber: xyz.RowNumber,
+          HasProgressionLevel: xyz.HasProgressionLevel,
+        };
+      }
+
+      updatedPathwayComponentArray = componentCardInProgressionLevel.map(
+        (a: any) => ({
+          ...a,
+          ColumnNumber: a?.destinationColumn
+            ? a?.ColumnNumber
+            : updatedCard.ColumnNumber <= a?.ColumnNumber
+            ? a?.ColumnNumber + 1
+            : a?.ColumnNumber,
+        })
+      );
+      updatedConditionalArray = restConditionalComponentInProgressionLevel.map(
+        (a: any) => ({
+          ...a,
+          ColumnNumber:
+            updatedCard.ColumnNumber <= a?.ColumnNumber
+              ? a.ColumnNumber + 1
+              : a.ColumnNumber,
+        })
+      );
+
+      const allComponentConditionalCard = [
+        ...conditionalComponentOutOfProgressionLevel,
+        ...updatedConditionalArray,
+      ];
+
+      const allPathwayComponentCard = [
+        ...updatedPathwayWrapper.PathwayComponents,
+        ...updatedPathwayComponentArray,
+        updatedCard,
+      ];
+
+      const uniqueAllPathwayComponentArray = [
+        ...new Map(
+          allPathwayComponentCard.map((item: any) => [item['CTID'], item])
+        ).values(),
+      ];
+
+      updatedPathwayWrapper.ComponentConditions = allComponentConditionalCard;
+      updatedPathwayWrapper.PathwayComponents = uniqueAllPathwayComponentArray;
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      !!setIsConditionalEditing && setIsConditionalEditing(false);
+
+      return;
+    }
     if (!destinationColumn) {
       card.destinationColumn = false;
     }
@@ -408,13 +492,22 @@ const HomePage: React.FC<Props> = ({
       updatedPathwayWrapper?.Pathway?.HasDestinationComponent !== '';
 
     if (isComponentTab) {
-      card = {
-        HasProgressionLevel,
-        RowNumber,
-        ColumnNumber: ColumnNumber - 1,
-      };
+      if (card?.Type === 'conditional') {
+        card = {
+          ...card,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: ColumnNumber - 1,
+        };
+      } else {
+        card = {
+          ...card,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber: ColumnNumber - 1,
+        };
+      }
     }
-
     if (columnNumberEsixt && !isPendingCards) {
       /* 
         this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
@@ -425,7 +518,6 @@ const HomePage: React.FC<Props> = ({
     if (card?.Type === 'conditional') {
       /* This Function add only conditional cards*/
       const updatedPathwayWrapper = { ...pathwayComponent };
-
       const updatedCards = updatedPathwayComponentConditionCards
         .filter((item: any) => item.RowId !== card.RowId)
         .concat({
@@ -484,6 +576,14 @@ const HomePage: React.FC<Props> = ({
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       return;
     }
+
+    if (columnNumberEsixt && !isPendingCards) {
+      /* 
+        this block is to prevent to create a new column when we overlap pathwayComponent inside gameboard
+      */
+      return;
+    }
+
     if (!!destinationColumn && isDestinationCardExist) {
       const isCardAlreadyInDestinationColumn = pathwayComponentCards?.filter(
         (component_card: any) =>
@@ -994,6 +1094,11 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
+  let xyz: any;
+
+  const abc = (value: any) => {
+    xyz = value;
+  };
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
@@ -1265,6 +1370,7 @@ const HomePage: React.FC<Props> = ({
                                     getComponentConditionData={
                                       getComponentConditionData
                                     }
+                                    abc={abc}
                                   />
                                 </>
                               ))}
@@ -1296,6 +1402,7 @@ const HomePage: React.FC<Props> = ({
                               columnNumber={0}
                               HasProgressionLevel=""
                               ConstraintConditionState={false}
+                              abc={abc}
                             />
                           )}
                           {!!isStartFromInitialColumnSelected &&
@@ -1332,6 +1439,7 @@ const HomePage: React.FC<Props> = ({
                                 columnNumber={0}
                                 HasProgressionLevel=""
                                 ConstraintConditionState={false}
+                                abc={abc}
                               />
                             )}
                         </Xwrapper>

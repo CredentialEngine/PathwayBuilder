@@ -118,7 +118,6 @@ const DropWrapper: React.FC<Props> = ({
       setColumnNumber(true);
       return;
     }
-
     if (
       event.currentTarget.contains(event.relatedTarget) ||
       event?.target?.innerHTML?.includes('span')
