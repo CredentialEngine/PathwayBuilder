@@ -281,7 +281,11 @@ const App = () => {
           width={520}
           visible={isSelectOrganizationsVisble}
           onOk={selectOrgOkHandler}
-          closable={false}
+          onCancel={() => {
+            process.env.NODE_ENV !== 'production'
+              ? (window.location.href = sanboxSetting.api.url)
+              : (window.location.href = productionSetting.api.url);
+          }}
           footer={[
             <>
               <Button
