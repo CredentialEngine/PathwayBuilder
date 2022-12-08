@@ -412,6 +412,11 @@ const HomePage: React.FC<Props> = ({
             _.toString(xyz?.HasProgressionLevel)
         );
 
+      const componentCardInProgressionLevel =
+        pathwayComponent?.PathwayComponents?.filter(
+          (card: any) => card?.HasProgressionLevel === xyz?.HasProgressionLevel
+        );
+
       let updatedPathwayComponentArray: any = [];
       let updatedConditionalArray: any = [];
       let updatedCard: any;
@@ -604,9 +609,30 @@ const HomePage: React.FC<Props> = ({
           updatedPathwayWrapper.PathwayComponents =
             uniqueAllPathwayComponentArray;
           dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-          return;
         }
+        return;
       }
+
+      updatedPathwayComponentArray = componentCardInProgressionLevel.map(
+        (a: any) => ({
+          ...a,
+          ColumnNumber: a?.destinationColumn
+            ? a?.ColumnNumber
+            : updatedCard.ColumnNumber <= a?.ColumnNumber
+            ? a?.ColumnNumber + 1
+            : a?.ColumnNumber,
+        })
+      );
+      updatedConditionalArray = restConditionalComponentInProgressionLevel.map(
+        (a: any) => ({
+          ...a,
+          ColumnNumber:
+            updatedCard.ColumnNumber <= a?.ColumnNumber
+              ? a.ColumnNumber + 1
+              : a.ColumnNumber,
+        })
+      );
+
       const allComponentConditionalCard = [
         ...conditionalComponentOutOfProgressionLevel,
         ...updatedConditionalArray,
