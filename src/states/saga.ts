@@ -8,7 +8,7 @@ import {
   PATHWAYBUILDERAPI_APPROVE_PATHWAY,
   SAVE_DATA_FOR_PATHWAY,
 } from '../apiConfig/endpoint';
-import { TEMP_BASE_URL, IS_LOCALHOST } from '../apiConfig/setting';
+import { IS_LOCALHOST, TEMP_BASE_URL } from '../apiConfig/setting';
 
 import {
   approvePathwayFailure,

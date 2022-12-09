@@ -9,7 +9,7 @@ import {
   GET_ALL_LOGICAL_OPERATOR,
   SEARCH_FOR_LEST_RIGHT_OPERAND,
 } from '../../../apiConfig/endpoint';
-import { TEMP_BASE_URL } from '../../../apiConfig/setting';
+import { TEMP_BASE_URL, IS_LOCALHOST } from '../../../apiConfig/setting';
 
 import {
   getAllArrayConceptsFailure,
@@ -28,11 +28,12 @@ import {
 
 export function* getAllLogicalOperators(): Generator {
   try {
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_LOGICAL_OPERATOR}`,
       method: 'GET',
       params: {
-        userCreds: `${BASE_USER_CREDS}`,
+        userCreds,
       },
     });
     yield put(getLogicalOperatorsSuccess(result));
@@ -43,11 +44,12 @@ export function* getAllLogicalOperators(): Generator {
 
 export function* getComparatorsData(): Generator {
   try {
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_COMPARATORS}`,
       method: 'GET',
       params: {
-        userCreds: `${BASE_USER_CREDS}`,
+        userCreds,
       },
     });
     yield put(getAllComparatorsSuccess(result));
@@ -58,11 +60,12 @@ export function* getComparatorsData(): Generator {
 
 export function* getArrayConceptData(): Generator {
   try {
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_ARRAY_OPERATION}`,
       method: 'GET',
       params: {
-        userCreds: `${BASE_USER_CREDS}`,
+        userCreds,
       },
     });
     yield put(getAllArrayConceptsSuccess(result));
@@ -73,6 +76,7 @@ export function* getArrayConceptData(): Generator {
 
 export function* getAllConstraintOperand(data: any): Generator {
   try {
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}`,
       method: 'POST',
@@ -80,7 +84,7 @@ export function* getAllConstraintOperand(data: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: `${BASE_USER_CREDS}`,
+        userCreds,
       },
 
       body: JSON.stringify(data),

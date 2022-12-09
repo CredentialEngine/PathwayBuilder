@@ -7,7 +7,7 @@ import {
   SEARCH_FOR_OCCUPATION_TYPE,
   SEARCH_FOR_PROGRESSION_MODAL,
 } from '../../../apiConfig/endpoint';
-import { TEMP_BASE_URL } from '../../../apiConfig/setting';
+import { IS_LOCALHOST, TEMP_BASE_URL } from '../../../apiConfig/setting';
 
 import {
   getDataForProgressionModelSuccess,
@@ -25,6 +25,7 @@ import {
 
 export function* getAllProgressionModelData(payload: any): Generator {
   try {
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`,
       method: 'POST',
@@ -32,7 +33,7 @@ export function* getAllProgressionModelData(payload: any): Generator {
         'Content-Type': 'application/json',
       },
       params: {
-        userCreds: `${BASE_USER_CREDS}`,
+        userCreds,
       },
       data: payload.payload,
     });
@@ -63,11 +64,12 @@ export function* getAllIndustryTypeCodeData(payload: any): Generator {
 
 export function* getAllOccupationTypeCodeData(payload: any): Generator {
   try {
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`,
       method: 'POST',
       params: {
-        userCreds: `${`${BASE_USER_CREDS}`}`,
+        userCreds,
       },
       headers: {
         'Content-Type': 'application/json',

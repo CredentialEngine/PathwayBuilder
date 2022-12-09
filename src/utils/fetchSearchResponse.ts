@@ -4,25 +4,25 @@ import {
   BASE_URL,
   BASE_URL_PRODUCTION,
   BASE_USER_CREDS,
-  SEARCH_FOR_LEST_RIGHT_OPERAND,
   SEARCH_FOR_PROGRESSION_MODAL,
 } from '../apiConfig/endpoint';
+import { IS_LOCALHOST } from '../apiConfig/setting';
 
 const TEMP_BASE_URL =
   process.env.NODE_ENV !== 'production' ? BASE_URL : BASE_URL_PRODUCTION;
 
 export default async function fetchProgressionList(data: any) {
   try {
-    const res = await fetch(
-      `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}?userCreds=${BASE_USER_CREDS}`,
-      {
-        method: 'post', // *GET, POST, PUT, DELETE, etc.
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    ).then(async (response) => {
+    const url = IS_LOCALHOST
+      ? `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}?userCreds=${BASE_USER_CREDS}`
+      : `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`;
+    const res = await fetch(url, {
+      method: 'post', // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(async (response) => {
       const json = await response.json();
       return json;
     });
@@ -66,16 +66,16 @@ export default async function fetchProgressionList(data: any) {
 }
 export async function getAllConstraintOperand(data: any) {
   try {
-    const res = await fetch(
-      `${TEMP_BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}?userCreds=${BASE_USER_CREDS}`,
-      {
-        method: 'post', // *GET, POST, PUT, DELETE, etc.
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    ).then(async (response) => {
+    const url = IS_LOCALHOST
+      ? `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}?userCreds=${BASE_USER_CREDS}`
+      : `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`;
+    const res = await fetch(url, {
+      method: 'post', // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(async (response) => {
       const json = await response.json();
       return json;
     });

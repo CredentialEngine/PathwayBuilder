@@ -5,7 +5,7 @@ import {
   BASE_USER_CREDS,
   GET_ALL_PATHWAY_COMPONENT,
 } from '../../../apiConfig/endpoint';
-import { TEMP_BASE_URL } from '../../../apiConfig/setting';
+import { IS_LOCALHOST, TEMP_BASE_URL } from '../../../apiConfig/setting';
 
 import {
   getLeftPanelPathwayComponentFailure,
@@ -16,11 +16,12 @@ import { GET_LEFT_PANEL_PATHWAY_COMPONENTS_REQUEST } from './actionTypes';
 
 export function* getAllLeftPathwayComponents(): Generator {
   try {
+    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_PATHWAY_COMPONENT}`,
       method: 'GET',
       params: {
-        userCreds: `${BASE_USER_CREDS}`,
+        userCreds,
       },
     });
     yield put(getLeftPanelPathwayComponentSuccess(result));

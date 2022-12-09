@@ -4,7 +4,7 @@ import {
   BASE_USER_CREDS,
   PATHWAY_COMPONENT_PROXY_FOR,
 } from '../../../apiConfig/endpoint';
-import { TEMP_BASE_URL } from '../../../apiConfig/setting';
+import { IS_LOCALHOST, TEMP_BASE_URL } from '../../../apiConfig/setting';
 
 import {
   getAllProxyForResourcesFailure,
@@ -13,8 +13,9 @@ import {
 import { GET_ALL_PROXY_FOR_RESCOURCES_REQUEST } from './actionTypes';
 
 export function fetchPostsApi(value: any) {
+  const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
   const url = new URL(`${TEMP_BASE_URL}${PATHWAY_COMPONENT_PROXY_FOR}`),
-    params: any = { userCreds: `${BASE_USER_CREDS}` };
+    params: any = { userCreds };
 
   url.search = new URLSearchParams(params).toString();
   const fetchedProxyResources = fetch(url, {
