@@ -800,10 +800,10 @@ const MultiCard: React.FC<Props> = ({
                 <div className={styles.courseNameContainter}>
                   <span>{data?.Name?.slice(0, 40)}</span>
                 </div>
-                <div className={styles.creditSection}>
+                {/* <div className={styles.creditSection}>
                   <span>Credits: {data?.CreditValue?.[0]?.Value}</span>
                   <span>Level {ProgressionLevelName?.slice(0, 20)}</span>
-                </div>
+                </div> */}
               </div>
               <span
                 className={styles.ornageSection + ' ' + styles.right}
