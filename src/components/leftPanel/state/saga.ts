@@ -1,11 +1,9 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../../../apiConfig/api';
-import {
-  BASE_USER_CREDS,
-  GET_ALL_PATHWAY_COMPONENT,
-} from '../../../apiConfig/endpoint';
+import { GET_ALL_PATHWAY_COMPONENT } from '../../../apiConfig/endpoint';
 import { IS_LOCALHOST, TEMP_BASE_URL } from '../../../apiConfig/setting';
+import TokenManager from '../../../services/tokenManager';
 
 import {
   getLeftPanelPathwayComponentFailure,
@@ -16,7 +14,7 @@ import { GET_LEFT_PANEL_PATHWAY_COMPONENTS_REQUEST } from './actionTypes';
 
 export function* getAllLeftPathwayComponents(): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_PATHWAY_COMPONENT}`,
       method: 'GET',

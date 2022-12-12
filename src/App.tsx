@@ -2,7 +2,11 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { productionSetting, sanboxSetting } from './apiConfig/setting';
+import {
+  IS_LOCALHOST,
+  productionSetting,
+  sanboxSetting,
+} from './apiConfig/setting';
 import './App.scss';
 
 import Button from './components/button';
@@ -14,11 +18,14 @@ import RightPanel from './components/rightPanel';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
+import EnterDevCredentials from './screens/enterDevCredentials';
 import HomePage from './screens/homePage';
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
+
 import TokenManager from './services/tokenManager';
+
 import {
   getCurrentUserDataRequest,
   saveSelectedOrganization,
@@ -49,7 +56,7 @@ const App = () => {
   ] = useState<boolean>(false);
   const [isAddPathwayDestinationVisible, setIsAddPathwayDestinationVisible] =
     useState<boolean>(false);
-  const [isSelectOrganizationsVisble, setsSelectOrganizationsVisble] =
+  const [isSelectOrganizationsVisible, setsSelectOrganizationsVisible] =
     useState<boolean>(false);
   const [selectedOrganisationValue, setSelectedOrganisationValue] =
     useState<any>();
@@ -65,6 +72,10 @@ const App = () => {
     useState<boolean>(false);
   const [isDropCardAfterEditingForm, setIsDropCardAfterEditingForm] =
     useState<boolean>(false);
+
+  const [isDevCredFormVisible, setIsDevCredFormVisible] =
+    useState<boolean>(false);
+  const [enteredDevCredsValue, setEnteredDevCredsValue] = useState('');
 
   const {
     currentUserData: { data: userData },
@@ -89,12 +100,25 @@ const App = () => {
   }, [savePathwayResult]);
 
   useEffect(() => {
-    dispatch(getCurrentUserDataRequest());
+    if (IS_LOCALHOST && !enteredDevCredsValue) {
+      setsSelectOrganizationsVisible(false);
+      setIsDevCredFormVisible(true);
+    } else {
+      dispatch(getCurrentUserDataRequest());
+    }
   }, []);
+
+  const enterDevCredOkHandler = () => {
+    // save value in TokenManager
+    TokenManager.setToken(enteredDevCredsValue);
+    setIsDevCredFormVisible(false);
+    setsSelectOrganizationsVisible(true);
+
+    dispatch(getCurrentUserDataRequest());
+  };
 
   useEffect(() => {
     if (userData) {
-      TokenManager.setToken(userData?.Token);
       setOrganisationList(userData?.Organizations);
       setPathwayId(userData?.Id);
     }
@@ -123,13 +147,13 @@ const App = () => {
     if (selectedOrganisationValue) {
       dispatch(saveSelectedOrganization(selectedOrganisationValue));
     }
-    setsSelectOrganizationsVisble(false);
+    setsSelectOrganizationsVisible(false);
     setIsCreatePathwayVisible(true);
   };
 
   useEffect(() => {
     if (organisationList && organisationList?.length > 1) {
-      setsSelectOrganizationsVisble(true);
+      setsSelectOrganizationsVisible(true);
     }
   }, [organisationList?.length]);
 
@@ -178,9 +202,10 @@ const App = () => {
             !isrightPanelDrawerVisible &&
             !isCreatePathwayVisible &&
             !isAddPathwayFormVisible &&
-            !isSelectOrganizationsVisble &&
+            !isSelectOrganizationsVisible &&
             !isPreSelectedCreateResourceVisible &&
-            !isEditPathwayFormVisible
+            !isEditPathwayFormVisible &&
+            !isDevCredFormVisible
               ? true
               : false
           }
@@ -277,9 +302,10 @@ const App = () => {
             }
           />
         </Modal>
+
         <Modal
           width={520}
-          visible={isSelectOrganizationsVisble}
+          visible={isSelectOrganizationsVisible}
           onOk={selectOrgOkHandler}
           onCancel={() => {
             process.env.NODE_ENV !== 'production'
@@ -308,6 +334,33 @@ const App = () => {
               setSelectedOrganisationValue(value)
             }
             pathwayId={pathwayId}
+          />
+        </Modal>
+
+        <Modal
+          visible={isDevCredFormVisible}
+          title="Enter Developer Credentials"
+          onOk={enterDevCredOkHandler}
+          footer={[
+            <>
+              <Button
+                type={Type.PRIMARY}
+                onClick={enterDevCredOkHandler}
+                text="Save"
+                disabled={
+                  !(
+                    !_.isUndefined(enteredDevCredsValue) ||
+                    _.isNull(enteredDevCredsValue)
+                  )
+                }
+              />
+            </>,
+          ]}
+        >
+          <EnterDevCredentials
+            getEnteredDevCreds={(value: string) =>
+              setEnteredDevCredsValue(value)
+            }
           />
         </Modal>
       </MainContainer>

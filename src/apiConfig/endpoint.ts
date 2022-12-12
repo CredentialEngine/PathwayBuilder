@@ -1,7 +1,6 @@
 export const BASE_URL = 'https://sandbox.credentialengine.org/publisher/';
 export const BASE_URL_PRODUCTION =
   'https://sandbox.credentialengine.org/publisher/';
-export const BASE_USER_CREDS = 'tara.mueller@protiviti.com~ceI$Awesome';
 export const GET_ALL_PATHWAY_COMPONENT =
   'PathwayBuilderApi/Schema/PathwayComponent';
 export const GET_ALL_LOGICAL_OPERATOR =

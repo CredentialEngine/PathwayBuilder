@@ -3,13 +3,13 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { request } from '../../../apiConfig/api';
 
 import {
-  BASE_USER_CREDS,
   GET_ALL_ARRAY_OPERATION,
   GET_ALL_COMPARATORS,
   GET_ALL_LOGICAL_OPERATOR,
   SEARCH_FOR_LEST_RIGHT_OPERAND,
 } from '../../../apiConfig/endpoint';
 import { TEMP_BASE_URL, IS_LOCALHOST } from '../../../apiConfig/setting';
+import TokenManager from '../../../services/tokenManager';
 
 import {
   getAllArrayConceptsFailure,
@@ -28,7 +28,7 @@ import {
 
 export function* getAllLogicalOperators(): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_LOGICAL_OPERATOR}`,
       method: 'GET',
@@ -44,7 +44,7 @@ export function* getAllLogicalOperators(): Generator {
 
 export function* getComparatorsData(): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_COMPARATORS}`,
       method: 'GET',
@@ -60,7 +60,7 @@ export function* getComparatorsData(): Generator {
 
 export function* getArrayConceptData(): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_ALL_ARRAY_OPERATION}`,
       method: 'GET',
@@ -76,7 +76,7 @@ export function* getArrayConceptData(): Generator {
 
 export function* getAllConstraintOperand(data: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}`,
       method: 'POST',

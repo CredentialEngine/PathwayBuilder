@@ -2,13 +2,13 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../apiConfig/api';
 import {
-  BASE_USER_CREDS,
   GET_DATA_FOR_CURRENT_USER,
   GET_DATA_FOR_PATHWAY,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY,
   SAVE_DATA_FOR_PATHWAY,
 } from '../apiConfig/endpoint';
 import { IS_LOCALHOST, TEMP_BASE_URL } from '../apiConfig/setting';
+import TokenManager from '../services/tokenManager';
 
 import {
   approvePathwayFailure,
@@ -29,7 +29,7 @@ import {
 
 export function* getCurrentUserData(): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_DATA_FOR_CURRENT_USER}`,
       method: 'GET',
@@ -49,7 +49,7 @@ export function* getCurrentUserData(): Generator {
 
 export function* getPathwayAndComponentData(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${GET_DATA_FOR_PATHWAY}${payload?.id}`,
       method: 'GET',
@@ -71,7 +71,7 @@ export function* getPathwayAndComponentData(payload: any): Generator {
 }
 export function* approvePathway(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${PATHWAYBUILDERAPI_APPROVE_PATHWAY}${payload?.id}`,
       method: 'POST',
@@ -90,7 +90,7 @@ export function* approvePathway(payload: any): Generator {
 }
 export function* getSavePathwayWrapper(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SAVE_DATA_FOR_PATHWAY}`,
       method: 'POST',

@@ -2,12 +2,13 @@ import { call, put, debounce, takeLatest } from 'redux-saga/effects';
 
 import { request } from '../../../apiConfig/api';
 import {
-  BASE_USER_CREDS,
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
   SEARCH_FOR_PROGRESSION_MODAL,
 } from '../../../apiConfig/endpoint';
 import { IS_LOCALHOST, TEMP_BASE_URL } from '../../../apiConfig/setting';
+
+import TokenManager from '../../../services/tokenManager';
 
 import {
   getDataForProgressionModelSuccess,
@@ -25,7 +26,7 @@ import {
 
 export function* getAllProgressionModelData(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`,
       method: 'POST',
@@ -64,7 +65,7 @@ export function* getAllIndustryTypeCodeData(payload: any): Generator {
 
 export function* getAllOccupationTypeCodeData(payload: any): Generator {
   try {
-    const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
       url: `${TEMP_BASE_URL}${SEARCH_FOR_OCCUPATION_TYPE}`,
       method: 'POST',

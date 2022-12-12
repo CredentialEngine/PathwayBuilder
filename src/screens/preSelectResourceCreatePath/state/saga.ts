@@ -1,10 +1,8 @@
 import { call, debounce, put } from 'redux-saga/effects';
 
-import {
-  BASE_USER_CREDS,
-  PATHWAY_COMPONENT_PROXY_FOR,
-} from '../../../apiConfig/endpoint';
+import { PATHWAY_COMPONENT_PROXY_FOR } from '../../../apiConfig/endpoint';
 import { IS_LOCALHOST, TEMP_BASE_URL } from '../../../apiConfig/setting';
+import TokenManager from '../../../services/tokenManager';
 
 import {
   getAllProxyForResourcesFailure,
@@ -13,7 +11,7 @@ import {
 import { GET_ALL_PROXY_FOR_RESCOURCES_REQUEST } from './actionTypes';
 
 export function fetchPostsApi(value: any) {
-  const userCreds = IS_LOCALHOST ? BASE_USER_CREDS : null;
+  const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
   const url = new URL(`${TEMP_BASE_URL}${PATHWAY_COMPONENT_PROXY_FOR}`),
     params: any = { userCreds };
 
