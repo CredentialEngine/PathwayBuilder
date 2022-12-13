@@ -295,6 +295,9 @@ const LeftPanel: React.FC<any> = ({
                 CTID={card?.CTID}
                 id={card.Id}
                 type={card?.URI}
+                isDraggableCardVisibleMethod={(isDragTure: boolean) =>
+                  setDraggableCardVisible(isDragTure)
+                }
                 setLeftpanelSelectedElem={setLeftpanelSelectedElem}
               />
             ))}
