@@ -56,6 +56,9 @@ const HomePage: React.FC<Props> = ({
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
   const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
+  const [updatedPathwayComponentCards, setUpdatedPathwayComponentCards] =
+    useState<any>([]);
+
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
 
@@ -98,6 +101,8 @@ const HomePage: React.FC<Props> = ({
   const [componentConditionData, setComponentConditionData] = useState(false);
   const [currentCardData, setCurrentCardData] = useState<any>();
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
+    useState<string>('');
+  const [currentProgressionLevel, setCurrentProgressionLevel] =
     useState<string>('');
 
   useEffect(() => {
@@ -159,6 +164,7 @@ const HomePage: React.FC<Props> = ({
   }, []);
 
   let count = 0;
+  const [hasPendingCards, setPendingCards] = useState<boolean>();
   useEffect(() => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
@@ -184,6 +190,67 @@ const HomePage: React.FC<Props> = ({
     if (islastDropWrapperUsed) {
       /* here we are increasing number of DropWrapper */
       setNumberOfDropWrapper((prevState) => prevState + 1);
+    }
+
+    if (!hasPendingCards) {
+      const pathwayComponentInProgressionLevel = pathwayComponentCards?.filter(
+        (pathway_component: any) =>
+          pathway_component?.HasProgressionLevel === currentProgressionLevel
+      );
+      const pathwayComponentOutOfProgressionLevel =
+        pathwayComponentCards?.filter(
+          (pathway_component: any) =>
+            pathway_component?.HasProgressionLevel !== currentProgressionLevel
+        );
+
+      console.log(
+        '12345 ---pathwayComponentInProgressionLevel---->',
+        pathwayComponentInProgressionLevel
+      );
+      const missedColumnNUmber = pathwayComponentInProgressionLevel?.reduce(
+        (acc: any, curr: any) => {
+          if (acc.length > 0) {
+            return [...acc, curr.ColumnNumber];
+          } else {
+            return [curr.ColumnNumber];
+          }
+        },
+        [0]
+      );
+
+      console.log('12345  ---missedColumnNUmber---->', missedColumnNUmber);
+      const maxColumnNumber = Math.max(...missedColumnNUmber, 1);
+      console.log('12345 -----maxColumnNumber---->', maxColumnNumber);
+      const abc = _.get(
+        Array.from(Array(maxColumnNumber).keys()).filter(
+          (number: any) => !missedColumnNUmber.includes(number)
+        ),
+        '0'
+      );
+      const updatedPathwayComponent = pathwayComponentInProgressionLevel.map(
+        (a: any) => ({
+          ...a,
+          ColumnNumber: !a.destinationColumn
+            ? abc < a?.ColumnNumber
+              ? a.ColumnNumber - 1
+              : a.ColumnNumber
+            : a.ColumnNumber,
+        })
+      );
+      console.log(
+        '12345 ----updatedPathwayComponent----->',
+        pathwayComponentInProgressionLevel,
+        maxColumnNumber,
+        currentProgressionLevel,
+        abc,
+        updatedPathwayComponent
+      );
+      setUpdatedPathwayComponentCards([
+        ...pathwayComponentOutOfProgressionLevel,
+        ...updatedPathwayComponent,
+      ]);
+    } else {
+      setUpdatedPathwayComponentCards(pathwayComponentCards);
     }
   }, [pathwayComponentCards]);
 
@@ -396,12 +463,13 @@ const HomePage: React.FC<Props> = ({
     firstColumn: boolean
   ) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
-
+    setCurrentProgressionLevel(card?.HasProgressionLevel);
     if (!destinationColumn) {
       card.destinationColumn = false;
     }
     setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
+    setPendingCards(isPendingCards);
     setNewConn([]);
     const isDestinationCardExist =
       !_.isEmpty(pathwayComponent.Pathway.HasDestinationComponent) &&
@@ -536,6 +604,7 @@ const HomePage: React.FC<Props> = ({
           ColumnNumber: 1,
           firstColumn,
         });
+
       setPathwayComponentCards(updatedPathwayComponent);
       const updatedPathway = { ...updatedPathwayWrapper.Pathway };
       updatedPathway.HasDestinationComponent = card?.CTID;
@@ -1056,7 +1125,7 @@ const HomePage: React.FC<Props> = ({
   };
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
-      const columnNumber = pathwayComponentCards
+      const columnNumber = updatedPathwayComponentCards
         ?.filter((card: any) => card.HasProgressionLevel === column.CTID)
         .reduce((acc: any, curr: any) => {
           if (acc >= curr.ColumnNumber) {
@@ -1143,8 +1212,8 @@ const HomePage: React.FC<Props> = ({
                         }}
                       >
                         <Xwrapper>
-                          {pathwayComponentCards?.length > 0 &&
-                            pathwayComponentCards
+                          {updatedPathwayComponentCards?.length > 0 &&
+                            updatedPathwayComponentCards
                               .filter(
                                 (card: any) =>
                                   /* here we are mapping the pathwayComponets to respective progression level and rowNumber and columnNumber */
