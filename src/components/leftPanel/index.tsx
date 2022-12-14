@@ -194,7 +194,17 @@ const LeftPanel: React.FC<any> = ({
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
     } else {
-      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
+      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent.map(
+        (item: any) =>
+          item?.PrecededBy.includes(card?.CTID)
+            ? {
+                ...item,
+                PrecededBy: item?.PrecededBy.filter(
+                  (preceded: any) => preceded !== card?.CTID
+                ),
+              }
+            : item
+      );
       updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
