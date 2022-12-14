@@ -58,10 +58,10 @@ const LeftPanel: React.FC<any> = ({
   useEffect(() => {
     if (selectedTabCardData && selectedTabCardData.length > 0) {
       const updatedPathwayWrapper = { ...result.mappedData };
-
       if (
         updatedPathwayWrapper?.PathwayComponents?.length > 0 &&
-        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
+        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents &&
+        selectedTabCards?.length > 0
       ) {
         const filteredPendingCards = selectedTabCards?.filter(
           (selected_card: any) =>

@@ -384,6 +384,7 @@ const HomePage: React.FC<Props> = ({
       });
     }
   };
+
   const onDropHandler = (
     card: any,
     destinationColumn: boolean,

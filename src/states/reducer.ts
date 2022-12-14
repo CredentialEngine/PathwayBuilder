@@ -147,12 +147,13 @@ export default (state = initState, action: { type: string; payload: any }) => {
     case GET_DATA_FOR_PATHWAY_AND_COMPONENTS_SUCCESS:
       return {
         ...state,
-        pathwayComponentData: {
-          ...state.pathwayComponentData,
-          loading: false,
-          data: action.payload.Data,
-          valid: action?.payload?.Valid,
-        },
+        mappedData: action?.payload?.Data,
+        // pathwayComponentData: {
+        //   ...state.pathwayComponentData,
+        //   loading: false,
+        //   data: action.payload.Data,
+        //   valid: action?.payload?.Valid,
+        // },
       };
     case GET_DATA_FOR_PATHWAY_AND_COMPONENTS_FAILURE:
       return {

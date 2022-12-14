@@ -1,8 +1,6 @@
 import { Select as AntSelect, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-
-import { getDataForPathwayAndComponentsRequest } from '../../states/actions';
+// import { getDataForPathwayAndComponentsRequest } from '../../states/actions';
 
 import { selectOrganisationTexts } from './constants';
 
@@ -14,19 +12,19 @@ interface Props {
   visible?: boolean;
   organisationList?: any;
   getSelectedOrganisation?: (value: string) => void;
-  pathwayId: string;
+  pathwayId?: string;
 }
 
 const SelectOrganisation: React.FC<Props> = ({
   organisationList,
   getSelectedOrganisation,
-  pathwayId,
+  // pathwayId,
 }) => {
   const [selectedOrganisation, setSelectedOrganisation] = useState(
     'Select an organization'
   );
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   useEffect(() => {
     if (selectedOrganisation !== 'Select an organization') {
@@ -36,7 +34,7 @@ const SelectOrganisation: React.FC<Props> = ({
         }
       });
     }
-    dispatch(getDataForPathwayAndComponentsRequest(parseInt(pathwayId))); //1403
+    // dispatch(getDataForPathwayAndComponentsRequest(parseInt(pathwayId))); //1403
   }, [selectedOrganisation]);
 
   return (
