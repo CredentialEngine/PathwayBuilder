@@ -702,9 +702,8 @@ const HomePage: React.FC<Props> = ({
       const filteredconstraint = updatedPathwayWrapper?.Constraints?.filter(
         (constraint: any) => !data?.HasConstraint.includes(constraint?.RowId)
       );
-
       updatedPathwayComponent = pathwayComponentCards.map((item: any) =>
-        data?.ParentIdentifier === item?.RowId
+        item?.HasCondition.includes(data?.RowId)
           ? {
               ...item,
               HasCondition: item?.HasCondition.filter(
