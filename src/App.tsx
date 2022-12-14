@@ -28,6 +28,7 @@ import TokenManager from './services/tokenManager';
 
 import {
   getCurrentUserDataRequest,
+  getDataForPathwayAndComponentsRequest,
   saveSelectedOrganization,
 } from './states/actions';
 
@@ -66,7 +67,7 @@ const App = () => {
     useState<any>(false);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
-  const [pathwayId, setPathwayId] = useState('');
+  // const [pathwayId, setPathwayId] = useState('');
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
     useState<boolean>(false);
@@ -100,7 +101,15 @@ const App = () => {
   }, [savePathwayResult]);
 
   useEffect(() => {
-    if (IS_LOCALHOST && !enteredDevCredsValue) {
+    const url = window.location.href;
+    if (url?.includes('?Id=')) {
+      const pathwayIdFromUrl = url?.split('Id=').pop();
+      if (pathwayIdFromUrl) {
+        dispatch(
+          getDataForPathwayAndComponentsRequest(parseInt(pathwayIdFromUrl))
+        );
+      }
+    } else if (IS_LOCALHOST && !enteredDevCredsValue) {
       setsSelectOrganizationsVisible(false);
       setIsDevCredFormVisible(true);
     } else {
@@ -120,7 +129,6 @@ const App = () => {
   useEffect(() => {
     if (userData) {
       setOrganisationList(userData?.Organizations);
-      setPathwayId(userData?.Id);
     }
   }, [userData]);
 
@@ -333,7 +341,7 @@ const App = () => {
             getSelectedOrganisation={(value: string) =>
               setSelectedOrganisationValue(value)
             }
-            pathwayId={pathwayId}
+            // pathwayId={pathwayId}
           />
         </Modal>
 
