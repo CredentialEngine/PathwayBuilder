@@ -78,26 +78,50 @@ const LeftPanel: React.FC<any> = ({
       } else {
         setSelectedtabCards(selectedTabCardData);
       }
-      const conditionalCard = checkHasCondition(droppedCard);
 
-      const filteredConditionalComponent =
-        updatedPathwayWrapper?.ComponentConditions?.filter(
-          (conditional_card: any) =>
-            !conditionalCard?.find(
-              (element: any) => element?.RowId === conditional_card?.RowId
-            )
-        ).map((card: any) =>
-          card?.TargetComponent?.includes(droppedCard?.CTID)
-            ? { ...card, TargetComponent: droppedCard.PrecededBy }
-            : { ...card }
+      if (droppedCard) {
+        const conditionalCard = checkHasCondition(droppedCard);
+
+        const filteredConditionalComponent =
+          updatedPathwayWrapper?.ComponentConditions?.filter(
+            (conditional_card: any) =>
+              !conditionalCard?.find(
+                (element: any) => element?.RowId === conditional_card?.RowId
+              )
+          ).map((card: any) =>
+            card?.TargetComponent?.includes(droppedCard?.CTID)
+              ? {
+                  ...card,
+                  TargetComponent: card?.TargetComponent?.filter(
+                    (card: any) => card?.CTID !== droppedCard?.CTID
+                  ),
+                }
+              : card
+          );
+        const updatedConditionalCards = filteredConditionalComponent?.map(
+          (card: any) => {
+            if (card?.TargetComponent?.includes(droppedCard?.CTID)) {
+              return {
+                ...card,
+                TargetComponent: card?.TargetComponent?.filter(
+                  (card: any) =>
+                    _.toString(card) !== _.toString(droppedCard?.CTID)
+                ),
+              };
+            } else {
+              return card;
+            }
+          }
         );
-      updatedPathwayWrapper.ComponentConditions = filteredConditionalComponent;
-      updatedPathwayWrapper.DeletedComponentConditions = [
-        ...updatedPathwayWrapper.DeletedComponentConditions,
-        ...conditionalCard,
-      ];
-      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
+        updatedPathwayWrapper.ComponentConditions = updatedConditionalCards;
+        updatedPathwayWrapper.DeletedComponentConditions = [
+          ...updatedPathwayWrapper.DeletedComponentConditions,
+          ...conditionalCard,
+        ];
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+        setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
+        setDroppedCard(undefined);
+      }
     }
   }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
 
