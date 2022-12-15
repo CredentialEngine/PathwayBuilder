@@ -155,15 +155,10 @@ const HomePage: React.FC<Props> = ({
       destinationCTID: uuidv4(),
       firstStageCTID: uuidv4(),
     });
-    // createConnection();
   }, []);
 
   let count = 0;
   useEffect(() => {
-    const updatedPathwayWrapper = { ...pathwayComponent };
-    updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
-    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-
     const obj: any = {};
 
     pathwayComponentCards.map((component_card: any) => {
@@ -267,6 +262,7 @@ const HomePage: React.FC<Props> = ({
   useEffect(() => {
     if (pathwayComponent) {
       setNewConn([]);
+
       if (pathwayComponent?.ComponentConditions?.length > -1) {
         setPathwayComponentConditionCards(
           pathwayComponent.ComponentConditions.map((card: any) => ({
@@ -279,7 +275,6 @@ const HomePage: React.FC<Props> = ({
 
       const pathwayModel =
         pathwayComponent?.Pathway?.HasProgressionModel?.length > 0;
-
       let count = 0;
       if (pathwayModel) {
         const updatedPathwayLevel = [] as any;
@@ -359,6 +354,24 @@ const HomePage: React.FC<Props> = ({
             Narrower: null,
           },
         ]);
+
+        const updatedCards = pathwayComponent?.PathwayComponents.map(
+          (card: any) => {
+            if (
+              _.isUndefined(card?.HasProgressionLevel) &&
+              card?.CTID !== pathwayComponent?.Pathway?.HasDestinationComponent
+            ) {
+              return {
+                ...card,
+                HasProgressionLevel: generatedUuid.firstStageCTID,
+              };
+            } else {
+              return card;
+            }
+          }
+        );
+
+        setPathwayComponentCards(updatedCards);
       }
     }
   }, [pathwayComponent, isDestinationColumnStatus]);
@@ -462,20 +475,19 @@ const HomePage: React.FC<Props> = ({
           updatedPathwayWrapper.ComponentConditions = updatedCards;
           dispatch(updateMappedDataRequest(updatedPathwayWrapper));
         } else {
-          setPathwayComponentCards(
-            pathwayComponentCards
-              .filter(
-                (component_card: any) => component_card?.CTID !== card?.CTID
-              )
-              .concat({
-                ...restCardProps,
-                destinationColumn: false,
-                HasProgressionLevel,
-                RowNumber,
-                ColumnNumber: maxColumnNumber + 1,
-                firstColumn,
-              })
-          );
+          updatedPathwayWrapper.PathwayComponents = pathwayComponentCards
+            .filter(
+              (component_card: any) => component_card?.CTID !== card?.CTID
+            )
+            .concat({
+              ...restCardProps,
+              destinationColumn: false,
+              HasProgressionLevel,
+              RowNumber,
+              ColumnNumber: maxColumnNumber + 1,
+              firstColumn,
+            });
+          dispatch(updateMappedDataRequest(updatedPathwayWrapper));
         }
       }
       /* 
@@ -537,7 +549,6 @@ const HomePage: React.FC<Props> = ({
           ColumnNumber: 1,
           firstColumn,
         });
-      setPathwayComponentCards(updatedPathwayComponent);
       const updatedPathway = { ...updatedPathwayWrapper.Pathway };
       updatedPathway.HasDestinationComponent = card?.CTID;
       updatedPathwayWrapper.Pathway = updatedPathway;
@@ -561,14 +572,17 @@ const HomePage: React.FC<Props> = ({
             RowNumber,
             firstColumn,
           });
-        setPathwayComponentCards(updatedPathwayComponent);
+        updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       }
+
+      createConnection();
 
       return;
     }
 
     if (isDropCardAfterEditingForm) {
-      setPathwayComponentCards([
+      updatedPathwayWrapper.PathwayComponents = [
         ...pathwayComponentCards,
         {
           ...restCardProps,
@@ -579,7 +593,8 @@ const HomePage: React.FC<Props> = ({
 
           firstColumn,
         },
-      ]);
+      ];
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       setIsDropCardAfterEditingForm(false);
       return;
     }
@@ -589,7 +604,7 @@ const HomePage: React.FC<Props> = ({
       isStartFromInitialColumnSelected &&
       isFirstColumneSelected
     ) {
-      setPathwayComponentCards([
+      updatedPathwayWrapper.PathwayComponents = [
         ...pathwayComponentCards,
         {
           ...restCardProps,
@@ -600,13 +615,14 @@ const HomePage: React.FC<Props> = ({
 
           firstColumn,
         },
-      ]);
+      ];
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     } else if (
       pathwayComponentCards.length === 0 &&
       isDestinationColumnSelected &&
       isDestinationColumnStatus
     ) {
-      setPathwayComponentCards([
+      updatedPathwayWrapper.PathwayComponents = [
         ...pathwayComponentCards,
         {
           ...restCardProps,
@@ -616,31 +632,30 @@ const HomePage: React.FC<Props> = ({
           ColumnNumber: 1,
           firstColumn,
         },
-      ]);
+      ];
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     } else if (card?.pathwayGameboardCard) {
-      setPathwayComponentCards(
-        pathwayComponentCards
-          .filter((item: any) => item.CTID !== card.CTID)
-          .concat({
-            ...restCardProps,
-            HasProgressionLevel,
-            RowNumber,
-            ColumnNumber,
-            firstColumn,
-          })
-      );
+      updatedPathwayWrapper.PathwayComponents = pathwayComponentCards
+        .filter((item: any) => item.CTID !== card.CTID)
+        .concat({
+          ...restCardProps,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber,
+          firstColumn,
+        });
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     } else if (pathwayComponentCards.length !== 0) {
-      setPathwayComponentCards(
-        pathwayComponentCards
-          .filter((item: any) => item.CTID !== card.CTID)
-          .concat({
-            ...restCardProps,
-            HasProgressionLevel,
-            RowNumber,
-            ColumnNumber,
-            firstColumn,
-          })
-      );
+      updatedPathwayWrapper.PathwayComponents = pathwayComponentCards
+        .filter((item: any) => item.CTID !== card.CTID)
+        .concat({
+          ...restCardProps,
+          HasProgressionLevel,
+          RowNumber,
+          ColumnNumber,
+          firstColumn,
+        });
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     } else {
       return;
     }
@@ -1153,7 +1168,9 @@ const HomePage: React.FC<Props> = ({
                                     column?.id === 'destinationColumn' &&
                                     card.RowNumber === rowNumber + 1 &&
                                     card.ColumnNumber === column_num + 1) ||
-                                  (card.HasProgressionLevel === column.CTID &&
+                                  (!_.isUndefined(card.HasProgressionLevel) &&
+                                    !_.isUndefined(column.CTID) &&
+                                    card.HasProgressionLevel === column.CTID &&
                                     card.RowNumber === rowNumber + 1 &&
                                     card.ColumnNumber === column_num + 1)
                               )
