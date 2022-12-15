@@ -123,6 +123,7 @@ const LeftPanel: React.FC<any> = ({
         setDroppedCard(undefined);
       }
     }
+    isDraggableCardVisibleMethod(false);
   }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
 
   const createCard = (card: any) => {
@@ -213,7 +214,17 @@ const LeftPanel: React.FC<any> = ({
     if (card.destinationColumn || card.isDestinationColumnSelected) {
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
-      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
+      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent.map(
+        (item: any) =>
+          item?.PrecededBy.includes(card?.CTID)
+            ? {
+                ...item,
+                PrecededBy: item?.PrecededBy.filter(
+                  (preceded: any) => preceded !== card?.CTID
+                ),
+              }
+            : item
+      );
       updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));

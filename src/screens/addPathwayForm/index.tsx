@@ -948,6 +948,7 @@ const AddPathwayForm: React.FC<Props> = ({
           <Divider className={styles.divider} />
           <Col span={24}>
             <CheckBox
+              disabled={isEditPathwayFormVisible}
               onChange={onCheckBoxChangeHandler}
               checked={checkboxValues.progressionModel}
               name="progressionModel"
@@ -972,6 +973,7 @@ const AddPathwayForm: React.FC<Props> = ({
                     'Name'
                   )}
                   allowClear={true}
+                  disabled={isEditPathwayFormVisible}
                   value={selectedProgressionModelValue}
                   placeholder="Start typing to choose a Progression Model"
                   onSearch={onProgressionModelSearchHandler}
