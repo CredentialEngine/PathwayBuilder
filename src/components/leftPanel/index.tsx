@@ -60,8 +60,7 @@ const LeftPanel: React.FC<any> = ({
       const updatedPathwayWrapper = { ...result.mappedData };
       if (
         updatedPathwayWrapper?.PathwayComponents?.length > 0 &&
-        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents &&
-        selectedTabCards?.length > 0
+        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
       ) {
         const filteredPendingCards = selectedTabCards?.filter(
           (selected_card: any) =>
@@ -118,10 +117,12 @@ const LeftPanel: React.FC<any> = ({
           ...updatedPathwayWrapper.DeletedComponentConditions,
           ...conditionalCard,
         ];
-        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
         setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
         setDroppedCard(undefined);
       }
+      // updatedPathwayWrapper.PendingComponents = selectedTabCardData;
+
+      dispatch(updateMappedDataRequest(updatedPathwayWrapper));
     }
     isDraggableCardVisibleMethod(false);
   }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);

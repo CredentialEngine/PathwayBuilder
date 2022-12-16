@@ -133,7 +133,7 @@ const HomePage: React.FC<Props> = ({
       return conditional_comp;
     });
     setAllConditionalCardData({ ...allConditionalCardsData, ...obj });
-    setUpdatedPathwayComponentConditionCards(updatedConditionalComponents);
+    setUpdatedPathwayComponentConditionCards(pathwayComponentConditionCards);
     setIsStartFromInitialColumnSelected(false);
     createConnection();
   }, [pathwayComponentConditionCards]);
@@ -429,78 +429,22 @@ const HomePage: React.FC<Props> = ({
       };
     }
 
-    // if (columnNumberEsixt && !isPendingCards) {
-    //   const pathwayComponentColumnNumber = pathwayComponentCards
-    //     ?.filter(
-    //       (card: any) => card.HasProgressionLevel === HasProgressionLevel
-    //     )
-    //     .reduce((acc: any, curr: any) => {
-    //       if (acc >= curr.ColumnNumber) {
-    //         return acc;
-    //       } else {
-    //         return curr.ColumnNumber;
-    //       }
-    //     }, 1);
-
-    //   const conditinalComponentColumnNumber =
-    //     updatedPathwayComponentConditionCards
-    //       .filter(
-    //         (card: any) => card.HasProgressionLevel === HasProgressionLevel
-    //       )
-    //       .reduce((acc: any, curr: any) => {
-    //         if (acc >= curr.ColumnNumber) {
-    //           return acc;
-    //         } else {
-    //           return curr.ColumnNumber;
-    //         }
-    //       }, 1);
-
-    //   const maxColumnNumber = Math.max(
-    //     pathwayComponentColumnNumber,
-    //     conditinalComponentColumnNumber
-    //   );
-    //   // if (maxColumnNumber === card?.ColumnNumber && maxColumnNumber !== 1) {
-    //   //   return;
-    //   // }
-    //   if (card?.Type === 'conditional') {
-    //     const updatedCards = updatedPathwayComponentConditionCards
-    //       .filter((item: any) => item?.RowId !== card?.RowId)
-    //       .concat({
-    //         ...card,
-    //         RowNumber,
-    //         HasProgressionLevel,
-    //         ColumnNumber: maxColumnNumber + 1,
-    //       });
-    //     setUpdatedPathwayComponentConditionCards(updatedCards);
-    //     updatedPathwayWrapper.ComponentConditions = updatedCards;
-    //     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    //   } else {
-    //     updatedPathwayWrapper.PathwayComponents = pathwayComponentCards
-    //       .filter((component_card: any) => component_card?.CTID !== card?.CTID)
-    //       .concat({
-    //         ...restCardProps,
-    //         destinationColumn: false,
-    //         HasProgressionLevel,
-    //         RowNumber,
-    //         ColumnNumber: maxColumnNumber + 1,
-    //         firstColumn,
-    //       });
-    //     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-    //   }
-    //   // }
-    //   /*
-    //     this block is to prevent to create a new column when we overlap pathwayComponent inside same progressionLevel
-    //   */
-    //   createConnection();
-    //   return;
-    // }
-
     if (columnNumberEsixt && !isPendingCards) {
-      if (card?.HasProgressionLevel === HasProgressionLevel) {
-        createConnection();
-      } else if (!destinationColumn) {
-        const pathwayComponentColumnNumber = pathwayComponentCards
-          ?.filter(
+      const pathwayComponentColumnNumber = pathwayComponentCards
+        ?.filter(
+          (card: any) => card.HasProgressionLevel === HasProgressionLevel
+        )
+        .reduce((acc: any, curr: any) => {
+          if (acc >= curr.ColumnNumber) {
+            return acc;
+          } else {
+            return curr.ColumnNumber;
+          }
+        }, 1);
+
+      const conditinalComponentColumnNumber =
+        updatedPathwayComponentConditionCards
+          .filter(
             (card: any) => card.HasProgressionLevel === HasProgressionLevel
           )
           .reduce((acc: any, curr: any) => {
@@ -511,58 +455,114 @@ const HomePage: React.FC<Props> = ({
             }
           }, 1);
 
-        const conditinalComponentColumnNumber =
-          updatedPathwayComponentConditionCards
-            .filter(
-              (card: any) => card.HasProgressionLevel === HasProgressionLevel
-            )
-            .reduce((acc: any, curr: any) => {
-              if (acc >= curr.ColumnNumber) {
-                return acc;
-              } else {
-                return curr.ColumnNumber;
-              }
-            }, 1);
-
-        const maxColumnNumber = Math.max(
-          pathwayComponentColumnNumber,
-          conditinalComponentColumnNumber
-        );
-        if (card?.Type === 'conditional') {
-          const updatedCards = updatedPathwayComponentConditionCards
-            .filter((item: any) => item?.RowId !== card?.RowId)
-            .concat({
-              ...card,
-              RowNumber,
-              HasProgressionLevel,
-              ColumnNumber: maxColumnNumber + 1,
-            });
-          setUpdatedPathwayComponentConditionCards(updatedCards);
-          updatedPathwayWrapper.ComponentConditions = updatedCards;
-          dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-        } else {
-          setPathwayComponentCards(
-            pathwayComponentCards
-              .filter(
-                (component_card: any) => component_card?.CTID !== card?.CTID
-              )
-              .concat({
-                ...restCardProps,
-                destinationColumn: false,
-                HasProgressionLevel,
-                RowNumber,
-                ColumnNumber: maxColumnNumber + 1,
-                firstColumn,
-              })
-          );
-        }
+      const maxColumnNumber = Math.max(
+        pathwayComponentColumnNumber,
+        conditinalComponentColumnNumber
+      );
+      // if (maxColumnNumber === card?.ColumnNumber && maxColumnNumber !== 1) {
+      //   return;
+      // }
+      if (card?.Type === 'conditional') {
+        const updatedCards = updatedPathwayComponentConditionCards
+          .filter((item: any) => item?.RowId !== card?.RowId)
+          .concat({
+            ...card,
+            RowNumber,
+            HasProgressionLevel,
+            ColumnNumber: maxColumnNumber + 1,
+          });
+        setUpdatedPathwayComponentConditionCards(updatedCards);
+        updatedPathwayWrapper.ComponentConditions = updatedCards;
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      } else {
+        updatedPathwayWrapper.PathwayComponents = pathwayComponentCards
+          .filter((component_card: any) => component_card?.CTID !== card?.CTID)
+          .concat({
+            ...restCardProps,
+            destinationColumn: false,
+            HasProgressionLevel,
+            RowNumber,
+            ColumnNumber: maxColumnNumber + 1,
+            firstColumn,
+          });
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       }
-      /* 
+      // }
+      /*
         this block is to prevent to create a new column when we overlap pathwayComponent inside same progressionLevel
       */
       createConnection();
       return;
     }
+
+    // if (columnNumberEsixt && !isPendingCards) {
+    //   if (card?.HasProgressionLevel === HasProgressionLevel) {
+    //     createConnection();
+    //   } else if (!destinationColumn) {
+    //     const pathwayComponentColumnNumber = pathwayComponentCards
+    //       ?.filter(
+    //         (card: any) => card.HasProgressionLevel === HasProgressionLevel
+    //       )
+    //       .reduce((acc: any, curr: any) => {
+    //         if (acc >= curr.ColumnNumber) {
+    //           return acc;
+    //         } else {
+    //           return curr.ColumnNumber;
+    //         }
+    //       }, 1);
+
+    //     const conditinalComponentColumnNumber =
+    //       updatedPathwayComponentConditionCards
+    //         .filter(
+    //           (card: any) => card.HasProgressionLevel === HasProgressionLevel
+    //         )
+    //         .reduce((acc: any, curr: any) => {
+    //           if (acc >= curr.ColumnNumber) {
+    //             return acc;
+    //           } else {
+    //             return curr.ColumnNumber;
+    //           }
+    //         }, 1);
+
+    //     const maxColumnNumber = Math.max(
+    //       pathwayComponentColumnNumber,
+    //       conditinalComponentColumnNumber
+    //     );
+    //     if (card?.Type === 'conditional') {
+    //       const updatedCards = updatedPathwayComponentConditionCards
+    //         .filter((item: any) => item?.RowId !== card?.RowId)
+    //         .concat({
+    //           ...card,
+    //           RowNumber,
+    //           HasProgressionLevel,
+    //           ColumnNumber: maxColumnNumber + 1,
+    //         });
+    //       setUpdatedPathwayComponentConditionCards(updatedCards);
+    //       updatedPathwayWrapper.ComponentConditions = updatedCards;
+    //       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    //     } else {
+    //       setPathwayComponentCards(
+    //         pathwayComponentCards
+    //           .filter(
+    //             (component_card: any) => component_card?.CTID !== card?.CTID
+    //           )
+    //           .concat({
+    //             ...restCardProps,
+    //             destinationColumn: false,
+    //             HasProgressionLevel,
+    //             RowNumber,
+    //             ColumnNumber: maxColumnNumber + 1,
+    //             firstColumn,
+    //           })
+    //       );
+    //     }
+    //   }
+    //   /*
+    //     this block is to prevent to create a new column when we overlap pathwayComponent inside same progressionLevel
+    //   */
+    //   createConnection();
+    //   return;
+    // }
     if (card?.Type === 'conditional') {
       /* This Function add only conditional cards*/
       const updatedPathwayWrapper = { ...pathwayComponent };
