@@ -60,8 +60,7 @@ const LeftPanel: React.FC<any> = ({
       const updatedPathwayWrapper = { ...result.mappedData };
       if (
         updatedPathwayWrapper?.PathwayComponents?.length > 0 &&
-        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents &&
-        selectedTabCards?.length > 0
+        selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
       ) {
         const filteredPendingCards = selectedTabCards?.filter(
           (selected_card: any) =>
@@ -78,27 +77,54 @@ const LeftPanel: React.FC<any> = ({
       } else {
         setSelectedtabCards(selectedTabCardData);
       }
-      const conditionalCard = checkHasCondition(droppedCard);
 
-      const filteredConditionalComponent =
-        updatedPathwayWrapper?.ComponentConditions?.filter(
-          (conditional_card: any) =>
-            !conditionalCard?.find(
-              (element: any) => element?.RowId === conditional_card?.RowId
-            )
-        ).map((card: any) =>
-          card?.TargetComponent?.includes(droppedCard?.CTID)
-            ? { ...card, TargetComponent: droppedCard.PrecededBy }
-            : { ...card }
+      if (droppedCard) {
+        const conditionalCard = checkHasCondition(droppedCard);
+
+        const filteredConditionalComponent =
+          updatedPathwayWrapper?.ComponentConditions?.filter(
+            (conditional_card: any) =>
+              !conditionalCard?.find(
+                (element: any) => element?.RowId === conditional_card?.RowId
+              )
+          ).map((card: any) =>
+            card?.TargetComponent?.includes(droppedCard?.CTID)
+              ? {
+                  ...card,
+                  TargetComponent: card?.TargetComponent?.filter(
+                    (card: any) => card?.CTID !== droppedCard?.CTID
+                  ),
+                }
+              : card
+          );
+        const updatedConditionalCards = filteredConditionalComponent?.map(
+          (card: any) => {
+            if (card?.TargetComponent?.includes(droppedCard?.CTID)) {
+              return {
+                ...card,
+                TargetComponent: card?.TargetComponent?.filter(
+                  (card: any) =>
+                    _.toString(card) !== _.toString(droppedCard?.CTID)
+                ),
+              };
+            } else {
+              return card;
+            }
+          }
         );
-      updatedPathwayWrapper.ComponentConditions = filteredConditionalComponent;
-      updatedPathwayWrapper.DeletedComponentConditions = [
-        ...updatedPathwayWrapper.DeletedComponentConditions,
-        ...conditionalCard,
-      ];
+        updatedPathwayWrapper.ComponentConditions = updatedConditionalCards;
+        updatedPathwayWrapper.DeletedComponentConditions = [
+          ...updatedPathwayWrapper.DeletedComponentConditions,
+          ...conditionalCard,
+        ];
+        setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
+        setDroppedCard(undefined);
+      }
+      // updatedPathwayWrapper.PendingComponents = selectedTabCardData;
+
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-      setSelectedPathwayComponents(updatedPathwayWrapper.PathwayComponents);
     }
+    isDraggableCardVisibleMethod(false);
   }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
 
   const createCard = (card: any) => {
@@ -189,7 +215,17 @@ const LeftPanel: React.FC<any> = ({
     if (card.destinationColumn || card.isDestinationColumnSelected) {
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
-      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent;
+      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent.map(
+        (item: any) =>
+          item?.PrecededBy.includes(card?.CTID)
+            ? {
+                ...item,
+                PrecededBy: item?.PrecededBy.filter(
+                  (preceded: any) => preceded !== card?.CTID
+                ),
+              }
+            : item
+      );
       updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));

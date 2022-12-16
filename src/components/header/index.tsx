@@ -142,7 +142,20 @@ const Header = (props: Props) => {
 
   const savePathwayWrapper = () => {
     // setLoadings(true);
-    dispatch(saveDataForPathwayRequest(pathwayWrapper));
+    const pathwayModel =
+      pathwayWrapper?.Pathway?.HasProgressionModel?.length > 0;
+    if (pathwayModel) {
+      dispatch(saveDataForPathwayRequest(pathwayWrapper));
+    } else {
+      const updatedPathwayWrapper = { ...pathwayWrapper };
+      updatedPathwayWrapper.PathwayComponents =
+        updatedPathwayWrapper.PathwayComponents.map((card: any) => {
+          const { HasProgressionLevel, ...restProps } = card;
+          HasProgressionLevel;
+          return { ...restProps };
+        });
+      dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+    }
   };
 
   const onEditPathwayClick = () => {

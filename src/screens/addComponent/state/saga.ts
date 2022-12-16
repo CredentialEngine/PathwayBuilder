@@ -6,7 +6,7 @@ import {
   GET_ALL_ARRAY_OPERATION,
   GET_ALL_COMPARATORS,
   GET_ALL_LOGICAL_OPERATOR,
-  SEARCH_FOR_LEST_RIGHT_OPERAND,
+  SEARCH_FOR_LEFT_AND_RIGHT_OPERAND,
 } from '../../../apiConfig/endpoint';
 import { TEMP_BASE_URL, IS_LOCALHOST } from '../../../apiConfig/setting';
 import TokenManager from '../../../services/tokenManager';
@@ -78,7 +78,7 @@ export function* getAllConstraintOperand(data: any): Generator {
   try {
     const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
-      url: `${TEMP_BASE_URL}${SEARCH_FOR_LEST_RIGHT_OPERAND}`,
+      url: `${TEMP_BASE_URL}${SEARCH_FOR_LEFT_AND_RIGHT_OPERAND}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

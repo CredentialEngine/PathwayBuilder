@@ -13,6 +13,7 @@ export interface Props {
   dropdownClassName?: any;
   value?: string;
   onChange?: any;
+  disabled?: boolean;
 }
 
 const AutoCompleteBox = (props: Props) => {
@@ -26,11 +27,13 @@ const AutoCompleteBox = (props: Props) => {
     dropdownClassName,
     value,
     onChange,
+    disabled,
   } = props;
   return (
     <AutoComplete
       className={className}
       options={options}
+      disabled={disabled}
       placeholder={placeholder}
       onSelect={onSelect}
       value={value}

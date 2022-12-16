@@ -116,9 +116,9 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
 
     const currentPathwayComponent =
-      allComponentCardsData[connectionsCTID.start];
+      allComponentCardsData[connectionsCTID?.start];
     const currentConditionalComponent =
-      allConditionalCardsData[connectionsCTID.start];
+      allConditionalCardsData[connectionsCTID?.start];
 
     if (conditionalComponent.length > 0) {
       /* in the below code we are adding RowId of the newly created conitional component inside the parent component*/
