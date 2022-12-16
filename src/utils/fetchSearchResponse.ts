@@ -3,6 +3,7 @@ import { noop } from 'lodash';
 import {
   BASE_URL,
   BASE_URL_PRODUCTION,
+  SEARCH_FOR_LEFT_AND_RIGHT_OPERAND,
   SEARCH_FOR_PROGRESSION_MODAL,
 } from '../apiConfig/endpoint';
 import { IS_LOCALHOST } from '../apiConfig/setting';
@@ -67,8 +68,8 @@ export default async function fetchProgressionList(data: any) {
 export async function getAllConstraintOperand(data: any) {
   try {
     const url = IS_LOCALHOST
-      ? `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}?userCreds=${TokenManager.getToken()}`
-      : `${TEMP_BASE_URL}${SEARCH_FOR_PROGRESSION_MODAL}`;
+      ? `${TEMP_BASE_URL}${SEARCH_FOR_LEFT_AND_RIGHT_OPERAND}?userCreds=${TokenManager.getToken()}`
+      : `${TEMP_BASE_URL}${SEARCH_FOR_LEFT_AND_RIGHT_OPERAND}`;
     const res = await fetch(url, {
       method: 'post', // *GET, POST, PUT, DELETE, etc.
       body: JSON.stringify(data), // body data type must match "Content-Type" header
