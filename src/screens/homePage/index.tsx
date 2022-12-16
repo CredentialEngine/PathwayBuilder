@@ -484,17 +484,23 @@ const HomePage: React.FC<Props> = ({
                 : a.RowNumber,
           })
         );
-
+        let allPathwayComponentCard: any;
+        if (card?.Type !== 'conditional') {
+          allPathwayComponentCard = [
+            ...updatedPathwayWrapper.PathwayComponents,
+            ...updatedPathwayComponentArray,
+            updatedCard,
+          ];
+        } else {
+          allPathwayComponentCard = [
+            ...updatedPathwayWrapper.PathwayComponents,
+            ...updatedPathwayComponentArray,
+          ];
+        }
         const allComponentConditionalCard = [
           ...conditionalComponentOutOfProgressionLevel,
           ...updatedConditionalArray,
           ...conditionalCardOutOfColumn,
-        ];
-
-        const allPathwayComponentCard = [
-          ...updatedPathwayWrapper.PathwayComponents,
-          ...updatedPathwayComponentArray,
-          updatedCard,
         ];
 
         const uniqueAllPathwayComponentArray = [
@@ -576,13 +582,19 @@ const HomePage: React.FC<Props> = ({
             ...updatedConditionalArray,
             ...conditionalCardOutOfColumn,
           ];
-
-          const allPathwayComponentCard = [
-            ...updatedPathwayWrapper.PathwayComponents,
-            ...updatedPathwayComponentArray,
-            updatedCard,
-          ];
-
+          let allPathwayComponentCard: any;
+          if (card?.Type !== 'conditional') {
+            allPathwayComponentCard = [
+              ...updatedPathwayWrapper.PathwayComponents,
+              ...updatedPathwayComponentArray,
+              updatedCard,
+            ];
+          } else {
+            allPathwayComponentCard = [
+              ...updatedPathwayWrapper.PathwayComponents,
+              ...updatedPathwayComponentArray,
+            ];
+          }
           const uniqueAllPathwayComponentArray = [
             ...new Map(
               allPathwayComponentCard.map((item: any) => [item['CTID'], item])
@@ -595,10 +607,23 @@ const HomePage: React.FC<Props> = ({
           dispatch(updateMappedDataRequest(updatedPathwayWrapper));
           return;
         } else {
-          const allPathwayComponentCard = [
-            ...updatedPathwayWrapper.PathwayComponents,
-            updatedCard,
-          ];
+          let allPathwayComponentCard: any;
+
+          if (card?.Type !== 'conditional') {
+            allPathwayComponentCard = [
+              ...updatedPathwayWrapper.PathwayComponents,
+              updatedCard,
+            ];
+          } else {
+            allPathwayComponentCard = [
+              ...updatedPathwayWrapper.PathwayComponents,
+            ];
+          }
+
+          // const allPathwayComponentCard = [
+          //   ...updatedPathwayWrapper.PathwayComponents,
+          //   updatedCard,
+          // ];
 
           const uniqueAllPathwayComponentArray = [
             ...new Map(
@@ -612,7 +637,6 @@ const HomePage: React.FC<Props> = ({
         }
         return;
       }
-
       updatedPathwayComponentArray = componentCardInProgressionLevel.map(
         (a: any) => ({
           ...a,
@@ -638,11 +662,26 @@ const HomePage: React.FC<Props> = ({
         ...updatedConditionalArray,
       ];
 
-      const allPathwayComponentCard = [
-        ...updatedPathwayWrapper.PathwayComponents,
-        ...updatedPathwayComponentArray,
-        updatedCard,
-      ];
+      let allPathwayComponentCard: any;
+
+      if (card?.Type !== 'conditional') {
+        allPathwayComponentCard = [
+          ...updatedPathwayWrapper.PathwayComponents,
+          ...updatedPathwayComponentArray,
+          updatedCard,
+        ];
+      } else {
+        allPathwayComponentCard = [
+          ...updatedPathwayWrapper.PathwayComponents,
+          ...updatedPathwayComponentArray,
+        ];
+      }
+
+      // const allPathwayComponentCard = [
+      //   ...updatedPathwayWrapper.PathwayComponents,
+      //   ...updatedPathwayComponentArray,
+      //   updatedCard,
+      // ];
 
       const uniqueAllPathwayComponentArray = [
         ...new Map(
@@ -656,6 +695,9 @@ const HomePage: React.FC<Props> = ({
 
       return;
     }
+    // if (columnNumberEsixt) {
+    //   return;
+    // }
     if (!destinationColumn) {
       card.destinationColumn = false;
     }
@@ -691,16 +733,19 @@ const HomePage: React.FC<Props> = ({
       return;
     }
     if (card?.Type === 'conditional') {
+      if (columnNumberEsixt) {
+        return;
+      }
       /* This Function add only conditional cards*/
       const updatedPathwayWrapper = { ...pathwayComponent };
-      const updatedCards = updatedPathwayComponentConditionCards
-        .filter((item: any) => item.RowId !== card.RowId)
-        .concat({
-          ...card,
-          RowNumber,
-          HasProgressionLevel,
-          ColumnNumber,
-        });
+      const updatedCards = updatedPathwayWrapper?.ComponentConditions.filter(
+        (item: any) => item.RowId !== card.RowId
+      ).concat({
+        ...card,
+        RowNumber,
+        HasProgressionLevel,
+        ColumnNumber,
+      });
       setUpdatedPathwayComponentConditionCards(updatedCards);
       updatedPathwayWrapper.ComponentConditions = updatedCards;
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
@@ -843,7 +888,7 @@ const HomePage: React.FC<Props> = ({
             firstColumn,
           })
       );
-    } else if (pathwayComponentCards.length !== 0) {
+    } else if (pathwayComponentCards.length !== 0 && !columnNumberEsixt) {
       setPathwayComponentCards(
         pathwayComponentCards
           .filter((item: any) => item.CTID !== card.CTID)
