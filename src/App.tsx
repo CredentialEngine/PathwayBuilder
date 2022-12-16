@@ -77,6 +77,7 @@ const App = () => {
   const [isDevCredFormVisible, setIsDevCredFormVisible] =
     useState<boolean>(false);
   const [enteredDevCredsValue, setEnteredDevCredsValue] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
 
   const {
     currentUserData: { data: userData },
@@ -109,6 +110,7 @@ const App = () => {
           getDataForPathwayAndComponentsRequest(parseInt(pathwayIdFromUrl))
         );
       }
+      setIsEdit(true);
     } else if (IS_LOCALHOST && !enteredDevCredsValue) {
       setsSelectOrganizationsVisible(false);
       setIsDevCredFormVisible(true);
@@ -233,6 +235,8 @@ const App = () => {
           isEditPathwayFormVisible={isEditPathwayFormVisible}
           isDropCardAfterEditingForm={isDropCardAfterEditingForm}
           setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
         />
         <Modal
           visible={isCreatePathwayVisible}

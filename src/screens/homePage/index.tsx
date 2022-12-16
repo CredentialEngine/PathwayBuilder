@@ -39,6 +39,8 @@ interface Props {
   isEditPathwayFormVisible?: boolean;
   setIsDropCardAfterEditingForm: (a: boolean) => void;
   isDropCardAfterEditingForm: boolean;
+  isEdit: boolean;
+  setIsEdit: (val: any) => void;
 }
 const HomePage: React.FC<Props> = ({
   isLeftPanelVisible,
@@ -52,6 +54,8 @@ const HomePage: React.FC<Props> = ({
   destinationColumnSelect,
   setIsDropCardAfterEditingForm,
   isDropCardAfterEditingForm,
+  isEdit,
+  setIsEdit,
 }) => {
   const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
@@ -1572,6 +1576,8 @@ const HomePage: React.FC<Props> = ({
                 onClickPreselectComponent={onClickPreselectComponent}
                 pathwayComponentCards={pathwayComponentCards}
                 pathwayComponentConditionCards={pathwayComponentConditionCards}
+                isEdit={isEdit}
+                setIsEdit={setIsEdit}
               />
             </Sider>
             <Layout

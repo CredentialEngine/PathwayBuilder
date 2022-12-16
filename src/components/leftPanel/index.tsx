@@ -27,6 +27,8 @@ const LeftPanel: React.FC<any> = ({
   isDraggableCardVisibleMethod,
   setLeftpanelSelectedElem,
   onClickPreselectComponent,
+  isEdit,
+  setIsEdit,
 }) => {
   const result = useSelector((state: any) => state?.initalReducer);
   const {
@@ -70,10 +72,14 @@ const LeftPanel: React.FC<any> = ({
             )
         );
 
-        updatedPathwayWrapper.PendingComponents =
-          filteredPendingCards.length === 0 ? [] : selectedTabCards;
-
-        setSelectedtabCards(filteredPendingCards);
+        if (isEdit && selectedTabCardData?.length > 0) {
+          setSelectedtabCards(selectedTabCardData);
+          setIsEdit(false);
+        } else {
+          updatedPathwayWrapper.PendingComponents =
+            filteredPendingCards?.length === 0 ? [] : selectedTabCards;
+          setSelectedtabCards(filteredPendingCards);
+        }
       } else {
         setSelectedtabCards(selectedTabCardData);
       }
