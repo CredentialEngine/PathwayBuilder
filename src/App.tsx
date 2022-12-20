@@ -29,6 +29,7 @@ import TokenManager from './services/tokenManager';
 import {
   getCurrentUserDataRequest,
   getDataForPathwayAndComponentsRequest,
+  onFirstLoad,
   saveSelectedOrganization,
 } from './states/actions';
 
@@ -67,7 +68,6 @@ const App = () => {
     useState<any>(false);
 
   const [organisationList, setOrganisationList] = useState<any>([]);
-  // const [pathwayId, setPathwayId] = useState('');
 
   const [isEditPathwayFormVisible, setIsEditPathwayFormVisible] =
     useState<boolean>(false);
@@ -82,6 +82,7 @@ const App = () => {
   const {
     currentUserData: { data: userData },
     mappedData: pathwayWrapperData,
+    pathwaDataFromEdit: pathwayLoad,
   } = pathwayWrapper || {};
 
   const savePathwayResult = useSelector(
@@ -100,7 +101,6 @@ const App = () => {
       setAddPathwayWrapeprFields(updatedPathwayWrapperData);
     }
   }, [savePathwayResult]);
-
   useEffect(() => {
     const url = window.location.href;
     if (url?.includes('?Id=')) {
@@ -114,8 +114,10 @@ const App = () => {
     } else if (IS_LOCALHOST && !enteredDevCredsValue) {
       setsSelectOrganizationsVisible(false);
       setIsDevCredFormVisible(true);
+      dispatch(onFirstLoad());
     } else {
       dispatch(getCurrentUserDataRequest());
+      dispatch(onFirstLoad());
     }
   }, []);
 
@@ -204,180 +206,184 @@ const App = () => {
   const destinationColumnSelected = (value: boolean) => {
     setDestinationColumnSelected(value);
   };
-  return (
-    <div>
-      <MainContainer>
-        <HomePage
-          isLeftPanelVisible={
-            !isrightPanelDrawerVisible &&
-            !isCreatePathwayVisible &&
-            !isAddPathwayFormVisible &&
-            !isSelectOrganizationsVisible &&
-            !isPreSelectedCreateResourceVisible &&
-            !isEditPathwayFormVisible &&
-            !isDevCredFormVisible
-              ? true
-              : false
-          }
-          onClickPreselectComponent={() => {
-            setIsPreSelectedCreateResourceVisible(true);
-            setFromPreselect(true);
-          }}
-          setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
-          isDestinationColumnStatus={isDestinationColumnSelected}
-          isStartFromInitialColumnSelected={isStartFromInitialColumnSelected}
-          setIsStartFromInitialColumnSelected={
-            setIsStartFromInitialColumnSelected
-          }
-          setIsDestinationColumnSelected={setIsDestinationColumnSelected}
-          skipPreSelect={skipPreSelect}
-          destinationColumnSelect={destinationColumnSelect}
-          isEditPathwayFormVisible={isEditPathwayFormVisible}
-          isDropCardAfterEditingForm={isDropCardAfterEditingForm}
-          setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
-          isEdit={isEdit}
-          setIsEdit={setIsEdit}
-        />
-        <Modal
-          visible={isCreatePathwayVisible}
-          title="Add a Pathway"
-          footer={createPathwayFooter()}
-          width={550}
-          onCancel={closeCreatePathwayModal}
-        >
-          <CreatePathway />
-        </Modal>
-        <Modal
-          visible={isAddPathwayFormVisible || isEditPathwayFormVisible}
-          title="Add a Pathway"
-          onCancel={() => {
-            setIsAddPathwayFormVisible(false);
-            setIsEditPathwayFormVisible(false);
-          }}
-          maskClosable={false}
-          footer={[]}
-        >
-          <AddPathwayForm
-            isEditPathwayFormVisible={isEditPathwayFormVisible}
-            addPathwayWrapperFields={addPathwayWrapperFields}
-            setAddPathwayWrapeprFields={setAddPathwayWrapeprFields}
-            setIsPreSelectedCreateResourceVisible={
-              setIsPreSelectedCreateResourceVisible
+  return pathwayLoad?.valid ? (
+    <>
+      <div>
+        <MainContainer>
+          <HomePage
+            isLeftPanelVisible={
+              !isrightPanelDrawerVisible &&
+              !isCreatePathwayVisible &&
+              !isAddPathwayFormVisible &&
+              !isSelectOrganizationsVisible &&
+              !isPreSelectedCreateResourceVisible &&
+              !isEditPathwayFormVisible &&
+              !isDevCredFormVisible
+                ? true
+                : false
             }
-            setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
+            onClickPreselectComponent={() => {
+              setIsPreSelectedCreateResourceVisible(true);
+              setFromPreselect(true);
+            }}
             setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
-            setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
-          />
-        </Modal>
-        <Modal
-          visible={isPreSelectedCreateResourceVisible}
-          width="650px"
-          footer={[]}
-          onCancel={onPreSelectResourceCancelHandler}
-          title="Pre-Select Resources to Create Your Pathway"
-        >
-          <PreSelectResourceCreatePath
-            setIsPreSelectedCreateResourceVisible={
-              setIsPreSelectedCreateResourceVisible
-            }
-            setIsDestinationColumnSelected={setIsDestinationColumnSelected}
-            fromPreSelect={fromPreSelect}
-            addPathwayWrapperFields={addPathwayWrapperFields}
-            setIsAddPathwayDestinationVisible={
-              setIsAddPathwayDestinationVisible
-            }
-            getSkipValueOfPreSelectResources={getSkipValueOfPreSelectResources}
-          />
-        </Modal>
-        <CustomDrawer
-          width="35%"
-          visible={isrightPanelDrawerVisible}
-          onClose={() => setRightPanelDrawerVisible(false)}
-          footer={[]}
-        >
-          <RightPanel onCloseHandler={onCloseHandler} />
-        </CustomDrawer>
-
-        <Modal
-          visible={isAddPathwayDestinationVisible}
-          title="Add a Pathway"
-          footer={[]}
-        >
-          <SelectDestination
-            destinationColumnSelected={destinationColumnSelected}
-            setIsAddPathwayDestinationVisible={
-              setIsAddPathwayDestinationVisible
-            }
-            setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+            isDestinationColumnStatus={isDestinationColumnSelected}
+            isStartFromInitialColumnSelected={isStartFromInitialColumnSelected}
             setIsStartFromInitialColumnSelected={
               setIsStartFromInitialColumnSelected
             }
+            setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+            skipPreSelect={skipPreSelect}
+            destinationColumnSelect={destinationColumnSelect}
+            isEditPathwayFormVisible={isEditPathwayFormVisible}
+            isDropCardAfterEditingForm={isDropCardAfterEditingForm}
+            setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
+            isEdit={isEdit}
+            setIsEdit={setIsEdit}
           />
-        </Modal>
+          <Modal
+            visible={isCreatePathwayVisible}
+            title="Add a Pathway"
+            footer={createPathwayFooter()}
+            width={550}
+            onCancel={closeCreatePathwayModal}
+          >
+            <CreatePathway />
+          </Modal>
+          <Modal
+            visible={isAddPathwayFormVisible || isEditPathwayFormVisible}
+            title="Add a Pathway"
+            onCancel={() => {
+              setIsAddPathwayFormVisible(false);
+              setIsEditPathwayFormVisible(false);
+            }}
+            maskClosable={false}
+            footer={[]}
+          >
+            <AddPathwayForm
+              isEditPathwayFormVisible={isEditPathwayFormVisible}
+              addPathwayWrapperFields={addPathwayWrapperFields}
+              setAddPathwayWrapeprFields={setAddPathwayWrapeprFields}
+              setIsPreSelectedCreateResourceVisible={
+                setIsPreSelectedCreateResourceVisible
+              }
+              setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
+              setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
+              setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
+            />
+          </Modal>
+          <Modal
+            visible={isPreSelectedCreateResourceVisible}
+            width="650px"
+            footer={[]}
+            onCancel={onPreSelectResourceCancelHandler}
+            title="Pre-Select Resources to Create Your Pathway"
+          >
+            <PreSelectResourceCreatePath
+              setIsPreSelectedCreateResourceVisible={
+                setIsPreSelectedCreateResourceVisible
+              }
+              setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+              fromPreSelect={fromPreSelect}
+              addPathwayWrapperFields={addPathwayWrapperFields}
+              setIsAddPathwayDestinationVisible={
+                setIsAddPathwayDestinationVisible
+              }
+              getSkipValueOfPreSelectResources={
+                getSkipValueOfPreSelectResources
+              }
+            />
+          </Modal>
+          <CustomDrawer
+            width="35%"
+            visible={isrightPanelDrawerVisible}
+            onClose={() => setRightPanelDrawerVisible(false)}
+            footer={[]}
+          >
+            <RightPanel onCloseHandler={onCloseHandler} />
+          </CustomDrawer>
 
-        <Modal
-          width={520}
-          visible={isSelectOrganizationsVisible}
-          onOk={selectOrgOkHandler}
-          onCancel={() => {
-            process.env.NODE_ENV !== 'production'
-              ? (window.location.href = sanboxSetting.api.url)
-              : (window.location.href = productionSetting.api.url);
-          }}
-          footer={[
-            <>
-              <Button
-                type={Type.PRIMARY}
-                onClick={selectOrgOkHandler}
-                text="Confirm"
-                disabled={
-                  !(
-                    !_.isUndefined(selectedOrganisationValue) ||
-                    _.isNull(selectedOrganisationValue)
-                  )
-                }
-              />
-            </>,
-          ]}
-        >
-          <SelectOrganisation
-            organisationList={organisationList}
-            getSelectedOrganisation={(value: string) =>
-              setSelectedOrganisationValue(value)
-            }
-            // pathwayId={pathwayId}
-          />
-        </Modal>
+          <Modal
+            visible={isAddPathwayDestinationVisible}
+            title="Add a Pathway"
+            footer={[]}
+          >
+            <SelectDestination
+              destinationColumnSelected={destinationColumnSelected}
+              setIsAddPathwayDestinationVisible={
+                setIsAddPathwayDestinationVisible
+              }
+              setIsDestinationColumnSelected={setIsDestinationColumnSelected}
+              setIsStartFromInitialColumnSelected={
+                setIsStartFromInitialColumnSelected
+              }
+            />
+          </Modal>
 
-        <Modal
-          visible={isDevCredFormVisible}
-          title="Enter Developer Credentials"
-          onOk={enterDevCredOkHandler}
-          footer={[
-            <>
-              <Button
-                type={Type.PRIMARY}
-                onClick={enterDevCredOkHandler}
-                text="Save"
-                disabled={
-                  !(
-                    !_.isUndefined(enteredDevCredsValue) ||
-                    _.isNull(enteredDevCredsValue)
-                  )
-                }
-              />
-            </>,
-          ]}
-        >
-          <EnterDevCredentials
-            getEnteredDevCreds={(value: string) =>
-              setEnteredDevCredsValue(value)
-            }
-          />
-        </Modal>
-      </MainContainer>
-    </div>
-  );
+          <Modal
+            width={520}
+            visible={isSelectOrganizationsVisible}
+            onOk={selectOrgOkHandler}
+            onCancel={() => {
+              process.env.NODE_ENV !== 'production'
+                ? (window.location.href = sanboxSetting.api.url)
+                : (window.location.href = productionSetting.api.url);
+            }}
+            footer={[
+              <>
+                <Button
+                  type={Type.PRIMARY}
+                  onClick={selectOrgOkHandler}
+                  text="Confirm"
+                  disabled={
+                    !(
+                      !_.isUndefined(selectedOrganisationValue) ||
+                      _.isNull(selectedOrganisationValue)
+                    )
+                  }
+                />
+              </>,
+            ]}
+          >
+            <SelectOrganisation
+              organisationList={organisationList}
+              getSelectedOrganisation={(value: string) =>
+                setSelectedOrganisationValue(value)
+              }
+              // pathwayId={pathwayId}
+            />
+          </Modal>
+
+          <Modal
+            visible={isDevCredFormVisible}
+            title="Enter Developer Credentials"
+            onOk={enterDevCredOkHandler}
+            footer={[
+              <>
+                <Button
+                  type={Type.PRIMARY}
+                  onClick={enterDevCredOkHandler}
+                  text="Save"
+                  disabled={
+                    !(
+                      !_.isUndefined(enteredDevCredsValue) ||
+                      _.isNull(enteredDevCredsValue)
+                    )
+                  }
+                />
+              </>,
+            ]}
+          >
+            <EnterDevCredentials
+              getEnteredDevCreds={(value: string) =>
+                setEnteredDevCredsValue(value)
+              }
+            />
+          </Modal>
+        </MainContainer>
+      </div>
+    </>
+  ) : null;
 };
 
 export default App;

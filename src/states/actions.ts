@@ -17,6 +17,7 @@ import {
   ADD_COMPONENT_FROM_PATHWAY_MODAL,
   SELECT_DESTINATION_REQUEST,
   SAVE_SELECTED_ORGANISATION,
+  GET_DATA_FOR_PATHWAY_ON_FIRST_LOAD,
 } from './actionTypes';
 
 export const getCurrentUserDataRequest = () => ({
@@ -102,4 +103,8 @@ export const selectDestination = (payload: boolean) => ({
 export const saveSelectedOrganization = (payload: any) => ({
   type: SAVE_SELECTED_ORGANISATION,
   payload,
+});
+
+export const onFirstLoad = () => ({
+  type: GET_DATA_FOR_PATHWAY_ON_FIRST_LOAD,
 });

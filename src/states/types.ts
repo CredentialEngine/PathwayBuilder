@@ -8,6 +8,11 @@ export type RootState = {
     data: any;
     valid: boolean;
   };
+  pathwayDataFromEdit: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
   pathwayComponentData: {
     loading: boolean;
     data: any;

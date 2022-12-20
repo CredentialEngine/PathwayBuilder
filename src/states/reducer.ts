@@ -14,6 +14,7 @@ import {
   ADD_COMPONENT_FROM_PATHWAY_MODAL,
   SELECT_DESTINATION_REQUEST,
   SAVE_SELECTED_ORGANISATION,
+  GET_DATA_FOR_PATHWAY_ON_FIRST_LOAD,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -27,6 +28,11 @@ const initState: RootState = {
     loading: false,
     data: null,
     valid: false,
+  },
+  pathwayDataFromEdit: {
+    loading: false,
+    data: null,
+    valid: true,
   },
   mappedData: {
     ComponentConditions: [],
@@ -148,12 +154,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
       return {
         ...state,
         mappedData: action?.payload?.Data,
-        // pathwayComponentData: {
-        //   ...state.pathwayComponentData,
-        //   loading: false,
-        //   data: action.payload.Data,
-        //   valid: action?.payload?.Valid,
-        // },
+        pathwaDataFromEdit: { ...state.pathwayDataFromEdit, valid: true },
       };
     case GET_DATA_FOR_PATHWAY_AND_COMPONENTS_FAILURE:
       return {
@@ -248,6 +249,11 @@ export default (state = initState, action: { type: string; payload: any }) => {
         selectedOrganization: action.payload,
       };
 
+    case GET_DATA_FOR_PATHWAY_ON_FIRST_LOAD:
+      return {
+        ...state,
+        pathwaDataFromEdit: { ...state.pathwayDataFromEdit, valid: true },
+      };
     default:
       return {
         ...state,
