@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import { BASE_URL_REGISTRY_RESOURCES } from '../../apiConfig/endpoint';
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
 import {
@@ -146,7 +147,7 @@ const LeftPanel: React.FC<any> = ({
       Name: card?.Name,
       OccupationType: [],
       PrecededBy: [],
-      ProxyFor: `https://sandbox.credentialengineregistry.org/resources/${CTID}`,
+      ProxyFor: `${BASE_URL_REGISTRY_RESOURCES}${CTID}`,
       ProxyForLabel: card?.Name,
       RowId: uuidv4(),
       Type: card?.URI,
