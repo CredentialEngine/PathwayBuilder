@@ -1,6 +1,6 @@
 export const BASE_URL = 'https://sandbox.credentialengine.org/publisher/';
 export const BASE_URL_PRODUCTION =
-  'https://sandbox.credentialengine.org/publisher/';
+  'https://apps.credentialengine.org/publisher/';
 export const GET_ALL_PATHWAY_COMPONENT =
   'PathwayBuilderApi/Schema/PathwayComponent';
 export const GET_ALL_LOGICAL_OPERATOR =
