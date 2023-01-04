@@ -184,122 +184,140 @@ const MultiCard: React.FC<Props> = ({
     (data?.Type?.toLowerCase().includes(
       'AssessmentComponent'.toLowerCase()
     ) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/AssessmentComponent.png`}
-        alt="AssessmentComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' assessmentCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/AssessmentComponent.png`}
+          alt="AssessmentComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes('BasicComponent'.toLowerCase()) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/BasicComponent.png`}
-        alt="BasicComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' basicCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/BasicComponent.png`}
+          alt="BasicComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes(
       'CocurricularComponent'.toLowerCase()
     ) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/CocurricularComponent.png`}
-        alt="CocurricularComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' cocurricularCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/CocurricularComponent.png`}
+          alt="CocurricularComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes(
       'CompetencyComponent'.toLowerCase()
     ) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/CompetencyComponent.png`}
-        alt="CompetencyComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' competencyCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/CompetencyComponent.png`}
+          alt="CompetencyComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes('CourseComponent'.toLowerCase()) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/CourseComponent.png`}
-        alt="CourseComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' courseCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/CourseComponent.png`}
+          alt="CourseComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes(
       'ExtracurricularComponent'.toLowerCase()
     ) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/ExtracurricularComponent.png`}
-        alt="ExtracurricularComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' extraCurricularCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/ExtracurricularComponent.png`}
+          alt="ExtracurricularComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/JobComponent.png`}
-        alt="JobComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' jobCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/JobComponent.png`}
+          alt="JobComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes(
       'WorkExperienceComponent'.toLowerCase()
     ) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/WorkExperienceComponent.png`}
-        alt="WorkExperienceComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + ' workExperienceCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/WorkExperienceComponent.png`}
+          alt="WorkExperienceComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes(
       'CredentialComponent'.toLowerCase()
     ) && (
-      <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/CredentialComponent.png`}
-        alt="CredentialComponent"
-        className="componentIcon"
-        style={{ height: '26px', width: '26px' }}
-      />
+      <span className={styles.iconwrapper + 'credentialCard'}>
+        <img
+          src={`${
+            process.env.NODE_ENV !== 'production'
+              ? sanboxSetting.api.url
+              : productionSetting.api.url
+          }Images/PathwayBuilder/CredentialComponent.png`}
+          alt="CredentialComponent"
+          className="componentIcon"
+          style={{ height: '26px', width: '26px' }}
+        />
+      </span>
     )) ||
     (data?.Type?.toLowerCase().includes('ComponentCondition'.toLowerCase()) && (
       <img
@@ -440,9 +458,7 @@ const MultiCard: React.FC<Props> = ({
                   <div className={styles.credentialsCardWrapeer}>
                     <div className={styles.topCourseContent}>
                       {renderImage(data)}
-                      <span className={styles.title}>
-                        {data?.Name?.slice(0, 30)}
-                      </span>
+                      <span className={styles.title}>{data?.Name}</span>
                       <FontAwesomeIcon
                         color={darkColor}
                         style={{ height: '20px', cursor: 'pointer' }}
@@ -506,9 +522,7 @@ const MultiCard: React.FC<Props> = ({
                   <div className={styles.courseCredCardWrapper}>
                     <div className={styles.topCourseContent}>
                       {renderImage(data)}
-                      <span className={styles.title}>
-                        {data?.Name?.slice(0, 30)}
-                      </span>
+                      <span className={styles.title}>{data?.Name}</span>
                       <FontAwesomeIcon
                         color={darkColor}
                         style={{ height: '20px', cursor: 'pointer' }}
@@ -676,7 +690,7 @@ const MultiCard: React.FC<Props> = ({
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
                   <span className={styles.title}>
-                    {data?.Type?.split(':')[1]}
+                    {data?.Type?.split(':')[1].replace('Component', '')}
                   </span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -726,11 +740,21 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.courseNameContainter}>
-                  <span>{data?.Name?.slice(0, 40)}</span>
+                  {data?.Type?.toLowerCase().includes(
+                    'CompetencyComponent'.toLowerCase()
+                  ) ? (
+                    <span title={data?.Description}>
+                      {data?.Description?.slice(0, 90)}
+                    </span>
+                  ) : (
+                    <span>{data?.Name}</span>
+                  )}
                 </div>
                 <div className={styles.creditSection}>
                   <span>Credits: {data?.CreditValue?.[0]?.Value || 0}</span>
-                  <span>Level {ProgressionLevelName}</span>
+                  <span title={ProgressionLevelName}>
+                    Level {ProgressionLevelName?.slice(0, 30)}
+                  </span>
                 </div>
               </div>
               <span
@@ -748,7 +772,7 @@ const MultiCard: React.FC<Props> = ({
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
                   <span className={styles.title}>
-                    {data?.Type?.split(':')[1]}
+                    {data?.Type?.split(':')[1].replace('Component', '')}
                   </span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -798,7 +822,7 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.courseNameContainter}>
-                  <span>{data?.Name?.slice(0, 40)}</span>
+                  <span>{data?.Name}</span>
                 </div>
                 {/* <div className={styles.creditSection}>
                   <span>Credits: {data?.CreditValue?.[0]?.Value}</span>

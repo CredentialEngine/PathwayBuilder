@@ -1,7 +1,7 @@
 @import '../../styles/core.scss';
 
 .multiCardWrapper {
-  height: 120px;
+  height: 130px;
   width: 300px;
   margin: 10px 10px;
   border-radius: 6px;
@@ -9,6 +9,20 @@
   line-height: 1.3;
   z-index: 9999;
 }
+.iconwrapper {
+  font-size: 15px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  width: max-content;
+  padding: 3px;
+  margin-top: 2px;
+  min-width: 35px;
+}
+.image {
+  background-color: #00a0ff;
+}
+
 .addDestinationCard {
   border: 1px dashed #4ee5e1;
   background-color: #4ee5e140;
@@ -266,6 +280,42 @@
       }
     }
   }
+  .assessmentCard,
+  .iconwrapper {
+    background-color: #00a0ff;
+  }
+  .basicCard,
+  .iconwrapper {
+    background-color: #eca140;
+  }
+  .cocurricularCard,
+  .iconwrapper {
+    background-color: #4ee5e1;
+  }
+  .competencyCard,
+  .iconwrapper {
+    background-color: #8494a0;
+  }
+  .courseCard,
+  .iconwrapper {
+    background-color: #996c48;
+  }
+  .credentialCard,
+  .iconwrapper {
+    background-color: #d3f8f7;
+  }
+  .extraCurricularCard,
+  .iconwrapper {
+    background-color: #e6eaec;
+  }
+  .jobCard,
+  .iconwrapper {
+    background-color: #ffffff;
+  }
+  .workExperienceCard,
+  .iconwrapper {
+    background-color: #17609a;
+  }
 }
 .draggableAreaContainer {
   position: relative;
@@ -282,6 +332,27 @@
     height: 30px;
     width: 100%;
   }
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 .onDestinationLeft {
   margin-left: 50px;

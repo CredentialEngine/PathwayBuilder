@@ -99,17 +99,19 @@ const RightPanel: React.FC<Props> = ({
       <div ref={ref} className={styles.rightPanelContainer}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Row style={{ fontSize: 22, fontWeight: 700 }}>
-            {extractComponentType(rightPanelData?.Type)}
+            {extractComponentType(
+              rightPanelData?.Type.replace('Component', '')
+            )}
           </Row>
         </div>
         <Divider className={styles.divider} />
         <Row className={styles.topRow}>
           <Row>
             <div style={{ flexDirection: 'row', display: 'flex' }}>
-              <span className={styles.iconwrapper + ' customicon'}>
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'credential'.toLowerCase()
-                ) && (
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'credential'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -118,10 +120,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/CredentialComponent.png`}
                     alt="CredentialComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'course'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'course'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' courseCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -130,10 +134,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/CourseComponent.png`}
                     alt="courseComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'Basic'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'Basic'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' basicCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -142,10 +148,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/BasicComponent.png`}
                     alt="BasicComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'competency'.toLocaleLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'competency'.toLocaleLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -154,10 +162,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/CompetencyComponent.png`}
                     alt="CompetencyComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'assessment'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'assessment'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -166,11 +176,13 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/AssessmentComponent.png`}
                     alt="AssessmentComponent"
                   />
-                )}
+                </span>
+              )}
 
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'Cocurricular'.toLowerCase()
-                ) && (
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'Cocurricular'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -179,10 +191,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/CocurricularComponent.png`}
                     alt="CocurricularComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'Extracurricular'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'Extracurricular'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -191,10 +205,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'selection'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'selection'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' customicon'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -203,10 +219,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/SelectionComponent.png`}
                     alt="SelectionComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'WorkExperience'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'WorkExperience'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -215,10 +233,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'JobComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'JobComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' jobCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -227,10 +247,12 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/JobComponent.png`}
                     alt="JobComponent"
                   />
-                )}
-                {rightPanelData?.Type?.toLowerCase().includes(
-                  'Addressing'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {rightPanelData?.Type?.toLowerCase().includes(
+                'Addressing'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' customicon'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -239,8 +261,8 @@ const RightPanel: React.FC<Props> = ({
                     }Images/PathwayBuilder/AddressingComponent.png`}
                     alt="AddressingConflictComponent"
                   />
-                )}
-              </span>
+                </span>
+              )}
               <span className={styles.name}>
                 {rightPanelData && rightPanelData?.Name}
               </span>
@@ -257,7 +279,13 @@ const RightPanel: React.FC<Props> = ({
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>References Resource:</p>
-          <p className={styles.value}>{rightPanelData?.Name}</p>
+          {rightPanelData?.Type?.toLowerCase().includes(
+            'CompetencyComponent'.toLowerCase()
+          ) ? (
+            <p className={styles.value}>{rightPanelData?.Description}</p>
+          ) : (
+            <p className={styles.value}>{rightPanelData?.Name}</p>
+          )}
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Owned and Offered by</p>
@@ -265,17 +293,20 @@ const RightPanel: React.FC<Props> = ({
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>
-            {rightPanelData?.Type?.split(':')[1]} Type
+            {rightPanelData?.Type?.split(':')[1].replace('Component', '')} Type
           </p>
           <p className={styles.value}>
             {extractComponentType(rightPanelData?.Type) == 'CredentialComponent'
               ? extractComponentType(rightPanelData?.CredentialType)
-              : extractComponentType(rightPanelData?.Type)}
+              : extractComponentType(
+                  rightPanelData?.Type.replace('Component', '')
+                )}
           </p>
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>
-            {rightPanelData?.Type?.split(':')[1]} Status
+            {rightPanelData?.Type?.split(':')[1].replace('Component', '')}{' '}
+            Status
           </p>
           <p className={styles.value}>Active</p>
         </Row>
@@ -284,7 +315,10 @@ const RightPanel: React.FC<Props> = ({
             className={styles.button}
             type={Type.LINK}
             onClick={openInNewTab}
-            text={`View the ${rightPanelData?.Type?.split(':')[1]}`}
+            text={`View the ${rightPanelData?.Type?.split(':')[1].replace(
+              'Component',
+              ''
+            )}`}
           />
         </Row>
         <Divider />

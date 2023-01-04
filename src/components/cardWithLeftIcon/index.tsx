@@ -76,12 +76,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     >
       <Row>
         <Col span="5">
-          <span className={styles.iconwrapper + ' customicon'}>
-            {isComponentTab ? (
-              <>
-                {data?.Type?.toLowerCase().includes(
-                  'AssessmentComponent'.toLowerCase()
-                ) && (
+          {isComponentTab ? (
+            <>
+              {data?.Type?.toLowerCase().includes(
+                'AssessmentComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -91,10 +91,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'BasicComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'BasicComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' basicCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -104,10 +106,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="BasicComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'CocurricularComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'CocurricularComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -117,10 +121,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'CompetencyComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'CompetencyComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -130,10 +136,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'CourseComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'CourseComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' courseCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -143,10 +151,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="CourseComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'ExtracurricularComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'ExtracurricularComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -156,10 +166,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'JobComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'JobComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' jobCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -169,10 +181,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="JobComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'WorkExperienceComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'WorkExperienceComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -182,10 +196,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'CredentialComponent'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'CredentialComponent'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -195,10 +211,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'ComponentCondition'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'ComponentCondition'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' customicon'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -208,10 +226,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="ComponentCondition"
                     className="componentIcon"
                   />
-                )}
-                {data?.Type?.toLowerCase().includes(
-                  'selection'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes(
+                'selection'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' customicon'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -221,11 +241,13 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="SelectionCondition"
                     className="componentIcon"
                   />
-                )}
-              </>
-            ) : (
-              <>
-                {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
+                </span>
+              )}
+            </>
+          ) : (
+            <>
+              {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -235,8 +257,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes('course'.toLowerCase()) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('course'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' courseCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -246,8 +270,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="courseComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' basicCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -257,10 +283,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="BasicComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes(
-                  'competency'.toLocaleLowerCase()
-                ) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes(
+                'competency'.toLocaleLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -270,8 +298,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -281,9 +311,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
-                )}
-
-                {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -293,10 +324,12 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes(
-                  'Extracurricular'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes(
+                'Extracurricular'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -306,8 +339,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' customicon'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -317,10 +352,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="SelectionComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes(
-                  'WorkExperience'.toLowerCase()
-                ) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('WorkExperience'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -330,8 +365,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' jobCard'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -341,8 +378,10 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="JobComponent"
                     className="componentIcon"
                   />
-                )}
-                {Type?.toLowerCase().includes('Addressing'.toLowerCase()) && (
+                </span>
+              )}
+              {Type?.toLowerCase().includes('Addressing'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' customicon'}>
                   <img
                     src={`${
                       process.env.NODE_ENV !== 'production'
@@ -352,15 +391,21 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                     alt="AddressingConflictComponent"
                     className="componentIcon"
                   />
-                )}
-              </>
-            )}
-          </span>
+                </span>
+              )}
+            </>
+          )}
         </Col>
         <Col span="19">
           <>
-            <p>{data?.Type?.split(':')[1]}</p>
-            <h5>{Name?.slice(0, 30)}</h5>
+            <p>{data?.Type?.split(':')[1].replace('Component', '')}</p>
+            {data?.Type?.toLowerCase().includes(
+              'CompetencyComponent'.toLowerCase()
+            ) ? (
+              <h5 title={data?.Description}>{data?.Description}</h5>
+            ) : (
+              <h5>{Name}</h5>
+            )}
           </>
         </Col>
       </Row>

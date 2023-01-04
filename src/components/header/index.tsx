@@ -186,14 +186,16 @@ const Header = (props: Props) => {
         <div className={styles.productImgLayout + ' logowrapper'}>
           <Row align="middle" style={{ width: '100%' }}>
             <Col span={4}>
-              <img src={Logo} alt="logo" style={{ maxWidth: '39px' }} />
+              <img
+                src={Logo}
+                alt="logo"
+                style={{ mixBlendMode: 'normal', maxWidth: '39px' }}
+              />
             </Col>
             <Col span={20}>
               <Row className={styles.createNewContainer}>
                 <Col span={24}>
-                  <span className={styles.newPathway}>
-                    Create a New Pathway
-                  </span>
+                  <span className={styles.newPathway}>Pathway Builder</span>
                 </Col>
                 <Col span={24}>
                   <span className={styles.foundation}>

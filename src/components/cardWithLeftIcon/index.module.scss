@@ -23,6 +23,42 @@
       border-radius: 6px;
       padding: 10px 12px 8px;
     }
+    .assessmentCard,
+    .iconwrapper {
+      background-color: #00a0ff;
+    }
+    .basicCard,
+    .iconwrapper {
+      background-color: #eca140;
+    }
+    .cocurricularCard,
+    .iconwrapper {
+      background-color: #4ee5e1;
+    }
+    .competencyCard,
+    .iconwrapper {
+      background-color: #8494a0;
+    }
+    .courseCard,
+    .iconwrapper {
+      background-color: #996c48;
+    }
+    .credentialCard,
+    .iconwrapper {
+      background-color: #d3f8f7;
+    }
+    .extraCurricularCard,
+    .iconwrapper {
+      background-color: #e6eaec;
+    }
+    .jobCard,
+    .iconwrapper {
+      background-color: #ffffff;
+    }
+    .workExperienceCard,
+    .iconwrapper {
+      background-color: #17609a;
+    }
   }
   .iconwrapper {
     font-size: 19px;
@@ -30,9 +66,11 @@
     display: flex;
     justify-content: center;
     width: max-content;
-    background: $inactive3;
     padding: 7px;
     margin-top: 2px;
     min-width: 35px;
+  }
+  .image {
+    background-color: #00a0ff;
   }
 }

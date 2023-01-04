@@ -327,23 +327,29 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       <Row gutter={20}>
         <Col span="12">
           <div className={Styles.dropDownRefDiv}>
-            <h5>Select Resources</h5>
+            <div className="child">
+              <h5>Select Resources</h5>
+            </div>
+            <div className="child">
+              <Dropdown overlay={menu} trigger={['click']}>
+                <Typography.Link>
+                  <Space>
+                    {dropDownRef ? (
+                      <span className={Styles.dropDownRef}>
+                        {allComponentTypes[Number(dropDownRef)]?.label.replace(
+                          'ceterms:',
+                          ''
+                        )}
+                      </span>
+                    ) : (
+                      'All resources'
+                    )}
 
-            <Dropdown overlay={menu} trigger={['click']}>
-              <Typography.Link>
-                <Space>
-                  {dropDownRef ? (
-                    <span className={Styles.dropDownRef}>
-                      {allComponentTypes[Number(dropDownRef)]?.label}
-                    </span>
-                  ) : (
-                    'All resources types'
-                  )}
-
-                  <DownOutlined />
-                </Space>
-              </Typography.Link>
-            </Dropdown>
+                    <DownOutlined />
+                  </Space>
+                </Typography.Link>
+              </Dropdown>
+            </div>
           </div>
           <SearchBox
             placeholder="Search your components"
