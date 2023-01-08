@@ -219,6 +219,12 @@ const LeftPanel: React.FC<any> = ({
     const updatedPathwayWrapper = { ...result.mappedData };
 
     const updatedPathway = { ...updatedPathwayWrapper.Pathway };
+    const isDestinationCardExist =
+      updatedPathway?.HasDestinationComponent === card?.CTID;
+    if (isDestinationCardExist) {
+      updatedPathway.HasDestinationComponent = '';
+      updatedPathwayWrapper.Pathway = updatedPathway;
+    }
     if (card.destinationColumn || card.isDestinationColumnSelected) {
       updatedPathway.HasDestinationComponent = '';
       updatedPathwayWrapper.Pathway = updatedPathway;
