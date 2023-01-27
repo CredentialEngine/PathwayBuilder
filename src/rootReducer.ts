@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import leftPanelReducer from './components/leftPanel/state/reducer';
 import addConditionalComponent from './screens/addComponent/state/reducer';
 import addPathwayFormReducer from './screens/addPathwayForm/state/reducer';
+import editComponent from './screens/editComponent/state/reducer';
 import preSelectProxyResources from './screens/preSelectResourceCreatePath/state/reducer';
 import initalReducer from './states/reducer';
 
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   leftPanelReducer,
   addConditionalComponent,
   preSelectProxyResources,
+  editComponent,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { useXarrow } from 'react-xarrows';
 
 import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
+import EditComponent from '../../screens/editComponent';
 import InfoTooltip from '../infoTooltip';
 import RightPanel from '../rightPanel';
 
@@ -98,6 +99,7 @@ const MultiCard: React.FC<Props> = ({
   const { mappedData: pathwayComponent } = pathwayWrapper;
 
   const [showRightPenal, setShowRightPenal] = useState(false);
+  const [showRightPanelEdit, setShowRightPanelEdit] = useState(false);
 
   const updateXarrow = useXarrow();
 
@@ -469,7 +471,7 @@ const MultiCard: React.FC<Props> = ({
                           setShowPopover(true);
                         }}
                       />
-                      {showPopover && !showRightPenal && (
+                      {showPopover && !showRightPenal && !showRightPanelEdit && (
                         <Popover
                           visible={showPopover}
                           arrowPointAtCenter
@@ -485,6 +487,17 @@ const MultiCard: React.FC<Props> = ({
                                 }}
                               >
                                 View
+                              </span>
+                              <span
+                                onClick={(e: any) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  setShowRightPenal(false);
+                                  setShowRightPanelEdit(true);
+                                  setShowPopover(false);
+                                }}
+                              >
+                                Edit
                               </span>
                               <span
                                 onClick={(e: any) => {
@@ -702,7 +715,7 @@ const MultiCard: React.FC<Props> = ({
                       setShowPopover(true);
                     }}
                   />
-                  {showPopover && !showRightPenal && (
+                  {showPopover && !showRightPenal && !showRightPanelEdit && (
                     <Popover
                       visible={showPopover}
                       arrowPointAtCenter
@@ -718,6 +731,17 @@ const MultiCard: React.FC<Props> = ({
                             }}
                           >
                             View
+                          </span>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setShowRightPenal(false);
+                              setShowRightPanelEdit(true);
+                              setShowPopover(false);
+                            }}
+                          >
+                            Edit
                           </span>
                           <span
                             onClick={(e: any) => {
@@ -784,7 +808,7 @@ const MultiCard: React.FC<Props> = ({
                       setShowPopover(true);
                     }}
                   />
-                  {showPopover && !showRightPenal && (
+                  {showPopover && !showRightPenal && !showRightPanelEdit && (
                     <Popover
                       visible={showPopover}
                       arrowPointAtCenter
@@ -800,6 +824,17 @@ const MultiCard: React.FC<Props> = ({
                             }}
                           >
                             View
+                          </span>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setShowRightPenal(false);
+                              setShowRightPanelEdit(true);
+                              setShowPopover(false);
+                            }}
+                          >
+                            Edit
                           </span>
                           <span
                             onClick={(e: any) => {
@@ -857,7 +892,7 @@ const MultiCard: React.FC<Props> = ({
                     }}
                   />
                 </div>
-                {showPopover && !showRightPenal && (
+                {showPopover && !showRightPenal && !showRightPanelEdit && (
                   <Popover
                     visible={showPopover}
                     arrowPointAtCenter
@@ -887,7 +922,11 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.requiredSection}>
-                  <span>{data?.Description}</span>
+                  {!!data?.Description ? (
+                    <span title={data?.Description}>{data?.Description}</span>
+                  ) : (
+                    <span>{data?.Name}</span>
+                  )}
                 </div>
               </React.Fragment>
             </>
@@ -932,6 +971,13 @@ const MultiCard: React.FC<Props> = ({
         <RightPanel
           visible={showRightPenal}
           onCloseHandler={(val: boolean) => setShowRightPenal(val)}
+          panelData={data}
+        />
+      )}
+      {!!showRightPanelEdit && (
+        <EditComponent
+          visible={showRightPanelEdit}
+          onCloseHandler={(val: boolean) => setShowRightPanelEdit(val)}
           panelData={data}
         />
       )}

@@ -4,7 +4,7 @@ import _, { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
+import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
 const { Panel } = Collapse;
 import Button from '../button';
@@ -113,11 +113,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CredentialComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
                     alt="CredentialComponent"
                   />
                 </span>
@@ -127,11 +123,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' courseCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CourseComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
                     alt="courseComponent"
                   />
                 </span>
@@ -141,11 +133,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' basicCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/BasicComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
                     alt="BasicComponent"
                   />
                 </span>
@@ -155,11 +143,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CompetencyComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
                     alt="CompetencyComponent"
                   />
                 </span>
@@ -169,11 +153,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/AssessmentComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
                     alt="AssessmentComponent"
                   />
                 </span>
@@ -184,11 +164,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CocurricularComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
                     alt="CocurricularComponent"
                   />
                 </span>
@@ -198,11 +174,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/ExtracurricularComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                   />
                 </span>
@@ -212,11 +184,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/SelectionComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionComponent.png`}
                     alt="SelectionComponent"
                   />
                 </span>
@@ -226,11 +194,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/WorkExperienceComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                   />
                 </span>
@@ -240,11 +204,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' jobCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/JobComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
                     alt="JobComponent"
                   />
                 </span>
@@ -254,11 +214,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/AddressingComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AddressingComponent.png`}
                     alt="AddressingConflictComponent"
                   />
                 </span>

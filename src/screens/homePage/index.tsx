@@ -23,6 +23,7 @@ import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
 import AddConditionalComponent from '../addComponent';
+import EditComponent from '../editComponent';
 
 import Styles from './index.module.scss';
 
@@ -61,6 +62,7 @@ const HomePage: React.FC<Props> = ({
   const [collapsed, setCollapsed] = useState(false);
   const [pathwayComponentCards, setPathwayComponentCards] = useState<any>([]);
   const [showRightPanel, setShowRightPanel] = useState(false);
+  const [showRightPanelEdit, setShowRightPanelEdit] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
 
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
@@ -939,13 +941,17 @@ const HomePage: React.FC<Props> = ({
           );
           if (hasCondComp) {
             if (!card?.HasCondition?.includes(id)) {
-              card?.HasCondition?.push(id);
+              // card?.HasCondition?.push(id);
+              hasCondComp?.TargetComponent?.push(point.start);
             }
           }
           if (point?.start === card?.CTID && !hasCondComp) {
             setCurrentCardData(card);
-            if (!card?.PrecededBy?.includes(id)) {
-              card?.PrecededBy?.push(id);
+            if (!endCard?.PrecededBy?.includes(point.start)) {
+              endCard?.PrecededBy?.push(point.start);
+            }
+            if (!card?.Precedes?.includes(id)) {
+              card?.Precedes?.push(id);
             }
           }
         });
@@ -957,11 +963,11 @@ const HomePage: React.FC<Props> = ({
             );
             if (cardToUpdate) {
               if (!_cond?.TargetComponent?.includes(id)) {
-                _cond?.TargetComponent?.push(id);
+                //_cond?.TargetComponent?.push(id);
               }
             } else {
               if (!_cond?.HasCondition?.includes(id)) {
-                _cond?.HasCondition?.push(id);
+                endCard?.HasCondition?.push(point.start);
               }
             }
           }
@@ -1266,8 +1272,8 @@ const HomePage: React.FC<Props> = ({
                                           zIndex={1000}
                                           headSize={16}
                                           color="black"
-                                          start={items?.start}
-                                          end={items?.end}
+                                          start={items?.end}
+                                          end={items?.start}
                                           key={idx}
                                           labels={
                                             <div className={Styles.tempwrapper}>
@@ -1670,6 +1676,13 @@ const HomePage: React.FC<Props> = ({
           <RightPanel
             visible={showRightPanel}
             onCloseHandler={(value: boolean) => setShowRightPanel(value)}
+            panelData={rightPanelData}
+          />
+        )}
+        {showRightPanelEdit && (
+          <EditComponent
+            visible={showRightPanelEdit}
+            onCloseHandler={(value: boolean) => setShowRightPanelEdit(value)}
             panelData={rightPanelData}
           />
         )}

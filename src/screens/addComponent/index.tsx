@@ -264,7 +264,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             (conditional_card: any) =>
               conditional_card.RowId !== currentComponent?.RowId
           )
-          .concat({ ...currentComponent, TargetComponent: [] });
+          .concat({
+            ...currentComponent,
+            TargetComponent: [],
+            ColumnNumber: currentComponent?.ColumnNumber + 1,
+          });
       } else {
         finalConditionalComponentsList = uniqueAllConditionalArray;
       }
@@ -331,8 +335,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           conditionalCardAlreadyExistForDestination.length > 0
             ? conditionalCardAlreadyExistForDestination[0]?.ColumnNumber
             : currentComponent?.destinationColumn
-            ? currentComponent?.ColumnNumber + 1
-            : currentComponent?.ColumnNumber + 1,
+            ? currentComponent?.ColumnNumber
+            : currentComponent?.ColumnNumber,
         RowNumber:
           conditionalCardAlreadyExistForDestination?.length > 0
             ? maximumRowNumber + 1
