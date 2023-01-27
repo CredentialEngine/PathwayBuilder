@@ -546,7 +546,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
-        <h2>Add Component</h2>
+        <h2>Add Condition</h2>
         <div className={Styles.iconheader}>
           <span className={Styles.iconwrapper + ' iconwrapper'}>
             <FontAwesomeIcon
@@ -648,6 +648,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </Row>
         <div className={Styles.divider}>
           <label>Constraints</label>
+		  <div>Constraints enable you to precisely define the requirements that must be satisfied by the components and conditions on the left of these conditions in order to progress to the component on the right of these conditions. For a detailed explanation of how constraints work, consult the <a href="https://credreg.net/ctdl/handbook#pathwaylevel3" target="_blank">CTDL Handbook</a>.</div>
           <hr className="min-top" />
         </div>
         {constraintRow &&
