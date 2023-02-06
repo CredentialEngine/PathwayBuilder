@@ -1,16 +1,15 @@
 {
   "ExpandedNodes": [
     "",
+    "\\public",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\leftPanel",
-    "\\src\\components\\leftPanelDropWrapper",
-    "\\src\\components\\leftPanel\\state",
+    "\\src\\components\\card",
     "\\src\\screens",
-    "\\src\\services",
-    "\\src\\states",
+    "\\src\\screens\\addComponent",
+    "\\src\\screens\\addComponent\\constraint",
     "\\src\\styles"
   ],
-  "SelectedNode": "\\src\\screens\\homePage\\index.tsx",
+  "SelectedNode": "\\src\\App.tsx",
   "PreviewInSolutionExplorer": false
 }
