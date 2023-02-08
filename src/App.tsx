@@ -99,8 +99,8 @@ const App = () => {
   }, [savePathwayResult]);
   useEffect(() => {
     const url = window.location.href;
-    if (url?.includes('?Id=')) {
-      const pathwayIdFromUrl = url?.split('Id=').pop();
+    if (url?.toLowerCase().includes('?id=')) {
+      const pathwayIdFromUrl = url?.toLowerCase().split('id=').pop();
       if (pathwayIdFromUrl) {
         dispatch(
           getDataForPathwayAndComponentsRequest(parseInt(pathwayIdFromUrl))
