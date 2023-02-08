@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import DropWrapper from '../../components/dropWrapper';
 import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
+import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
 import Modal from '../../components/modal';
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
@@ -105,7 +106,9 @@ const HomePage: React.FC<Props> = ({
   const [currentCardData, setCurrentCardData] = useState<any>();
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
-
+  useEffect(() => {
+    dispatch(getLeftPanelPathwayComponentRequest());
+  }, []);
   useEffect(() => {
     const updatedConditionalComponents: any = [];
     setNewConn([]);
@@ -643,6 +646,19 @@ const HomePage: React.FC<Props> = ({
           ).concat({
             ...restCardProps,
             RowNumber,
+            ColumnNumber,
+            firstColumn,
+          });
+        updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
+        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      } else {
+        const updatedPathwayComponent =
+          updatedPathwayWrapper?.PathwayComponents?.filter(
+            (pathway_component: any) => pathway_component?.CTID !== card?.CTID
+          ).concat({
+            ...restCardProps,
+            RowNumber,
+            ColumnNumber,
             firstColumn,
           });
         updatedPathwayWrapper.PathwayComponents = updatedPathwayComponent;
@@ -714,7 +730,6 @@ const HomePage: React.FC<Props> = ({
           ...restCardProps,
           HasProgressionLevel,
           RowNumber,
-          ColumnNumber,
           firstColumn,
         });
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
@@ -1311,7 +1326,6 @@ const HomePage: React.FC<Props> = ({
                                                       e,
                                                       items
                                                     );
-                                                    setCurrentCardData(item);
                                                   }}
                                                 />
                                               </span>

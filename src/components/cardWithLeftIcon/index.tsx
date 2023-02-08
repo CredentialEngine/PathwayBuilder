@@ -1,7 +1,7 @@
 import { Card, Col, Row } from 'antd';
 import React from 'react';
 
-import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
+import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
 import styles from './index.module.scss';
 
@@ -83,11 +83,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/AssessmentComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
@@ -98,11 +94,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' basicCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/BasicComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
                     alt="BasicComponent"
                     className="componentIcon"
                   />
@@ -113,11 +105,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CocurricularComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
@@ -128,11 +116,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CompetencyComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
@@ -143,11 +127,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' courseCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CourseComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
                     alt="CourseComponent"
                     className="componentIcon"
                   />
@@ -158,11 +138,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/ExtracurricularComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
@@ -173,11 +149,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' jobCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/JobComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
                     alt="JobComponent"
                     className="componentIcon"
                   />
@@ -188,11 +160,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/WorkExperienceComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
@@ -203,11 +171,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CredentialComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
@@ -218,11 +182,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/ComponentCondition.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ComponentCondition.png`}
                     alt="ComponentCondition"
                     className="componentIcon"
                   />
@@ -233,11 +193,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/SelectionCondition.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionCondition.png`}
                     alt="SelectionCondition"
                     className="componentIcon"
                   />
@@ -249,11 +205,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CredentialComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
@@ -262,11 +214,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('course'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' courseCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CourseComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
                     alt="courseComponent"
                     className="componentIcon"
                   />
@@ -275,11 +223,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' basicCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/BasicComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
                     alt="BasicComponent"
                     className="componentIcon"
                   />
@@ -290,11 +234,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CompetencyComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
@@ -303,11 +243,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/AssessmentComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
@@ -316,11 +252,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/CocurricularComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
@@ -331,11 +263,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/ExtracurricularComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
@@ -344,11 +272,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/SelectionComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionComponent.png`}
                     alt="SelectionComponent"
                     className="componentIcon"
                   />
@@ -357,11 +281,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('WorkExperience'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/WorkExperienceComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
@@ -370,11 +290,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' jobCard'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/JobComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
                     alt="JobComponent"
                     className="componentIcon"
                   />
@@ -383,11 +299,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('Addressing'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
-                        ? sanboxSetting.api.url
-                        : productionSetting.api.url
-                    }Images/PathwayBuilder/AddressingComponent.png`}
+                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AddressingComponent.png`}
                     alt="AddressingConflictComponent"
                     className="componentIcon"
                   />

@@ -4,7 +4,7 @@ import { Col, Row } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { productionSetting, sanboxSetting } from '../../apiConfig/setting';
+import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 import HelpAddingComponent from '../../screens/helpAddingComponent';
@@ -166,9 +166,7 @@ const Header = (props: Props) => {
     setIsEditPathwayFormVisible(true);
   };
   const redicrectTO = () => {
-    process.env.NODE_ENV !== 'production'
-      ? window.open(sanboxSetting.api.url, '_blank')
-      : window.open(productionSetting.api.url, '_blank');
+    window.open(TEMP_BASE_URL, '_blank');
   };
   const exitWithSaving = () => {
     Modal.confirm({

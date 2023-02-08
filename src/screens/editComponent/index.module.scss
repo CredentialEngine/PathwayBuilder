@@ -34,8 +34,6 @@
   font-weight: $normal-weight;
   line-height: 1.2rem;
   color: #0a2942;
-  margin-right: 15px;
-  margin-left: 25px;
   .topRow {
     align-items: center;
     .name {
@@ -77,7 +75,7 @@
     }
   }
   .content {
-    font-size: 18px;
+    font-size: 14px;
     color: #0a2942;
     word-break: break-word;
   }
@@ -152,6 +150,7 @@
     }
     .ant-drawer-header-close-only button.ant-drawer-close {
       margin-right: 0;
+      display: none;
     }
   }
 }

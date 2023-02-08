@@ -3,103 +3,77 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { request } from '../../../apiConfig/api';
 
 import {
-  GET_ALL_ARRAY_OPERATION,
-  GET_ALL_COMPARATORS,
-  GET_ALL_LOGICAL_OPERATOR,
-  SEARCH_FOR_LEFT_AND_RIGHT_OPERAND,
+  GET_ALL_CREDENTIALTYPES,
+  GET_ALL_CREDIT_LEVEL_TYPES,
+  GET_ALL_CREDIT_UNIT_TYPES,
 } from '../../../apiConfig/endpoint';
 import { TEMP_BASE_URL, IS_LOCALHOST } from '../../../apiConfig/setting';
 import TokenManager from '../../../services/tokenManager';
 
 import {
-  getAllArrayConceptsFailure,
-  getAllArrayConceptsSuccess,
-  getAllComparatorsFailure,
-  getAllComparatorsSuccess,
-  getLogicalOperatorsFailure,
-  getLogicalOperatorsSuccess,
+  getCredentialTypesFailure,
+  getCredentialTypesSuccess,
+  getCreditUnitTypesFailure,
+  getCreditUnitTypesSuccess,
+  getCreditLevelTypesFailure,
+  getCreditLevelTypesSuccess,
 } from './actions';
 import {
-  GET_ALL_COMPARATORS_REQUEST,
-  GET_ARRAY_CONCEPT_REQUEST,
-  GET_CONSTRAINT_OPERAND_REQUEST,
-  GET_LOGICAL_OPERATOR_REQUEST,
+  GET_CREDENTIAL_TYPES_REQUEST,
+  GET_CREDIT_UNIT_TYPES_REQUEST,
+  GET_CREDIT_LEVEL_TYPES_REQUEST,
 } from './actionTypes';
 
-export function* getAllLogicalOperators(): Generator {
+export function* getAllCredentialTypes(): Generator {
   try {
     const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
-      url: `${TEMP_BASE_URL}${GET_ALL_LOGICAL_OPERATOR}`,
+      url: `${TEMP_BASE_URL}${GET_ALL_CREDENTIALTYPES}`,
       method: 'GET',
       params: {
         userCreds,
       },
     });
-    yield put(getLogicalOperatorsSuccess(result));
+    yield put(getCredentialTypesSuccess(result));
   } catch (error) {
-    yield put(getLogicalOperatorsFailure(error));
+    yield put(getCredentialTypesFailure(error));
   }
 }
-
-export function* getComparatorsData(): Generator {
+export function* getAllCreditUnitypes(): Generator {
   try {
     const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
-      url: `${TEMP_BASE_URL}${GET_ALL_COMPARATORS}`,
+      url: `${TEMP_BASE_URL}${GET_ALL_CREDIT_UNIT_TYPES}`,
       method: 'GET',
       params: {
         userCreds,
       },
     });
-    yield put(getAllComparatorsSuccess(result));
+    yield put(getCreditUnitTypesSuccess(result));
   } catch (error) {
-    yield put(getAllComparatorsFailure(error));
+    yield put(getCreditUnitTypesFailure(error));
   }
 }
-
-export function* getArrayConceptData(): Generator {
+export function* getAllCreditLevelTypes(): Generator {
   try {
     const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
     const result: any = yield call(request, {
-      url: `${TEMP_BASE_URL}${GET_ALL_ARRAY_OPERATION}`,
+      url: `${TEMP_BASE_URL}${GET_ALL_CREDIT_LEVEL_TYPES}`,
       method: 'GET',
       params: {
         userCreds,
       },
     });
-    yield put(getAllArrayConceptsSuccess(result));
+    yield put(getCreditLevelTypesSuccess(result));
   } catch (error) {
-    yield put(getAllArrayConceptsFailure(error));
-  }
-}
-
-export function* getAllConstraintOperand(data: any): Generator {
-  try {
-    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
-    const result: any = yield call(request, {
-      url: `${TEMP_BASE_URL}${SEARCH_FOR_LEFT_AND_RIGHT_OPERAND}`,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      params: {
-        userCreds,
-      },
-
-      body: JSON.stringify(data),
-    });
-    yield put(getLogicalOperatorsSuccess(result));
-  } catch (error) {
-    yield put(getLogicalOperatorsFailure(error));
+    yield put(getCreditLevelTypesFailure(error));
   }
 }
 
 function* addConditionalComponentSaga() {
-  yield takeLatest(GET_LOGICAL_OPERATOR_REQUEST, getAllLogicalOperators);
-  yield takeLatest(GET_ALL_COMPARATORS_REQUEST, getComparatorsData);
-  yield takeLatest(GET_ARRAY_CONCEPT_REQUEST, getArrayConceptData);
-  yield takeLatest(GET_CONSTRAINT_OPERAND_REQUEST, getAllConstraintOperand);
+  yield takeLatest(GET_CREDENTIAL_TYPES_REQUEST, getAllCredentialTypes);
+  yield takeLatest(GET_CREDIT_UNIT_TYPES_REQUEST, getAllCreditUnitypes);
+  yield takeLatest(GET_CREDIT_LEVEL_TYPES_REQUEST, getAllCreditLevelTypes);
 }
 
 export default addConditionalComponentSaga;

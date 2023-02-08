@@ -1,36 +1,28 @@
 import {
-  GET_ALL_COMPARATORS_FAILURE,
-  GET_ALL_COMPARATORS_REQUEST,
-  GET_ALL_COMPARATORS_SUCCESS,
-  GET_ARRAY_CONCEPT_FAILURE,
-  GET_ARRAY_CONCEPT_REQUEST,
-  GET_ARRAY_CONCEPT_SUCCESS,
-  GET_LOGICAL_OPERATOR_FAILURE,
-  GET_LOGICAL_OPERATOR_REQUEST,
-  GET_LOGICAL_OPERATOR_SUCCESS,
-  GET_CONSTRAINT_OPERAND_REQUEST,
-  GET_CONSTRAINT_OPERAND_SUCCESS,
-  GET_CONSTRAINT_OPERAND_FAILURE,
+  GET_CREDENTIAL_TYPES_REQUEST,
+  GET_CREDENTIAL_TYPES_SUCCESS,
+  GET_CREDENTIAL_TYPES_FAILURE,
+  GET_CREDIT_UNIT_TYPES_REQUEST,
+  GET_CREDIT_UNIT_TYPES_SUCCESS,
+  GET_CREDIT_UNIT_TYPES_FAILURE,
+  GET_CREDIT_LEVEL_TYPES_REQUEST,
+  GET_CREDIT_LEVEL_TYPES_SUCCESS,
+  GET_CREDIT_LEVEL_TYPES_FAILURE,
 } from './actionTypes';
 import { RootState } from './types';
 
 const initState: RootState = {
-  logicalOperatorData: {
+  credentialTypeData: {
     loading: false,
     data: null,
     valid: false,
   },
-  comparatorsData: {
+  creditUnitTypeData: {
     loading: false,
     data: null,
     valid: false,
   },
-  arrayOperationData: {
-    loading: false,
-    data: null,
-    valid: false,
-  },
-  constraintOperantData: {
+  creditLevelTypeData: {
     loading: false,
     data: null,
     valid: false,
@@ -39,106 +31,76 @@ const initState: RootState = {
 
 export default (state = initState, action: { type: string; payload: any }) => {
   switch (action.type) {
-    case GET_LOGICAL_OPERATOR_REQUEST:
+    case GET_CREDENTIAL_TYPES_REQUEST:
       return {
         ...state,
-        logicalOperatorData: { ...state.logicalOperatorData, loading: true },
+        credentialTypeData: { ...state.credentialTypeData, loading: true },
       };
-    case GET_LOGICAL_OPERATOR_SUCCESS:
+    case GET_CREDENTIAL_TYPES_SUCCESS:
       return {
         ...state,
-        logicalOperatorData: {
-          ...state.logicalOperatorData,
+        credentialTypeData: {
+          ...state.credentialTypeData,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
         },
       };
-    case GET_LOGICAL_OPERATOR_FAILURE:
+    case GET_CREDENTIAL_TYPES_FAILURE:
       return {
         ...state,
-        logicalOperatorData: {
-          ...state.logicalOperatorData,
+        credentialTypeData: {
+          ...state.credentialTypeData,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
         },
       };
-
-    case GET_ALL_COMPARATORS_REQUEST:
+    case GET_CREDIT_UNIT_TYPES_REQUEST:
       return {
         ...state,
-        comparatorsData: { ...state.comparatorsData, loading: true },
+        creditUnitTypeData: { ...state.creditUnitTypeData, loading: true },
       };
-    case GET_ALL_COMPARATORS_SUCCESS:
+    case GET_CREDIT_UNIT_TYPES_SUCCESS:
       return {
         ...state,
-        comparatorsData: {
-          ...state.comparatorsData,
+        creditUnitTypeData: {
+          ...state.creditUnitTypeData,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
         },
       };
-    case GET_ALL_COMPARATORS_FAILURE:
+    case GET_CREDIT_UNIT_TYPES_FAILURE:
       return {
         ...state,
-        comparatorsData: {
-          ...state.comparatorsData,
+        creditUnitTypeData: {
+          ...state.creditUnitTypeData,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
         },
       };
-
-    case GET_ARRAY_CONCEPT_REQUEST:
+    case GET_CREDIT_LEVEL_TYPES_REQUEST:
       return {
         ...state,
-        arrayOperationData: { ...state.arrayOperationData, loading: true },
+        creditValueTypeData: { ...state.creditLevelTypeData, loading: true },
       };
-    case GET_ARRAY_CONCEPT_SUCCESS:
+    case GET_CREDIT_LEVEL_TYPES_SUCCESS:
       return {
         ...state,
-        arrayOperationData: {
-          ...state.arrayOperationData,
+        creditValueTypeData: {
+          ...state.creditLevelTypeData,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
         },
       };
-    case GET_ARRAY_CONCEPT_FAILURE:
+    case GET_CREDIT_LEVEL_TYPES_FAILURE:
       return {
         ...state,
-        arrayOperationData: {
-          ...state.arrayOperationData,
-          loading: false,
-          data: action.payload.Data,
-          valid: action?.payload?.Valid,
-        },
-      };
-    case GET_CONSTRAINT_OPERAND_REQUEST:
-      return {
-        ...state,
-        constraintOperantData: {
-          ...state.constraintOperantData,
-          loading: true,
-        },
-      };
-    case GET_CONSTRAINT_OPERAND_SUCCESS:
-      return {
-        ...state,
-        constraintOperantData: {
-          ...state.constraintOperantData,
-          loading: false,
-          data: action.payload.Data,
-          valid: action?.payload?.Valid,
-        },
-      };
-    case GET_CONSTRAINT_OPERAND_FAILURE:
-      return {
-        ...state,
-        constraintOperantData: {
-          ...state.constraintOperantData,
+        creditValueTypeData: {
+          ...state.creditLevelTypeData,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,

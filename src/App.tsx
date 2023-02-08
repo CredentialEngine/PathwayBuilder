@@ -2,11 +2,7 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  IS_LOCALHOST,
-  productionSetting,
-  sanboxSetting,
-} from './apiConfig/setting';
+import { IS_LOCALHOST, TEMP_BASE_URL } from './apiConfig/setting';
 import './App.scss';
 
 import Button from './components/button';
@@ -142,9 +138,7 @@ const App = () => {
   };
 
   const onCreatePathwayCancelHandler = () => {
-    process.env.NODE_ENV !== 'production'
-      ? (window.location.href = sanboxSetting.api.url)
-      : (window.location.href = productionSetting.api.url);
+    window.location.href = TEMP_BASE_URL;
   };
 
   const onCloseHandler = () => {
@@ -325,9 +319,7 @@ const App = () => {
             visible={isSelectOrganizationsVisible}
             onOk={selectOrgOkHandler}
             onCancel={() => {
-              process.env.NODE_ENV !== 'production'
-                ? (window.location.href = sanboxSetting.api.url)
-                : (window.location.href = productionSetting.api.url);
+              window.location.href = TEMP_BASE_URL;
             }}
             footer={[
               <>

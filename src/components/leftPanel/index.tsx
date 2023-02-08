@@ -52,7 +52,6 @@ const LeftPanel: React.FC<any> = ({
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
-
   const [selectedTabCards, setSelectedtabCards] =
     useState<any>(selectedTabCardData);
   const [selectedPathwayComponents, setSelectedPathwayComponents] =

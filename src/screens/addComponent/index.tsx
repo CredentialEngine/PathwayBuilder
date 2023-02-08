@@ -209,7 +209,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           (a: any) => ({
             ...a,
             ColumnNumber: a?.destinationColumn
-              ? a?.ColumnNumber
+              ? a?.ColumnNumber + 1
               : conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
               ? a?.ColumnNumber + 1
               : a?.ColumnNumber,
@@ -648,7 +648,21 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </Row>
         <div className={Styles.divider}>
           <label>Constraints</label>
-		  <div>Constraints enable you to precisely define the requirements that must be satisfied by the components and conditions on the left of these conditions in order to progress to the component on the right of these conditions. For a detailed explanation of how constraints work, consult the <a href="https://credreg.net/ctdl/handbook#pathwaylevel3" target="_blank">CTDL Handbook</a>.</div>
+          <div>
+            Constraints enable you to precisely define the requirements that
+            must be satisfied by the components and conditions on the left of
+            these conditions in order to progress to the component on the right
+            of these conditions. For a detailed explanation of how constraints
+            work, consult the{' '}
+            <a
+              href="https://credreg.net/ctdl/handbook#pathwaylevel3"
+              target="_blank"
+              rel="noreferrer"
+            >
+              CTDL Handbook
+            </a>
+            .
+          </div>
           <hr className="min-top" />
         </div>
         {constraintRow &&
