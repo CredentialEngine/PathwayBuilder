@@ -95,7 +95,13 @@ const Header = (props: Props) => {
   }, [approvePathwayResult]);
 
   const onApproverHandler = () => {
-    dispatch(approvePathwayRequest(pathwayWrapper?.Pathway?.Id));
+    dispatch(saveDataForPathwayRequest(pathwayWrapper));
+    Modal.confirm({
+      cancelText: 'No',
+      okText: 'Yes',
+      title: 'Are you sure you want to Approve the Pathway?',
+      onOk: () => dispatch(approvePathwayRequest(pathwayWrapper?.Pathway?.Id)),
+    });
   };
 
   const conflictHandler = () => {

@@ -1,14 +1,18 @@
 export const BASE_URL = 'https://sandbox.credentialengine.org/publisher/';
+export const BASE_URL_SANDBOX =
+  'https://sandbox.credentialengine.org/publisher/';
+export const BASE_URL_STAGING =
+  'https://sandbox.credentialengine.org/publisher/';
 export const BASE_URL_PRODUCTION =
   'https://sandbox.credentialengine.org/publisher/';
 export const BASE_URL_REGISTRY_RESOURCES =
   'https://sandbox.credentialengineregistry.org/resources/';
-
+export const GET_ALL_RESOURCES = 'resources/';
 export const GET_ALL_PATHWAY_COMPONENT =
   'PathwayBuilderApi/Schema/PathwayComponent';
 export const GET_ALL_LOGICAL_OPERATOR =
   'PathwayBuilderApi/Schema/LogicalOperator';
-export const GET_ALL_COMPARATORS = '/PathwayBuilderApi/Schema/Comparator';
+export const GET_ALL_COMPARATORS = 'PathwayBuilderApi/Schema/Comparator';
 export const GET_ALL_ARRAY_OPERATION =
   'PathwayBuilderApi/Schema/ArrayOperation';
 export const GET_DATA_FOR_CURRENT_USER = 'PathwayBuilderApi/Load/User';

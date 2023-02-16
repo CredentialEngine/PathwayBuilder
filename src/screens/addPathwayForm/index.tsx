@@ -10,12 +10,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  BASE_URL,
-  BASE_URL_PRODUCTION,
   SEARCH_FOR_INDUSTRICAL_PROGRAM_TYPE,
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
 } from '../../apiConfig/endpoint';
+import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
 import AutoCompleteBox from '../../components/autoComplete';
 import Button from '../../components/button';
@@ -86,9 +85,6 @@ const AddPathwayForm: React.FC<Props> = ({
   );
   const [selectedProgressionModelValue, setSelectedProgressionModelValue] =
     useState<string>('');
-
-  const TEMP_BASE_URL =
-    process.env.NODE_ENV !== 'production' ? BASE_URL : BASE_URL_PRODUCTION;
 
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);

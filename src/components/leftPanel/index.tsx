@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { BASE_URL_REGISTRY_RESOURCES } from '../../apiConfig/endpoint';
+import { GET_ALL_RESOURCES } from '../../apiConfig/endpoint';
+import { TEMP_BASE_URL_REGISTRY } from '../../apiConfig/setting';
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
 import {
@@ -134,24 +135,41 @@ const LeftPanel: React.FC<any> = ({
   }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
 
   const createCard = (card: any) => {
-    const CTID = `ce-${uuidv4()}`;
-    const newCard = {
-      CTID,
-      Created: '',
-      Description: card?.Description,
-      HasChild: [],
-      HasCondition: [],
-      IndustryType: [],
-      IsChildOf: [],
-      Name: card?.Name,
-      OccupationType: [],
-      PrecededBy: [],
-      ProxyFor: `${BASE_URL_REGISTRY_RESOURCES}${CTID}`,
-      ProxyForLabel: card?.Name,
-      RowId: uuidv4(),
-      Type: card?.URI,
-    };
-    return newCard;
+    if (card?.URI === 'ceterms:ComponentCondition') {
+      const newCard = {
+        Created: '',
+        Description: card?.Description,
+        HasCondition: [],
+        Name: card?.Name,
+        RowId: uuidv4(),
+        Type: 'conditional',
+        ParentIdentifier: '',
+        RequiredNumber: 0,
+        LogicalOperator: '',
+        PathwayCTID: result.mappedData.Pathway.CTID,
+        HasConstraint: [],
+      };
+      return newCard;
+    } else {
+      const CTID = `ce-${uuidv4()}`;
+      const newCard = {
+        CTID,
+        Created: '',
+        Description: card?.Description,
+        HasChild: [],
+        HasCondition: [],
+        IndustryType: [],
+        IsChildOf: [],
+        Name: card?.Name,
+        OccupationType: [],
+        PrecededBy: [],
+        ProxyFor: `${TEMP_BASE_URL_REGISTRY}${GET_ALL_RESOURCES}${CTID}`,
+        ProxyForLabel: card?.Name,
+        RowId: uuidv4(),
+        Type: card?.URI,
+      };
+      return newCard;
+    }
   };
 
   useEffect(() => {
@@ -163,6 +181,7 @@ const LeftPanel: React.FC<any> = ({
         }))
       );
   }, [allComponentTabCards]);
+
   let conditionalComponent: any = [];
 
   const checkHasCondition = (card: any) => {

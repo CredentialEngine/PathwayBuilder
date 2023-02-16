@@ -119,6 +119,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       allComponentCardsData[connectionsCTID?.start];
     const currentConditionalComponent =
       allConditionalCardsData[connectionsCTID?.start];
+    const endPathwayComponent = allComponentCardsData[connectionsCTID?.end];
 
     if (conditionalComponent.length > 0) {
       /* in the below code we are adding RowId of the newly created conitional component inside the parent component*/
@@ -132,11 +133,13 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             conditionalComponent[0].RowId,
           ];
           currentPathwayComponent.PrecededBy = [];
+          endPathwayComponent.Precedes = [];
         } else {
           currentPathwayComponent.HasCondition = [
             conditionalComponent[0].RowId,
           ];
           currentPathwayComponent.PrecededBy = [];
+          endPathwayComponent.Precedes = [];
         }
       }
       /* in the below code we are adding RowId of the newly created conitional component inside the parent conditional component*/
@@ -243,6 +246,14 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ...updatedPathwayWrapper.PathwayComponents,
         ...updatedPathwayComponentArray,
       ];
+      allPathwayComponentCard.map((item) => {
+        if (item.CTID === endPathwayComponent.CTID) {
+          return {
+            ...item,
+            Precedes: [],
+          };
+        }
+      });
 
       const uniqueAllPathwayComponentArray = [
         ...new Map(
