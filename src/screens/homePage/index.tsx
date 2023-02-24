@@ -1688,7 +1688,8 @@ const HomePage: React.FC<Props> = ({
         )}
       </Layout>
       {(isConditionalModalStatus || isConditionalEditing) && (
-        <Modal
+			  <Modal
+				  width={"80vw"}
           visible={isConditionalModalStatus || isConditionalEditing}
           title=""
           footer={[]}
