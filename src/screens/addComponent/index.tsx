@@ -115,46 +115,49 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 	useEffect(() => {
 		const updatedPathwayWrapper = { ...pathwayComponent };
 
-		const currentPathwayComponent =
-			allComponentCardsData[connectionsCTID?.start];
-		const currentConditionalComponent =
-			allConditionalCardsData[connectionsCTID?.start];
+    const currentPathwayComponent =
+      allComponentCardsData[connectionsCTID?.start];
+    const currentConditionalComponent =
+      allConditionalCardsData[connectionsCTID?.start];
+    const endPathwayComponent = allComponentCardsData[connectionsCTID?.end];
 
-		if (conditionalComponent.length > 0) {
-			/* in the below code we are adding RowId of the newly created conitional component inside the parent component*/
-			if (
-				!_.isUndefined(currentPathwayComponent) &&
-				!_.isNull(currentPathwayComponent)
-			) {
-				if (!_.isEmpty(currentPathwayComponent.HasCondition)) {
-					currentPathwayComponent.HasCondition = [
-						...currentPathwayComponent.HasCondition,
-						conditionalComponent[0].RowId,
-					];
-					currentPathwayComponent.PrecededBy = [];
-				} else {
-					currentPathwayComponent.HasCondition = [
-						conditionalComponent[0].RowId,
-					];
-					currentPathwayComponent.PrecededBy = [];
-				}
-			}
-			/* in the below code we are adding RowId of the newly created conitional component inside the parent conditional component*/
-			if (
-				!_.isUndefined(currentConditionalComponent) &&
-				!_.isNull(currentConditionalComponent)
-			) {
-				if (!_.isEmpty(currentConditionalComponent.HasCondition)) {
-					currentConditionalComponent.HasCondition = [
-						...currentConditionalComponent.HasCondition,
-						conditionalComponent[0].RowId,
-					];
-				} else {
-					currentConditionalComponent.HasCondition = [
-						conditionalComponent[0].RowId,
-					];
-				}
-			}
+    if (conditionalComponent.length > 0) {
+      /* in the below code we are adding RowId of the newly created conitional component inside the parent component*/
+      if (
+        !_.isUndefined(currentPathwayComponent) &&
+        !_.isNull(currentPathwayComponent)
+      ) {
+        if (!_.isEmpty(currentPathwayComponent.HasCondition)) {
+          currentPathwayComponent.HasCondition = [
+            ...currentPathwayComponent.HasCondition,
+            conditionalComponent[0].RowId,
+          ];
+          currentPathwayComponent.PrecededBy = [];
+          endPathwayComponent.Precedes = [];
+        } else {
+          currentPathwayComponent.HasCondition = [
+            conditionalComponent[0].RowId,
+          ];
+          currentPathwayComponent.PrecededBy = [];
+          endPathwayComponent.Precedes = [];
+        }
+      }
+      /* in the below code we are adding RowId of the newly created conitional component inside the parent conditional component*/
+      if (
+        !_.isUndefined(currentConditionalComponent) &&
+        !_.isNull(currentConditionalComponent)
+      ) {
+        if (!_.isEmpty(currentConditionalComponent.HasCondition)) {
+          currentConditionalComponent.HasCondition = [
+            ...currentConditionalComponent.HasCondition,
+            conditionalComponent[0].RowId,
+          ];
+        } else {
+          currentConditionalComponent.HasCondition = [
+            conditionalComponent[0].RowId,
+          ];
+        }
+      }
 
 			/* getting here all the conditional component those are outside the to the current progression level*/
 			const conditionalComponentOutOfProgressionLevel =
@@ -202,19 +205,19 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 					]
 					: [...new Set([...componentCardInProgressionLevel])];
 
-			let updatedPathwayComponentArray: any = [];
-			let updatedConditionalArray: any = [];
-			if (!cardAlreadyExistOnDropWrapper) {
-				updatedPathwayComponentArray = uniquePathwayComponentArray.map(
-					(a: any) => ({
-						...a,
-						ColumnNumber: a?.destinationColumn
-							? a?.ColumnNumber
-							: conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
-								? a?.ColumnNumber + 1
-								: a?.ColumnNumber,
-					})
-				);
+      let updatedPathwayComponentArray: any = [];
+      let updatedConditionalArray: any = [];
+      if (!cardAlreadyExistOnDropWrapper) {
+        updatedPathwayComponentArray = uniquePathwayComponentArray.map(
+          (a: any) => ({
+            ...a,
+            ColumnNumber: a?.destinationColumn
+              ? a?.ColumnNumber + 1
+              : conditionalComponent[0].ColumnNumber <= a?.ColumnNumber
+              ? a?.ColumnNumber + 1
+              : a?.ColumnNumber,
+          })
+        );
 
 				updatedConditionalArray = uniqueConditionalArray
 					.map((a: any) => ({
@@ -239,10 +242,18 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 				...updatedConditionalArray,
 			];
 
-			const allPathwayComponentCard = [
-				...updatedPathwayWrapper.PathwayComponents,
-				...updatedPathwayComponentArray,
-			];
+      const allPathwayComponentCard = [
+        ...updatedPathwayWrapper.PathwayComponents,
+        ...updatedPathwayComponentArray,
+      ];
+      allPathwayComponentCard.map((item) => {
+        if (item.CTID === endPathwayComponent.CTID) {
+          return {
+            ...item,
+            Precedes: [],
+          };
+        }
+      });
 
 			const uniqueAllPathwayComponentArray = [
 				...new Map(
@@ -544,63 +555,164 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 		);
 		dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
-		if (rowIndex !== 0) {
-			setConstraintRow([...constraintRow]);
-		} else {
-			setConstraintRow([]);
-		}
-	};
+    if (rowIndex !== 0) {
+      setConstraintRow([...constraintRow]);
+    } else {
+      setConstraintRow([]);
+    }
+  };
+  return (
+    <div className={Styles.addComponentwrapper}>
+      <Form>
+        <h2>Add Condition</h2>
+        <div className={Styles.iconheader}>
+          <span className={Styles.iconwrapper + ' iconwrapper'}>
+            <FontAwesomeIcon
+              icon={faCubes}
+              style={{ height: '15px' }}
+              color="black"
+            />
+          </span>
+          <h4>Component Condition</h4>
+        </div>
+        <Form.Item>
+          <label>Parent Component</label>
+          <InputBox name="ParentIdentifier" value={currentComponent?.Name} />
+        </Form.Item>
+        <Form.Item
+          required={true}
+          wrapperCol={{ span: 24 }}
+          labelCol={{ span: 24 }}
+          label="Name"
+          validateTrigger="onBlur"
+          help={
+            (_.isEmpty(componentConditionFields.Name) ||
+              _.isNull(componentConditionFields.Name)) &&
+            isTouched.Name
+              ? 'Name is Required'
+              : null
+          }
+        >
+          <InputBox
+            onChange={onInputChangeHandler}
+            placeholder="Name"
+            name="Name"
+            value={componentConditionFields.Name}
+            required={true}
+            onBlur={() =>
+              isTouched.Name === true
+                ? null
+                : setisTouched({ ...isTouched, Name: true })
+            }
+          />
+        </Form.Item>
+        <Form.Item>
+          <label>Condition Description</label>
+          <TextArea
+            onChange={onInputChangeHandler}
+            rows={3}
+            name="Description"
+            value={componentConditionFields.Description}
+            placeholder="Description"
+          />
+        </Form.Item>
+        <Row gutter={20}>
+          <Col span="12">
+            <Form.Item
+              required={true}
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Required Number"
+              validateTrigger="onBlur"
+              help={
+                (_.isEmpty(componentConditionFields.RequiredNumber) ||
+                  _.isNull(componentConditionFields.RequiredNumber)) &&
+                isTouched.requiredNumber
+                  ? 'Number is Required'
+                  : null
+              }
+            >
+              <InputBox
+                type="number"
+                placeholder="Required Number"
+                onChange={onInputChangeHandler}
+                min={1}
+                name="RequiredNumber"
+                value={componentConditionFields.RequiredNumber}
+                required={true}
+                onBlur={() =>
+                  isTouched.requiredNumber === true
+                    ? null
+                    : setisTouched({ ...isTouched, requiredNumber: true })
+                }
+              />
+            </Form.Item>
+          </Col>
+          <Col span="12">
+            <Form.Item
+              label="Logical Operator"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              <Dropdown
+                options={allogicalOperator?.LogicalOperator}
+                showSearch={false}
+                placeholder="Select Logical Operator"
+                value={logicalOperator}
+                onChange={(e) => selectedComparators(e)}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <div className={Styles.divider}>
+          <label>Constraints</label>
+          <div>
+            Constraints enable you to precisely define the requirements that
+            must be satisfied by the components and conditions on the left of
+            these conditions in order to progress to the component on the right
+            of these conditions. For a detailed explanation of how constraints
+            work, consult the{' '}
+            <a
+              href="https://credreg.net/ctdl/handbook#pathwaylevel3"
+              target="_blank"
+              rel="noreferrer"
+            >
+              CTDL Handbook
+            </a>
+            .
+          </div>
+          <hr className="min-top" />
+        </div>
+        {constraintRow &&
+          constraintRow?.map((constraintRowData: any, RowIndex: any) => (
+            <Constraint
+              key={RowIndex}
+              RowIndex={RowIndex}
+              constraintRow={constraintRowData}
+              getConstraintData={(val: any) => getConstraintData(val)}
+              getRowIndex={(rowIndex: any) => handleDeleteRow(rowIndex)}
+            />
+          ))}
 
-	return (
-		<div className={Styles.addComponentwrapper}>
-			<Form>
-				<div className={Styles.iconheader}>
-					<span className={Styles.iconwrapper + ' iconwrapper'}>
-						<FontAwesomeIcon icon={faCubes} style={{ height: '15px' }} color="black" />
-					</span>
-					<h2 style={{margin: 0}}>Component Condition for <i>{currentComponent?.Name || "Parent Component"}</i></h2>
-				</div>
-				<Form.Item required={true} wrapperCol={{ span: 24 }} labelCol={{ span: 24 }} label="Name" validateTrigger="onBlur" help={isTouched.Name && !componentConditionFields.Name ? 'Name is Required' : null } >
-					<InputBox onChange={onInputChangeHandler} placeholder="Name" name="Name" value={componentConditionFields.Name} required={true} onBlur={() => isTouched.Name ? null : setisTouched({ ...isTouched, Name: true }) } />
-				</Form.Item>
-				<Form.Item>
-					<label>Condition Description</label>
-					<TextArea style={{maxHeight: "200px"}} onChange={onInputChangeHandler} rows={3} name="Description" value={componentConditionFields.Description} placeholder="Description" />
-				</Form.Item>
-				<Row gutter={20}>
-					<Col span="12">
-						<Form.Item required={true} wrapperCol={{ span: 24 }} labelCol={{ span: 24 }} label="Required Number" validateTrigger="onBlur" help={isTouched.requiredNumber && !componentConditionFields.RequiredNumber ? 'Number is Required' : null} >
-							<div className={Styles.helpText}>The Required Number field indicates how many of the Components and Conditions that branch out to the left of these Condtions are required to be satisfied in order for these Conditions to be true (in addition to any other constraints indicated below). Use 0 if the items that branch out to the left are entirely optional.</div>
-							<InputBox type="number" placeholder="Required Number" onChange={onInputChangeHandler} min={0} name="RequiredNumber" value={componentConditionFields.RequiredNumber} required={true} onBlur={() => isTouched.requiredNumber ? null : setisTouched({ ...isTouched, requiredNumber: true }) } />
-						</Form.Item>
-					</Col>
-					<Col span="12">
-						<Form.Item label="Logical Operator" wrapperCol={{ span: 24 }} labelCol={{ span: 24 }} >
-							<div className={Styles.helpText}>The logical operator indicates how the constraints below, as well as any other Conditions that branch out to the left of these Conditions, should be evaluated. For example, select "And" to indicate that all of the constraints must be true in order for these conditions to be met; select "Or" to indicate that only one needs to be true.</div>
-							<Dropdown options={allogicalOperator?.LogicalOperator} showSearch={false} placeholder="Select Logical Operator" value={logicalOperator} onChange={(e) => selectedComparators(e)} />
-						</Form.Item>
-					</Col>
-				</Row>
-				<div className={Styles.divider}>
-					<label>Constraints</label>
-					<div className={Styles.helpText}>Constraints enable you to precisely define the requirements that must be satisfied by the components and conditions on the left of these conditions in order to progress to the component on the right of these conditions. For a detailed explanation of how constraints work, consult the <a href="https://credreg.net/ctdl/handbook#pathwaylevel3" target="_blank">CTDL Handbook</a>.</div>
-					<hr className="min-top" />
-				</div>
-				{constraintRow && constraintRow?.map((constraintRowData: any, RowIndex: any) => (
-					<Constraint key={RowIndex} RowIndex={RowIndex} constraintRow={constraintRowData} getConstraintData={(val: any) => getConstraintData(val)} deleteRowByIndex={(rowIndex: any) => handleDeleteRow(rowIndex)} />
-				))}
-				<button onClick={() => addConstraintRow()} style={{ cursor: 'pointer', backgroundColor: "transparent", border: "none", textDecoration: "underline" }}>Add another constraint</button>
-				<hr />
-				<Button size="medium" text="Save Condition" type="primary"
-					disabled={_.isEmpty(
-						componentConditionFields.RequiredNumber &&
-						componentConditionFields.Name
-					)}
-					onClick={saveCondition}
-				/>
-			</Form>
-		</div>
-	);
+        <p>
+          <u onClick={() => addConstraintRow()} style={{ cursor: 'pointer' }}>
+            Add another constraint
+          </u>
+        </p>
+        <hr />
+        <Button
+          size="medium"
+          text="Save Condition"
+          type="primary"
+          disabled={_.isEmpty(
+            componentConditionFields.RequiredNumber &&
+              componentConditionFields.Name
+          )}
+          onClick={saveCondition}
+        />
+      </Form>
+    </div>
+  );
 };
 
 export default AddConditionalComponent;

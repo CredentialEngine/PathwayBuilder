@@ -9,9 +9,9 @@ export interface Component {
   OccupationType: string;
   CreditValue: number;
   LastUpdated: Date;
-  Webpage: string;
-  ComponentType: string;
-  Designation: [string];
+  SubjectWebpage: string;
+  ComponentCategory: string;
+  ComponentDesignation: [string];
 }
 export class ComponentEntity implements Component {
   CTID: number;
@@ -24,7 +24,7 @@ export class ComponentEntity implements Component {
   OccupationType: string;
   CreditValue: number;
   LastUpdated: Date;
-  Webpage: string;
-  ComponentType: string;
-  Designation: [string];
+  SubjectWebpage: string;
+  ComponentCategory: string;
+  ComponentDesignation: [string];
 }

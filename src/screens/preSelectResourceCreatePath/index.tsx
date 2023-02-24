@@ -86,7 +86,32 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   }, [pathwayComponent]);
 
   const searchComponent = (e: any) => {
-    setSearchFilterValue({ ...searchFilterValue, Keywords: e.target.value });
+    setSearchFilterValue({
+      ...searchFilterValue,
+      Keywords: e.target.value,
+      Skip: 0,
+    });
+    setDisplaySearchContainer(true);
+  };
+
+  const getNextSearchComponent = () => {
+    const currentsearch = searchFilterValue;
+    setSearchFilterValue({
+      ...searchFilterValue,
+      Keywords: currentsearch.Keywords,
+      Skip: currentsearch.Skip + 20,
+    });
+    setDisplaySearchContainer(true);
+  };
+
+  const getPreviousSearchComponent = () => {
+    const currentsearch = searchFilterValue;
+    setSearchFilterValue({
+      ...searchFilterValue,
+      Keywords: currentsearch.Keywords,
+      Skip:
+        currentsearch.Skip > 0 ? currentsearch.Skip - 20 : currentsearch.Skip,
+    });
     setDisplaySearchContainer(true);
   };
 
@@ -198,7 +223,11 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       const allTypesOfComponentCards = allComponentTabCards.data.map(
         (card: any, index: any) => ({ key: index, label: card.URI })
       );
-      setAllComponentTypes(allTypesOfComponentCards);
+      //remove the component condition from the list
+      const updatedoptions = allTypesOfComponentCards.filter(
+        (opt: any) => opt.label !== 'ceterms:ComponentCondition'
+      );
+      setAllComponentTypes(updatedoptions);
     }
   }, [selectedResource, allComponentTabCards]);
 
@@ -386,6 +415,21 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                   </div>
                 )
               )}
+              <div style={{ display: 'flex', margin: '40px 0px 10px 10px' }}>
+                <Button
+                  type={Type.PRIMARY}
+                  onClick={getPreviousSearchComponent}
+                  text="Previous"
+                  style={{ marginRight: '20px' }}
+                  disabled={selectedResource?.length === 0}
+                />
+
+                <Button
+                  type={Type.PRIMARY}
+                  onClick={getNextSearchComponent}
+                  text="Next"
+                />
+              </div>
             </div>
           )}
         </Col>

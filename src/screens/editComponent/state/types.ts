@@ -1,20 +1,15 @@
 export type RootState = {
-  logicalOperatorData: {
+  credentialTypeData: {
     loading: boolean;
     data: any;
     valid: boolean;
   };
-  comparatorsData: {
+  creditUnitTypeData: {
     loading: boolean;
     data: any;
     valid: boolean;
   };
-  arrayOperationData: {
-    loading: boolean;
-    data: any;
-    valid: boolean;
-  };
-  constraintOperantData: {
+  creditLevelTypeData: {
     loading: boolean;
     data: any;
     valid: boolean;

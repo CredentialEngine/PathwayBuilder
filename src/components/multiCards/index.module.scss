@@ -7,7 +7,7 @@
   border-radius: 6px;
   font-family: $app-font-primary;
   line-height: 1.3;
-  z-index: 9999;
+  z-index: 1;
 }
 .iconwrapper {
   font-size: 15px;
@@ -310,7 +310,7 @@
   }
   .jobCard,
   .iconwrapper {
-    background-color: #ffffff;
+    background-color: #a7c7e7;
   }
   .workExperienceCard,
   .iconwrapper {

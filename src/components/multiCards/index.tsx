@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useXarrow } from 'react-xarrows';
 
-import { sanboxSetting, productionSetting } from '../../apiConfig/setting';
+import { TEMP_BASE_URL } from '../../apiConfig/setting';
 import EditComponent from '../../screens/editComponent';
 import InfoTooltip from '../infoTooltip';
 import RightPanel from '../rightPanel';
@@ -100,7 +100,6 @@ const MultiCard: React.FC<Props> = ({
 
   const [showRightPenal, setShowRightPenal] = useState(false);
   const [showRightPanelEdit, setShowRightPanelEdit] = useState(false);
-
   const updateXarrow = useXarrow();
 
   const darkColor = '#0A2942';
@@ -188,11 +187,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' assessmentCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/AssessmentComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
           alt="AssessmentComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -202,11 +197,7 @@ const MultiCard: React.FC<Props> = ({
     (data?.Type?.toLowerCase().includes('BasicComponent'.toLowerCase()) && (
       <span className={styles.iconwrapper + ' basicCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/BasicComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
           alt="BasicComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -218,11 +209,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' cocurricularCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/CocurricularComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
           alt="CocurricularComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -234,11 +221,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' competencyCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/CompetencyComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
           alt="CompetencyComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -248,11 +231,7 @@ const MultiCard: React.FC<Props> = ({
     (data?.Type?.toLowerCase().includes('CourseComponent'.toLowerCase()) && (
       <span className={styles.iconwrapper + ' courseCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/CourseComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
           alt="CourseComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -264,11 +243,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' extraCurricularCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/ExtracurricularComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
           alt="ExtracurricularComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -278,11 +253,7 @@ const MultiCard: React.FC<Props> = ({
     (data?.Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
       <span className={styles.iconwrapper + ' jobCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/JobComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
           alt="JobComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -294,11 +265,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' workExperienceCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/WorkExperienceComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
           alt="WorkExperienceComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -310,11 +277,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + 'credentialCard'}>
         <img
-          src={`${
-            process.env.NODE_ENV !== 'production'
-              ? sanboxSetting.api.url
-              : productionSetting.api.url
-          }Images/PathwayBuilder/CredentialComponent.png`}
+          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
           alt="CredentialComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -323,11 +286,7 @@ const MultiCard: React.FC<Props> = ({
     )) ||
     (data?.Type?.toLowerCase().includes('ComponentCondition'.toLowerCase()) && (
       <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/ComponentCondition.png`}
+        src={`${TEMP_BASE_URL}Images/PathwayBuilder/ComponentCondition.png`}
         alt="ComponentCondition"
         className="componentIcon"
         style={{ height: '26px', width: '26px' }}
@@ -335,11 +294,7 @@ const MultiCard: React.FC<Props> = ({
     )) ||
     (data?.Type?.toLowerCase().includes('selection'.toLowerCase()) && (
       <img
-        src={`${
-          process.env.NODE_ENV !== 'production'
-            ? sanboxSetting.api.url
-            : productionSetting.api.url
-        }Images/PathwayBuilder/SelectionCondition.png`}
+        src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionCondition.png`}
         alt="SelectionCondition"
         className="componentIcon"
         style={{ height: '26px', width: '26px' }}
@@ -492,7 +447,6 @@ const MultiCard: React.FC<Props> = ({
                                 onClick={(e: any) => {
                                   e.stopPropagation();
                                   e.preventDefault();
-                                  setShowRightPenal(false);
                                   setShowRightPanelEdit(true);
                                   setShowPopover(false);
                                 }}
@@ -736,7 +690,6 @@ const MultiCard: React.FC<Props> = ({
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              setShowRightPenal(false);
                               setShowRightPanelEdit(true);
                               setShowPopover(false);
                             }}

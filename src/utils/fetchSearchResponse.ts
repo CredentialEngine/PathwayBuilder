@@ -1,16 +1,11 @@
 import { noop } from 'lodash';
 
 import {
-  BASE_URL,
-  BASE_URL_PRODUCTION,
   SEARCH_FOR_LEFT_AND_RIGHT_OPERAND,
   SEARCH_FOR_PROGRESSION_MODAL,
 } from '../apiConfig/endpoint';
-import { IS_LOCALHOST } from '../apiConfig/setting';
+import { IS_LOCALHOST, TEMP_BASE_URL } from '../apiConfig/setting';
 import TokenManager from '../services/tokenManager';
-
-const TEMP_BASE_URL =
-  process.env.NODE_ENV !== 'production' ? BASE_URL : BASE_URL_PRODUCTION;
 
 export default async function fetchProgressionList(data: any) {
   try {

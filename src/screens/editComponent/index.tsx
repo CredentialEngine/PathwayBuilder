@@ -1,5 +1,6 @@
 import { Form, Tag, Drawer, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
+import _ from 'lodash';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,12 +11,18 @@ import {
 } from '../../apiConfig/endpoint';
 import { TEMP_BASE_URL } from '../../apiConfig/setting';
 import Button from '../../components/button';
+import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
 import { updateMappedDataRequest } from '../../states/actions';
 
 import DebounceSelect from './debounceSelect';
 import Styles from './index.module.scss';
+import {
+  getCredentialTypesRequest,
+  getCreditLevelTypesRequest,
+  getCreditUnitTypesRequest,
+} from './state/actions';
 
 interface Props {
   visible?: boolean;
@@ -32,29 +39,64 @@ const RightPanel: React.FC<Props> = ({
   const [rightPanelData, setRightPanelData] = useState<any>();
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    document?.addEventListener('click', handleOutsideClick, true);
-  }, []);
 
-  const handleOutsideClick = (e: any) => {
-    if (ref && ref?.current) {
-      //@ts-ignore
-      if (!ref?.current?.contains(e.target)) {
-        onCloseHandler(false);
-      }
-    }
+  const handleOutsideClick = () => {
+    onCloseHandler(false);
   };
   const SaveComponent = () => {
+    let getCredentialTypeURI = [];
+    let getCreditUnitTypeURI = [];
+    let getCreditLevelTypeURI = [];
+    if (credentialType) {
+      getCredentialTypeURI = allCredentialTypes?.CredentialType?.filter(
+        (getURI: any) =>
+          credentialType == getURI?.Name || credentialType == getURI?.URI
+      );
+    }
+    if (creditUnitType) {
+      getCreditUnitTypeURI = allCreditUnitTypes?.CreditUnitType?.filter(
+        (getURI: any) =>
+          creditUnitType == getURI?.Name || creditUnitType == getURI?.URI
+      );
+    }
+    if (creditLevelType) {
+      getCreditLevelTypeURI = allCreditLevelTypes?.CreditValueType?.filter(
+        (getURI: any) =>
+          creditLevelType == getURI?.Name || creditLevelType == getURI?.URI
+      );
+    }
+    let Identfier = {
+      IdentifierTypeName: '',
+      IdentifierValueCode: '',
+      IdentifierType: '',
+    };
+
+    if (
+      rightPanelData?.IdentifierName ||
+      rightPanelData?.IdentifierCode ||
+      rightPanelData?.IdentifierType
+    ) {
+      Identfier.IdentifierTypeName = rightPanelData.IdentifierName;
+      Identfier.IdentifierValueCode = rightPanelData.IdentifierCode;
+      Identfier.IdentifierType = rightPanelData.IdentifierType;
+    } else {
+      if (rightPanelData?.Identifier?.[0] !== undefined) {
+        Identfier = rightPanelData?.Identifier?.[0];
+      }
+    }
+    const isemptyIdentifier = Object.values(Identfier).every((x) => x === '');
     const rightediteddata = {
       Description: rightPanelData.Description,
       Name: rightPanelData.Name,
-      Webpage: rightPanelData.Webpage,
+      SubjectWebpage: rightPanelData.SubjectWebpage,
       IndustryType: rightPanelData.IndustryType,
       OccupationType: rightPanelData.OccupationType,
-      Identifiers: rightPanelData.Identifier,
-      Designation: rightPanelData.Designation,
+      ComponentDesignation: rightPanelData.ComponentDesignation,
+      ComponentCategory: rightPanelData.ComponentCategory,
+      CredentialType: getCredentialTypeURI[0]?.URI,
+      Identifier: [Identfier],
     };
-    setRightPanelData([rightediteddata]);
+    setRightPanelData(rightediteddata);
     if (pathwayWrapper?.mappedData?.PathwayComponents.length > 0) {
       let currentConditionalComponent = _.get(
         pathwayWrapper?.mappedData?.PathwayComponents?.filter(
@@ -78,26 +120,123 @@ const RightPanel: React.FC<Props> = ({
         currentConditionalComponent
       );
       pathwayWrapper.mappedData.PathwayComponents = cardsToSend;
+      if (
+        rightPanelData?.Type?.toLowerCase().includes(
+          'credential'.toLocaleLowerCase()
+        )
+      ) {
+        const updatedPathwayComponent =
+          pathwayWrapper?.mappedData?.PathwayComponents?.filter(
+            (component_card: any) =>
+              component_card?.RowId !== currentConditionalComponent?.RowId
+          ).concat({
+            ...rightPanelData,
+            CredentialType: getCredentialTypeURI[0]?.URI,
+          });
+        pathwayWrapper.mappedData.PathwayComponents = [
+          ...updatedPathwayComponent,
+        ];
+      }
+      if (
+        rightPanelData?.Type?.toLowerCase().includes(
+          'course'.toLocaleLowerCase()
+        )
+      ) {
+        let CreditValue = {
+          CreditUnitType: '',
+          CreditLevelType: '',
+          Value: '',
+          Description: '',
+        };
+        if (rightPanelData?.Value || rightPanelData?.Creditdescription) {
+          CreditValue.CreditUnitType = getCreditUnitTypeURI;
+          CreditValue.CreditLevelType = getCreditLevelTypeURI;
+          CreditValue.Value = rightPanelData.Value;
+          CreditValue.Description = rightPanelData.Creditdescription;
+        } else {
+          CreditValue = rightPanelData?.CreditValue?.[0];
+          if (getCreditUnitTypeURI.length > 0) {
+            CreditValue.CreditUnitType = getCreditUnitTypeURI;
+          }
+        }
+        const isemptyCreditValue = Object.values(CreditValue).every(
+          (x) => x === ''
+        );
+        if (!isemptyCreditValue) {
+          const updatedPathwayComponent =
+            pathwayWrapper?.mappedData?.PathwayComponents?.filter(
+              (component_card: any) =>
+                component_card?.RowId !== currentConditionalComponent?.RowId
+            ).concat({
+              ...rightPanelData,
+              CreditValue: [CreditValue],
+            });
+          pathwayWrapper.mappedData.PathwayComponents = [
+            ...updatedPathwayComponent,
+          ];
+        }
+      }
+      if (!isemptyIdentifier) {
+        const updatedPathwayComponent =
+          pathwayWrapper?.mappedData?.PathwayComponents?.filter(
+            (component_card: any) =>
+              component_card?.RowId !== currentConditionalComponent?.RowId
+          ).concat({
+            ...rightPanelData,
+            Identifier: [Identfier],
+          });
+        pathwayWrapper.mappedData.PathwayComponents = [
+          ...updatedPathwayComponent,
+        ];
+      }
     }
     dispatch(updateMappedDataRequest(pathwayWrapper.mappedData));
+    onCloseHandler(false);
   };
-  const onChangeHandler = (e: any) => {
-    const updatedData = { ...rightPanelData };
-    const { name, value } = e.target;
-    updatedData[name] = value;
 
-    setRightPanelData(updatedData);
-  };
   const [isTouched, setisTouched] = useState({
-    requiredNumber: false,
+    CreditValue: false,
     Name: false,
+    IdentifierName: false,
+    IdentifierType: false,
+    IdentifierCode: false,
   });
   const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
-
+  const [allCredentialTypes, setAllCredentialTypes] = useState<any>({});
+  const [credentialType, setCredentialType] = useState<string>('');
+  const getAllCredentialTypes = useSelector(
+    (state: any) => state.editComponent.credentialTypeData
+  );
+  const [allCreditUnitTypes, setAllCreditUnitTypes] = useState<any>({});
+  const [creditUnitType, setCreditUnitType] = useState<string>('');
+  const getAllCreditUnitTypes = useSelector(
+    (state: any) => state.editComponent.creditUnitTypeData
+  );
+  const [allCreditLevelTypes, setAllCreditLevelTypes] = useState<any>({});
+  const [creditLevelType, setCreditLevelType] = useState<string>('');
+  const getAllCreditLevelTypes = useSelector(
+    (state: any) => state.editComponent.creditLevelTypeData
+  );
   useEffect(() => {
     if (!_.isEmpty(panelData) && !_.isNull(panelData)) {
-      setRightPanelData(panelData);
+      const currentConditionalComponent = _.get(
+        pathwayWrapper?.mappedData?.PathwayComponents?.filter(
+          (component_card: any) =>
+            component_card.RowId === _.toString(panelData.RowId)
+        ),
+        '0'
+      );
+      setRightPanelData(currentConditionalComponent);
+      setCredentialType(panelData?.CredentialType);
+      setCreditLevelType(panelData?.CreditValue?.[0]?.CreditLevelType);
+      setCreditUnitType(panelData?.CreditValue?.[0]?.CreditUnitType);
+      if (panelData?.CreditValue?.[0]?.Value > 0) {
+        setVisible(!visibleCreditValue);
+      }
+      if (panelData?.Identifier?.[0] !== undefined) {
+        setVisibleIdentifier(!visibleIdentfier);
+      }
     }
   }, [panelData]);
   const extractComponentType = (type: string) => {
@@ -167,6 +306,45 @@ const RightPanel: React.FC<Props> = ({
     },
     []
   );
+  const selectedCredentials = (value: any) => {
+    setCredentialType(value);
+  };
+  const selectedCreditUnits = (value: any) => {
+    setCreditUnitType(value);
+  };
+  useEffect(() => {
+    dispatch(getCredentialTypesRequest());
+    dispatch(getCreditLevelTypesRequest());
+    dispatch(getCreditUnitTypesRequest());
+  }, []);
+
+  useEffect(() => {
+    if (getAllCredentialTypes.valid)
+      setAllCredentialTypes({
+        CredentialType: getAllCredentialTypes.data?.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        })),
+      });
+    if (getAllCreditUnitTypes.valid)
+      setAllCreditUnitTypes({
+        CreditUnitType: getAllCreditUnitTypes.data?.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        })),
+      });
+    if (getAllCreditLevelTypes.valid)
+      setAllCreditLevelTypes({
+        CreditLevelType: getAllCreditLevelTypes.data?.map((dta: any) => ({
+          ...dta,
+          value: dta.Name,
+          label: dta.Name,
+        })),
+      });
+  }, [getAllCredentialTypes, getAllCreditUnitTypes, getAllCreditLevelTypes]);
+
   const onDebounceSelectHnadler = (e: any, name: string) => {
     const updatedData = { ...rightPanelData };
     if (name === 'Industry') {
@@ -206,11 +384,20 @@ const RightPanel: React.FC<Props> = ({
     if (name === 'Identifier') {
       updatedData[name] = e;
     }
-    if (name === 'Designation') {
+    if (name === 'ComponentDesignation') {
       updatedData[name] = e;
     }
     setRightPanelData(updatedData);
   };
+  const onChangeHandler = (e: any) => {
+    const updatedData = { ...rightPanelData };
+    const { name, value } = e.target;
+    updatedData[name] = value;
+
+    setRightPanelData(updatedData);
+  };
+  const [visibleCreditValue, setVisible] = React.useState(false);
+  const [visibleIdentfier, setVisibleIdentifier] = React.useState(false);
 
   const tagRender = (props: CustomTagProps) => {
     const { label, value, closable, onClose } = props;
@@ -232,10 +419,19 @@ const RightPanel: React.FC<Props> = ({
     );
   };
   return (
-    <Drawer visible={visible} closable={true} className={Styles.right_drawer}>
+    <Drawer visible={visible} className={Styles.right_drawer}>
       <div ref={ref} className={Styles.rightPanelContainer}>
         <Form>
-          <h2>Edit Component</h2>
+          <Row>
+            <h2>Edit Component</h2>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            <Button
+              style={{ float: 'right', background: 'White', border: 'none' }}
+              text="X"
+              onClick={handleOutsideClick}
+            />
+          </Row>
+
           <div className={Styles.iconheader}>
             <Row className={Styles.topRow}>
               <Row>
@@ -357,7 +553,7 @@ const RightPanel: React.FC<Props> = ({
                   )}
                   <h1 className={Styles.name}>
                     {rightPanelData &&
-                      rightPanelData?.Type.replace('ceterms:', '')}
+                      extractComponentType(rightPanelData?.Type)}
                   </h1>
                 </div>
               </Row>
@@ -401,81 +597,87 @@ const RightPanel: React.FC<Props> = ({
             />
           </Form.Item>
           <Form.Item
-            label="Webpage"
+            label="Subject Webpage"
             wrapperCol={{ span: 24 }}
             labelCol={{ span: 24 }}
           >
             <InputBox
               onChange={onChangeHandler}
               placeholder="Webpage"
-              name="Webpage"
-              value={rightPanelData?.Webpage}
+              name="SubjectWebpage"
+              value={rightPanelData?.SubjectWebpage}
             />
           </Form.Item>
           <Form.Item>
             <label> CTID</label>
-            <InputBox name="CTID" value={rightPanelData?.CTID} />
-          </Form.Item>
-          <Form.Item>
-            <label>Finder Link</label>
             <InputBox
-              name="FinderLink"
-              value={rightPanelData?.FinderResource?.URI}
+              name="CTID"
+              disabled={true}
+              value={rightPanelData?.CTID}
             />
           </Form.Item>
+          {rightPanelData?.FinderResource !== undefined ? (
+            <Form.Item>
+              <label>Finder Link</label>
+              <InputBox
+                name="FinderLink"
+                disabled={true}
+                value={rightPanelData?.FinderResource?.URI}
+              />
+            </Form.Item>
+          ) : (
+            ''
+          )}
 
           {extractComponentType(rightPanelData?.Type) ==
           'CredentialComponent' ? (
-            <Form.Item>
-              <label>Credential Type</label>
+            <Form.Item
+              label="Credential Type"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              {rightPanelData?.CredentialType !== undefined ? (
+                <InputBox
+                  name="Credential Type"
+                  disabled={true}
+                  value={extractComponentType(rightPanelData?.CredentialType)}
+                />
+              ) : (
+                <Dropdown
+                  options={allCredentialTypes?.CredentialType}
+                  showSearch={false}
+                  placeholder="Select Credential Type"
+                  value={credentialType}
+                  onChange={(e) => selectedCredentials(e)}
+                />
+              )}
+            </Form.Item>
+          ) : (
+            ''
+          )}
+
+          {extractComponentType(rightPanelData?.Type) == 'BasicComponent' ||
+          extractComponentType(rightPanelData?.Type) ==
+            'ExtraCurricularComponent' ||
+          extractComponentType(rightPanelData?.Type) ==
+            'CocurricularComponent' ? (
+            <Form.Item
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Component Category"
+              validateTrigger="onBlur"
+            >
               <InputBox
-                name="CredentialType"
-                value={extractComponentType(rightPanelData?.CredentialType)}
+                onChange={onChangeHandler}
+                placeholder="Component Category"
+                name="ComponentCategory"
+                value={rightPanelData?.ComponentCategory}
               />
             </Form.Item>
           ) : (
             ''
           )}
-          {extractComponentType(rightPanelData?.Type) == 'CourseComponent' ? (
-            <Form.Item>
-              <label>Credit Value</label>
-              <InputBox
-                name="CreditValue"
-                value={rightPanelData?.CreditValue?.[0]?.Value || 0}
-              />
-            </Form.Item>
-          ) : (
-            ''
-          )}
-          <Form.Item
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            label="Component Category"
-            validateTrigger="onBlur"
-          >
-            <InputBox
-              onChange={onChangeHandler}
-              placeholder="Component Category"
-              name="ComponentCategory"
-              value={rightPanelData?.Category}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Identfier"
-            className="swNoMargin"
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            validateTrigger="onBlur"
-          >
-            <MultiSelect
-              mode="tags"
-              tagRender={tagRender}
-              placeholder="Add Identifier"
-              optionLabelProp="label"
-              value={rightPanelData?.Identifier}
-              onChange={(e) => onSelectChangeHandler(e, 'Identifier')}
-            />
-          </Form.Item>
+
           <Form.Item
             label="Component Designation"
             className="swNoMargin"
@@ -486,46 +688,198 @@ const RightPanel: React.FC<Props> = ({
             <MultiSelect
               mode="tags"
               tagRender={tagRender}
-              placeholder="Add Designation"
+              placeholder="Add Component Designation"
               optionLabelProp="label"
-              value={rightPanelData?.Designation}
-              onChange={(e) => onSelectChangeHandler(e, 'Designation')}
+              value={rightPanelData?.ComponentDesignation}
+              onChange={(e) => onSelectChangeHandler(e, 'ComponentDesignation')}
             />
           </Form.Item>
-          <Form.Item
-            label="Industry Type"
-            className="swNoMargin"
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            validateTrigger="onBlur"
+          {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
+            <Form.Item
+              label="Industry Type"
+              className="swNoMargin"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              validateTrigger="onBlur"
+            >
+              <DebounceSelect
+                mode="multiple"
+                value={rightPanelData?.IndustryType}
+                placeholder="Select Industry Type"
+                fetchOptions={fetchIndustryList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Industry')
+                }
+              />
+            </Form.Item>
+          ) : (
+            ''
+          )}
+          {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
+            <Form.Item
+              label="Occupation Type"
+              className="swNoMargin"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              validateTrigger="onBlur"
+            >
+              <DebounceSelect
+                mode="multiple"
+                value={rightPanelData?.OccupationType}
+                placeholder="Select Occupation Type"
+                fetchOptions={fetchOccupationList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Occupation')
+                }
+              />
+            </Form.Item>
+          ) : (
+            ''
+          )}
+          {extractComponentType(rightPanelData?.Type) == 'CourseComponent' ? (
+            rightPanelData?.CreditValue !== undefined ? (
+              <u
+                style={{ cursor: 'pointer' }}
+                onClick={() => setVisible(!visibleCreditValue)}
+              >
+                Add a Credit Value
+                <br />
+              </u>
+            ) : (
+              <Form.Item
+                label="Credit Unit Type"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                <InputBox
+                  onChange={onChangeHandler}
+                  placeholder="Description"
+                  name="Credit"
+                  value={rightPanelData?.CreditValue?.[0]?.Description}
+                />
+              </Form.Item>
+            )
+          ) : (
+            ''
+          )}
+          <div
+            className={
+              visibleCreditValue ? 'element-visible' : 'element-hidden'
+            }
           >
-            <DebounceSelect
-              mode="multiple"
-              value={rightPanelData?.IndustryType}
-              placeholder="Select Industry Type"
-              fetchOptions={fetchIndustryList}
-              onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
-              onDeselect={(e: any) => onDebounceDeSelectHnadler(e, 'Industry')}
+            <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
+            <Form.Item
+              required={true}
+              label="Credit Unit Type"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              <Dropdown
+                options={allCreditUnitTypes?.CreditUnitType}
+                showSearch={false}
+                onChange={(e) => selectedCreditUnits(e)}
+                placeholder="Select Credit Unit Type"
+                value={creditUnitType}
+              />
+            </Form.Item>
+            {/* <Form.Item
+          required={true}
+          label="Credit Level Type"
+          wrapperCol={{ span: 24 }}
+          labelCol={{ span: 24 }}
+        >
+              <Dropdown
+              options={allCreditLevelTypes?.CreditLevelType}
+              showSearch={false}
+              onChange={(e) => selectedCreditUnits(e)}
+              placeholder="Select Credit Level Type"
+              value={creditLevelType}
+              
             />
-          </Form.Item>
-          <Form.Item
-            label="Occupation Type"
-            className="swNoMargin"
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            validateTrigger="onBlur"
+             </Form.Item> */}
+            <Form.Item
+              required={true}
+              label="Credit Value"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              <InputBox
+                onChange={onChangeHandler}
+                placeholder="Credit Value"
+                name="Value"
+                value={rightPanelData?.CreditValue?.[0]?.Value}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Credit Description"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              <InputBox
+                onChange={onChangeHandler}
+                placeholder="Description"
+                name="Creditdescription"
+                value={rightPanelData?.CreditValue?.[0]?.Description}
+              />
+            </Form.Item>
+          </div>
+          {rightPanelData?.Identifier?.[0] == undefined ? (
+            <u
+              style={{ cursor: 'pointer' }}
+              onClick={() => setVisibleIdentifier(!visibleIdentfier)}
+            >
+              Add an Identifier
+            </u>
+          ) : (
+            ''
+          )}
+          <div
+            className={visibleIdentfier ? 'element-visible' : 'element-hidden'}
           >
-            <DebounceSelect
-              mode="multiple"
-              value={rightPanelData?.OccupationType}
-              placeholder="Select Occupation Type"
-              fetchOptions={fetchOccupationList}
-              onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
-              onDeselect={(e: any) =>
-                onDebounceDeSelectHnadler(e, 'Occupation')
-              }
-            />
-          </Form.Item>
+            <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
+            <Form.Item
+              required={true}
+              label="Identfier Type"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              <InputBox
+                onChange={onChangeHandler}
+                placeholder="Indentifier Type"
+                name="IdentifierType"
+                value={rightPanelData?.Identifier?.[0]?.IdentifierType}
+              />
+            </Form.Item>
+            <Form.Item
+              required={true}
+              label="Identfier Name"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              <InputBox
+                onChange={onChangeHandler}
+                placeholder="Indentifier Name"
+                name="IdentifierName"
+                value={rightPanelData?.Identifier?.[0]?.IdentifierTypeName}
+              />
+            </Form.Item>
+
+            <Form.Item
+              required={true}
+              label="Identfier Code"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              <InputBox
+                onChange={onChangeHandler}
+                placeholder="Indentifier Code"
+                name="IdentifierCode"
+                value={rightPanelData?.Identifier?.[0]?.IdentifierValueCode}
+              />
+            </Form.Item>
+          </div>
           <hr />
           <Button
             size="medium"
