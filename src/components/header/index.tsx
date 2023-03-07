@@ -40,6 +40,7 @@ const Header = (props: Props) => {
   const [hasConflicts, setHasConflicts] = useState<boolean>(false);
   const [approveDisable, setApproveDisable] = useState<boolean>(true);
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
+  const [visible, setVisible] = useState(false);
   // const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
@@ -91,17 +92,33 @@ const Header = (props: Props) => {
           type: 'error',
         })
       );
+    } else if (approvePathwayResult?.valid) {
+      Message({
+        description: 'The Pathway has been Approved successfully',
+        type: 'success',
+      });
     }
   }, [approvePathwayResult]);
+  const ApprovePathway = () => {
+    if (!hasConflicts) {
+      dispatch(approvePathwayRequest(pathwayWrapper?.Pathway?.Id)),
+        setVisible(false);
+    }
+  };
 
   const onApproverHandler = () => {
     dispatch(saveDataForPathwayRequest(pathwayWrapper));
-    Modal.confirm({
-      cancelText: 'No',
-      okText: 'Yes',
-      title: 'Are you sure you want to Approve the Pathway?',
-      onOk: () => dispatch(approvePathwayRequest(pathwayWrapper?.Pathway?.Id)),
-    });
+    setTimeout(() => {
+      if (!hasConflicts) {
+        Modal.confirm({
+          cancelText: 'No',
+          okText: 'Yes',
+          visible,
+          title: 'Are you sure you want to Approve the Pathway?',
+          onOk: () => ApprovePathway(),
+        });
+      }
+    }, 25);
   };
 
   const conflictHandler = () => {
@@ -137,7 +154,7 @@ const Header = (props: Props) => {
 
   useEffect(() => {
     let interval: any;
-    const counter = 30000;
+    const counter = 60000;
     if (pathwayWrapper?.Pathway?.Name !== '' && isLeftPanelVisible) {
       interval = setTimeout(() => {
         dispatch(saveDataForPathwayRequest(pathwayWrapper));

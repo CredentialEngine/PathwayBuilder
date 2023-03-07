@@ -30,7 +30,7 @@ interface Props {
   panelData?: any;
 }
 
-const RightPanel: React.FC<Props> = ({
+const EditComponent: React.FC<Props> = ({
   onCloseHandler,
   visible,
   panelData,
@@ -96,7 +96,7 @@ const RightPanel: React.FC<Props> = ({
       CredentialType: getCredentialTypeURI[0]?.URI,
       Identifier: [Identfier],
     };
-    setRightPanelData(rightediteddata);
+    setRightPanelData([rightediteddata]);
     if (pathwayWrapper?.mappedData?.PathwayComponents.length > 0) {
       let currentConditionalComponent = _.get(
         pathwayWrapper?.mappedData?.PathwayComponents?.filter(
@@ -143,37 +143,41 @@ const RightPanel: React.FC<Props> = ({
         )
       ) {
         let CreditValue = {
-          CreditUnitType: '',
-          CreditLevelType: '',
-          Value: '',
-          Description: '',
+          CreditUnitTypes: null,
+          CreditUnitType: null,
+          CreditLevelType: null,
+          Value: null,
+          Description: null,
+          Subject: null,
         };
         if (rightPanelData?.Value || rightPanelData?.Creditdescription) {
-          CreditValue.CreditUnitType = getCreditUnitTypeURI;
+          CreditValue.CreditUnitType = getCreditUnitTypeURI[0]?.URI;
           CreditValue.CreditLevelType = getCreditLevelTypeURI;
           CreditValue.Value = rightPanelData.Value;
           CreditValue.Description = rightPanelData.Creditdescription;
         } else {
           CreditValue = rightPanelData?.CreditValue?.[0];
           if (getCreditUnitTypeURI.length > 0) {
-            CreditValue.CreditUnitType = getCreditUnitTypeURI;
+            CreditValue.CreditUnitType = getCreditUnitTypeURI[0]?.URI;
           }
         }
-        const isemptyCreditValue = Object.values(CreditValue).every(
-          (x) => x === ''
-        );
-        if (!isemptyCreditValue) {
-          const updatedPathwayComponent =
-            pathwayWrapper?.mappedData?.PathwayComponents?.filter(
-              (component_card: any) =>
-                component_card?.RowId !== currentConditionalComponent?.RowId
-            ).concat({
-              ...rightPanelData,
-              CreditValue: [CreditValue],
-            });
-          pathwayWrapper.mappedData.PathwayComponents = [
-            ...updatedPathwayComponent,
-          ];
+        if (CreditValue !== undefined) {
+          const isemptyCreditValue = Object.values(CreditValue).every(
+            (x) => x === ''
+          );
+          if (!isemptyCreditValue) {
+            const updatedPathwayComponent =
+              pathwayWrapper?.mappedData?.PathwayComponents?.filter(
+                (component_card: any) =>
+                  component_card?.RowId !== currentConditionalComponent?.RowId
+              ).concat({
+                ...rightPanelData,
+                CreditValue: [CreditValue],
+              });
+            pathwayWrapper.mappedData.PathwayComponents = [
+              ...updatedPathwayComponent,
+            ];
+          }
         }
       }
       if (!isemptyIdentifier) {
@@ -229,13 +233,27 @@ const RightPanel: React.FC<Props> = ({
       );
       setRightPanelData(currentConditionalComponent);
       setCredentialType(panelData?.CredentialType);
-      setCreditLevelType(panelData?.CreditValue?.[0]?.CreditLevelType);
-      setCreditUnitType(panelData?.CreditValue?.[0]?.CreditUnitType);
-      if (panelData?.CreditValue?.[0]?.Value > 0) {
+      setCreditLevelType(panelData?.CreditValue?.[0]?.CreditLevelType?.[0]);
+      setCreditUnitType(panelData?.CreditValue?.[0]?.CreditUnitType?.[0]);
+      if (
+        panelData?.CreditValue?.[0]?.Value > 0 &&
+        panelData?.CreditValue !== undefined
+      ) {
         setVisible(!visibleCreditValue);
+        currentConditionalComponent.Value = panelData?.CreditValue?.[0]?.Value;
+        currentConditionalComponent.Creditdescription =
+          panelData?.CreditValue?.[0]?.Creditdescription;
+        setRightPanelData(currentConditionalComponent);
       }
       if (panelData?.Identifier?.[0] !== undefined) {
         setVisibleIdentifier(!visibleIdentfier);
+        currentConditionalComponent.IdentifierName =
+          panelData?.Identifier?.[0]?.IdentifierTypeName;
+        currentConditionalComponent.IdentifierType =
+          panelData?.Identifier?.[0]?.IdentifierType;
+        currentConditionalComponent.IdentifierCode =
+          panelData?.Identifier?.[0]?.IdentifierValueCode;
+        setRightPanelData(currentConditionalComponent);
       }
     }
   }, [panelData]);
@@ -393,7 +411,6 @@ const RightPanel: React.FC<Props> = ({
     const updatedData = { ...rightPanelData };
     const { name, value } = e.target;
     updatedData[name] = value;
-
     setRightPanelData(updatedData);
   };
   const [visibleCreditValue, setVisible] = React.useState(false);
@@ -636,7 +653,8 @@ const RightPanel: React.FC<Props> = ({
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
             >
-              {rightPanelData?.CredentialType !== undefined ? (
+              {rightPanelData?.CredentialType !== undefined &&
+              rightPanelData?.FinderResource !== undefined ? (
                 <InputBox
                   name="Credential Type"
                   disabled={true}
@@ -739,7 +757,8 @@ const RightPanel: React.FC<Props> = ({
             ''
           )}
           {extractComponentType(rightPanelData?.Type) == 'CourseComponent' ? (
-            rightPanelData?.CreditValue !== undefined ? (
+            rightPanelData?.Value == undefined &&
+            rightPanelData?.FinderResource == undefined ? (
               <u
                 style={{ cursor: 'pointer' }}
                 onClick={() => setVisible(!visibleCreditValue)}
@@ -749,15 +768,15 @@ const RightPanel: React.FC<Props> = ({
               </u>
             ) : (
               <Form.Item
-                label="Credit Unit Type"
+                label="Credit Value"
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
               >
                 <InputBox
                   onChange={onChangeHandler}
-                  placeholder="Description"
+                  placeholder="Credit Value"
                   name="Credit"
-                  value={rightPanelData?.CreditValue?.[0]?.Description}
+                  value={rightPanelData?.CreditValue?.[0]?.Value}
                 />
               </Form.Item>
             )
@@ -809,7 +828,7 @@ const RightPanel: React.FC<Props> = ({
                 onChange={onChangeHandler}
                 placeholder="Credit Value"
                 name="Value"
-                value={rightPanelData?.CreditValue?.[0]?.Value}
+                value={rightPanelData?.Value}
               />
             </Form.Item>
             <Form.Item
@@ -821,7 +840,7 @@ const RightPanel: React.FC<Props> = ({
                 onChange={onChangeHandler}
                 placeholder="Description"
                 name="Creditdescription"
-                value={rightPanelData?.CreditValue?.[0]?.Description}
+                value={rightPanelData?.Creditdescription}
               />
             </Form.Item>
           </div>
@@ -840,7 +859,6 @@ const RightPanel: React.FC<Props> = ({
           >
             <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
             <Form.Item
-              required={true}
               label="Identfier Type"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
@@ -849,7 +867,7 @@ const RightPanel: React.FC<Props> = ({
                 onChange={onChangeHandler}
                 placeholder="Indentifier Type"
                 name="IdentifierType"
-                value={rightPanelData?.Identifier?.[0]?.IdentifierType}
+                value={rightPanelData?.IdentifierType}
               />
             </Form.Item>
             <Form.Item
@@ -862,7 +880,7 @@ const RightPanel: React.FC<Props> = ({
                 onChange={onChangeHandler}
                 placeholder="Indentifier Name"
                 name="IdentifierName"
-                value={rightPanelData?.Identifier?.[0]?.IdentifierTypeName}
+                value={rightPanelData?.IdentifierName}
               />
             </Form.Item>
 
@@ -876,7 +894,7 @@ const RightPanel: React.FC<Props> = ({
                 onChange={onChangeHandler}
                 placeholder="Indentifier Code"
                 name="IdentifierCode"
-                value={rightPanelData?.Identifier?.[0]?.IdentifierValueCode}
+                value={rightPanelData?.IdentifierCode}
               />
             </Form.Item>
           </div>
@@ -885,6 +903,7 @@ const RightPanel: React.FC<Props> = ({
             size="medium"
             text="Save Component"
             type="primary"
+            disabled={_.isEmpty(rightPanelData?.Name)}
             onClick={SaveComponent}
           />
         </Form>
@@ -893,4 +912,4 @@ const RightPanel: React.FC<Props> = ({
   );
 };
 
-export default RightPanel;
+export default EditComponent;

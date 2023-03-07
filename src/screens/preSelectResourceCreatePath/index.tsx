@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Card, Row, Form, Dropdown, Typography, Space, Menu } from 'antd';
 import _, { noop } from 'lodash';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../components/button';
@@ -44,8 +44,10 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
     new Array<any>([])
   );
+  const [previousDisabled, setPreviousDisabled] = useState(false);
+  const [nextDisabled, setNextDisabled] = useState(false);
   const [displaySearchContainer, setDisplaySearchContainer] =
-    React.useState(false);
+    React.useState(true);
   const [selectedResource, setSelectedResource] = useState<any>([]);
   const [selectedAlphaResource, setSelectedAlphaResource] = useState<any>([]);
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
@@ -55,7 +57,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     useState<boolean>(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
-
+  const resultSection = useRef(document.createElement('div'));
   const appState = useSelector((state: any) => state?.initalReducer);
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
     Keywords: '',
@@ -84,6 +86,16 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       setSelectedResource(pathwayComponent?.PendingComponents);
     }
   }, [pathwayComponent]);
+  const scrollToTop = () => {
+    resultSection.current.scrollTo(0, 0);
+  };
+  useEffect(() => {
+    if (searchFilterValue.Skip == 0) {
+      setPreviousDisabled(true);
+    } else {
+      setPreviousDisabled(false);
+    }
+  });
 
   const searchComponent = (e: any) => {
     setSearchFilterValue({
@@ -123,6 +135,15 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   useEffect(() => {
     if (allProxyForResourcesComponent.valid)
       setAllProxyResourcesCard(allProxyForResourcesComponent.data.Results);
+    if (allProxyForResourcesComponent.data !== null) {
+      if (allProxyForResourcesComponent.data.Results.length == 0) {
+        setNextDisabled(true);
+        setDisplaySearchContainer(true);
+      } else {
+        setNextDisabled(false);
+        scrollToTop();
+      }
+    }
   }, [allProxyForResourcesComponent.data]);
 
   useEffect(() => {
@@ -184,7 +205,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       (comp_type: any) => comp_type.key === _.toNumber(e.key)
     );
     const updatedSearchValue = { ...searchFilterValue };
-
+    updatedSearchValue.Skip = 0;
     if (e?.key) {
       if (
         !_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID) &&
@@ -209,6 +230,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
           },
         ];
         setSearchFilterValue(updatedSearchValue);
+        setDisplaySearchContainer(true);
       }
     } else {
       _.remove(
@@ -320,12 +342,31 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   };
 
   const onPreSelectResourceCancelHandler = () => {
+    const updatedPathwayWrapper = { ...appState.mappedData };
+    updatedPathwayWrapper.PathwayComponents = PathwayComponents;
+    updatedPathwayWrapper.ComponentConditions = ComponentConditions;
+    updatedPathwayWrapper.Constraints = Constraints;
+    updatedPathwayWrapper.DeletedComponents = DeletedComponents;
+    !fromPreSelect && setIsAddPathwayDestinationVisible(true);
+    !fromPreSelect
+      ? dispatch(
+          updateMappedDataRequest({
+            ...addPathwayWrapperFields,
+            ComponentConditions: [],
+            PathwayComponents: [],
+          })
+        )
+      : dispatch(
+          updateMappedDataRequest({
+            ...updatedPathwayWrapper,
+          })
+        );
     setIsPreSelectedCreateResourceVisible(false);
     !fromPreSelect &&
       !!setIsDestinationColumnSelected &&
       setIsDestinationColumnSelected(true);
     !!getSkipValueOfPreSelectResources &&
-      getSkipValueOfPreSelectResources(false);
+      getSkipValueOfPreSelectResources(true);
   };
 
   const handleCheckBox = () => {
@@ -395,7 +436,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
           <br />
           <br />
           {displaySearchContainer && (
-            <div className={Styles.searchItemWrapper}>
+            <div className={Styles.searchItemWrapper} ref={resultSection}>
               {allProxyResourcesCard.map(
                 (filteredResources: any, i: number) => (
                   <div className={Styles.flexGrowCenter} key={i}>
@@ -421,13 +462,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                   onClick={getPreviousSearchComponent}
                   text="Previous"
                   style={{ marginRight: '20px' }}
-                  disabled={selectedResource?.length === 0}
+                  disabled={previousDisabled}
                 />
 
                 <Button
                   type={Type.PRIMARY}
                   onClick={getNextSearchComponent}
                   text="Next"
+                  disabled={nextDisabled}
                 />
               </div>
             </div>

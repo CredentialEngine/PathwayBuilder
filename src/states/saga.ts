@@ -1,5 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
+import Message from '../../src/components/message';
 import { request } from '../apiConfig/api';
 import {
   GET_DATA_FOR_CURRENT_USER,
@@ -40,8 +41,17 @@ export function* getCurrentUserData(): Generator {
         userCreds,
       },
     });
-
-    yield put(getCurrentUserDataSuccess(result));
+    if (result.Valid) {
+      yield put(getCurrentUserDataSuccess(result));
+    } else if (!result.Valid && result?.Messages?.length > 0) {
+      yield put(getCurrentUserDataFailure(result));
+      result?.Messages?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
+    }
   } catch (error) {
     yield put(getCurrentUserDataFailure(error));
   }
@@ -64,6 +74,12 @@ export function* getPathwayAndComponentData(payload: any): Generator {
       yield put(getDataForPathwayAndComponentsSuccess(result));
     } else if (!result.Valid && result?.Messages?.length > 0) {
       yield put(getDataForPathwayAndComponentsFailure(result));
+      result?.Messages?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
     }
   } catch (error) {
     yield put(getDataForPathwayAndComponentsFailure(error));

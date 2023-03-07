@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { GET_ALL_RESOURCES } from '../../apiConfig/endpoint';
-import { TEMP_BASE_URL_REGISTRY } from '../../apiConfig/setting';
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
 import {
@@ -77,9 +75,24 @@ const LeftPanel: React.FC<any> = ({
           setSelectedtabCards(selectedTabCardData);
           setIsEdit(false);
         } else {
+          setSelectedtabCards(filteredPendingCards);
           updatedPathwayWrapper.PendingComponents =
             filteredPendingCards?.length === 0 ? [] : selectedTabCards;
           setSelectedtabCards(filteredPendingCards);
+          if (
+            filteredPendingCards.length <
+            updatedPathwayWrapper.PendingComponents
+          ) {
+            const updatedpending = updatedPathwayWrapper.PendingComponents.map(
+              (item: any) => {
+                const matching = filteredPendingCards.find(
+                  (item2: any) => item2.CTID === item.CTID
+                );
+                return { ...item, ...matching };
+              }
+            );
+            updatedPathwayWrapper.PendingComponents = updatedpending;
+          }
         }
       } else {
         setSelectedtabCards(selectedTabCardData);
@@ -138,16 +151,17 @@ const LeftPanel: React.FC<any> = ({
     if (card?.URI === 'ceterms:ComponentCondition') {
       const newCard = {
         Created: '',
-        Description: card?.Description,
+        Description: null,
         HasCondition: [],
-        Name: card?.Name,
+        Name: null,
         RowId: uuidv4(),
         Type: 'conditional',
         ParentIdentifier: '',
-        RequiredNumber: 0,
+        RequiredNumber: null,
         LogicalOperator: '',
         PathwayCTID: result.mappedData.Pathway.CTID,
         HasConstraint: [],
+        TargetComponent: [],
       };
       return newCard;
     } else {
@@ -155,16 +169,17 @@ const LeftPanel: React.FC<any> = ({
       const newCard = {
         CTID,
         Created: '',
-        Description: card?.Description,
+        Description: null,
         HasChild: [],
         HasCondition: [],
         IndustryType: [],
         IsChildOf: [],
-        Name: card?.Name,
+        Name: null,
         OccupationType: [],
         PrecededBy: [],
-        ProxyFor: `${TEMP_BASE_URL_REGISTRY}${GET_ALL_RESOURCES}${CTID}`,
-        ProxyForLabel: card?.Name,
+        Precedes: [],
+        ProxyFor: '',
+        ProxyForLabel: '',
         RowId: uuidv4(),
         Type: card?.URI,
       };
