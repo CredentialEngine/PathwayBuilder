@@ -49,6 +49,7 @@ export interface Props {
   setIsAddPathwayFormVisible: (a: boolean) => void;
   setIsEditPathwayFormVisible: (a: boolean) => void;
   setIsDropCardAfterEditingForm: (a: boolean) => void;
+  isViewMode: boolean;
 }
 
 const tagRender = (props: CustomTagProps) => {
@@ -79,6 +80,7 @@ const AddPathwayForm: React.FC<Props> = ({
   setIsAddPathwayFormVisible,
   setIsEditPathwayFormVisible,
   setIsDropCardAfterEditingForm,
+  isViewMode,
 }) => {
   const [addPathwayFormFields, setAddPathwayFormFields] = useState<any>(
     new PathwayEntity()
@@ -711,6 +713,14 @@ const AddPathwayForm: React.FC<Props> = ({
       );
     setToolTip(toolTipArray);
   };
+  const instructionalProgramTypes =
+    addPathwayFormFields?.InstructionalProgramType?.map((obj: any) => obj.Name);
+  const occupationTypes = addPathwayFormFields?.OccupationType?.map(
+    (obj: any) => obj.Name
+  );
+  const industryTypes = addPathwayFormFields?.IndustryType?.map(
+    (obj: any) => obj.Name
+  );
 
   return (
     <>
@@ -732,6 +742,7 @@ const AddPathwayForm: React.FC<Props> = ({
               }
             >
               <InputBox
+                disabled={isViewMode}
                 placeholder="Add a Pathway Name"
                 name="Name"
                 required={true}
@@ -762,6 +773,7 @@ const AddPathwayForm: React.FC<Props> = ({
               }
             >
               <Textarea
+                disabled={isViewMode}
                 placeholder="Add a Pathway Description"
                 name="Description"
                 onChange={onInputChangeHandler}
@@ -785,13 +797,10 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               {customToolTipIcon('Industry')}
               <DebounceSelect
+                disabled={isViewMode}
                 mode="multiple"
                 tagRender={tagRender}
-                value={
-                  isEditPathwayFormVisible
-                    ? addPathwayFormFields?.IndustryType
-                    : undefined
-                }
+                value={isEditPathwayFormVisible ? industryTypes : undefined}
                 placeholder="Select Industry"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
@@ -814,6 +823,7 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               {customToolTipIcon('Keywords')}
               <MultiSelect
+                disabled={isViewMode}
                 mode="tags"
                 tagRender={tagRender}
                 placeholder="Add Keywords"
@@ -835,13 +845,10 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               {customToolTipIcon('Occupations')}
               <DebounceSelect
+                disabled={isViewMode}
                 mode="multiple"
                 tagRender={tagRender}
-                value={
-                  isEditPathwayFormVisible
-                    ? addPathwayFormFields?.OccupationType
-                    : undefined
-                }
+                value={isEditPathwayFormVisible ? occupationTypes : undefined}
                 placeholder="Select Occupations"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
@@ -864,11 +871,12 @@ const AddPathwayForm: React.FC<Props> = ({
               <>
                 {customToolTipIcon('Instructional')}
                 <DebounceSelect
+                  disabled={isViewMode}
                   mode="multiple"
                   tagRender={tagRender}
                   value={
                     isEditPathwayFormVisible
-                      ? addPathwayFormFields?.InstructionalProgramType
+                      ? instructionalProgramTypes
                       : undefined
                   }
                   placeholder="Select Instructional Program"
@@ -895,6 +903,7 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               {customToolTipIcon('Subjects')}
               <MultiSelect
+                disabled={isViewMode}
                 mode="tags"
                 tagRender={tagRender}
                 placeholder="Select Subjects"
@@ -926,6 +935,7 @@ const AddPathwayForm: React.FC<Props> = ({
             >
               {customToolTipIcon('Website')}
               <InputBox
+                disabled={isViewMode}
                 placeholder="add a URL"
                 maxLength={75}
                 value={addPathwayFormFields?.SubjectWebpage}
@@ -944,7 +954,7 @@ const AddPathwayForm: React.FC<Props> = ({
           <Divider className={styles.divider} />
           <Col span={24}>
             <CheckBox
-              disabled={isEditPathwayFormVisible}
+              disabled={isEditPathwayFormVisible || isViewMode}
               onChange={onCheckBoxChangeHandler}
               checked={checkboxValues.progressionModel}
               name="progressionModel"
@@ -969,7 +979,7 @@ const AddPathwayForm: React.FC<Props> = ({
                     'Name'
                   )}
                   allowClear={true}
-                  disabled={isEditPathwayFormVisible}
+                  disabled={isEditPathwayFormVisible || isViewMode}
                   value={selectedProgressionModelValue}
                   placeholder="Start typing to choose a Progression Model"
                   onSearch={onProgressionModelSearchHandler}
@@ -981,15 +991,16 @@ const AddPathwayForm: React.FC<Props> = ({
               </Form.Item>
             </Col>
           )}
-
-          <Col span={24}>
-            <Button
-              type={Type.PRIMARY}
-              onClick={() => onAddPathwayOkHandler()}
-              text={isEditPathwayFormVisible ? 'Save' : 'Next'}
-              disabled={!isAddPathwayFormNextButtonDisable}
-            />
-          </Col>
+          {!isViewMode && (
+            <Col span={24}>
+              <Button
+                type={Type.PRIMARY}
+                onClick={() => onAddPathwayOkHandler()}
+                text={isEditPathwayFormVisible ? 'Save' : 'Next'}
+                disabled={!isAddPathwayFormNextButtonDisable}
+              />
+            </Col>
+          )}
         </Row>
       </Form>
     </>

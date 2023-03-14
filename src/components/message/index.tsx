@@ -5,15 +5,17 @@ import React from 'react';
 import SVG from 'react-inlinesvg';
 
 import Close from '../../assets/images/icons/close.svg';
+import Loading from '../../assets/images/icons/loading-dash.svg';
 import Reminder from '../../assets/images/icons/reminder.svg';
 import Right from '../../assets/images/icons/right.svg';
 import CloseLine from '../../assets/images/remix/close-line.svg';
+
 import Button from '../button';
 
 import styles from './index.module.scss';
 
 interface Props {
-  type: 'success' | 'error' | 'warning' | 'notice';
+  type: 'success' | 'error' | 'warning' | 'notice' | 'loading';
   size?: string;
   title?: string;
   description: any;
@@ -57,7 +59,7 @@ export const Message = ({
         onClose={onClose}
       />
     ),
-    duration: type === 'success' ? 1 : 0,
+    duration: type === 'success' ? 1 : type === 'loading' ? 7 : 0,
     icon: <span />,
   });
 };
@@ -96,6 +98,12 @@ export const MessageContent = ({
         style={{ width: 24, height: 24, fill: 'currentColor' }}
       />
     ),
+    loading: (
+      <SVG
+        src={Loading}
+        style={{ width: 40, height: 40, fill: 'currentColor' }}
+      />
+    ),
   };
   const height = (): string => {
     if (linkText) return 'linkHeight';
@@ -117,6 +125,15 @@ export const MessageContent = ({
           {title && <p className={styles.title}>{title}</p>}
           <div className={styles.description}>{description}</div>
           {type === 'success' && linkText && (
+            <Button
+              className={styles.buttonLink}
+              type="link"
+              text={linkText}
+              onClick={onLinkClick}
+              disabled={false}
+            />
+          )}
+          {type === 'loading' && linkText && (
             <Button
               className={styles.buttonLink}
               type="link"

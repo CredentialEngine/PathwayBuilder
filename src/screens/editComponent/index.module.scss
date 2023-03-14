@@ -167,3 +167,10 @@
 .image {
   background-color: #00a0ff;
 }
+.ant-form-item-control-input input[disabled] {
+  color: black;
+}
+.ant-tooltip-inner {
+  color: black !important;
+  background-color: #4ee5e1 !important;
+}

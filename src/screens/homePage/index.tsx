@@ -10,6 +10,7 @@ import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import _ from 'lodash';
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Xarrow, { Xwrapper } from 'react-xarrows';
@@ -21,6 +22,7 @@ import Header from '../../components/header';
 import LeftPanel from '../../components/leftPanel';
 import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
 import Modal from '../../components/modal';
+
 import MultiCard from '../../components/multiCards';
 import RightPanel from '../../components/rightPanel';
 import { updateMappedDataRequest } from '../../states/actions';
@@ -30,6 +32,7 @@ import EditComponent from '../editComponent';
 import Styles from './index.module.scss';
 
 interface Props {
+  isViewMode: boolean;
   isLeftPanelVisible: boolean;
   setIsEditPathwayFormVisible: (a: boolean) => void;
   isDestinationColumnStatus: boolean;
@@ -46,6 +49,7 @@ interface Props {
   setIsEdit: (val: any) => void;
 }
 const HomePage: React.FC<Props> = ({
+  isViewMode,
   isLeftPanelVisible,
   setIsEditPathwayFormVisible,
   isDestinationColumnStatus,
@@ -66,7 +70,7 @@ const HomePage: React.FC<Props> = ({
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [showRightPanelEdit, setShowRightPanelEdit] = useState(false);
   const [isZoomDisabled, setIsZoomDisabled] = useState(false);
-  const [arrowTransform, setArrowTransform] = useState(1);
+  //const [arrowTransform, setArrowTransform] = useState(1);
   const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [columnsData, setColumnsData] = useState<any>([]);
 
@@ -75,7 +79,7 @@ const HomePage: React.FC<Props> = ({
   const [dragElem, setDragElem] = useState<any>();
   const [leftpanelSelectedElem, setLeftpanelSelectedElem] =
     useState<HTMLElement>();
-  const [sticky, setsticky] = useState<any>();
+  // const [sticky, setsticky] = useState<any>();
 
   const [numberOfDropWrapper, setNumberOfDropWrapper] = useState<number>(4);
   const [point, setPoint] = useState({
@@ -103,6 +107,7 @@ const HomePage: React.FC<Props> = ({
   const [allConditionalCardsData, setAllConditionalCardData] = useState<any>(
     {}
   );
+  //const [allcards,setallcards]=useState<any>({});
   const [isConditionalEditing, setIsConditionalEditing] = useState(false);
   const [componentConditionData, setComponentConditionData] = useState(false);
   const [currentCardData, setCurrentCardData] = useState<any>();
@@ -112,18 +117,14 @@ const HomePage: React.FC<Props> = ({
     dispatch(getLeftPanelPathwayComponentRequest());
   }, []);
   useEffect(() => {
-    const handleScroll = () => {
-      setsticky(window.pageYOffset);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    if (isViewMode) {
+      setCollapsed(true);
+    }
   }, []);
 
   useEffect(() => {
     const updatedConditionalComponents: any = [];
-    setNewConn([]);
+    // setNewConn([]);
     pathwayComponentConditionCards.map((conditionalCard: any) => {
       if (_.isUndefined(conditionalCard?.HasProgressionLevel)) {
         [...pathwayComponentCards, ...pathwayComponentConditionCards].forEach(
@@ -156,7 +157,12 @@ const HomePage: React.FC<Props> = ({
     setAllConditionalCardData({ ...allConditionalCardsData, ...obj });
     setUpdatedPathwayComponentConditionCards(pathwayComponentConditionCards);
     setIsStartFromInitialColumnSelected(false);
-    createConnection();
+    if (newConn.length == 0) {
+      setNewConn([]);
+      createConnection();
+    } else {
+      createConnection();
+    }
   }, [pathwayComponentConditionCards]);
 
   const getComponentConditionData = (data: any) => {
@@ -486,7 +492,8 @@ const HomePage: React.FC<Props> = ({
     }
     setDraggableCardVisible(false);
     const { isPendingCards, isComponentTab, ...restCardProps } = card;
-    setNewConn([]);
+
+    //setNewConn([]);
     const isDestinationCardExist =
       !_.isEmpty(pathwayComponent.Pathway.HasDestinationComponent) &&
       updatedPathwayWrapper?.Pathway?.HasDestinationComponent !== '';
@@ -564,7 +571,7 @@ const HomePage: React.FC<Props> = ({
       /*
         this block is to prevent to create a new column when we overlap pathwayComponent inside same progressionLevel
       */
-      createConnection();
+      //createConnection();
       return;
     }
 
@@ -738,12 +745,13 @@ const HomePage: React.FC<Props> = ({
       }
       return;
     }
+
     if (
       card.HasProgressionLevel === HasProgressionLevel &&
       card.ColumnNumber === ColumnNumber &&
       card.RowNumber === RowNumber
     ) {
-      createConnection();
+      // createConnection();
       /* To prevent overlapping, If we overlap the existing card over each other in Gameboard*/
       return;
     }
@@ -792,6 +800,7 @@ const HomePage: React.FC<Props> = ({
           updatedPathwayWrapper.PendingComponents = filteredpending;
         }
         dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+        setPathwayComponentCards(updatedPathwayWrapper.PathwayComponents);
         return;
       }
     }
@@ -828,7 +837,7 @@ const HomePage: React.FC<Props> = ({
         dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       }
 
-      createConnection();
+      // createConnection();
 
       return;
     }
@@ -893,10 +902,12 @@ const HomePage: React.FC<Props> = ({
           ...restCardProps,
           HasProgressionLevel,
           RowNumber,
+          ColumnNumber: ColumnNumber > 0 ? ColumnNumber : 1,
           firstColumn,
         });
 
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+      setPathwayComponentCards(updatedPathwayWrapper.PathwayComponents);
     } else if (pathwayComponentCards.length !== 0) {
       if (
         restCardProps?.Type === 'conditional' ||
@@ -932,90 +943,6 @@ const HomePage: React.FC<Props> = ({
           updatedPathwayWrapper.PendingComponents = filteredpending;
         }
         dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-        if (
-          card.HasProgressionLevel !== '' &&
-          card.ColumnNumber > 0 &&
-          card.ColumnNumber < ColumnNumber
-        ) {
-          const cardsIntheSameColumn =
-            updatedPathwayWrapper.PathwayComponents.filter(
-              (item: any) =>
-                item.HasProgressionLevel === card.HasProgressionLevel &&
-                item.ColumnNumber === card.ColumnNumber &&
-                item.CTID !== card.CTID &&
-                item.CTID !==
-                  updatedPathwayWrapper.Pathway.HasDestinationComponent
-            );
-          const conditionsIntheSameColumn =
-            updatedPathwayWrapper.ComponentConditions.filter(
-              (item: any) =>
-                item.HasProgressionLevel === card.HasProgressionLevel &&
-                item.ColumnNumber === card.ColumnNumber &&
-                item.RowId !== card.RowId
-            );
-          if (
-            (cardsIntheSameColumn.length == 0 ||
-              cardsIntheSameColumn === undefined) &&
-            (conditionsIntheSameColumn.length == 0 ||
-              conditionsIntheSameColumn === undefined)
-          ) {
-            const cardsintheprogressionlevel =
-              updatedPathwayWrapper.PathwayComponents.filter(
-                (item: any) =>
-                  item.HasProgressionLevel === card.HasProgressionLevel &&
-                  item.CTID !== card.CTID &&
-                  item.CTID !==
-                    updatedPathwayWrapper.Pathway.HasDestinationComponent
-              );
-            const updatedProgressionlevelCards = cardsintheprogressionlevel.map(
-              (item: any) => ({
-                ...item,
-                ColumnNumber:
-                  item.ColumnNumber > card.ColumnNumber
-                    ? item.ColumnNumber - 1
-                    : item.ColumnNumber,
-              })
-            );
-            const updatedList1 = updatedPathwayWrapper.PathwayComponents.map(
-              (item1: any) => {
-                const matchingItem2 = updatedProgressionlevelCards.find(
-                  (item2: any) => item2.CTID === item1.CTID
-                );
-                if (matchingItem2) {
-                  return { ...item1, ...matchingItem2 };
-                }
-                return item1;
-              }
-            );
-            updatedPathwayWrapper.PathwayComponents = updatedList1;
-            const conditionsintheprogressionlevel =
-              updatedPathwayWrapper.ComponentConditions.filter(
-                (item: any) =>
-                  item.HasProgressionLevel === card.HasProgressionLevel &&
-                  item.RowId !== card.RowId
-              );
-            const updatedProgressionlevelConditions =
-              conditionsintheprogressionlevel.map((item: any) => ({
-                ...item,
-                ColumnNumber:
-                  item.ColumnNumber > card.ColumnNumber
-                    ? item.ColumnNumber - 1
-                    : item.ColumnNumber,
-              }));
-            const updatedListConditions =
-              updatedPathwayWrapper.ComponentConditions.map((item1: any) => {
-                const matchingItem2 = updatedProgressionlevelConditions.find(
-                  (item2: any) => item2.RowId === item1.RowId
-                );
-                if (matchingItem2) {
-                  return { ...item1, ...matchingItem2 };
-                }
-                return item1;
-              });
-            updatedPathwayWrapper.ComponentConditions = updatedListConditions;
-            dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-          }
-        }
       }
     } else {
       return;
@@ -1259,140 +1186,143 @@ const HomePage: React.FC<Props> = ({
   };
 
   const setEndpoints = (e: any, id: any) => {
-    e.stopPropagation();
-    if (point.start && point.start !== id) {
-      setPoint({
-        ...point,
-        end: id,
-      });
-      e?.target?.classList?.add('active');
-
-      const startCard: any = _.get(
-        [
-          ...pathwayComponentCards,
-          ...updatedPathwayComponentConditionCards,
-        ].filter(
-          (card: any) =>
-            card?.RowId === point?.start || card?.CTID === point?.start
-        ),
-        '0'
-      );
-      const endCard: any = _.get(
-        [
-          ...pathwayComponentCards,
-          ...updatedPathwayComponentConditionCards,
-        ].filter((card: any) => card?.RowId === id || card?.CTID === id),
-        '0'
-      );
-
-      let startCardIndex = hasProgressionLevelList.findIndex(
-        (level: any) => level === startCard?.HasProgressionLevel
-      );
-      let lastCardIndex = hasProgressionLevelList.findIndex(
-        (level: any) => level === endCard?.HasProgressionLevel
-      );
-
-      if (startCardIndex == -1) {
-        startCardIndex = 99;
-      }
-
-      if (lastCardIndex == -1) {
-        lastCardIndex = 99;
-      }
-      if (
-        startCardIndex < lastCardIndex ||
-        (endCard?.HasProgressionLevel === startCard?.HasProgressionLevel &&
-          startCard?.ColumnNumber <= endCard?.ColumnNumber)
-      ) {
-        setNewConn([
-          ...newConn,
-          {
-            start: point.start,
-            end: id,
-          },
-        ]);
-        pathwayComponentCards?.map((card: any) => {
-          const hasCondComp = updatedPathwayComponentConditionCards?.find(
-            (cond: any) =>
-              point?.start === (card?.CTID || card?.RowId) &&
-              id === (cond?.RowId || cond?.CTID)
-          );
-          if (hasCondComp) {
-            if (!hasCondComp?.TargetComponent?.includes(point.start)) {
-              hasCondComp?.TargetComponent?.push(point.start);
-            }
-          }
-          if (point?.start === card?.CTID && !hasCondComp) {
-            setCurrentCardData(card);
-            if (!endCard?.PrecededBy?.includes(point.start)) {
-              endCard?.PrecededBy?.push(point.start);
-            }
-            if (!card?.Precedes?.includes(id)) {
-              card?.Precedes?.push(id);
-            }
-          }
+    if (!isViewMode) {
+      e.stopPropagation();
+      if (point.start && point.start !== id) {
+        setPoint({
+          ...point,
+          end: id,
         });
-        const updatedPathwayWrapper = { ...pathwayComponent };
-        updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
-        dispatch(updateMappedDataRequest(updatedPathwayWrapper));
-        // for connecting conditional to basic
-        updatedPathwayComponentConditionCards?.map((_cond: any) => {
-          if (point?.start === _cond?.RowId || point?.start === _cond?.CTID) {
-            const cardToUpdate = pathwayComponentCards?.find(
-              (_card: any) => id === _card?.CTID || id === _card?.RowId
-            );
-            if (cardToUpdate) {
-              if (!_cond?.TargetComponent?.includes(id)) {
-                const previousParent = pathwayComponentCards?.find(
-                  (_card: any) => _cond.RowId === _card?.HasCondition[0]
-                );
-                if (previousParent !== undefined) {
-                  previousParent.HasCondition = [];
-                  pathwayComponentCards.map((item: any) => {
-                    if (item.CTID === previousParent.CTID) {
-                      return previousParent;
-                    }
-                    return item;
-                  });
-                }
-                if (!endCard?.HasCondition?.includes(startCard?.RowId)) {
-                  endCard?.HasCondition?.push(startCard?.RowId);
-                  _cond.ParentIdentifier = endCard?.RowId;
-                }
+        e?.target?.classList?.add('active');
 
-                const updatedPathwayWrapper = { ...pathwayComponent };
-                updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
-                updatedPathwayWrapper.ComponentConditions =
-                  updatedPathwayComponentConditionCards;
-                dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+        const startCard: any = _.get(
+          [
+            ...pathwayComponentCards,
+            ...updatedPathwayComponentConditionCards,
+          ].filter(
+            (card: any) =>
+              card?.RowId === point?.start || card?.CTID === point?.start
+          ),
+          '0'
+        );
+        const endCard: any = _.get(
+          [
+            ...pathwayComponentCards,
+            ...updatedPathwayComponentConditionCards,
+          ].filter((card: any) => card?.RowId === id || card?.CTID === id),
+          '0'
+        );
+
+        let startCardIndex = hasProgressionLevelList.findIndex(
+          (level: any) => level === startCard?.HasProgressionLevel
+        );
+        let lastCardIndex = hasProgressionLevelList.findIndex(
+          (level: any) => level === endCard?.HasProgressionLevel
+        );
+
+        if (startCardIndex == -1) {
+          startCardIndex = 99;
+        }
+
+        if (lastCardIndex == -1) {
+          lastCardIndex = 99;
+        }
+        if (
+          startCardIndex < lastCardIndex ||
+          (endCard?.HasProgressionLevel === startCard?.HasProgressionLevel &&
+            startCard?.ColumnNumber <= endCard?.ColumnNumber)
+        ) {
+          setNewConn([
+            ...newConn,
+            {
+              start: point.start,
+              end: id,
+            },
+          ]);
+          pathwayComponentCards?.map((card: any) => {
+            const hasCondComp = updatedPathwayComponentConditionCards?.find(
+              (cond: any) =>
+                point?.start === (card?.CTID || card?.RowId) &&
+                id === (cond?.RowId || cond?.CTID)
+            );
+            if (hasCondComp) {
+              if (!hasCondComp?.TargetComponent?.includes(point.start)) {
+                hasCondComp?.TargetComponent?.push(point.start);
               }
-            } else {
-              if (!_cond?.HasCondition?.includes(id)) {
-                if (endCard?.Type !== 'conditional') {
-                  endCard?.TargetComponent?.push(point.start);
-                } else {
-                  if (!endCard?.HasCondition?.includes(point.start)) {
-                    endCard?.HasCondition?.push(point.start);
+            }
+            if (point?.start === card?.CTID && !hasCondComp) {
+              setCurrentCardData(card);
+              if (!endCard?.PrecededBy?.includes(point.start)) {
+                endCard?.PrecededBy?.push(point.start);
+              }
+              if (!card?.Precedes?.includes(id)) {
+                card?.Precedes?.push(id);
+              }
+            }
+          });
+          const updatedPathwayWrapper = { ...pathwayComponent };
+          updatedPathwayWrapper.PathwayComponents = pathwayComponentCards;
+          dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+          // for connecting conditional to basic
+          updatedPathwayComponentConditionCards?.map((_cond: any) => {
+            if (point?.start === _cond?.RowId || point?.start === _cond?.CTID) {
+              const cardToUpdate = pathwayComponentCards?.find(
+                (_card: any) => id === _card?.CTID || id === _card?.RowId
+              );
+              if (cardToUpdate) {
+                if (!_cond?.TargetComponent?.includes(id)) {
+                  const previousParent = pathwayComponentCards?.find(
+                    (_card: any) => _cond.RowId === _card?.HasCondition[0]
+                  );
+                  if (previousParent !== undefined) {
+                    previousParent.HasCondition = [];
+                    pathwayComponentCards.map((item: any) => {
+                      if (item.CTID === previousParent.CTID) {
+                        return previousParent;
+                      }
+                      return item;
+                    });
+                  }
+                  if (!endCard?.HasCondition?.includes(startCard?.RowId)) {
+                    endCard?.HasCondition?.push(startCard?.RowId);
                     _cond.ParentIdentifier = endCard?.RowId;
                   }
+
                   const updatedPathwayWrapper = { ...pathwayComponent };
+                  updatedPathwayWrapper.PathwayComponents =
+                    pathwayComponentCards;
                   updatedPathwayWrapper.ComponentConditions =
                     updatedPathwayComponentConditionCards;
                   dispatch(updateMappedDataRequest(updatedPathwayWrapper));
                 }
+              } else {
+                if (!_cond?.HasCondition?.includes(id)) {
+                  if (endCard?.Type !== 'conditional') {
+                    endCard?.TargetComponent?.push(point.start);
+                  } else {
+                    if (!endCard?.HasCondition?.includes(point.start)) {
+                      endCard?.HasCondition?.push(point.start);
+                      _cond.ParentIdentifier = endCard?.RowId;
+                    }
+                    const updatedPathwayWrapper = { ...pathwayComponent };
+                    updatedPathwayWrapper.ComponentConditions =
+                      updatedPathwayComponentConditionCards;
+                    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+                  }
+                }
               }
             }
-          }
+          });
+        }
+        setConstraintIcon(true);
+      } else {
+        setPoint({
+          ...point,
+          start: id,
+          end: point?.end,
         });
+        e?.target?.classList?.add('active');
       }
-      setConstraintIcon(true);
-    } else {
-      setPoint({
-        ...point,
-        start: id,
-        end: point?.end,
-      });
-      e?.target?.classList?.add('active');
     }
   };
 
@@ -1535,14 +1465,14 @@ const HomePage: React.FC<Props> = ({
     setNewConn(uniqArrConn);
   };
   useEffect(() => {
-    setNewConn([]);
     if (point && point?.start?.length > 0 && point?.end?.length > 0) {
+      setNewConn([]);
       setPoint({
         start: '',
         end: '',
       });
+      createConnection();
     }
-    createConnection();
   }, [point]);
   const confirmTheChange = (items: any, label: any) => {
     if (label == 'IsChildOf') {
@@ -1688,6 +1618,7 @@ const HomePage: React.FC<Props> = ({
     document.getElementById(item?.end)?.classList?.remove('active');
     setConstraintIcon(false);
   };
+
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       const columnNumber = pathwayComponentCards
@@ -1787,6 +1718,7 @@ const HomePage: React.FC<Props> = ({
                     }
                     isFirstColumneSelected={column?.id === 'firstColumn'}
                     firstColumn={column?.id === 'firstColumn'}
+                    isViewMode={isViewMode}
                   >
                     <div
                       style={{
@@ -1830,11 +1762,6 @@ const HomePage: React.FC<Props> = ({
                                 {newConn.length > 0
                                   ? newConn.map((items: any, idx: number) => (
                                       <Xarrow
-                                        SVGcanvasStyle={{
-                                          transform: `scale(${
-                                            1 / arrowTransform
-                                          })`,
-                                        }}
                                         path="grid"
                                         strokeWidth={1}
                                         startAnchor="right"
@@ -1846,83 +1773,91 @@ const HomePage: React.FC<Props> = ({
                                         end={items?.start}
                                         key={idx}
                                         lineColor={getColor(items)}
-                                        labels={
-                                          <div className={Styles.tempwrapper}>
-                                            <span
-                                              className={
-                                                Styles.addConditionIcon
-                                              }
-                                            >
-                                              <FontAwesomeIcon
-                                                icon={faXmarkCircle}
-                                                style={{
-                                                  cursor: 'pointer',
-                                                }}
-                                                onClick={() =>
-                                                  removeConnection(items)
-                                                }
-                                              />
-                                            </span>
-                                            <span
-                                              className={
-                                                Styles.addConditionIcon
-                                              }
-                                            >
-                                              <FontAwesomeIcon
-                                                icon={faCirclePlus}
-                                                fill="#000000"
-                                                style={{
-                                                  height: '22px',
-                                                  width: '22px',
-                                                  color: '#ffb90b',
-                                                  cursor: 'pointer',
-                                                }}
-                                                onClick={(e: any) => {
-                                                  onPlusClickHandler(e, items);
-                                                }}
-                                              />
-                                            </span>
-                                            {getLabelName(items) !=
-                                            undefined ? (
-                                              <span
-                                                className={
-                                                  Styles.addConditionIcon
-                                                }
-                                              >
-                                                <FontAwesomeIcon
-                                                  icon={faLink}
-                                                  size="sm"
-                                                  fill="#ffb90b"
-                                                  style={{
-                                                    borderRadius: 50,
-                                                    height: '24px',
-                                                    width: '24px',
-                                                    color: '#000000',
-                                                    cursor: 'pointer',
-                                                    background: '#ffb90b',
-                                                  }}
-                                                  onClick={() =>
-                                                    confirmTheChange(
-                                                      items,
-                                                      getLabelName(items)
-                                                    )
+                                        labels={{
+                                          start: (
+                                            <div className={Styles.tempwrapper}>
+                                              {!isViewMode && (
+                                                <span
+                                                  className={
+                                                    Styles.addConditionIcon
                                                   }
-                                                />
-                                              </span>
-                                            ) : (
-                                              ''
-                                            )}
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faXmarkCircle}
+                                                    style={{
+                                                      cursor: 'pointer',
+                                                    }}
+                                                    onClick={() =>
+                                                      removeConnection(items)
+                                                    }
+                                                  />
+                                                </span>
+                                              )}
+                                              {!isViewMode && (
+                                                <span
+                                                  className={
+                                                    Styles.addConditionIcon
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faCirclePlus}
+                                                    fill="#000000"
+                                                    style={{
+                                                      height: '22px',
+                                                      width: '22px',
+                                                      color: '#ffb90b',
+                                                      cursor: 'pointer',
+                                                    }}
+                                                    onClick={(e: any) => {
+                                                      onPlusClickHandler(
+                                                        e,
+                                                        items
+                                                      );
+                                                    }}
+                                                  />
+                                                </span>
+                                              )}
+                                              {getLabelName(items) != undefined
+                                                ? !isViewMode && (
+                                                    <span
+                                                      className={
+                                                        Styles.addConditionIcon
+                                                      }
+                                                    >
+                                                      <FontAwesomeIcon
+                                                        icon={faLink}
+                                                        size="sm"
+                                                        fill="#ffb90b"
+                                                        style={{
+                                                          borderRadius: 50,
+                                                          height: '24px',
+                                                          width: '24px',
+                                                          color: '#000000',
+                                                          cursor: 'pointer',
+                                                          background: '#ffb90b',
+                                                        }}
+                                                        onClick={() =>
+                                                          confirmTheChange(
+                                                            items,
+                                                            getLabelName(items)
+                                                          )
+                                                        }
+                                                      />
+                                                    </span>
+                                                  )
+                                                : ''}
 
-                                            <span
-                                              style={{
-                                                textAlign: 'right',
-                                                fontSize: 8,
-                                              }}
-                                            >
-                                              {getLabelName(items)}
-                                            </span>
-                                          </div>
-                                        }
+                                              <span
+                                                style={{
+                                                  textAlign: 'right',
+                                                  fontSize: 8,
+                                                }}
+                                              >
+                                                {getLabelName(items)}
+                                              </span>
+                                            </div>
+                                          ),
+                                        }}
                                       />
                                     ))
                                   : ''}
@@ -2021,6 +1956,7 @@ const HomePage: React.FC<Props> = ({
                                   getComponentConditionData={
                                     getComponentConditionData
                                   }
+                                  isViewMode={isViewMode}
                                 />
                               </>
                             ))}
@@ -2050,6 +1986,7 @@ const HomePage: React.FC<Props> = ({
                             columnNumber={0}
                             HasProgressionLevel=""
                             ConstraintConditionState={false}
+                            isViewMode={isViewMode}
                           />
                         )}
                         {!!isStartFromInitialColumnSelected &&
@@ -2169,6 +2106,7 @@ const HomePage: React.FC<Props> = ({
         <Header
           setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
           isLeftPanelVisible={isLeftPanelVisible}
+          isViewMode={isViewMode}
         />
         {!!isLeftPanelVisible && (
           <Layout style={{ display: 'flex', flexDirection: 'row' }}>
@@ -2192,21 +2130,24 @@ const HomePage: React.FC<Props> = ({
                 marginLeft: !collapsed ? '277px' : '0px',
               }}
             >
-              <div className={Styles.leftPanelTrigger}>
-                {collapsed ? (
-                  <FontAwesomeIcon
-                    icon={faAngleDoubleRight}
-                    onClick={() => setCollapsed(!collapsed)}
-                    style={{ position: 'fixed' }}
-                  />
-                ) : (
-                  <FontAwesomeIcon
-                    icon={faAngleDoubleLeft}
-                    onClick={() => setCollapsed(!collapsed)}
-                    style={{ position: 'fixed' }}
-                  />
-                )}
-              </div>
+              {!isViewMode && (
+                <div className={Styles.leftPanelTrigger}>
+                  {collapsed ? (
+                    <FontAwesomeIcon
+                      icon={faAngleDoubleRight}
+                      onClick={() => setCollapsed(!collapsed)}
+                      style={{ position: 'fixed' }}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faAngleDoubleLeft}
+                      onClick={() => setCollapsed(!collapsed)}
+                      style={{ position: 'fixed' }}
+                    />
+                  )}
+                </div>
+              )}
+
               <Content className="site-layout-background">
                 <TransformWrapper
                   initialScale={1}
@@ -2218,24 +2159,18 @@ const HomePage: React.FC<Props> = ({
                 >
                   {({ setTransform, resetTransform }) => (
                     <React.Fragment>
-                      <div className="zoom-tools">
-                        <button
-                          onClick={() => [
-                            setArrowTransform(0.8),
-                            setTransform(1, 1, 0.8, 400, 'easeOut'),
-                          ]}
-                        >
-                          -
-                        </button>
-                        <button
-                          onClick={() => [
-                            resetTransform(),
-                            setArrowTransform(1),
-                          ]}
-                        >
-                          x
-                        </button>
-                      </div>
+                      {isViewMode && (
+                        <div className="zoom-tools">
+                          <button
+                            onClick={() =>
+                              setTransform(1, 1, 0.5, 400, 'easeOut')
+                            }
+                          >
+                            -
+                          </button>
+                          <button onClick={() => resetTransform()}>x</button>
+                        </div>
+                      )}
                       <TransformComponent>
                         <div style={{ display: 'flex' }}>
                           {columnsData &&
@@ -2251,8 +2186,6 @@ const HomePage: React.FC<Props> = ({
                               >
                                 <div
                                   style={{
-                                    position: 'relative',
-                                    top: sticky,
                                     zIndex: 10,
                                     backgroundColor: `${
                                       index % 2 === 0 ? '#f0f0f0' : '#4EE5E1'
@@ -2325,6 +2258,7 @@ const HomePage: React.FC<Props> = ({
             data={
               isConditionalEditing ? componentConditionData : currentCardData
             }
+            isViewMode={isViewMode}
           />
         </Modal>
       )}

@@ -20,6 +20,9 @@
         margin: 1px;
       }
     }
+    .ant-form-item-control-input input[disabled] {
+      color: black;
+    }
   }
   .divider {
     border-top: 1px solid $inactive1;

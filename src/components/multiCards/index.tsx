@@ -62,6 +62,7 @@ interface Props {
   setIsConditionalEditing?: (a: boolean) => void;
   isConditionalEditing?: (a: boolean) => void;
   getComponentConditionData?: (data: any) => void;
+  isViewMode?: boolean;
 }
 
 const MultiCard: React.FC<Props> = ({
@@ -90,6 +91,7 @@ const MultiCard: React.FC<Props> = ({
   setDraggableCardVisible,
   setIsConditionalEditing,
   getComponentConditionData,
+  isViewMode,
 }) => {
   const [showPopover, setShowPopover] = useState(false);
 
@@ -120,28 +122,30 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const onDragStart = (e: any) => {
-    updateXarrow();
-    setIsZoomDisabled(true);
-    const target = e.target;
-    !!setDraggableCardVisible && setDraggableCardVisible(true);
-    e.dataTransfer.setData(
-      'card_id',
-      JSON.stringify({
-        ...data,
-        status,
-        inProgressLevel,
-      })
-    );
-    e.dataTransfer.setData(
-      'leftPanel_card',
-      JSON.stringify({
-        ...data,
-      })
-    );
-    onSelectDragElemenet(data);
-    setTimeout(() => {
-      target.style.visibility = 'hidden';
-    }, 0);
+    if (!isViewMode) {
+      updateXarrow();
+      setIsZoomDisabled(true);
+      const target = e.target;
+      !!setDraggableCardVisible && setDraggableCardVisible(true);
+      e.dataTransfer.setData(
+        'card_id',
+        JSON.stringify({
+          ...data,
+          status,
+          inProgressLevel,
+        })
+      );
+      e.dataTransfer.setData(
+        'leftPanel_card',
+        JSON.stringify({
+          ...data,
+        })
+      );
+      onSelectDragElemenet(data);
+      setTimeout(() => {
+        target.style.visibility = 'hidden';
+      }, 0);
+    }
   };
 
   const onDragOver = (e: any) => {
@@ -443,24 +447,29 @@ const MultiCard: React.FC<Props> = ({
                               >
                                 View
                               </span>
-                              <span
-                                onClick={(e: any) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                  setShowRightPanelEdit(true);
-                                  setShowPopover(false);
-                                }}
-                              >
-                                Edit
-                              </span>
-                              <span
-                                onClick={(e: any) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                }}
-                              >
-                                Delete
-                              </span>
+                              {!isViewMode && (
+                                <span
+                                  onClick={(e: any) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setShowRightPanelEdit(true);
+                                    setShowPopover(false);
+                                  }}
+                                >
+                                  Edit
+                                </span>
+                              )}
+                              {!isViewMode && (
+                                <span
+                                  onClick={(e: any) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    onDelete(data);
+                                  }}
+                                >
+                                  Delete
+                                </span>
+                              )}
                             </div>
                           }
                         ></Popover>
@@ -686,25 +695,29 @@ const MultiCard: React.FC<Props> = ({
                           >
                             View
                           </span>
-                          <span
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              setShowRightPanelEdit(true);
-                              setShowPopover(false);
-                            }}
-                          >
-                            Edit
-                          </span>
-                          <span
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              onDelete(data);
-                            }}
-                          >
-                            Delete
-                          </span>
+                          {!isViewMode && (
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setShowRightPanelEdit(true);
+                                setShowPopover(false);
+                              }}
+                            >
+                              Edit
+                            </span>
+                          )}
+                          {!isViewMode && (
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                onDelete(data);
+                              }}
+                            >
+                              Delete
+                            </span>
+                          )}
                         </div>
                       }
                     ></Popover>
@@ -778,26 +791,30 @@ const MultiCard: React.FC<Props> = ({
                           >
                             View
                           </span>
-                          <span
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              setShowRightPenal(false);
-                              setShowRightPanelEdit(true);
-                              setShowPopover(false);
-                            }}
-                          >
-                            Edit
-                          </span>
-                          <span
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              onDelete(data);
-                            }}
-                          >
-                            Delete
-                          </span>
+                          {!isViewMode && (
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setShowRightPenal(false);
+                                setShowRightPanelEdit(true);
+                                setShowPopover(false);
+                              }}
+                            >
+                              Edit
+                            </span>
+                          )}
+                          {!isViewMode && (
+                            <span
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                onDelete(data);
+                              }}
+                            >
+                              Delete
+                            </span>
+                          )}
                         </div>
                       }
                     ></Popover>
@@ -811,11 +828,13 @@ const MultiCard: React.FC<Props> = ({
                 />
                 <div className={styles.courseNameContainter}>
                   <span>{data?.Name}</span>
+                  <span>
+                    Type:{' '}
+                    {data?.CredentialType != undefined
+                      ? data?.CredentialType.replace('ceterms:', '')
+                      : ''}
+                  </span>
                 </div>
-                {/* <div className={styles.creditSection}>
-                  <span>Credits: {data?.CreditValue?.[0]?.Value}</span>
-                  <span>Level {ProgressionLevelName?.slice(0, 20)}</span>
-                </div> */}
               </div>
               <span
                 className={styles.ornageSection + ' ' + styles.right}
@@ -853,17 +872,19 @@ const MultiCard: React.FC<Props> = ({
                     content={
                       <div className={styles.popoverMenu} ref={ref}>
                         <span onClick={(e: any) => handleConditionEdit(e)}>
-                          Edit
+                          {!isViewMode ? 'Edit' : 'View'}
                         </span>
-                        <span
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            onDelete(data);
-                          }}
-                        >
-                          Delete
-                        </span>
+                        {!isViewMode && (
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              onDelete(data);
+                            }}
+                          >
+                            Delete
+                          </span>
+                        )}
                       </div>
                     }
                   ></Popover>
@@ -880,6 +901,13 @@ const MultiCard: React.FC<Props> = ({
                   ) : (
                     <span>{data?.Name}</span>
                   )}
+                </div>
+
+                <div className={styles.creditSection}>
+                  <span>
+                    Logic: {data?.LogicalOperator?.replace('logic:', '')}
+                  </span>
+                  <span>Constraints: {data?.HasConstraint.length}</span>
                 </div>
               </React.Fragment>
             </>

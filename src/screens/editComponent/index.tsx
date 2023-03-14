@@ -234,7 +234,7 @@ const EditComponent: React.FC<Props> = ({
       setRightPanelData(currentConditionalComponent);
       setCredentialType(panelData?.CredentialType);
       setCreditLevelType(panelData?.CreditValue?.[0]?.CreditLevelType?.[0]);
-      setCreditUnitType(panelData?.CreditValue?.[0]?.CreditUnitType?.[0]);
+      setCreditUnitType(panelData?.CreditValue?.[0]?.CreditUnitType);
       if (
         panelData?.CreditValue?.[0]?.Value > 0 &&
         panelData?.CreditValue !== undefined
@@ -262,6 +262,12 @@ const EditComponent: React.FC<Props> = ({
 
     return typeValue;
   };
+  const occupationTypes = rightPanelData?.OccupationType?.map(
+    (obj: any) => obj.Name
+  );
+  const industryTypes = rightPanelData?.IndustryType?.map(
+    (obj: any) => obj.Name
+  );
 
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
 
@@ -582,6 +588,7 @@ const EditComponent: React.FC<Props> = ({
             labelCol={{ span: 24 }}
             label="Name"
             validateTrigger="onBlur"
+            tooltip="Name of the Component."
             help={
               (_.isEmpty(rightPanelData?.Name) ||
                 _.isNull(rightPanelData?.Name)) &&
@@ -603,7 +610,7 @@ const EditComponent: React.FC<Props> = ({
               }
             />
           </Form.Item>
-          <Form.Item>
+          <Form.Item tooltip="Description of the Component.">
             <label>Description</label>
             <TextArea
               onChange={onChangeHandler}
@@ -617,6 +624,7 @@ const EditComponent: React.FC<Props> = ({
             label="Subject Webpage"
             wrapperCol={{ span: 24 }}
             labelCol={{ span: 24 }}
+            tooltip="Webpage that describes this entity."
           >
             <InputBox
               onChange={onChangeHandler}
@@ -652,6 +660,7 @@ const EditComponent: React.FC<Props> = ({
               label="Credential Type"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip="Type of the Credential, such as certificate, badge, degree etc..."
             >
               {rightPanelData?.CredentialType !== undefined &&
               rightPanelData?.FinderResource !== undefined ? (
@@ -684,6 +693,7 @@ const EditComponent: React.FC<Props> = ({
               labelCol={{ span: 24 }}
               label="Component Category"
               validateTrigger="onBlur"
+              tooltip="Identifies the type of PathwayComponent subclass not explicitly covered in the current array of PathwayComponent subclasses."
             >
               <InputBox
                 onChange={onChangeHandler}
@@ -702,6 +712,7 @@ const EditComponent: React.FC<Props> = ({
             wrapperCol={{ span: 24 }}
             labelCol={{ span: 24 }}
             validateTrigger="onBlur"
+            tooltip="Label identifying the category to further distinguish one component from another as designated by the promulgating body."
           >
             <MultiSelect
               mode="tags"
@@ -719,10 +730,11 @@ const EditComponent: React.FC<Props> = ({
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
+              tooltip="Type of industry; select from an existing enumeration of such types such as the SIC, NAICS, and ISIC classifications."
             >
               <DebounceSelect
                 mode="multiple"
-                value={rightPanelData?.IndustryType}
+                value={industryTypes}
                 placeholder="Select Industry Type"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
@@ -741,10 +753,11 @@ const EditComponent: React.FC<Props> = ({
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               validateTrigger="onBlur"
+              tooltip="Type of occupation; select from an existing enumeration of such types."
             >
               <DebounceSelect
                 mode="multiple"
-                value={rightPanelData?.OccupationType}
+                value={occupationTypes}
                 placeholder="Select Occupation Type"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
@@ -757,7 +770,7 @@ const EditComponent: React.FC<Props> = ({
             ''
           )}
           {extractComponentType(rightPanelData?.Type) == 'CourseComponent' ? (
-            rightPanelData?.Value == undefined &&
+            rightPanelData?.CreditValue?.[0]?.Value == undefined &&
             rightPanelData?.FinderResource == undefined ? (
               <u
                 style={{ cursor: 'pointer' }}
@@ -767,18 +780,7 @@ const EditComponent: React.FC<Props> = ({
                 <br />
               </u>
             ) : (
-              <Form.Item
-                label="Credit Value"
-                wrapperCol={{ span: 24 }}
-                labelCol={{ span: 24 }}
-              >
-                <InputBox
-                  onChange={onChangeHandler}
-                  placeholder="Credit Value"
-                  name="Credit"
-                  value={rightPanelData?.CreditValue?.[0]?.Value}
-                />
-              </Form.Item>
+              ''
             )
           ) : (
             ''
@@ -794,6 +796,7 @@ const EditComponent: React.FC<Props> = ({
               label="Credit Unit Type"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip="The type of credit associated with the credit awarded or required."
             >
               <Dropdown
                 options={allCreditUnitTypes?.CreditUnitType}
@@ -823,6 +826,7 @@ const EditComponent: React.FC<Props> = ({
               label="Credit Value"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip="A credit-related value."
             >
               <InputBox
                 onChange={onChangeHandler}
@@ -835,6 +839,7 @@ const EditComponent: React.FC<Props> = ({
               label="Credit Description"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip=" Statement, characterization or account of the entity."
             >
               <InputBox
                 onChange={onChangeHandler}
@@ -862,6 +867,7 @@ const EditComponent: React.FC<Props> = ({
               label="Identfier Type"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip=" Framework, scheme, type, or other organizing principle of this identifier."
             >
               <InputBox
                 onChange={onChangeHandler}
@@ -875,6 +881,7 @@ const EditComponent: React.FC<Props> = ({
               label="Identfier Name"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip=" Formal name or acronym of the framework, scheme, type, or other organizing principle of this identifier, such as ISBN or ISSN."
             >
               <InputBox
                 onChange={onChangeHandler}
@@ -889,6 +896,7 @@ const EditComponent: React.FC<Props> = ({
               label="Identfier Code"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip=" Alphanumeric string identifier of the entity."
             >
               <InputBox
                 onChange={onChangeHandler}

@@ -143,6 +143,8 @@ const LeftPanel: React.FC<any> = ({
       // updatedPathwayWrapper.PendingComponents = selectedTabCardData;
 
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    } else {
+      setSelectedtabCards(selectedTabCardData);
     }
     isDraggableCardVisibleMethod(false);
   }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
@@ -238,8 +240,11 @@ const LeftPanel: React.FC<any> = ({
         ColumnNumber: 0,
         HasCondition: [],
         PrecededBy: [],
+        Precedes: [],
+        HasChild: [],
       };
       setDroppedCard(card);
+      card = updatedCard;
       setSelectedtabCards([...selectedTabCards, updatedCard]);
     } else {
       return;
@@ -272,6 +277,34 @@ const LeftPanel: React.FC<any> = ({
               }
             : item
       );
+      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent
+        .filter((item: any) => item.CTID !== card.CTID)
+        .map((component_card: any) => {
+          if (component_card?.PrecededBy.includes(card?.CTID)) {
+            return {
+              ...component_card,
+              PrecededBy: component_card?.PrecededBy.filter(
+                (preceded: any) => preceded !== card?.CTID
+              ),
+            };
+          } else if (component_card?.Precedes.includes(card?.CTID)) {
+            return {
+              ...component_card,
+              Precedes: component_card?.Precedes.filter(
+                (preceded: any) => preceded !== card?.CTID
+              ),
+            };
+          } else if (component_card?.HasChild.includes(card?.CTID)) {
+            return {
+              ...component_card,
+              HasChild: component_card?.HasChild.filter(
+                (preceded: any) => preceded !== card?.CTID
+              ),
+            };
+          } else {
+            return { ...component_card };
+          }
+        });
       updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
@@ -287,6 +320,35 @@ const LeftPanel: React.FC<any> = ({
               }
             : item
       );
+      updatedPathwayWrapper.PathwayComponents = filteredPathwayComponent
+        .filter((item: any) => item.CTID !== card.CTID)
+        .map((component_card: any) => {
+          if (component_card?.PrecededBy.includes(card?.CTID)) {
+            return {
+              ...component_card,
+              PrecededBy: component_card?.PrecededBy.filter(
+                (preceded: any) => preceded !== card?.CTID
+              ),
+            };
+          } else if (component_card?.Precedes.includes(card?.CTID)) {
+            return {
+              ...component_card,
+              Precedes: component_card?.Precedes.filter(
+                (preceded: any) => preceded !== card?.CTID
+              ),
+            };
+          } else if (component_card?.HasChild.includes(card?.CTID)) {
+            return {
+              ...component_card,
+              HasChild: component_card?.HasChild.filter(
+                (preceded: any) => preceded !== card?.CTID
+              ),
+            };
+          } else {
+            return { ...component_card };
+          }
+        });
+
       updatedPathwayWrapper.PendingComponents = [...selectedTabCards, card];
       dispatch(updateMappedDataRequest(updatedPathwayWrapper));
       dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));

@@ -1,5 +1,8 @@
+import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { Card, Col, Row } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
@@ -34,6 +37,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     setLeftpanelSelectedElem,
   } = props;
   const { Name, inlineStyles, id, disabledItem, Type } = props.data;
+  const [showDescription, setShowDescription] = useState<boolean>(false);
   const onDragStart = (e: any) => {
     const target = e.target;
     !!setLeftpanelSelectedElem && setLeftpanelSelectedElem(e.target);
@@ -61,6 +65,52 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
   const onDragEnd = (e: any) => {
     e.target.style.visibility = 'visible';
     if (isDraggableCardVisibleMethod) isDraggableCardVisibleMethod(false);
+  };
+  const getDescription = (type: any) => {
+    let text = '';
+    switch (type) {
+      case 'ceterms:assessmentcomponent':
+        text =
+          'Resource that identifies a direct, indirect, formative, and summative evaluation or estimation of the nature, ability, or quality of a resource, performance, or outcome of an action.';
+        break;
+      case 'ceterms:credentialcomponent':
+        text =
+          ' Resource that identifies another resource that describes qualification, achievement, personal or organizational quality, or aspect of an identity typically used to indicate suitability.';
+        break;
+      case 'ceterms:jobcomponent':
+        text =
+          'Resource that identifies a work position, employment, or occupation.';
+        break;
+      case 'ceterms:workexperiencecomponent':
+        text =
+          'Resource describing an activity or training through which a person gains job experience.';
+        break;
+      case 'ceterms:cocurricularcomponent':
+        text =
+          'Resource that identifies an activity, program, or informal learning experience such as a civic or service activity that supplements and complements the curriculum.';
+        break;
+      case 'ceterms:extracurricularcomponent':
+        text =
+          'Resource that identifies an activity, program, or informal learning experience that may be offered or provided by a school, college, or other organization that is not connected to a curriculum.';
+        break;
+      case 'ceterms:basiccomponent':
+        text =
+          'Resource that identifies a resource not otherwise covered by the enumerated PathwayComponent subclasses.';
+        break;
+      case 'ceterms:competencycomponent':
+        text =
+          'Resource that identifies a measurable or observable knowledge, skill, or ability necessary to successful performance of a person in a given context.';
+        break;
+      case 'ceterms:coursecomponent':
+        text =
+          'Resource that identifies a structured sequence of one or more learning activities that aims to develop a prescribed set of knowledge, skill, or ability of learners.';
+        break;
+      case 'ceterms:componentcondition':
+        text =
+          ' Resource that describes what must be done to complete a PathwayComponent, or part thereof, as determined by the issuer of the Pathway.';
+        break;
+    }
+    return text;
   };
 
   return (
@@ -311,12 +361,39 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
         <Col span="19">
           <>
             <p>{data?.Type?.split(':')[1].replace('Component', '')}</p>
+            {data?.Name == null && (
+              <span
+                className="fa-layers fa-fw fa-lg"
+                style={{ float: 'right' }}
+              >
+                <FontAwesomeIcon
+                  icon={faCircle}
+                  className={styles.iconPrimary}
+                />
+                <FontAwesomeIcon
+                  icon={faQuestion}
+                  transform="shrink-6"
+                  className={styles.iconSecondary}
+                  onClick={() =>
+                    showDescription == true
+                      ? setShowDescription(false)
+                      : setShowDescription(true)
+                  }
+                />
+              </span>
+            )}
             {data?.Type?.toLowerCase().includes(
               'CompetencyComponent'.toLowerCase()
             ) ? (
-              <h5 title={data?.Description}>{data?.Description}</h5>
+              <h5 title={data?.Description}>
+                {data?.Description}
+                {showDescription && getDescription(Type?.toLowerCase())}
+              </h5>
             ) : (
-              <h5>{Name}</h5>
+              <h5>
+                {Name}
+                {showDescription && getDescription(Type?.toLowerCase())}
+              </h5>
             )}
           </>
         </Col>

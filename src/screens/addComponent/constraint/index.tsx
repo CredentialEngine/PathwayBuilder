@@ -16,12 +16,18 @@ interface Props {
   constraintRow?: any;
   getConstraintData: (val: any) => void;
   deleteRowByIndex: (val: any) => void;
+  isViewMode?: boolean;
 }
 
 const Constraint: React.FC<Props> = (Props) => {
   //Initialization
-  const { RowIndex, getConstraintData, deleteRowByIndex, constraintRow } =
-    Props;
+  const {
+    RowIndex,
+    getConstraintData,
+    deleteRowByIndex,
+    constraintRow,
+    isViewMode,
+  } = Props;
   const [constraintEntityFields, setConstraintEntityFields] = useState<any>(
     new ConstraintEntity()
   );
@@ -117,7 +123,7 @@ const Constraint: React.FC<Props> = (Props) => {
     arrayProperty: any
   ) => {
     constraintData[sourceProperty] = constraintData[sourceProperty].filter(
-      (item: any) => item.value != value.value
+      (item: any) => item.Name != value.value
     );
     if (constraintData[sourceProperty].length < 2) {
       constraintData[arrayProperty] = null;
@@ -237,12 +243,13 @@ const Constraint: React.FC<Props> = (Props) => {
       <Row gutter={10}>
         <Col span="3">
           <Form.Item
-            label="Left Source"
+            label="Left Action"
             wrapperCol={{ span: 24 }}
             labelCol={{ span: 24 }}
+            tooltip="Action performed on the left source; select from an existing enumeration of such types."
           >
             <Dropdown
-              disabled={!(constraintData?.LeftSource?.length > 1)}
+              disabled={!(constraintData?.LeftSource?.length > 1) || isViewMode}
               options={constraintEntityFields.LeftAction}
               placeholder="..."
               showSearch={false}
@@ -255,15 +262,16 @@ const Constraint: React.FC<Props> = (Props) => {
         <Col span="6">
           <>
             <Form.Item
-              label="Left Action"
+              label="Left Source"
               required={true}
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
               className="swNoMargin"
               validateTrigger="onBlur"
-              tooltip="This is a required field"
+              tooltip="Left hand parameter of a constraint."
             >
               <DebounceSelect
+                disabled={isViewMode}
                 showSearch
                 mode="tags"
                 value={LeftSourceList}
@@ -287,8 +295,10 @@ const Constraint: React.FC<Props> = (Props) => {
             label="Comparator"
             wrapperCol={{ span: 24 }}
             labelCol={{ span: 24 }}
+            tooltip="Type of symbol that denotes an operator in a constraint expression such as greater than or equal to, equal to, less than; select from an existing enumeration of such types."
           >
             <Dropdown
+              disabled={isViewMode}
               options={Comparator}
               defaultValue={constraintData?.Comparator}
               value={constraintData?.Comparator}
@@ -303,9 +313,12 @@ const Constraint: React.FC<Props> = (Props) => {
             label="Right Action"
             wrapperCol={{ span: 24 }}
             labelCol={{ span: 24 }}
+            tooltip="Action performed on the right source; select from an existing enumeration of such types."
           >
             <Dropdown
-              disabled={!(constraintData?.RightSource?.length > 1)}
+              disabled={
+                !(constraintData?.RightSource?.length > 1) || isViewMode
+              }
               options={constraintEntityFields.RightAction}
               placeholder="..."
               showSearch={false}
@@ -320,14 +333,15 @@ const Constraint: React.FC<Props> = (Props) => {
             <>
               <Form.Item
                 required={true}
-                label="Right Action"
+                label="Right Source"
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
                 className="swNoMargin"
                 validateTrigger="onBlur"
-                tooltip="This is a required field"
+                tooltip="Right hand parameter of a constraint."
               >
                 <DebounceSelect
+                  disabled={isViewMode}
                   showSearch
                   mode="tags"
                   value={RightSourceList}
@@ -347,6 +361,7 @@ const Constraint: React.FC<Props> = (Props) => {
         <Col span="1">
           <button
             className={Styles.clearRowIcon}
+            disabled={isViewMode}
             onClick={() =>
               Modal.confirm({
                 title: 'Are you sure you want to delete this Constraint?',

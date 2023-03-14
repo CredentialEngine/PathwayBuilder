@@ -27,6 +27,14 @@
 .warningIcon {
   color: $orange;
 }
+.loading {
+  background-color: #4ee5e1;
+  border: 1px solid #4ee5e1;
+  color: #0a2942;
+}
+.loadingIcon {
+  color: #0a2942;
+}
 .notice {
   background-color: $white-color;
   border: 1px solid $yellow;
@@ -50,7 +58,7 @@
 }
 .title {
   text-align: left;
-  color: $black;
+  color: #0a2942;
   font-size: 16px;
   font-weight: $medium;
   height: 24px;
@@ -66,7 +74,8 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   margin-bottom: 0;
-  color: $secondary-color;
+  // color: $secondary-color;
+  color: #0a2942;
 }
 .buttonLink {
   height: 26px;

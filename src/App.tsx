@@ -9,6 +9,7 @@ import Button from './components/button';
 import { Type } from './components/button/type';
 import CustomDrawer from './components/customDrawer';
 import MainContainer from './components/mainContainer';
+import Message from './components/message';
 import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
 import AddPathwayForm from './screens/addPathwayForm';
@@ -16,6 +17,7 @@ import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
 import CreatePathway from './screens/createPathway/createPathway';
 import EnterDevCredentials from './screens/enterDevCredentials';
 import HomePage from './screens/homePage';
+
 import PreSelectResourceCreatePath from './screens/preSelectResourceCreatePath';
 import SelectDestination from './screens/selectDestination';
 import SelectOrganisation from './screens/selectOrganisation';
@@ -35,6 +37,7 @@ const App = () => {
   const [addPathwayWrapperFields, setAddPathwayWrapeprFields] = useState<any>(
     new PathwayWrapperEntity()
   );
+  const [isViewMode, setViewMode] = useState<boolean>(false);
   const [isDestinationColumnSelected, setIsDestinationColumnSelected] =
     useState<boolean>(false);
   const [
@@ -101,10 +104,21 @@ const App = () => {
     const url = window.location.href;
     if (url?.toLowerCase().includes('?id=')) {
       const pathwayIdFromUrl = url?.toLowerCase().split('id=').pop();
+      const pathwayViewFromUrl = url?.toLowerCase().split('isviewmode=').pop();
       if (pathwayIdFromUrl) {
         dispatch(
           getDataForPathwayAndComponentsRequest(parseInt(pathwayIdFromUrl))
         );
+        Message({
+          description:
+            'Sit tight, while we load the pathway and make the connections',
+          type: 'loading',
+        });
+      }
+      if (pathwayViewFromUrl == 'true') {
+        setViewMode(true);
+      } else {
+        setViewMode(false);
       }
       setIsEdit(true);
     } else if (IS_LOCALHOST && !enteredDevCredsValue) {
@@ -139,6 +153,7 @@ const App = () => {
 
   const onCreatePathwayCancelHandler = () => {
     window.location.href = TEMP_BASE_URL;
+    //window.location.href = `${process.env.REACT_APP_API_BASE_URL}`;
   };
 
   const onCloseHandler = () => {
@@ -205,6 +220,7 @@ const App = () => {
       <div>
         <MainContainer>
           <HomePage
+            isViewMode={isViewMode}
             isLeftPanelVisible={
               !isrightPanelDrawerVisible &&
               !isCreatePathwayVisible &&
@@ -264,6 +280,7 @@ const App = () => {
               setIsAddPathwayFormVisible={setIsAddPathwayFormVisible}
               setIsEditPathwayFormVisible={setIsEditPathwayFormVisible}
               setIsDropCardAfterEditingForm={setIsDropCardAfterEditingForm}
+              isViewMode={isViewMode}
             />
           </Modal>
           <Modal
@@ -320,6 +337,7 @@ const App = () => {
             onOk={selectOrgOkHandler}
             onCancel={() => {
               window.location.href = TEMP_BASE_URL;
+              //window.location.href = `${process.env.REACT_APP_API_BASE_URL}`;
             }}
             footer={[
               <>

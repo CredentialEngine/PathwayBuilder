@@ -24,9 +24,9 @@ const RightPanel: React.FC<Props> = ({
   visible,
   panelData,
 }) => {
-  const [destinationText, setDestinationText] = useState('');
-  const [destinationTextCondition, setDestinationTextCondition] =
-    useState(true);
+  // const [destinationText, setDestinationText] = useState('');
+  //const [destinationTextCondition, setDestinationTextCondition] =
+  useState(true);
   const ref = useRef(null);
   const [rightPanelData, setRightPanelData] = useState<any>();
   const [relatedConditionalComponent, setRelatedConditionalComponent] =
@@ -34,7 +34,6 @@ const RightPanel: React.FC<Props> = ({
 
   useEffect(() => {
     document?.addEventListener('click', handleOutsideClick, true);
-    destinationTextCondition && hideDescription();
   }, []);
 
   const handleOutsideClick = (e: any) => {
@@ -58,19 +57,10 @@ const RightPanel: React.FC<Props> = ({
     return typeValue;
   };
 
-  const viewDescription = () => {
-    setDestinationText(rightPanelData?.Description);
-    setDestinationTextCondition(false);
-  };
-  const hideDescription = () => {
-    const truncatedDescription = rightPanelData?.Description?.substr(0, 300);
-    setDestinationText(truncatedDescription);
-    setDestinationTextCondition(true);
-  };
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const organizationName = pathwayWrapper?.pathwayComponentData?.data
-    ? pathwayWrapper?.pathwayComponentData?.data?.Pathway?.Organization?.Name
-    : pathwayWrapper?.selectedOrganization?.Name;
+    ? pathwayWrapper?.mappedData?.Pathway?.Organization?.Name
+    : pathwayWrapper?.mappedData?.Pathway?.Organization?.Name;
 
   useEffect(() => {
     const relatedConditionalComponent =
@@ -235,30 +225,66 @@ const RightPanel: React.FC<Props> = ({
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>References Resource:</p>
-          {rightPanelData?.Type?.toLowerCase().includes(
-            'CompetencyComponent'.toLowerCase()
-          ) ? (
-            <p className={styles.value}>{rightPanelData?.Description}</p>
-          ) : (
-            <p className={styles.value}>{rightPanelData?.Name}</p>
-          )}
+          <p className={styles.value}>{rightPanelData?.Name}</p>
         </Row>
         <Row className={styles.infoContainer}>
           <p className={styles.label}>Owned and Offered by</p>
           <p className={styles.value}>{organizationName}</p>
         </Row>
-        <Row className={styles.infoContainer}>
-          <p className={styles.label}>
-            {rightPanelData?.Type?.split(':')[1].replace('Component', '')} Type
-          </p>
-          <p className={styles.value}>
-            {extractComponentType(rightPanelData?.Type) == 'CredentialComponent'
-              ? extractComponentType(rightPanelData?.CredentialType)
-              : extractComponentType(
-                  rightPanelData?.Type.replace('Component', '')
-                )}
-          </p>
-        </Row>
+        {rightPanelData?.Type?.toLowerCase().includes(
+          'CredentialComponent'.toLowerCase() && (
+            <Row className={styles.infoContainer}>
+              <p className={styles.label}>
+                {rightPanelData?.Type?.split(':')[1].replace('Component', '')}{' '}
+                Type
+              </p>
+              <p className={styles.value}>
+                {extractComponentType(rightPanelData?.Type) ==
+                'CredentialComponent'
+                  ? extractComponentType(rightPanelData?.CredentialType)
+                  : extractComponentType(
+                      rightPanelData?.Type.replace('Component', '')
+                    )}
+              </p>
+            </Row>
+          )
+        )}
+        {rightPanelData?.Description != '' && (
+          <Row className={styles.infoContainer}>
+            <p className={styles.label}>Description</p>
+            <p className={styles.value}>{rightPanelData?.Description}</p>
+          </Row>
+        )}
+        {rightPanelData?.SubjectWebpage != '' && (
+          <Row className={styles.infoContainer}>
+            <p className={styles.label}>Subject Webpage</p>
+            <p className={styles.value}>{rightPanelData?.SubjectWebpage}</p>
+          </Row>
+        )}
+        {rightPanelData?.CreditValue[0]?.Value > 0 && (
+          <Row className={styles.infoContainer}>
+            <p className={styles.label}>Credit Value</p>
+            <p className={styles.value}>
+              {rightPanelData?.CreditValue[0]?.Value}
+            </p>
+          </Row>
+        )}
+        {rightPanelData?.ComponentDesignation != '' && (
+          <Row className={styles.infoContainer}>
+            <p className={styles.label}>Component Designation</p>
+            <p className={styles.value}>
+              {rightPanelData?.ComponentDesignation.join(', ')}
+            </p>
+          </Row>
+        )}
+        {rightPanelData?.Identifier[0]?.Value > 0 && (
+          <Row className={styles.infoContainer}>
+            <p className={styles.label}>Credit Value</p>
+            <p className={styles.value}>
+              {rightPanelData?.CreditValue[0]?.Value}
+            </p>
+          </Row>
+        )}
         <Row className={styles.infoContainer}>
           <p className={styles.label}>
             {rightPanelData?.Type?.split(':')[1].replace('Component', '')}{' '}
@@ -266,39 +292,19 @@ const RightPanel: React.FC<Props> = ({
           </p>
           <p className={styles.value}>Active</p>
         </Row>
-        <Row className={styles.buttonContainer}>
-          <Button
-            className={styles.button}
-            type={Type.LINK}
-            onClick={openInNewTab}
-            text={`View the ${rightPanelData?.Type?.split(':')[1].replace(
-              'Component',
-              ''
-            )}`}
-          />
-        </Row>
-        <Divider />
-        <Row>
-          <p className={styles.content}>{destinationText}</p>
-        </Row>
-        <Row className={styles.buttonContainer}>
-          {destinationTextCondition ? (
+        {rightPanelData?.FinderResource !== undefined && (
+          <Row className={styles.buttonContainer}>
             <Button
               className={styles.button}
               type={Type.LINK}
-              onClick={viewDescription}
-              text="View More"
+              onClick={openInNewTab}
+              text={`View the ${rightPanelData?.Type?.split(':')[1].replace(
+                'Component',
+                ''
+              )}`}
             />
-          ) : (
-            <Button
-              className={styles.button}
-              type={Type.LINK}
-              onClick={hideDescription}
-              text="View less"
-            />
-          )}
-        </Row>
-        <Divider />
+          </Row>
+        )}
         <Row className={styles.requiredBlock}>
           <Collapse
             defaultActiveKey={['1']}

@@ -37,6 +37,7 @@ interface Props {
   isFirstColumneSelected: boolean;
   firstColumn: boolean;
   setDraggableCardVisible: (a: any) => void;
+  isViewMode: boolean;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -59,65 +60,64 @@ const DropWrapper: React.FC<Props> = ({
   isFirstColumneSelected,
   firstColumn,
   setDraggableCardVisible,
+  isViewMode,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   const [columnNumberEsixt, setColumnNumber] = useState<boolean>(false);
 
   const handleDrop = (e: any) => {
-    e.preventDefault();
-    setColumnNumber(false);
-
-    const conditinalComponentColumnNumber =
-      updatedPathwayComponentConditionCards
-        .filter(
-          (condtional_card: any) =>
-            condtional_card.HasProgressionLevel === HasProgressionLevel
-        )
-        .reduce((acc: any, curr: any) => {
-          if (acc >= curr.ColumnNumber) {
-            return acc;
-          } else {
-            return curr.ColumnNumber;
-          }
-        }, 1);
-
-    let data = JSON.parse(e.dataTransfer.getData('card_id'));
-
-    if (data?.isComponentTab === true) {
-      const CTID = `ce-${uuidv4()}`;
-      data = {
-        ...data,
-        CTID,
-        RowId: uuidv4(),
-      };
+    if (!isViewMode) {
+      e.preventDefault();
+      setColumnNumber(false);
+      const conditinalComponentColumnNumber =
+        updatedPathwayComponentConditionCards
+          .filter(
+            (condtional_card: any) =>
+              condtional_card.HasProgressionLevel === HasProgressionLevel
+          )
+          .reduce((acc: any, curr: any) => {
+            if (acc >= curr.ColumnNumber) {
+              return acc;
+            } else {
+              return curr.ColumnNumber;
+            }
+          }, 1);
+      let data = JSON.parse(e.dataTransfer.getData('card_id'));
+      if (data?.isComponentTab === true) {
+        const CTID = `ce-${uuidv4()}`;
+        data = {
+          ...data,
+          CTID,
+          RowId: uuidv4(),
+        };
+      }
+      e.stopPropagation();
+      columnNumberEsixt
+        ? onDrop(
+            data,
+            destinationColumn,
+            HasProgressionLevel,
+            isDestinationColumnSelected,
+            rowNumber,
+            conditinalComponentColumnNumber > columnNumber
+              ? columnNumber + 2
+              : columnNumber + 1,
+            columnNumberEsixt,
+            isFirstColumneSelected,
+            firstColumn
+          )
+        : onDrop(
+            data,
+            destinationColumn,
+            HasProgressionLevel,
+            isDestinationColumnSelected,
+            rowNumber,
+            column_num + 1,
+            columnNumberEsixt,
+            isFirstColumneSelected,
+            firstColumn
+          );
     }
-    e.stopPropagation();
-
-    columnNumberEsixt
-      ? onDrop(
-          data,
-          destinationColumn,
-          HasProgressionLevel,
-          isDestinationColumnSelected,
-          rowNumber,
-          conditinalComponentColumnNumber > columnNumber
-            ? columnNumber + 2
-            : columnNumber + 1,
-          columnNumberEsixt,
-          isFirstColumneSelected,
-          firstColumn
-        )
-      : onDrop(
-          data,
-          destinationColumn,
-          HasProgressionLevel,
-          isDestinationColumnSelected,
-          rowNumber,
-          column_num + 1,
-          columnNumberEsixt,
-          isFirstColumneSelected,
-          firstColumn
-        );
   };
 
   const onDragEnterHandler = (event: any) => {

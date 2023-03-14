@@ -39,6 +39,7 @@ interface Props {
   isConditionalEditing?: boolean;
   setIsConditionalEditing?: (a: boolean) => void;
   progressionLevelForAddComponent?: string;
+  isViewMode?: boolean;
 }
 
 const AddConditionalComponent: React.FC<Props> = (Props) => {
@@ -53,6 +54,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     setIsConditionalEditing,
     data,
     progressionLevelForAddComponent,
+    isViewMode,
   } = Props;
   const [componentConditionFields, setComponentConditionFields] = useState<any>(
     new ComponentConditionEntity()
@@ -585,7 +587,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         </div>
         <Form.Item>
           <label>Parent Component</label>
-          <InputBox name="ParentIdentifier" value={currentComponent?.Name} />
+          <InputBox
+            disabled={isViewMode}
+            name="ParentIdentifier"
+            value={currentComponent?.Name}
+          />
         </Form.Item>
         <Form.Item
           required={true}
@@ -603,6 +609,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           }
         >
           <InputBox
+            disabled={isViewMode}
             onChange={onInputChangeHandler}
             placeholder="Name"
             name="Name"
@@ -615,9 +622,14 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             }
           />
         </Form.Item>
-        <Form.Item>
-          <label>Condition Description</label>
+        <Form.Item
+          label="Condition Description"
+          tooltip="Statement, characterization or account of the entity."
+          wrapperCol={{ span: 24 }}
+          labelCol={{ span: 24 }}
+        >
           <TextArea
+            disabled={isViewMode}
             onChange={onInputChangeHandler}
             rows={3}
             name="Description"
@@ -643,6 +655,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               }
             >
               <InputBox
+                disabled={isViewMode}
                 type="number"
                 placeholder="Required Number"
                 onChange={onInputChangeHandler}
@@ -663,8 +676,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               label="Logical Operator"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
+              tooltip=" Type that denotes a logical operation such as And, Or, OnlyOne select from an existing enumeration of such types."
             >
               <Dropdown
+                disabled={isViewMode}
                 options={allogicalOperator?.LogicalOperator}
                 showSearch={false}
                 placeholder="Select Logical Operator"
@@ -701,23 +716,28 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               constraintRow={constraintRowData}
               getConstraintData={(val: any) => getConstraintData(val)}
               deleteRowByIndex={(rowIndex: any) => handleDeleteRow(rowIndex)}
+              isViewMode={isViewMode}
             />
           ))}
 
         <p>
-          <u onClick={() => addConstraintRow()} style={{ cursor: 'pointer' }}>
-            Add another constraint
-          </u>
+          {!isViewMode && (
+            <u onClick={() => addConstraintRow()} style={{ cursor: 'pointer' }}>
+              Add another constraint
+            </u>
+          )}
         </p>
         <hr />
         <Button
           size="medium"
           text="Save Condition"
           type="primary"
-          disabled={_.isEmpty(
-            componentConditionFields.RequiredNumber &&
-              componentConditionFields.Name
-          )}
+          disabled={
+            _.isEmpty(
+              componentConditionFields.RequiredNumber &&
+                componentConditionFields.Name
+            ) || isViewMode
+          }
           onClick={saveCondition}
         />
       </Form>

@@ -13,6 +13,7 @@ export interface MultiSelectProps {
   value?: any;
   mode?: 'multiple' | 'tags';
   tagRender?: any;
+  disabled?: boolean;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
@@ -27,6 +28,7 @@ const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
     value,
     mode,
     tagRender,
+    disabled,
   } = props;
   return (
     <Select
@@ -41,6 +43,7 @@ const MultiSelect: React.FC<MultiSelectProps> = (props: MultiSelectProps) => {
       onSearch={onSearch}
       onSelect={onSelect}
       value={value}
+      disabled={disabled}
     />
   );
 };

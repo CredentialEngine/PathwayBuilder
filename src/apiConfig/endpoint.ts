@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://sandbox.credentialengine.org/publisher/';
+export const BASE_URL = 'https://localhost:44330/';
 export const BASE_URL_SANDBOX =
   'https://sandbox.credentialengine.org/publisher/';
 export const BASE_URL_STAGING =

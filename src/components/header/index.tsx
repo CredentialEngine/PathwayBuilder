@@ -24,9 +24,10 @@ import styles from './index.module.scss';
 interface Props {
   setIsEditPathwayFormVisible: (a: boolean) => void;
   isLeftPanelVisible: boolean;
+  isViewMode: boolean;
 }
 const Header = (props: Props) => {
-  const { setIsEditPathwayFormVisible, isLeftPanelVisible } = props;
+  const { setIsEditPathwayFormVisible, isLeftPanelVisible, isViewMode } = props;
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
   );
@@ -37,6 +38,7 @@ const Header = (props: Props) => {
     (state: any) => state?.initalReducer?.savePathway
   );
   const dispatch = useDispatch();
+  //const [isViewModeEdit, setViewModeEdit] = useState<boolean>(false);
   const [hasConflicts, setHasConflicts] = useState<boolean>(false);
   const [approveDisable, setApproveDisable] = useState<boolean>(true);
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
@@ -145,7 +147,7 @@ const Header = (props: Props) => {
           className={styles.approveButtonSpecification}
           onClick={onApproverHandler}
           iconOnTop={conflictMessages?.length > 0 ? true : false}
-          disabled={approveDisable}
+          disabled={approveDisable || isViewMode}
           text="Approve"
         />
       </div>
@@ -153,14 +155,16 @@ const Header = (props: Props) => {
   );
 
   useEffect(() => {
-    let interval: any;
-    const counter = 60000;
-    if (pathwayWrapper?.Pathway?.Name !== '' && isLeftPanelVisible) {
-      interval = setTimeout(() => {
-        dispatch(saveDataForPathwayRequest(pathwayWrapper));
-      }, counter);
+    if (!isViewMode) {
+      let interval: any;
+      const counter = 60000;
+      if (pathwayWrapper?.Pathway?.Name !== '' && isLeftPanelVisible) {
+        interval = setTimeout(() => {
+          dispatch(saveDataForPathwayRequest(pathwayWrapper));
+        }, counter);
+        return () => clearTimeout(interval);
+      }
     }
-    return () => clearTimeout(interval);
   }, [JSON.stringify(pathwayWrapper)]);
 
   const savePathwayWrapper = () => {
@@ -187,6 +191,7 @@ const Header = (props: Props) => {
         getDataForPathwayAndComponentsRequest(savePathwayResult?.PathwayId)
       );
     setIsEditPathwayFormVisible(true);
+    //setViewModeEdit(isViewMode)
   };
   const redicrectTO = () => {
     window.open(TEMP_BASE_URL, '_blank');
@@ -216,7 +221,9 @@ const Header = (props: Props) => {
             <Col span={20}>
               <Row className={styles.createNewContainer}>
                 <Col span={24}>
-                  <span className={styles.newPathway}>Pathway Builder</span>
+                  <span className={styles.newPathway}>
+                    {!isViewMode ? 'Pathway Builder ' : 'Pathway Viewer'}
+                  </span>
                 </Col>
                 <Col span={24}>
                   <span className={styles.foundation}>
@@ -234,37 +241,46 @@ const Header = (props: Props) => {
                 {pathwayWrapper?.Pathway?.Name}
               </span>
               <span className={styles.editPathway} onClick={onEditPathwayClick}>
-                Edit Pathway Details
+                {!isViewMode ? 'Edit Pathway Details' : 'View Pathway Details'}
               </span>
             </div>
             <div className={styles.saveButtonWrapper}>
-              <Button
-                type={Type.LINK}
-                onClick={exitWithSaving}
-                text="Exit Without Saving"
-              />
-              <Button
-                className={styles.saveButtonSpecification}
-                type={Type.PRIMARY}
-                size="small"
-                onClick={() => savePathwayWrapper()}
-                key="save"
-                text="Save"
-              ></Button>
+              {!isViewMode && (
+                <Button
+                  disabled={isViewMode}
+                  type={Type.LINK}
+                  onClick={exitWithSaving}
+                  text="Exit Without Saving"
+                />
+              )}
+              {!isViewMode && (
+                <Button
+                  className={styles.saveButtonSpecification}
+                  disabled={isViewMode}
+                  type={Type.PRIMARY}
+                  size="small"
+                  onClick={() => savePathwayWrapper()}
+                  key="save"
+                  text="Save"
+                ></Button>
+              )}
             </div>
           </div>
-
-          <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
+          {!isViewMode && (
+            <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
+          )}
         </div>
-        <div
-          className={styles.helpContainer + ' headerright'}
-          onClick={() => setHelpAddingComponent(true)}
-        >
-          <FontAwesomeIcon
-            icon={faCircleQuestion}
-            className={styles.imgDimensions}
-          />
-        </div>
+        {!isViewMode && (
+          <div
+            className={styles.helpContainer + ' headerright'}
+            onClick={() => setHelpAddingComponent(true)}
+          >
+            <FontAwesomeIcon
+              icon={faCircleQuestion}
+              className={styles.imgDimensions}
+            />
+          </div>
+        )}
       </div>
       <Modal
         visible={visibleHelpAddingComponent}

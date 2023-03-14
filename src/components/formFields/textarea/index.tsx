@@ -12,6 +12,7 @@ export type InputProps = {
   required?: boolean;
   rows?: number;
   showCount?: boolean;
+  disabled?: boolean;
 };
 const Textarea: React.FC<InputProps> = (props: InputProps) => {
   const {
@@ -25,6 +26,7 @@ const Textarea: React.FC<InputProps> = (props: InputProps) => {
     onBlur,
     rows,
     showCount,
+    disabled,
   } = props;
   const handleChange = (e: any) => {
     onChange && onChange(e);
@@ -41,6 +43,7 @@ const Textarea: React.FC<InputProps> = (props: InputProps) => {
       rows={rows}
       required={required}
       onBlur={onBlur}
+      disabled={disabled}
     />
   );
 };

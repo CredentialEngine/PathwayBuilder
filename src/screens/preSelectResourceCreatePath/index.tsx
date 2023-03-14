@@ -49,6 +49,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [displaySearchContainer, setDisplaySearchContainer] =
     React.useState(true);
   const [selectedResource, setSelectedResource] = useState<any>([]);
+  const [deletedResource, setDeletedResource] = useState<any>([]);
   const [selectedAlphaResource, setSelectedAlphaResource] = useState<any>([]);
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
   const [dropDownRef, setDropDownRef] = useState<string>('');
@@ -304,10 +305,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const UnSelectSelectedItem = (itemId: string, itemIndex: number) => {
     const filteredItem = selectedResource.filter(
-      (item: any) => item.id === itemId
+      (item: any) => item.CTID === itemId
     );
     setAllProxyResourcesCard([...allProxyResourcesCard, filteredItem[0]]);
     selectedResource.splice(itemIndex, 1);
+    setDeletedResource(DeletedComponents);
+    if (!deletedResource?.some((item: any) => item.CTID === itemId)) {
+      setDeletedResource([...deletedResource, ...filteredItem]);
+    }
     if (allProxyResourcesCard.length > 0) {
       setDisplaySearchContainer(true);
     }
@@ -321,7 +326,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     updatedPathwayWrapper.PathwayComponents = PathwayComponents;
     updatedPathwayWrapper.ComponentConditions = ComponentConditions;
     updatedPathwayWrapper.Constraints = Constraints;
-    updatedPathwayWrapper.DeletedComponents = DeletedComponents;
+    updatedPathwayWrapper.DeletedComponents =
+      deletedResource.length > 0 ? deletedResource : DeletedComponents;
 
     !fromPreSelect && setIsAddPathwayDestinationVisible(true);
     !fromPreSelect
@@ -517,7 +523,9 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                   />
                   <span
                     className={Styles.iconCircle}
-                    onClick={() => UnSelectSelectedItem(select_resource.id, i)}
+                    onClick={() =>
+                      UnSelectSelectedItem(select_resource.CTID, i)
+                    }
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </span>
@@ -548,7 +556,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
               type={Type.PRIMARY}
               onClick={() => onPathwaySaveHandler()}
               text="Done Adding"
-              disabled={selectedResource?.length === 0}
+              // disabled={selectedResource?.length === 0}
             />
             <Button
               type={Type.CANCEL}
