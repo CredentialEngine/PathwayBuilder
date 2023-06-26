@@ -49,6 +49,14 @@
   .leftPanelTrigger {
     background-color: #ffffff;
   }
+  @media print {
+    button {
+      display: none;
+    }
+    .left-panel.hidden {
+      display: none;
+    }
+  }
 }
 .archerContainer {
   & > div {
@@ -57,6 +65,10 @@
 }
 .dropWrapper {
   min-width: 450px;
+}
+.sticky {
+  position: sticky;
+  top: 0;
 }
 .flexRow {
   min-width: 50px;
@@ -92,5 +104,7 @@
 .tempwrapper {
   span {
     margin-right: 5px;
+    margin-top: 25px;
+    margin-left: 10px;
   }
 }

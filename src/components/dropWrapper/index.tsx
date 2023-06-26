@@ -38,6 +38,7 @@ interface Props {
   firstColumn: boolean;
   setDraggableCardVisible: (a: any) => void;
   isViewMode: boolean;
+  setGridMode: boolean;
 }
 
 const DropWrapper: React.FC<Props> = ({
@@ -52,15 +53,16 @@ const DropWrapper: React.FC<Props> = ({
   isDestinationColumnSelected,
   forwardRef,
   rowNumber,
-  columnNumber,
+  // columnNumber,
   column_num,
   setOverlayData,
   overlayData,
-  updatedPathwayComponentConditionCards,
+  // updatedPathwayComponentConditionCards,
   isFirstColumneSelected,
   firstColumn,
   setDraggableCardVisible,
   isViewMode,
+  setGridMode,
 }) => {
   const allowDrop = (e: any) => e.preventDefault();
   const [columnNumberEsixt, setColumnNumber] = useState<boolean>(false);
@@ -69,19 +71,19 @@ const DropWrapper: React.FC<Props> = ({
     if (!isViewMode) {
       e.preventDefault();
       setColumnNumber(false);
-      const conditinalComponentColumnNumber =
-        updatedPathwayComponentConditionCards
-          .filter(
-            (condtional_card: any) =>
-              condtional_card.HasProgressionLevel === HasProgressionLevel
-          )
-          .reduce((acc: any, curr: any) => {
-            if (acc >= curr.ColumnNumber) {
-              return acc;
-            } else {
-              return curr.ColumnNumber;
-            }
-          }, 1);
+      // const conditinalComponentColumnNumber =
+      //   updatedPathwayComponentConditionCards
+      //     .filter(
+      //       (condtional_card: any) =>
+      //         condtional_card.HasProgressionLevel === HasProgressionLevel
+      //     )
+      //     .reduce((acc: any, curr: any) => {
+      //       if (acc >= curr.ColumnNumber) {
+      //         return acc;
+      //       } else {
+      //         return curr.ColumnNumber;
+      //       }
+      //     }, 1);
       let data = JSON.parse(e.dataTransfer.getData('card_id'));
       if (data?.isComponentTab === true) {
         const CTID = `ce-${uuidv4()}`;
@@ -92,31 +94,18 @@ const DropWrapper: React.FC<Props> = ({
         };
       }
       e.stopPropagation();
-      columnNumberEsixt
-        ? onDrop(
-            data,
-            destinationColumn,
-            HasProgressionLevel,
-            isDestinationColumnSelected,
-            rowNumber,
-            conditinalComponentColumnNumber > columnNumber
-              ? columnNumber + 2
-              : columnNumber + 1,
-            columnNumberEsixt,
-            isFirstColumneSelected,
-            firstColumn
-          )
-        : onDrop(
-            data,
-            destinationColumn,
-            HasProgressionLevel,
-            isDestinationColumnSelected,
-            rowNumber,
-            column_num + 1,
-            columnNumberEsixt,
-            isFirstColumneSelected,
-            firstColumn
-          );
+      debugger;
+      onDrop(
+        data,
+        destinationColumn,
+        HasProgressionLevel,
+        isDestinationColumnSelected,
+        rowNumber,
+        column_num + 1,
+        columnNumberEsixt,
+        isFirstColumneSelected,
+        firstColumn
+      );
     }
   };
 
@@ -170,12 +159,22 @@ const DropWrapper: React.FC<Props> = ({
       onDrop={handleDrop}
       onDragEnter={onDragEnterHandler}
       onDragEnd={onDragEndHandler}
-      style={{
-        display: 'flex',
-        width: `${width}`,
-        flexDirection: 'column',
-        height: '200px',
-      }}
+      style={
+        setGridMode
+          ? {
+              display: 'flex',
+              width: `${width}`,
+              flexDirection: 'column',
+              height: '200px',
+              border: '1px dashed rgb(78, 229, 225)',
+            }
+          : {
+              display: 'flex',
+              width: `${width}`,
+              flexDirection: 'column',
+              height: '200px',
+            }
+      }
       className={className}
       ref={(element: any) => {
         forwardRef.current[number] = element;

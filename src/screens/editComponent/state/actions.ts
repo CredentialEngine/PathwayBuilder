@@ -8,6 +8,9 @@ import {
   GET_CREDIT_LEVEL_TYPES_REQUEST,
   GET_CREDIT_LEVEL_TYPES_SUCCESS,
   GET_CREDIT_LEVEL_TYPES_FAILURE,
+  SEARCH_FOR_LANGUAGE_FAILURE,
+  SEARCH_FOR_LANGUAGE_REQUEST,
+  SEARCH_FOR_LANGUAGE_SUCCESS,
 } from './actionTypes';
 
 export const getCredentialTypesRequest = () => ({
@@ -47,5 +50,19 @@ export const getCreditLevelTypesSuccess = (payload: any) => ({
 
 export const getCreditLevelTypesFailure = (payload: any) => ({
   type: GET_CREDIT_LEVEL_TYPES_FAILURE,
+  payload,
+});
+export const getLanguageRequest = (payload: any) => ({
+  type: SEARCH_FOR_LANGUAGE_REQUEST,
+  payload,
+});
+
+export const getDataForLanguageSuccess = (payload: any) => ({
+  type: SEARCH_FOR_LANGUAGE_SUCCESS,
+  payload,
+});
+
+export const getDataForLanguageFailure = (payload: any) => ({
+  type: SEARCH_FOR_LANGUAGE_FAILURE,
   payload,
 });

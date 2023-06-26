@@ -8,6 +8,9 @@ import {
   GET_CREDIT_LEVEL_TYPES_REQUEST,
   GET_CREDIT_LEVEL_TYPES_SUCCESS,
   GET_CREDIT_LEVEL_TYPES_FAILURE,
+  SEARCH_FOR_LANGUAGE_FAILURE,
+  SEARCH_FOR_LANGUAGE_REQUEST,
+  SEARCH_FOR_LANGUAGE_SUCCESS,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -23,6 +26,11 @@ const initState: RootState = {
     valid: false,
   },
   creditLevelTypeData: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
+  allLanguages: {
     loading: false,
     data: null,
     valid: false,
@@ -101,6 +109,34 @@ export default (state = initState, action: { type: string; payload: any }) => {
         ...state,
         creditValueTypeData: {
           ...state.creditLevelTypeData,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case SEARCH_FOR_LANGUAGE_REQUEST:
+      return {
+        ...state,
+        allLanguages: {
+          ...state.allLanguages,
+          loading: true,
+        },
+      };
+    case SEARCH_FOR_LANGUAGE_SUCCESS:
+      return {
+        ...state,
+        allLanguages: {
+          ...state.allLanguages,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case SEARCH_FOR_LANGUAGE_FAILURE:
+      return {
+        ...state,
+        allLanguages: {
+          ...state.allLanguages,
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,

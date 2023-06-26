@@ -2,7 +2,11 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { IS_LOCALHOST, TEMP_BASE_URL } from './apiConfig/setting';
+import {
+  IS_LOCALHOST,
+  sanboxSetting,
+  TEMP_BASE_URL,
+} from './apiConfig/setting';
 import './App.scss';
 
 import Button from './components/button';
@@ -14,7 +18,7 @@ import Modal from './components/modal';
 import RightPanel from './components/rightPanel';
 import AddPathwayForm from './screens/addPathwayForm';
 import { PathwayWrapperEntity } from './screens/addPathwayForm/model';
-import CreatePathway from './screens/createPathway/createPathway';
+//import CreatePathway from './screens/createPathway/createPathway';
 import EnterDevCredentials from './screens/enterDevCredentials';
 import HomePage from './screens/homePage';
 
@@ -47,8 +51,7 @@ const App = () => {
 
   const [isrightPanelDrawerVisible, setRightPanelDrawerVisible] =
     useState<boolean>(false);
-  const [isCreatePathwayVisible, setIsCreatePathwayVisible] =
-    useState<boolean>(false);
+  const [isCreatePathwayVisible] = useState<boolean>(false);
   const [isAddPathwayFormVisible, setIsAddPathwayFormVisible] =
     useState<boolean>(false);
   const [
@@ -104,11 +107,13 @@ const App = () => {
     const url = window.location.href;
     if (url?.toLowerCase().includes('?id=')) {
       const pathwayIdFromUrl = url?.toLowerCase().split('id=').pop();
-      const pathwayViewFromUrl = url?.toLowerCase().split('isviewmode=').pop();
+      const pathwayViewFromUrl = sanboxSetting.api.url
+        ?.toLowerCase()
+        .includes('finder')
+        ? 'true'
+        : 'false';
       if (pathwayIdFromUrl) {
-        dispatch(
-          getDataForPathwayAndComponentsRequest(parseInt(pathwayIdFromUrl))
-        );
+        dispatch(getDataForPathwayAndComponentsRequest(pathwayIdFromUrl));
         Message({
           description:
             'Sit tight, while we load the pathway and make the connections',
@@ -146,15 +151,15 @@ const App = () => {
     }
   }, [userData]);
 
-  const oncreatePathwayOkHandler = () => {
-    setIsAddPathwayFormVisible(true);
-    setIsCreatePathwayVisible(false);
-  };
+  // const oncreatePathwayOkHandler = () => {
+  //   setIsAddPathwayFormVisible(true);
+  //   setIsCreatePathwayVisible(false);
+  // };
 
-  const onCreatePathwayCancelHandler = () => {
-    window.location.href = TEMP_BASE_URL;
-    //window.location.href = `${process.env.REACT_APP_API_BASE_URL}`;
-  };
+  // const onCreatePathwayCancelHandler = () => {
+  //   window.location.href = TEMP_BASE_URL;
+  //   //window.location.href = `${process.env.REACT_APP_API_BASE_URL}`;
+  // };
 
   const onCloseHandler = () => {
     const element = document.getElementById('left-frame');
@@ -169,29 +174,30 @@ const App = () => {
       dispatch(saveSelectedOrganization(selectedOrganisationValue));
     }
     setsSelectOrganizationsVisible(false);
-    setIsCreatePathwayVisible(true);
+    //setIsCreatePathwayVisible(true);
+    setIsAddPathwayFormVisible(true);
   };
 
   useEffect(() => {
-    if (organisationList && organisationList?.length > 1) {
+    if (organisationList && organisationList?.length >= 1) {
       setsSelectOrganizationsVisible(true);
     }
   }, [organisationList?.length]);
 
-  const createPathwayFooter = () => (
-    <div style={{ display: 'flex' }}>
-      <Button
-        onClick={oncreatePathwayOkHandler}
-        text="Start Your Pathway"
-        type={Type.PRIMARY}
-      />
-      <Button
-        onClick={closeCreatePathwayModal}
-        text="Cancel"
-        type={Type.CANCEL}
-      />
-    </div>
-  );
+  // const createPathwayFooter = () => (
+  //   <div style={{ display: 'flex' }}>
+  //     <Button
+  //       onClick={oncreatePathwayOkHandler}
+  //       text="Start Your Pathway"
+  //       type={Type.PRIMARY}
+  //     />
+  //     <Button
+  //       onClick={closeCreatePathwayModal}
+  //       text="Cancel"
+  //       type={Type.CANCEL}
+  //     />
+  //   </div>
+  // );
 
   const onPreSelectResourceCancelHandler = () => {
     setIsPreSelectedCreateResourceVisible(false);
@@ -200,14 +206,14 @@ const App = () => {
       setIsDestinationColumnSelected(true);
   };
 
-  const closeCreatePathwayModal = () => {
-    Modal.confirm({
-      cancelText: 'No',
-      okText: 'Yes',
-      title: 'Are you sure you want to cancel.',
-      onOk: () => onCreatePathwayCancelHandler(),
-    });
-  };
+  // const closeCreatePathwayModal = () => {
+  //   Modal.confirm({
+  //     cancelText: 'No',
+  //     okText: 'Yes',
+  //     title: 'Are you sure you want to cancel.',
+  //     onOk: () => onCreatePathwayCancelHandler(),
+  //   });
+  // };
 
   const getSkipValueOfPreSelectResources = (skipedValue: boolean) => {
     setSkipPreSelect(skipedValue);
@@ -251,18 +257,20 @@ const App = () => {
             isEdit={isEdit}
             setIsEdit={setIsEdit}
           />
-          <Modal
+          {/* <Modal
             visible={isCreatePathwayVisible}
-            title="Add a Pathway"
+            title= "Add a Pathway"
             footer={createPathwayFooter()}
             width={550}
             onCancel={closeCreatePathwayModal}
           >
             <CreatePathway />
-          </Modal>
+          </Modal> */}
           <Modal
             visible={isAddPathwayFormVisible || isEditPathwayFormVisible}
-            title="Add a Pathway"
+            title={
+              isViewMode == true ? 'View Pathway Details' : 'Add a Pathway'
+            }
             onCancel={() => {
               setIsAddPathwayFormVisible(false);
               setIsEditPathwayFormVisible(false);
@@ -285,7 +293,8 @@ const App = () => {
           </Modal>
           <Modal
             visible={isPreSelectedCreateResourceVisible}
-            width="650px"
+            //width="650px"
+            width="50vw"
             footer={[]}
             onCancel={onPreSelectResourceCancelHandler}
             title="Pre-Select Resources to Create Your Pathway"
@@ -396,4 +405,4 @@ const App = () => {
   ) : null;
 };
 
-export default App;
+export default React.memo(App);

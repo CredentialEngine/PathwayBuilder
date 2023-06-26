@@ -1,3 +1,6 @@
+import { faCaretDown, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Dropdown, Menu } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -37,16 +40,17 @@ const LeftPanel: React.FC<any> = ({
   const [searchValue, setSearchValue] = useState('');
   const propsChildrenData = [];
   const [componentTabCards, setComponentTabCards] = useState<any>([]);
-  const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
+  const [alphabetical, setAlphabetical] = useState<string>('');
+  // const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
     useState(false);
   const [droppedCard, setDroppedCard] = useState<any>();
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    isDraggableCardVisibleMethod(isDraggableCardVisible);
-  }, [isDraggableCardVisible]);
+  // useEffect(() => {
+  //   isDraggableCardVisibleMethod(isDraggableCardVisible);
+  // }, [isDraggableCardVisible]);
 
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
@@ -219,7 +223,19 @@ const LeftPanel: React.FC<any> = ({
     }
     return conditionalComponent;
   };
-
+  const UnSelectSelectedItem = (itemId: string) => {
+    debugger;
+    const updatedPathwayWrapper = { ...result.mappedData };
+    const filteredpending = updatedPathwayWrapper.PendingComponents.filter(
+      (item: any) => item.CTID !== itemId
+    );
+    updatedPathwayWrapper.PendingComponents = filteredpending;
+    const filteredItems = selectedTabCardData.filter(
+      (item: any) => item.CTID !== itemId
+    );
+    setSelectedtabCards(filteredItems);
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+  };
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
   };
@@ -365,6 +381,47 @@ const LeftPanel: React.FC<any> = ({
       name: LeftPanelTabKey.Components,
     },
   ];
+  const alphabeticalMenu = [
+    {
+      label: 'Sort',
+      key: '0',
+    },
+    {
+      label: 'Alphabetical',
+      key: '1',
+    },
+    {
+      label: 'Component Type',
+      key: '2',
+    },
+    {
+      label: 'Owning Organization',
+      key: '3',
+    },
+  ];
+  useEffect(() => {
+    const clonedSelectedResource = _.cloneDeep(selectedTabCardData);
+    if (Number(alphabetical) === 1) {
+      clonedSelectedResource?.sort((a: any, b: any) =>
+        a.Name.localeCompare(b.Name)
+      );
+      setSelectedtabCards(clonedSelectedResource);
+    } else if (Number(alphabetical) === 2) {
+      clonedSelectedResource?.sort((a: any, b: any) =>
+        a.Type.localeCompare(b.Type)
+      );
+      setSelectedtabCards(clonedSelectedResource);
+    } else if (Number(alphabetical) === 3) {
+      clonedSelectedResource?.sort((a: any, b: any) =>
+        a.FinderResource?.Provider?.Name.localeCompare(
+          b.FinderResource?.Provider?.Name
+        )
+      );
+      setSelectedtabCards(clonedSelectedResource);
+    } else {
+      setSelectedtabCards(selectedTabCardData);
+    }
+  }, [alphabetical]);
 
   const propsChildren = [
     {
@@ -378,6 +435,25 @@ const LeftPanel: React.FC<any> = ({
             styleType="outline"
             onKeyUp={searchComponent}
           />
+
+          <Dropdown
+            overlay={
+              <Menu
+                items={alphabeticalMenu}
+                selectable
+                onClick={(e) => {
+                  setAlphabetical(e.key);
+                }}
+              />
+            }
+            trigger={['click']}
+          >
+            <p className="dropdown-title d-flex">
+              {alphabeticalMenu[Number(alphabetical)]?.label}&nbsp;
+              <FontAwesomeIcon icon={faCaretDown} color="black" />
+            </p>
+          </Dropdown>
+
           <LeftPanelDropWrapper
             className={Styles.cardwrapper}
             tabName={LeftPanelTabKey.Selected}
@@ -403,28 +479,36 @@ const LeftPanel: React.FC<any> = ({
               selectedTabCards
                 ?.filter((v: any) =>
                   !_.isEmpty(searchValue)
-                    ? v?.Description?.toLocaleLowerCase().includes(
+                    ? v?.Name?.toLocaleLowerCase().includes(
                         searchValue?.toLocaleLowerCase()
                       )
                     : true
                 )
                 .map((v: any, i: any) => (
-                  <CardWithLeftIcon
-                    draggable={true}
-                    data={v}
-                    key={i}
-                    name={v?.Name}
-                    type={v?.Type}
-                    description={v?.Description?.slice(0, 30)}
-                    codedNotation={v?.CodedNotation}
-                    IconColor="black"
-                    id={v?.Id}
-                    CTID={v?.CTID}
-                    isDraggableCardVisibleMethod={(isDragTure: boolean) =>
-                      setDraggableCardVisible(isDragTure)
-                    }
-                    setLeftpanelSelectedElem={setLeftpanelSelectedElem}
-                  />
+                  <div className={Styles.flexGrowCenter} key={i}>
+                    <>
+                      <CardWithLeftIcon
+                        draggable={true}
+                        data={v}
+                        key={i}
+                        name={v?.Name}
+                        type={v?.Type}
+                        description={v?.Description?.slice(0, 30)}
+                        codedNotation={v?.CodedNotation}
+                        IconColor="black"
+                        id={v?.Id}
+                        CTID={v?.CTID}
+                        // isDraggableCardVisibleMethod={(isDragTure: boolean) => setDraggableCardVisible(false)}
+                        setLeftpanelSelectedElem={setLeftpanelSelectedElem}
+                      />
+                      <span
+                        className={Styles.iconCircle}
+                        onClick={() => UnSelectSelectedItem(v.CTID)}
+                      >
+                        <FontAwesomeIcon icon={faMinus} />
+                      </span>
+                    </>
+                  </div>
                 ))
             )}
           </LeftPanelDropWrapper>
@@ -475,11 +559,20 @@ const LeftPanel: React.FC<any> = ({
     <div className={Styles.drawercontroller}>
       <div className={Styles.drawerheader}>
         <h2>Add Components</h2>
-        <u style={{ cursor: 'pointer' }} onClick={onClickPreselectComponent}>
-          Search Components
-        </u>
       </div>
+      <u
+        style={{
+          cursor: 'pointer',
+          backgroundColor: '#4ee5e1',
+          borderRadius: '5px',
+        }}
+        onClick={onClickPreselectComponent}
+      >
+        Search Registry Resources
+      </u>
+
       <Tab {...tabVal} />
+
       <Modal
         visible={showAddComponentToPathway}
         onCancel={() => setShowAddComponentToPathway(false)}
@@ -494,3 +587,6 @@ const LeftPanel: React.FC<any> = ({
   );
 };
 export default LeftPanel;
+// function elseif(arg0: boolean) {
+//   throw new Error('Function not implemented.');
+// }

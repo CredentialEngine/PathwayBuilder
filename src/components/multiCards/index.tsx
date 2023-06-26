@@ -11,7 +11,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useXarrow } from 'react-xarrows';
 
-import { TEMP_BASE_URL } from '../../apiConfig/setting';
+//import { TEMP_BASE_URL } from '../../apiConfig/setting';
+import { GET_ICON_URL } from '../../apiConfig/endpoint';
 import EditComponent from '../../screens/editComponent';
 import InfoTooltip from '../infoTooltip';
 import RightPanel from '../rightPanel';
@@ -37,6 +38,7 @@ interface Props {
   isAddFirst?: boolean;
   firstComponent?: boolean;
   getEndPoints: any;
+  setSelected: any;
   isDraggableCardVisible?: boolean;
   constraintIcon?: boolean;
   number: number;
@@ -57,6 +59,8 @@ interface Props {
   allConditionalCardsData?: any;
   connectionsCTID?: any;
   skipPreSelect?: boolean;
+  selectedCard?: boolean;
+  errorCard?: boolean;
   destinationColumnSelect?: boolean;
   setDraggableCardVisible?: (a: boolean) => void;
   setIsConditionalEditing?: (a: boolean) => void;
@@ -73,7 +77,7 @@ const MultiCard: React.FC<Props> = ({
   isCredentialCard,
   isAddComponentCard,
   data,
-  onClick,
+  //onClick,
   setIsZoomDisabled,
   status,
   CTID,
@@ -83,16 +87,20 @@ const MultiCard: React.FC<Props> = ({
   isAddFirst,
   firstComponent,
   getEndPoints,
+  setSelected,
   isDraggableCardVisible,
   onDelete,
   rowNumber,
   columnNumber,
   skipPreSelect,
+  selectedCard,
+  errorCard,
   setDraggableCardVisible,
   setIsConditionalEditing,
   getComponentConditionData,
   isViewMode,
 }) => {
+  //debugger
   const [showPopover, setShowPopover] = useState(false);
 
   const ref = useRef(null);
@@ -105,20 +113,31 @@ const MultiCard: React.FC<Props> = ({
   const updateXarrow = useXarrow();
 
   const darkColor = '#0A2942';
+
   const getOnClick = (e: any) => {
     /* 
     Below commented code is for increasing width for dropWrapper
-
     const getElement = forwardRef.current[number];
     if (!_.isNull(getElement)) {
       const rect = getElement.getBoundingClientRect();
       getElement.style.width = `${rect.width * 2}px`;
     }
-
     */
-
-    onClick;
+    onclick;
     getEndPoints(e, CTID);
+  };
+  const selected = (e: any) => {
+    ondblclick;
+    setSelected(e, CTID);
+  };
+  const getEndClick = (e: any) => {
+    onclick;
+    getEndPoints(e, CTID);
+  };
+  const openInNewTab = () => {
+    if (data?.FinderResource?.URI != null) {
+      window.open(data?.FinderResource?.URI, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const onDragStart = (e: any) => {
@@ -126,7 +145,7 @@ const MultiCard: React.FC<Props> = ({
       updateXarrow();
       setIsZoomDisabled(true);
       const target = e.target;
-      !!setDraggableCardVisible && setDraggableCardVisible(true);
+      !!setDraggableCardVisible && setDraggableCardVisible(false);
       e.dataTransfer.setData(
         'card_id',
         JSON.stringify({
@@ -191,7 +210,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' assessmentCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
+          src={`${GET_ICON_URL}AssessmentComponent.png`}
           alt="AssessmentComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -201,7 +220,7 @@ const MultiCard: React.FC<Props> = ({
     (data?.Type?.toLowerCase().includes('BasicComponent'.toLowerCase()) && (
       <span className={styles.iconwrapper + ' basicCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
+          src={`${GET_ICON_URL}BasicComponent.png`}
           alt="BasicComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -213,7 +232,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' cocurricularCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
+          src={`${GET_ICON_URL}CocurricularComponent.png`}
           alt="CocurricularComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -225,7 +244,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' competencyCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
+          src={`${GET_ICON_URL}CompetencyComponent.png`}
           alt="CompetencyComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -235,7 +254,7 @@ const MultiCard: React.FC<Props> = ({
     (data?.Type?.toLowerCase().includes('CourseComponent'.toLowerCase()) && (
       <span className={styles.iconwrapper + ' courseCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
+          src={`${GET_ICON_URL}CourseComponent.png`}
           alt="CourseComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -247,7 +266,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' extraCurricularCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
+          src={`${GET_ICON_URL}ExtracurricularComponent.png`}
           alt="ExtracurricularComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -257,7 +276,7 @@ const MultiCard: React.FC<Props> = ({
     (data?.Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
       <span className={styles.iconwrapper + ' jobCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
+          src={`${GET_ICON_URL}JobComponent.png`}
           alt="JobComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -269,7 +288,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + ' workExperienceCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
+          src={`${GET_ICON_URL}WorkExperienceComponent.png`}
           alt="WorkExperienceComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -281,7 +300,7 @@ const MultiCard: React.FC<Props> = ({
     ) && (
       <span className={styles.iconwrapper + 'credentialCard'}>
         <img
-          src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
+          src={`${GET_ICON_URL}CredentialComponent.png`}
           alt="CredentialComponent"
           className="componentIcon"
           style={{ height: '26px', width: '26px' }}
@@ -290,7 +309,7 @@ const MultiCard: React.FC<Props> = ({
     )) ||
     (data?.Type?.toLowerCase().includes('ComponentCondition'.toLowerCase()) && (
       <img
-        src={`${TEMP_BASE_URL}Images/PathwayBuilder/ComponentCondition.png`}
+        src={`${GET_ICON_URL}ComponentCondition.png`}
         alt="ComponentCondition"
         className="componentIcon"
         style={{ height: '26px', width: '26px' }}
@@ -298,7 +317,7 @@ const MultiCard: React.FC<Props> = ({
     )) ||
     (data?.Type?.toLowerCase().includes('selection'.toLowerCase()) && (
       <img
-        src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionCondition.png`}
+        src={`${GET_ICON_URL}SelectionCondition.png`}
         alt="SelectionCondition"
         className="componentIcon"
         style={{ height: '26px', width: '26px' }}
@@ -343,8 +362,8 @@ const MultiCard: React.FC<Props> = ({
               onDragStart={onDragStart}
               onDragOver={onDragOver}
               onDragEnd={onDragEnd}
-              onClick={(e: any) => {
-                getOnClick(e);
+              onDoubleClick={(e: any) => {
+                selected(e);
               }}
               onMouseLeave={() => setIsZoomDisabled(false)}
               onMouseOver={() => setIsZoomDisabled(true)}
@@ -437,7 +456,7 @@ const MultiCard: React.FC<Props> = ({
                           placement="bottomRight"
                           content={
                             <div className={styles.popoverMenu} ref={ref}>
-                              <span
+                              {/* <span
                                 onClick={(e: any) => {
                                   e.stopPropagation();
                                   e.preventDefault();
@@ -446,9 +465,10 @@ const MultiCard: React.FC<Props> = ({
                                 }}
                               >
                                 View
-                              </span>
+                              </span> */}
                               {!isViewMode && (
                                 <span
+                                  style={{ color: 'black' }}
                                   onClick={(e: any) => {
                                     e.stopPropagation();
                                     e.preventDefault();
@@ -461,6 +481,7 @@ const MultiCard: React.FC<Props> = ({
                               )}
                               {!isViewMode && (
                                 <span
+                                  style={{ color: 'black' }}
                                   onClick={(e: any) => {
                                     e.stopPropagation();
                                     e.preventDefault();
@@ -538,7 +559,7 @@ const MultiCard: React.FC<Props> = ({
                     />
                   </div>
                   <div className={styles.requiredSection}>
-                    <span>{data?.Description}</span>
+                    <span>{data?.Description?.slice(0, 40)}</span>
                   </div>
                 </React.Fragment>
               )}
@@ -585,7 +606,13 @@ const MultiCard: React.FC<Props> = ({
         </div>
       ) : (
         <div
-          className={`${styles.multiCardWrapper} ${
+          className={`${
+            selectedCard
+              ? styles.multiCardWrapper + ' selectedcard'
+              : errorCard
+              ? styles.multiCardWrapper + ' errorcard'
+              : styles.multiCardWrapper
+          } ${
             (skipPreSelect && isAddDestination && destinationComponent) ||
             (isAddFirst && firstComponent)
               ? styles.addDestinationCard
@@ -601,8 +628,8 @@ const MultiCard: React.FC<Props> = ({
           onDragStart={onDragStart}
           onDragOver={onDragOver}
           onDragEnd={onDragEnd}
-          onClick={(e: any) => {
-            getOnClick(e);
+          onDoubleClick={(e: any) => {
+            selected(e);
           }}
           onMouseLeave={() => setIsZoomDisabled(false)}
           onMouseOver={() => setIsZoomDisabled(true)}
@@ -655,7 +682,16 @@ const MultiCard: React.FC<Props> = ({
             <>
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}
+                onClick={(e: any) => {
+                  getEndClick(e);
+                }}
               ></span>
+              {/* <span
+                className={styles.ornageSection + ' ' + styles.top}
+                onClick={(e: any) => {
+                getEndClick(e);
+              }}
+              ></span> */}
               <div
                 className={
                   isDestination
@@ -685,7 +721,7 @@ const MultiCard: React.FC<Props> = ({
                       placement="bottomRight"
                       content={
                         <div className={styles.popoverMenu} ref={ref}>
-                          <span
+                          {/* <span
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
@@ -694,21 +730,22 @@ const MultiCard: React.FC<Props> = ({
                             }}
                           >
                             View
+                          </span> */}
+
+                          <span
+                            style={{ color: 'black' }}
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setShowRightPanelEdit(true);
+                              setShowPopover(false);
+                            }}
+                          >
+                            {!isViewMode ? 'Edit' : 'View'}
                           </span>
                           {!isViewMode && (
                             <span
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                setShowRightPanelEdit(true);
-                                setShowPopover(false);
-                              }}
-                            >
-                              Edit
-                            </span>
-                          )}
-                          {!isViewMode && (
-                            <span
+                              style={{ color: 'black' }}
                               onClick={(e: any) => {
                                 e.stopPropagation();
                                 e.preventDefault();
@@ -733,22 +770,55 @@ const MultiCard: React.FC<Props> = ({
                   {data?.Type?.toLowerCase().includes(
                     'CompetencyComponent'.toLowerCase()
                   ) ? (
-                    <span title={data?.Description}>
-                      {data?.Description?.slice(0, 90)}
-                    </span>
+                    <>
+                      <span>{data?.FinderResource?.Provider?.Name}</span>
+                      <span title={data?.Description} onClick={openInNewTab}>
+                        {data?.FinderResource?.URI != null ? (
+                          <u>{data?.Description?.slice(0, 50)}</u>
+                        ) : (
+                          data?.Description?.slice(0, 50)
+                        )}
+                      </span>
+                    </>
                   ) : (
-                    <span>{data?.Name}</span>
+                    <>
+                      <span>{data?.FinderResource?.Provider?.Name}</span>
+                      <span onClick={openInNewTab}>
+                        {data?.FinderResource?.URI != null ? (
+                          <u>{data?.Name}</u>
+                        ) : (
+                          data?.Name
+                        )}
+                      </span>
+                    </>
+                    //{data?.Name}</span></>
                   )}
                 </div>
                 <div className={styles.creditSection}>
-                  <span>Credits: {data?.CreditValue?.[0]?.Value || 0}</span>
+                  {data?.Type?.toLowerCase().includes(
+                    'coursecomponent'.toLowerCase()
+                  ) ? (
+                    <span>Credits: {data?.CreditValue?.[0]?.Value || 0}</span>
+                  ) : (
+                    <span></span>
+                  )}
+
                   <span title={ProgressionLevelName}>
                     Level {ProgressionLevelName?.slice(0, 30)}
                   </span>
                 </div>
               </div>
               <span
+                className={styles.ornageSection + ' ' + styles.bottom}
+                onClick={(e: any) => {
+                  getEndClick(e);
+                }}
+              ></span>
+              <span
                 className={styles.ornageSection + ' ' + styles.right}
+                onClick={(e: any) => {
+                  getOnClick(e);
+                }}
               ></span>
             </>
           )}
@@ -757,6 +827,9 @@ const MultiCard: React.FC<Props> = ({
             <>
               <span
                 className={styles.ornageSection + ' ' + styles.leftSide}
+                onClick={(e: any) => {
+                  getEndClick(e);
+                }}
               ></span>
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
@@ -781,7 +854,7 @@ const MultiCard: React.FC<Props> = ({
                       placement="bottomRight"
                       content={
                         <div className={styles.popoverMenu} ref={ref}>
-                          <span
+                          {/* <span
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
@@ -790,22 +863,24 @@ const MultiCard: React.FC<Props> = ({
                             }}
                           >
                             View
+                          </span> */}
+
+                          <span
+                            style={{ color: 'black' }}
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setShowRightPenal(false);
+                              setShowRightPanelEdit(true);
+                              setShowPopover(false);
+                            }}
+                          >
+                            {!isViewMode ? 'Edit' : 'View'}
                           </span>
+
                           {!isViewMode && (
                             <span
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                setShowRightPenal(false);
-                                setShowRightPanelEdit(true);
-                                setShowPopover(false);
-                              }}
-                            >
-                              Edit
-                            </span>
-                          )}
-                          {!isViewMode && (
-                            <span
+                              style={{ color: 'black' }}
                               onClick={(e: any) => {
                                 e.stopPropagation();
                                 e.preventDefault();
@@ -827,7 +902,16 @@ const MultiCard: React.FC<Props> = ({
                   }}
                 />
                 <div className={styles.courseNameContainter}>
-                  <span>{data?.Name}</span>
+                  <span>
+                    {data?.FinderResource?.Provider?.Name.slice(0, 0)}
+                  </span>
+                  <span title={data?.Name} onClick={openInNewTab}>
+                    {data?.FinderResource?.URI != null ? (
+                      <u>{data?.Name?.slice(0, 30)}</u>
+                    ) : (
+                      data?.Name?.slice(0, 30)
+                    )}
+                  </span>
                   <span>
                     Type:{' '}
                     {data?.CredentialType != undefined
@@ -835,9 +919,24 @@ const MultiCard: React.FC<Props> = ({
                       : ''}
                   </span>
                 </div>
+                <div className={styles.creditSection}>
+                  <span></span>
+                  <span title={ProgressionLevelName}>
+                    Level {ProgressionLevelName?.slice(0, 30)}
+                  </span>
+                </div>
               </div>
               <span
+                className={styles.ornageSection + ' ' + styles.bottom}
+                onClick={(e: any) => {
+                  getEndClick(e);
+                }}
+              ></span>
+              <span
                 className={styles.ornageSection + ' ' + styles.right}
+                onClick={(e: any) => {
+                  getOnClick(e);
+                }}
               ></span>
             </>
           )}
@@ -845,6 +944,14 @@ const MultiCard: React.FC<Props> = ({
           {isConditionalCard && (
             <>
               <React.Fragment>
+                <span
+                  className={
+                    styles.ornageConditionSection + ' ' + styles.leftSide
+                  }
+                  onClick={(e: any) => {
+                    getEndClick(e);
+                  }}
+                ></span>
                 <div className={styles.conditionalCardContent}>
                   <FontAwesomeIcon
                     color="#ffffff"
@@ -868,14 +975,18 @@ const MultiCard: React.FC<Props> = ({
                   <Popover
                     visible={showPopover}
                     arrowPointAtCenter
-                    placement="bottomRight"
+                    placement="right"
                     content={
                       <div className={styles.popoverMenu} ref={ref}>
-                        <span onClick={(e: any) => handleConditionEdit(e)}>
+                        <span
+                          style={{ color: 'black' }}
+                          onClick={(e: any) => handleConditionEdit(e)}
+                        >
                           {!isViewMode ? 'Edit' : 'View'}
                         </span>
                         {!isViewMode && (
                           <span
+                            style={{ color: 'black' }}
                             onClick={(e: any) => {
                               e.stopPropagation();
                               e.preventDefault();
@@ -897,7 +1008,9 @@ const MultiCard: React.FC<Props> = ({
                 />
                 <div className={styles.requiredSection}>
                   {!!data?.Description ? (
-                    <span title={data?.Description}>{data?.Description}</span>
+                    <span title={data?.Description}>
+                      {data?.Description?.slice(0, 80)}
+                    </span>
                   ) : (
                     <span>{data?.Name}</span>
                   )}
@@ -905,10 +1018,24 @@ const MultiCard: React.FC<Props> = ({
 
                 <div className={styles.creditSection}>
                   <span>
-                    Logic: {data?.LogicalOperator?.replace('logic:', '')}
+                    {/* Logic: {data?.LogicalOperator?.replace('logic:', '')} */}
                   </span>
                   <span>Constraints: {data?.HasConstraint.length}</span>
                 </div>
+                <span
+                  className={
+                    styles.ornageConditionSection + ' ' + styles.bottom
+                  }
+                  onClick={(e: any) => {
+                    getEndClick(e);
+                  }}
+                ></span>
+                <span
+                  className={styles.ornageConditionSection + ' ' + styles.right}
+                  onClick={(e: any) => {
+                    getOnClick(e);
+                  }}
+                ></span>
               </React.Fragment>
             </>
           )}
@@ -960,10 +1087,11 @@ const MultiCard: React.FC<Props> = ({
           visible={showRightPanelEdit}
           onCloseHandler={(val: boolean) => setShowRightPanelEdit(val)}
           panelData={data}
+          isViewMode={isViewMode}
         />
       )}
     </>
   );
 };
 
-export default MultiCard;
+export default React.memo(MultiCard);

@@ -11,6 +11,8 @@ import {
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE,
   SAVE_PATHWAY_SUCCESS,
   SAVE_PATHWAY_FAILURE,
+  SAVE_RESOURCE_SUCCESS,
+  SAVE_RESOURCE_FAILURE,
   ADD_COMPONENT_FROM_PATHWAY_MODAL,
   SELECT_DESTINATION_REQUEST,
   SAVE_SELECTED_ORGANISATION,
@@ -113,6 +115,11 @@ const initState: RootState = {
     data: null,
     valid: false,
   },
+  saveResource: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
   isDestinationSelected: false,
   selectedOrganization: null,
 };
@@ -209,7 +216,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
           ...state.approvePathway,
           loading: false,
           data: action.payload.Data,
-          valid: action?.payload?.Valid,
+          valid: false,
           error: true,
         },
       };
@@ -236,7 +243,29 @@ export default (state = initState, action: { type: string; payload: any }) => {
           error: true,
         },
       };
-
+    case SAVE_RESOURCE_SUCCESS:
+      return {
+        ...state,
+        saveResource: {
+          ...state.saveResource,
+          loading: false,
+          data: action.payload.Messages,
+          // PathwayId: action.payload.PathwayId,
+          valid: action?.payload?.Valid,
+          error: false,
+        },
+      };
+    case SAVE_RESOURCE_FAILURE:
+      return {
+        ...state,
+        saveResource: {
+          ...state.saveResource,
+          loading: false,
+          data: action.payload.Messages,
+          valid: action?.payload?.Valid,
+          error: true,
+        },
+      };
     case SELECT_DESTINATION_REQUEST:
       return {
         ...state,

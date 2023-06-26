@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, Col, Row } from 'antd';
 import React, { useState } from 'react';
 
-import { TEMP_BASE_URL } from '../../apiConfig/setting';
+import { GET_ICON_URL } from '../../apiConfig/endpoint';
 
 import styles from './index.module.scss';
 
@@ -123,6 +123,13 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
       id={id?.toString()}
+      bodyStyle={
+        data?.Type?.toLowerCase().includes('CredentialComponent'.toLowerCase())
+          ? { background: '#dcfaf9' }
+          : data?.Type?.toLowerCase().includes('condition'.toLowerCase())
+          ? { background: '#ffd263' }
+          : { background: 'white' }
+      }
     >
       <Row>
         <Col span="5">
@@ -133,7 +140,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
+                    src={`${GET_ICON_URL}AssessmentComponent.png`}
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
@@ -144,7 +151,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' basicCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
+                    src={`${GET_ICON_URL}BasicComponent.png`}
                     alt="BasicComponent"
                     className="componentIcon"
                   />
@@ -155,7 +162,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
+                    src={`${GET_ICON_URL}CocurricularComponent.png`}
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
@@ -166,7 +173,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
+                    src={`${GET_ICON_URL}CompetencyComponent.png`}
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
@@ -177,7 +184,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' courseCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
+                    src={`${GET_ICON_URL}CourseComponent.png`}
                     alt="CourseComponent"
                     className="componentIcon"
                   />
@@ -188,7 +195,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
+                    src={`${GET_ICON_URL}ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
@@ -199,7 +206,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' jobCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
+                    src={`${GET_ICON_URL}JobComponent.png`}
                     alt="JobComponent"
                     className="componentIcon"
                   />
@@ -210,7 +217,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
+                    src={`${GET_ICON_URL}WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
@@ -221,7 +228,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
+                    src={`${GET_ICON_URL}CredentialComponent.png`}
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
@@ -232,7 +239,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ComponentCondition.png`}
+                    src={`${GET_ICON_URL}ComponentCondition.png`}
                     alt="ComponentCondition"
                     className="componentIcon"
                   />
@@ -243,7 +250,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionCondition.png`}
+                    src={`${GET_ICON_URL}SelectionCondition.png`}
                     alt="SelectionCondition"
                     className="componentIcon"
                   />
@@ -255,7 +262,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
+                    src={`${GET_ICON_URL}CredentialComponent.png`}
                     alt="CredentialComponent"
                     className="componentIcon"
                   />
@@ -264,7 +271,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('course'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' courseCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
+                    src={`${GET_ICON_URL}CourseComponent.png`}
                     alt="courseComponent"
                     className="componentIcon"
                   />
@@ -273,7 +280,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('Basic'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' basicCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
+                    src={`${GET_ICON_URL}BasicComponent.png`}
                     alt="BasicComponent"
                     className="componentIcon"
                   />
@@ -284,7 +291,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
+                    src={`${GET_ICON_URL}CompetencyComponent.png`}
                     alt="CompetencyComponent"
                     className="componentIcon"
                   />
@@ -293,7 +300,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('assessment'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
+                    src={`${GET_ICON_URL}AssessmentComponent.png`}
                     alt="AssessmentComponent"
                     className="componentIcon"
                   />
@@ -302,7 +309,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('Cocurricular'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
+                    src={`${GET_ICON_URL}CocurricularComponent.png`}
                     alt="CocurricularComponent"
                     className="componentIcon"
                   />
@@ -313,7 +320,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               ) && (
                 <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
+                    src={`${GET_ICON_URL}ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                     className="componentIcon"
                   />
@@ -322,7 +329,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('selection'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionComponent.png`}
+                    src={`${GET_ICON_URL}SelectionComponent.png`}
                     alt="SelectionComponent"
                     className="componentIcon"
                   />
@@ -331,7 +338,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('WorkExperience'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
+                    src={`${GET_ICON_URL}WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                     className="componentIcon"
                   />
@@ -340,7 +347,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('JobComponent'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' jobCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
+                    src={`${GET_ICON_URL}JobComponent.png`}
                     alt="JobComponent"
                     className="componentIcon"
                   />
@@ -349,7 +356,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
               {Type?.toLowerCase().includes('Addressing'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AddressingComponent.png`}
+                    src={`${GET_ICON_URL}AddressingComponent.png`}
                     alt="AddressingConflictComponent"
                     className="componentIcon"
                   />
@@ -361,6 +368,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
         <Col span="19">
           <>
             <p>{data?.Type?.split(':')[1].replace('Component', '')}</p>
+            {data?.FinderResource?.Provider?.Name}
             {data?.Name == null && (
               <span
                 className="fa-layers fa-fw fa-lg"
@@ -385,15 +393,39 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
             {data?.Type?.toLowerCase().includes(
               'CompetencyComponent'.toLowerCase()
             ) ? (
-              <h5 title={data?.Description}>
-                {data?.Description}
-                {showDescription && getDescription(Type?.toLowerCase())}
-              </h5>
+              <>
+                <p>
+                  {data?.Identifier?.[0]?.IdentifierType ===
+                  'ceasn:codedNotation'
+                    ? 'Coded Notation:' +
+                      data?.Identifier?.[0]?.IdentifierValueCode
+                    : ''}
+                </p>
+                <h5 title={data?.Description}>
+                  {data?.Description}
+                  {showDescription && getDescription(Type?.toLowerCase())}
+                </h5>
+              </>
             ) : (
-              <h5>
-                {Name}
-                {showDescription && getDescription(Type?.toLowerCase())}
-              </h5>
+              <>
+                <p>
+                  {data?.Identifier?.[0]?.IdentifierType ===
+                  'ceasn:codedNotation'
+                    ? 'Coded Notation:' +
+                      data?.Identifier?.[0]?.IdentifierValueCode
+                    : ''}
+                </p>
+                <h5>
+                  {Name}
+                  {showDescription && getDescription(Type?.toLowerCase())}
+                  <br />
+                  {data?.CredentialType !== '' &&
+                  data?.CredentialType !== undefined
+                    ? 'Type:' +
+                      data?.CredentialType.split(':')[1].replace('ceterms:', '')
+                    : ''}
+                </h5>
+              </>
             )}
           </>
         </Col>

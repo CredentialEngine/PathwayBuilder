@@ -107,6 +107,74 @@
 }
 .right_drawer {
   :global {
+    .ant-checkbox-wrapper {
+      span:last-child {
+        font-weight: normal;
+        font-size: 13px;
+        color: $primary-dark;
+      }
+    }
+    .ant-select-selection-overflow-item {
+      white-space: nowrap;
+      overflow: hidden;
+      .ant-tag {
+        background-color: $selection;
+        border-radius: 15px;
+        color: $black;
+        margin: 1px;
+      }
+    }
+    .ant-form-item-control-input input[disabled] {
+      color: black;
+    }
+    .ant-form-item-control-input-content input[disabled] {
+      color: black;
+    }
+
+    .toggle-slider {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-slider input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.2s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: '';
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 40%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196f3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
     .ant-drawer-header-close-only {
       position: absolute;
       right: 10px;
@@ -152,6 +220,23 @@
       margin-right: 0;
       display: none;
     }
+    .ant-form-item-control-input input[disabled] {
+      color: black;
+    }
+    .ant-form-item-control-textarea textarea[disabled] {
+      color: black;
+    }
+    .ant-tooltip-inner {
+      color: black !important;
+      background-color: #4ee5e1 !important;
+    }
+    .ant-form-item-control-input input[disabled] {
+      color: black;
+    }
+    .ant-tooltip-inner {
+      color: black !important;
+      background-color: #4ee5e1 !important;
+    }
   }
 }
 .iconwrapper {
@@ -166,11 +251,4 @@
 }
 .image {
   background-color: #00a0ff;
-}
-.ant-form-item-control-input input[disabled] {
-  color: black;
-}
-.ant-tooltip-inner {
-  color: black !important;
-  background-color: #4ee5e1 !important;
 }

@@ -1,20 +1,37 @@
+import CloseOutlined from '@ant-design/icons/CloseOutlined';
+import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { Form, Tag, Drawer, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
+  GET_ICON_URL,
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
+  SEARCH_FOR_LANGUAGE,
+  GET_ORGANIZATION,
+  FINDER_URL,
 } from '../../apiConfig/endpoint';
 import { TEMP_BASE_URL } from '../../apiConfig/setting';
 import Button from '../../components/button';
+import { Type } from '../../components/button/type';
 import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
-import { updateMappedDataRequest } from '../../states/actions';
+
+import Message from '../../components/message';
+import {
+  saveResourceRequest,
+  saveResourceSuccess,
+  updateMappedDataRequest,
+} from '../../states/actions';
+import { isValidUrl } from '../../utils/object';
 
 import DebounceSelect from './debounceSelect';
 import Styles from './index.module.scss';
@@ -28,21 +45,75 @@ interface Props {
   visible?: boolean;
   onCloseHandler: (value: boolean) => void;
   panelData?: any;
+  isViewMode?: boolean;
 }
 
 const EditComponent: React.FC<Props> = ({
   onCloseHandler,
   visible,
   panelData,
+  isViewMode,
 }) => {
   const ref = useRef(null);
   const [rightPanelData, setRightPanelData] = useState<any>();
-
+  const [resourceData, setResourceData] = useState<any>({
+    Name: '',
+    Description: '',
+    SubjectWebpage: '',
+    OwnedBy: '',
+    OfferedBy: [],
+    CTID: 'ce-' + uuidv4(),
+    inLanguage: [],
+    AvailableAt: '',
+    AvailabilityListing: '',
+    LifeCycleStatusType: 'Active',
+    CredentialType: [],
+    CredentialStatusType: '',
+    Organization: [],
+    EntityType: '',
+  });
   const dispatch = useDispatch();
 
   const handleOutsideClick = () => {
     onCloseHandler(false);
   };
+
+  const saveResourceResult = useSelector(
+    (state: any) => state?.initalReducer?.saveResource
+  );
+
+  const SaveResource = () => {
+    Message({
+      description: 'Saving the resource',
+      type: 'notice',
+    });
+    let getCredentialTypeURI = [];
+    if (credentialType) {
+      getCredentialTypeURI = allCredentialTypes?.CredentialType?.filter(
+        (getURI: any) =>
+          credentialType == getURI?.Name || credentialType == getURI?.URI
+      );
+    }
+    const editedResourceData = {
+      Description: rightPanelData.Description,
+      Name: rightPanelData.Name,
+      SubjectWebpage: rightPanelData.SubjectWebpage,
+      CredentialType: getCredentialTypeURI[0],
+      AvailableAt: resourceData.AvailabilityAt,
+      AvailabilityListing: resourceData.AvailabilityListing,
+      OwnedBy: pathwayWrapper?.mappedData?.Pathway?.Organization?.CTID,
+      OfferedBy: resourceData?.OfferedBy,
+      inLanguage: resourceData?.inLanguage,
+      Organization: pathwayWrapper?.mappedData?.Pathway?.Organization,
+      CTID: resourceData.CTID,
+      LifeCycleStatusType: resourceData.LifeCycleStatusType,
+      EntityType: rightPanelData?.Type,
+    };
+    //console.log(editedResourceData)
+    setResourceData(editedResourceData);
+    dispatch(saveResourceRequest(editedResourceData));
+  };
+
   const SaveComponent = () => {
     let getCredentialTypeURI = [];
     let getCreditUnitTypeURI = [];
@@ -84,6 +155,25 @@ const EditComponent: React.FC<Props> = ({
         Identfier = rightPanelData?.Identifier?.[0];
       }
     }
+    let CreditValue = {
+      CreditUnitTypes: null,
+      CreditUnitType: null,
+      CreditLevelType: null,
+      Value: null,
+      Description: null,
+      Subject: null,
+    };
+    if (rightPanelData?.Value || rightPanelData?.Creditdescription) {
+      CreditValue.CreditUnitType = getCreditUnitTypeURI[0]?.URI;
+      CreditValue.CreditLevelType = getCreditLevelTypeURI;
+      CreditValue.Value = rightPanelData.Value;
+      CreditValue.Description = rightPanelData.Creditdescription;
+    } else {
+      CreditValue = rightPanelData?.CreditValue?.[0];
+      if (getCreditUnitTypeURI.length > 0) {
+        CreditValue.CreditUnitType = getCreditUnitTypeURI[0]?.URI;
+      }
+    }
     const isemptyIdentifier = Object.values(Identfier).every((x) => x === '');
     const rightediteddata = {
       Description: rightPanelData.Description,
@@ -95,6 +185,7 @@ const EditComponent: React.FC<Props> = ({
       ComponentCategory: rightPanelData.ComponentCategory,
       CredentialType: getCredentialTypeURI[0]?.URI,
       Identifier: [Identfier],
+      CreditValue: [CreditValue],
     };
     setRightPanelData([rightediteddata]);
     if (pathwayWrapper?.mappedData?.PathwayComponents.length > 0) {
@@ -142,61 +233,69 @@ const EditComponent: React.FC<Props> = ({
           'course'.toLocaleLowerCase()
         )
       ) {
-        let CreditValue = {
-          CreditUnitTypes: null,
-          CreditUnitType: null,
-          CreditLevelType: null,
-          Value: null,
-          Description: null,
-          Subject: null,
-        };
-        if (rightPanelData?.Value || rightPanelData?.Creditdescription) {
-          CreditValue.CreditUnitType = getCreditUnitTypeURI[0]?.URI;
-          CreditValue.CreditLevelType = getCreditLevelTypeURI;
-          CreditValue.Value = rightPanelData.Value;
-          CreditValue.Description = rightPanelData.Creditdescription;
-        } else {
-          CreditValue = rightPanelData?.CreditValue?.[0];
-          if (getCreditUnitTypeURI.length > 0) {
-            CreditValue.CreditUnitType = getCreditUnitTypeURI[0]?.URI;
-          }
-        }
         if (CreditValue !== undefined) {
           const isemptyCreditValue = Object.values(CreditValue).every(
             (x) => x === ''
           );
           if (!isemptyCreditValue) {
-            const updatedPathwayComponent =
-              pathwayWrapper?.mappedData?.PathwayComponents?.filter(
-                (component_card: any) =>
-                  component_card?.RowId !== currentConditionalComponent?.RowId
-              ).concat({
-                ...rightPanelData,
-                CreditValue: [CreditValue],
-              });
-            pathwayWrapper.mappedData.PathwayComponents = [
-              ...updatedPathwayComponent,
-            ];
+            const test = pathwayWrapper?.mappedData?.PathwayComponents?.filter(
+              (item: any) => item?.RowId !== rightPanelData?.RowId
+            );
+            test.push({
+              ...rightPanelData,
+              CreditValue: [CreditValue],
+            });
+            // console.log(test);
+            pathwayWrapper.mappedData.PathwayComponents = test;
           }
         }
       }
       if (!isemptyIdentifier) {
-        const updatedPathwayComponent =
-          pathwayWrapper?.mappedData?.PathwayComponents?.filter(
-            (component_card: any) =>
-              component_card?.RowId !== currentConditionalComponent?.RowId
-          ).concat({
-            ...rightPanelData,
-            Identifier: [Identfier],
-          });
-        pathwayWrapper.mappedData.PathwayComponents = [
-          ...updatedPathwayComponent,
-        ];
+        const test = pathwayWrapper?.mappedData?.PathwayComponents?.filter(
+          (item: any) => item?.RowId !== rightPanelData?.RowId
+        );
+        test.push({
+          ...rightPanelData,
+          CreditValue: [CreditValue],
+          Identifier: [Identfier],
+        });
+        //console.log(test);
+        pathwayWrapper.mappedData.PathwayComponents = test;
       }
     }
     dispatch(updateMappedDataRequest(pathwayWrapper.mappedData));
     onCloseHandler(false);
   };
+
+  useEffect(() => {
+    if (saveResourceResult?.valid) {
+      Message({
+        description: 'The Resources has been Published successfully',
+        type: 'success',
+      });
+      dispatch(
+        saveResourceSuccess({
+          loading: false,
+          data: [],
+          valid: true,
+          error: false,
+        })
+      );
+      const FinderResource = rightPanelData?.FinderResource ?? [];
+      FinderResource.CTID = resourceData?.CTID;
+      FinderResource.URI = FINDER_URL + resourceData?.CTID;
+      rightPanelData.FinderResource = FinderResource;
+      setIsChecked(false);
+      SaveComponent;
+    } else if (saveResourceResult?.error) {
+      saveResourceResult?.data?.map((message: any) =>
+        Message({
+          description: message,
+          type: 'error',
+        })
+      );
+    }
+  }, [saveResourceResult]);
 
   const [isTouched, setisTouched] = useState({
     CreditValue: false,
@@ -204,8 +303,13 @@ const EditComponent: React.FC<Props> = ({
     IdentifierName: false,
     IdentifierType: false,
     IdentifierCode: false,
+    SubjectWebpage: false,
+    Description: false,
+    InLanguage: false,
   });
   const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
+  const [allLanguages, setAllLanguages] = useState<[]>([]);
+  const [allOrganizations, setAllOrganizations] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
   const [allCredentialTypes, setAllCredentialTypes] = useState<any>({});
   const [credentialType, setCredentialType] = useState<string>('');
@@ -222,6 +326,7 @@ const EditComponent: React.FC<Props> = ({
   const getAllCreditLevelTypes = useSelector(
     (state: any) => state.editComponent.creditLevelTypeData
   );
+  //const [ isSaveDisabled, setIsSavedDisabled,] = useState<boolean>(false);
   useEffect(() => {
     if (!_.isEmpty(panelData) && !_.isNull(panelData)) {
       const currentConditionalComponent = _.get(
@@ -268,8 +373,37 @@ const EditComponent: React.FC<Props> = ({
   const industryTypes = rightPanelData?.IndustryType?.map(
     (obj: any) => obj.Name
   );
+  const languages = resourceData?.inLanguage?.map(
+    (obj: any) => obj.Name || obj
+  );
+  const organizations = resourceData?.OfferedBy?.map((obj: any) => obj.Name);
 
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+
+  async function fetchOrganizations(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
+
+    return fetch(`${TEMP_BASE_URL}${GET_ORGANIZATION}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Keywords: e }),
+    })
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          CTID: dta.CTID,
+          label: dta.Name,
+          value: dta.CTID,
+        }));
+        setAllOrganizations(updatedBody);
+        return updatedBody;
+      });
+  }
 
   async function fetchIndustryList(e: string): Promise<any[]> {
     const data = new FormData();
@@ -295,6 +429,33 @@ const EditComponent: React.FC<Props> = ({
           value: dta.Name,
         }));
         setAllIndustryTypeData(updatedBody);
+        return updatedBody;
+      });
+  }
+  async function fetchLanguageList(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
+
+    return fetch(`${TEMP_BASE_URL}${SEARCH_FOR_LANGUAGE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Keywords: e }),
+    })
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          URI: dta.URI,
+          CodedNotation: dta.CodedNotation,
+          Id: dta.Id,
+          RowId: dta.RowId,
+          label: dta.Name,
+          value: dta.Name,
+        }));
+        setAllLanguages(updatedBody);
         return updatedBody;
       });
   }
@@ -341,24 +502,284 @@ const EditComponent: React.FC<Props> = ({
     dispatch(getCreditLevelTypesRequest());
     dispatch(getCreditUnitTypesRequest());
   }, []);
+  const customToolTipIcon = (type: any) => (
+    <span
+      className={Styles.iconSpacing}
+      style={{ position: 'absolute', right: 0, top: -23, zIndex: 200 }}
+      onClick={() => onShowCloseToolTip(type, true)}
+    >
+      <span className="fa-layers fa-fw fa-lg">
+        <FontAwesomeIcon icon={faCircle} className={Styles.iconPrimary} />
+        <FontAwesomeIcon
+          icon={faQuestion}
+          transform="shrink-6"
+          className={Styles.iconSecondary}
+        />
+      </span>
+    </span>
+  );
+  const [toolTip, setToolTip] = useState<any>([
+    {
+      type: 'Name',
+      isVisible: false,
+    },
+    {
+      type: 'Description',
+      isVisible: false,
+    },
+    {
+      type: 'CredentialType',
+      isVisible: false,
+    },
+    {
+      type: 'Designation',
+      isVisible: false,
+    },
+    {
+      type: 'ComponentCategory',
+      isVisible: false,
+    },
+    {
+      type: 'OwnedBy',
+      isVisible: false,
+    },
+    {
+      type: 'OfferedBy',
+      isVisible: false,
+    },
+    {
+      type: 'Language',
+      isVisible: false,
+    },
+    {
+      type: 'AvailabilityAt',
+      isVisible: false,
+    },
+    {
+      type: 'Listing',
+      isVisible: false,
+    },
+    {
+      type: 'SubjectWebpage',
+      isVisible: false,
+    },
+    {
+      type: 'IdentifierCode',
+      isVisible: false,
+    },
+    {
+      type: 'IdentifierType',
+      isVisible: false,
+    },
+    {
+      type: 'IdentifierName',
+      isVisible: false,
+    },
+    {
+      type: 'IdentifierCode',
+      isVisible: false,
+    },
+    {
+      type: 'CreditValue',
+      isVisible: false,
+    },
+    {
+      type: 'CreditUnit',
+      isVisible: false,
+    },
+    {
+      type: 'Creditdescription',
+      isVisible: false,
+    },
+    {
+      type: 'Industry',
+      isVisible: false,
+    },
+    {
+      type: 'Occupation',
+      isVisible: false,
+    },
+  ]);
+
+  const getToolTipText = (value: string) => {
+    let text = '';
+    switch (value) {
+      case 'Name':
+        text = 'Name of the Component.';
+        break;
+      case 'Description':
+        text = 'Statement, characterization or account of the entity.';
+        break;
+      case 'SubjectWebpage':
+        text = 'Webpage that describes this entity';
+        break;
+      case 'Occupation':
+        text =
+          'Identify the specific occupations that apply to this pathway. We recommend using the SOC codes.';
+        break;
+      case 'Industry':
+        text =
+          'Type of industry; select from an existing enumeration of such types such as the SIC, NAICS, and ISIC classifications.';
+        break;
+      case 'CredentialType':
+        text =
+          'Type of the Credential, such as certificate, badge, degree etc...';
+        break;
+      case 'Designation':
+        text =
+          'Label identifying the category to further distinguish one component from another as designated by the promulgating body.';
+        break;
+      case 'ComponentCategory':
+        text =
+          'Identifies the type of PathwayComponent subclass not explicitly covered in the current array of PathwayComponent subclasses.';
+        break;
+      case 'CreditValue':
+        text = 'A credit-related value.';
+        break;
+      case 'OwnedBy':
+        text = 'Owning Organization for the resource.';
+        break;
+      case 'OfferedBy':
+        text =
+          'Organizations that offer the resource, you can select multiple organizations      .';
+        break;
+      case 'Language':
+        text =
+          'The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English.';
+        break;
+      case 'Listing':
+        text =
+          'Physical location where the credential, assessment, or learning opportunity can be pursued.';
+        break;
+      case 'AvailabilityAt':
+        text =
+          'Physical location where the credential, assessment, or learning opportunity can be pursued.';
+        break;
+      case 'CreditUnit':
+        text =
+          'The type of credit associated with the credit awarded or required.';
+        break;
+      case 'IdentifierType':
+        text =
+          ' Framework, scheme, type, or other organizing principle of this identifier.';
+        break;
+      case 'IdentifierName':
+        text =
+          'Formal name or acronym of the framework, scheme, type, or other organizing principle of this identifier, such as ISBN or ISSN.';
+        break;
+      case 'Creditdescription':
+        text = 'Statement, characterization or account of the entity.';
+        break;
+      case 'IdentifierCode':
+        text = 'Alphanumeric string identifier of the entity.';
+        break;
+    }
+    return text;
+  };
+
+  const customToolTip = (type: any) => (
+    <Tag
+      color="rgb(220,250,249)"
+      style={{
+        width: '100%',
+        padding: 10,
+        paddingRight: 20,
+        marginTop: 10,
+        blockOverflow: 'ellipsis',
+        whiteSpace: 'pre-wrap',
+        position: 'relative',
+      }}
+    >
+      <>
+        <CloseOutlined
+          style={{
+            marginLeft: 3,
+            fontSize: '10',
+            position: 'absolute',
+            right: 5,
+            top: 5,
+            cursor: 'pointer',
+          }}
+          onClick={() => onShowCloseToolTip(type, false)}
+        />
+        {getToolTipText(type)}
+      </>
+    </Tag>
+  );
+  const openInNewTab = () => {
+    window.open(
+      rightPanelData?.FinderResource?.URI,
+      '_blank',
+      'noopener,noreferrer'
+    );
+  };
+  const onShowCloseToolTip = (type: any, visibility: boolean) => {
+    const toolTipArray =
+      toolTip &&
+      toolTip.map((item: any) =>
+        item.type === type ? { ...item, isVisible: visibility } : item
+      );
+    setToolTip(toolTipArray);
+  };
+  // useEffect(() => {
+  //   if(isChecked){
+  //     setIsSavedDisabled(
+  //       !_.isEmpty(rightPanelData?.Name) &&
+  //     !_.isEmpty(rightPanelData?.Description)  &&
+  //     (!_.isEmpty(rightPanelData?.SubjectWebpage) && isValidUrl(rightPanelData?.SubjectWebpage))  &&
+  //     !_.isEmpty(languages)  &&
+  //     ((!_.isEmpty(resourceData?.AvailabilityAt)&& isValidUrl(resourceData?.AvailabilityAt))||(!_.isEmpty(resourceData?.AvailabilityListing)&& isValidUrl(resourceData?.AvailabilityListing))) &&
+  //     (!_.isEmpty(resourceData?.OwnedBy)||!_.isEmpty(organizations))
+  //     )
+  //   }else{
+  //       setIsSavedDisabled(!_.isEmpty(rightPanelData?.Name)
+  //       )
+  //   }
+  // }, [rightPanelData,resourceData]);
 
   useEffect(() => {
     if (getAllCredentialTypes.valid)
-      setAllCredentialTypes({
-        CredentialType: getAllCredentialTypes.data?.map((dta: any) => ({
+      if (getAllCredentialTypes.data != undefined) {
+        //   setAllCredentialTypes({
+        //     CredentialType: getAllCredentialTypes.data?.map((dta: any) => ({
+        //       ...dta,
+        //       value: dta.Name,
+        //       label: dta.Name,
+        //     })),
+        //   });
+        const CredentialTypes = getAllCredentialTypes.data?.map((dta: any) => ({
           ...dta,
           value: dta.Name,
           label: dta.Name,
-        })),
-      });
+        }));
+        const sorted = [...CredentialTypes].sort((a, b) =>
+          a.value.localeCompare(b.value)
+        );
+        setAllCredentialTypes({
+          CredentialType: sorted,
+        });
+      }
     if (getAllCreditUnitTypes.valid)
-      setAllCreditUnitTypes({
-        CreditUnitType: getAllCreditUnitTypes.data?.map((dta: any) => ({
+      if (getAllCreditUnitTypes.data != undefined) {
+        const CreditUnitTypes = getAllCreditUnitTypes.data?.map((dta: any) => ({
           ...dta,
           value: dta.Name,
           label: dta.Name,
-        })),
-      });
+        }));
+        const sorted = [...CreditUnitTypes].sort((a, b) =>
+          a.value.localeCompare(b.value)
+        );
+        setAllCreditUnitTypes({
+          CreditUnitType: sorted,
+        });
+      }
+    // setAllCreditUnitTypes({
+    //   CreditUnitType: getAllCreditUnitTypes.data?.map((dta: any) => ({
+    //     ...dta,
+    //     value: dta.Name,
+    //     label: dta.Name,
+    //   })),
+    // });
     if (getAllCreditLevelTypes.valid)
       setAllCreditLevelTypes({
         CreditLevelType: getAllCreditLevelTypes.data?.map((dta: any) => ({
@@ -385,11 +806,28 @@ const EditComponent: React.FC<Props> = ({
       const occData = rightPanelData?.OccupationType ?? [];
       updatedData.OccupationType = [...occData, ...filteredOccupations];
     }
+    const updatedResource = { ...resourceData };
+    if (name === 'Language') {
+      const filteredLanguages = allLanguages?.filter(
+        (data: any) => data.Name === e.value
+      );
+      const occData = resourceData?.inLanguage ?? [];
+      updatedResource.inLanguage = [...occData, ...filteredLanguages];
+    }
+    if (name === 'Organization') {
+      const filteredOrgs = allOrganizations?.filter(
+        (data: any) => data.CTID === e.value
+      );
+      const occData = resourceData?.OfferedBy ?? [];
+      updatedResource.OfferedBy = [...occData, ...filteredOrgs];
+    }
+    setResourceData(updatedResource);
     setRightPanelData(updatedData);
   };
 
   const onDebounceDeSelectHnadler = (e: any, name: string) => {
     const updatedData = { ...rightPanelData };
+    const updatedResource = { ...resourceData };
     if (name === 'Occupation') {
       updatedData.OccupationType = updatedData?.OccupationType?.filter(
         (item: any) => item.Name !== e.key
@@ -400,6 +838,17 @@ const EditComponent: React.FC<Props> = ({
         (item: any) => item.Name !== e.key
       );
     }
+    if (name === 'Language') {
+      updatedResource.inLanguage = updatedResource.inLanguage?.filter(
+        (item: any) => item.Name !== e.key
+      );
+    }
+    if (name === 'Organization') {
+      updatedResource.OfferedBy = updatedResource.OfferedBy?.filter(
+        (item: any) => item.Name !== e.key
+      );
+    }
+    setResourceData(updatedResource);
     setRightPanelData(updatedData);
   };
 
@@ -415,13 +864,20 @@ const EditComponent: React.FC<Props> = ({
   };
   const onChangeHandler = (e: any) => {
     const updatedData = { ...rightPanelData };
+    const resourceupdated = { ...resourceData };
     const { name, value } = e.target;
     updatedData[name] = value;
+    resourceupdated[name] = value;
+    setResourceData(resourceupdated);
     setRightPanelData(updatedData);
   };
   const [visibleCreditValue, setVisible] = React.useState(false);
   const [visibleIdentfier, setVisibleIdentifier] = React.useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
+  const handleToggle = () => {
+    setIsChecked(!isChecked);
+  };
   const tagRender = (props: CustomTagProps) => {
     const { label, value, closable, onClose } = props;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
@@ -464,7 +920,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' credentialCard'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
+                        src={`${GET_ICON_URL}CredentialComponent.png`}
                         alt="CredentialComponent"
                       />
                     </span>
@@ -474,7 +930,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' courseCard'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
+                        src={`${GET_ICON_URL}CourseComponent.png`}
                         alt="courseComponent"
                       />
                     </span>
@@ -484,7 +940,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' basicCard'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
+                        src={`${GET_ICON_URL}BasicComponent.png`}
                         alt="BasicComponent"
                       />
                     </span>
@@ -494,7 +950,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' competencyCard'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
+                        src={`${GET_ICON_URL}CompetencyComponent.png`}
                         alt="CompetencyComponent"
                       />
                     </span>
@@ -504,7 +960,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' assessmentCard'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
+                        src={`${GET_ICON_URL}AssessmentComponent.png`}
                         alt="AssessmentComponent"
                       />
                     </span>
@@ -515,7 +971,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' cocurricularCard'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
+                        src={`${GET_ICON_URL}CocurricularComponent.png`}
                         alt="CocurricularComponent"
                       />
                     </span>
@@ -527,7 +983,7 @@ const EditComponent: React.FC<Props> = ({
                       className={Styles.iconwrapper + ' extraCurricularCard'}
                     >
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
+                        src={`${GET_ICON_URL}ExtracurricularComponent.png`}
                         alt="ExtracurricularComponent"
                       />
                     </span>
@@ -537,7 +993,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' customicon'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionComponent.png`}
+                        src={`${GET_ICON_URL}SelectionComponent.png`}
                         alt="SelectionComponent"
                       />
                     </span>
@@ -549,7 +1005,7 @@ const EditComponent: React.FC<Props> = ({
                       className={Styles.iconwrapper + ' workExperienceCard'}
                     >
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
+                        src={`${GET_ICON_URL}WorkExperienceComponent.png`}
                         alt="WorkExperienceComponent"
                       />
                     </span>
@@ -559,7 +1015,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' jobCard'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
+                        src={`${GET_ICON_URL}JobComponent.png`}
                         alt="JobComponent"
                       />
                     </span>
@@ -569,7 +1025,7 @@ const EditComponent: React.FC<Props> = ({
                   ) && (
                     <span className={Styles.iconwrapper + ' customicon'}>
                       <img
-                        src={`${TEMP_BASE_URL}Images/PathwayBuilder/AddressingComponent.png`}
+                        src={`${GET_ICON_URL}AddressingComponent.png`}
                         alt="AddressingConflictComponent"
                       />
                     </span>
@@ -579,232 +1035,595 @@ const EditComponent: React.FC<Props> = ({
                       extractComponentType(rightPanelData?.Type)}
                   </h1>
                 </div>
+                <span>&emsp;&emsp;&emsp;{rightPanelData?.CTID}</span>
               </Row>
             </Row>
           </div>
-          <Form.Item
-            required={true}
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            label="Name"
-            validateTrigger="onBlur"
-            tooltip="Name of the Component."
-            help={
-              (_.isEmpty(rightPanelData?.Name) ||
-                _.isNull(rightPanelData?.Name)) &&
-              isTouched.Name
-                ? 'Name is Required'
-                : null
-            }
-          >
-            <InputBox
-              onChange={onChangeHandler}
-              placeholder="Name"
-              name="Name"
-              value={rightPanelData?.Name}
-              required={true}
-              onBlur={() =>
-                isTouched.Name === true
-                  ? null
-                  : setisTouched({ ...isTouched, Name: true })
-              }
-            />
-          </Form.Item>
-          <Form.Item tooltip="Description of the Component.">
-            <label>Description</label>
-            <TextArea
-              onChange={onChangeHandler}
-              rows={3}
-              name="Description"
-              value={rightPanelData?.Description}
-              placeholder="Description"
-            />
-          </Form.Item>
-          <Form.Item
-            label="Subject Webpage"
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            tooltip="Webpage that describes this entity."
-          >
-            <InputBox
-              onChange={onChangeHandler}
-              placeholder="Webpage"
-              name="SubjectWebpage"
-              value={rightPanelData?.SubjectWebpage}
-            />
-          </Form.Item>
-          <Form.Item>
-            <label> CTID</label>
-            <InputBox
-              name="CTID"
-              disabled={true}
-              value={rightPanelData?.CTID}
-            />
-          </Form.Item>
-          {rightPanelData?.FinderResource !== undefined ? (
-            <Form.Item>
-              <label>Finder Link</label>
-              <InputBox
-                name="FinderLink"
-                disabled={true}
-                value={rightPanelData?.FinderResource?.URI}
-              />
-            </Form.Item>
+          {(extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'CredentialComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'AssessmentComponent') &&
+          rightPanelData?.FinderResource == null ? (
+            <>
+              <label className="toggle-slider">
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={handleToggle}
+                />
+                <div className="slider" />
+              </label>
+              <span>
+                <b> Create a Registry Resource</b>
+              </span>
+            </>
           ) : (
             ''
           )}
-
-          {extractComponentType(rightPanelData?.Type) ==
-          'CredentialComponent' ? (
+          {isViewMode ? (
+            rightPanelData?.Name !== null && (
+              <Form.Item
+                label="Name"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {customToolTipIcon('Name')}
+                {rightPanelData?.Name}
+                {toolTip.find((item: any) => item.type === 'Name').isVisible &&
+                  customToolTip('Name')}
+              </Form.Item>
+            )
+          ) : (
             <Form.Item
-              label="Credential Type"
+              required={true}
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip="Type of the Credential, such as certificate, badge, degree etc..."
+              label="Name"
+              validateTrigger="onBlur"
+              tooltip=""
+              help={
+                (_.isEmpty(rightPanelData?.Name) ||
+                  _.isNull(rightPanelData?.Name)) &&
+                isTouched.Name
+                  ? 'Name is Required'
+                  : null
+              }
             >
-              {rightPanelData?.CredentialType !== undefined &&
-              rightPanelData?.FinderResource !== undefined ? (
-                <InputBox
-                  name="Credential Type"
-                  disabled={true}
-                  value={extractComponentType(rightPanelData?.CredentialType)}
-                />
-              ) : (
-                <Dropdown
-                  options={allCredentialTypes?.CredentialType}
-                  showSearch={false}
-                  placeholder="Select Credential Type"
-                  value={credentialType}
-                  onChange={(e) => selectedCredentials(e)}
-                />
-              )}
+              {customToolTipIcon('Name')}
+              <InputBox
+                disabled={isViewMode}
+                onChange={onChangeHandler}
+                placeholder="Name"
+                name="Name"
+                value={rightPanelData?.Name}
+                required={true}
+                onBlur={() =>
+                  isTouched.Name === true
+                    ? null
+                    : setisTouched({ ...isTouched, Name: true })
+                }
+              />
+              {toolTip.find((item: any) => item.type === 'Name').isVisible &&
+                customToolTip('Name')}
+            </Form.Item>
+          )}
+          {extractComponentType(rightPanelData?.Type) ==
+          'CredentialComponent' ? (
+            isViewMode ? (
+              rightPanelData?.CredentialType !== null && (
+                <Form.Item
+                  label="Credential Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {customToolTipIcon('CredentialType')}
+                  {credentialType}
+                  {toolTip.find((item: any) => item.type === 'CredentialType')
+                    .isVisible && customToolTip('CredentialType')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                required={true}
+                label="Credential Type"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {customToolTipIcon('CredentialType')}
+                {rightPanelData?.CredentialType !== undefined &&
+                rightPanelData?.FinderResource !== undefined ? (
+                  <InputBox
+                    disabled={isViewMode}
+                    name="Credential Type"
+                    //disabled={true}
+                    value={credentialType}
+                  />
+                ) : (
+                  <Dropdown
+                    options={allCredentialTypes?.CredentialType}
+                    showSearch={false}
+                    placeholder="Select Credential Type"
+                    value={credentialType}
+                    onChange={(e) => selectedCredentials(e)}
+                  />
+                )}
+                {toolTip.find((item: any) => item.type === 'CredentialType')
+                  .isVisible && customToolTip('CredentialType')}
+              </Form.Item>
+            )
+          ) : (
+            ''
+          )}
+          {isViewMode ? (
+            rightPanelData?.Description !== null &&
+            rightPanelData?.Description !== '' && (
+              <Form.Item
+                label="Description"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {customToolTipIcon('Description')}
+                {rightPanelData?.Description}
+                {toolTip.find((item: any) => item.type === 'Description')
+                  .isVisible && customToolTip('Description')}
+              </Form.Item>
+            )
+          ) : (
+            <Form.Item
+              label="Description"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              required={isChecked ? true : false}
+              help={
+                isChecked &&
+                (_.isEmpty(rightPanelData?.Description) ||
+                  _.isNull(rightPanelData?.Description)) &&
+                isTouched.Description
+                  ? 'Description is Required'
+                  : null
+              }
+            >
+              {customToolTipIcon('Description')}
+              <TextArea
+                disabled={isViewMode}
+                onChange={onChangeHandler}
+                rows={3}
+                name="Description"
+                value={rightPanelData?.Description}
+                placeholder="Description"
+                onBlur={() =>
+                  isTouched.Description === true
+                    ? null
+                    : setisTouched({ ...isTouched, Name: true })
+                }
+              />
+              {toolTip.find((item: any) => item.type === 'Description')
+                .isVisible && customToolTip('Description')}
+            </Form.Item>
+          )}
+          {isViewMode ? (
+            rightPanelData?.SubjectWebpage !== null && (
+              <Form.Item
+                label="SubjectWebpage"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {customToolTipIcon('SubjectWebpage')}
+                {rightPanelData?.SubjectWebpage}
+                {toolTip.find((item: any) => item.type === 'SubjectWebpage')
+                  .isVisible && customToolTip('SubjectWebpage')}
+              </Form.Item>
+            )
+          ) : (
+            <Form.Item
+              label="Subject Webpage"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              required={isChecked ? true : false}
+              help={
+                isChecked &&
+                (!_.isNil(rightPanelData.SubjectWebpage) ||
+                  rightPanelData.SubjectWebpage !== '') &&
+                !isValidUrl(rightPanelData.SubjectWebpage) &&
+                !rightPanelData?.SubjectWebpage?.includes('http') &&
+                isTouched.SubjectWebpage
+                  ? 'Subject Webpage is Required in Correct Format'
+                  : null
+              }
+            >
+              {customToolTipIcon('SubjectWebpage')}
+              <InputBox
+                disabled={isViewMode}
+                onChange={onChangeHandler}
+                placeholder="Webpage"
+                name="SubjectWebpage"
+                value={rightPanelData?.SubjectWebpage}
+                onBlur={() =>
+                  isTouched.SubjectWebpage === true
+                    ? null
+                    : setisTouched({ ...isTouched, Name: true })
+                }
+              />
+              {toolTip.find((item: any) => item.type === 'SubjectWebpage')
+                .isVisible && customToolTip('SubjectWebpage')}
+            </Form.Item>
+          )}
+          {/* <Form.Item>
+            <label> CTID</label>
+            <InputBox
+              disabled={isViewMode}
+              name="CTID"
+              value={rightPanelData?.CTID}
+            />
+          </Form.Item> */}
+          {isChecked &&
+          (extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'CredentialComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'AssessmentComponent') ? (
+            <Form.Item
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Owned By"
+              validateTrigger="onBlur"
+              tooltip=""
+              required={true}
+            >
+              {customToolTipIcon('OwnedBy')}
+              <InputBox
+                disabled={isViewMode}
+                onChange={onChangeHandler}
+                placeholder="Owning Organization"
+                name="Owned By"
+                value={pathwayWrapper?.mappedData?.Pathway?.Organization?.Name}
+              />
+              {toolTip.find((item: any) => item.type === 'OwnedBy').isVisible &&
+                customToolTip('OwnedBy')}
             </Form.Item>
           ) : (
             ''
           )}
-
+          {isChecked &&
+          (extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'CredentialComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'AssessmentComponent') ? (
+            <Form.Item
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Offered By"
+              validateTrigger="onBlur"
+              tooltip=""
+              required={true}
+            >
+              {customToolTipIcon('OfferedBy')}
+              <DebounceSelect
+                disabled={isViewMode}
+                mode="multiple"
+                value={organizations}
+                placeholder="Start typing to select organizations"
+                fetchOptions={fetchOrganizations}
+                onSelect={(e: any) =>
+                  onDebounceSelectHnadler(e, 'Organization')
+                }
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Organization')
+                }
+              />
+              {toolTip.find((item: any) => item.type === 'OfferedBy')
+                .isVisible && customToolTip('OfferedBy')}
+            </Form.Item>
+          ) : (
+            ''
+          )}
+          {isChecked &&
+          (extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'CredentialComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'AssessmentComponent') ? (
+            <Form.Item
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="In Language"
+              validateTrigger="onBlur"
+              tooltip=""
+              required={true}
+              help={
+                isChecked &&
+                (languages == undefined || languages.length == 0) &&
+                isTouched.InLanguage
+                  ? 'Language is Required '
+                  : null
+              }
+            >
+              {customToolTipIcon('Language')}
+              <DebounceSelect
+                disabled={isViewMode}
+                mode="multiple"
+                value={languages}
+                placeholder="Start typing to select the languagee"
+                fetchOptions={fetchLanguageList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Language')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Language')
+                }
+                onBlur={() =>
+                  isTouched.InLanguage === true
+                    ? null
+                    : setisTouched({ ...isTouched, Name: true })
+                }
+              />
+              {toolTip.find((item: any) => item.type === 'Language')
+                .isVisible && customToolTip('Language')}
+            </Form.Item>
+          ) : (
+            ''
+          )}
+          {isChecked &&
+          (extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'CredentialComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'AssessmentComponent') ? (
+            <Form.Item
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Available At"
+              validateTrigger="onBlur"
+              tooltip=""
+              required={true}
+            >
+              {customToolTipIcon('AvailabilityAt')}
+              <InputBox
+                disabled={isViewMode}
+                onChange={onChangeHandler}
+                placeholder="Available at"
+                name="AvailabilityAt"
+                value={resourceData?.AvailabilityAt}
+              />
+              {toolTip.find((item: any) => item.type === 'AvailabilityAt')
+                .isVisible && customToolTip('AvailabilityAt')}
+            </Form.Item>
+          ) : (
+            ''
+          )}
+          {isChecked &&
+          (extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'CredentialComponent' ||
+            extractComponentType(rightPanelData?.Type) ==
+              'AssessmentComponent') ? (
+            <Form.Item
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              label="Available Listing"
+              validateTrigger="onBlur"
+              tooltip=""
+              required={true}
+            >
+              {customToolTipIcon('Listing')}
+              <InputBox
+                disabled={isViewMode}
+                onChange={onChangeHandler}
+                placeholder="Available Listing"
+                name="AvailabilityListing"
+                value={resourceData?.AvailabilityListing}
+              />
+              {toolTip.find((item: any) => item.type === 'Listing').isVisible &&
+                customToolTip('Listing')}
+            </Form.Item>
+          ) : (
+            ''
+          )}
           {extractComponentType(rightPanelData?.Type) == 'BasicComponent' ||
           extractComponentType(rightPanelData?.Type) ==
             'ExtraCurricularComponent' ||
           extractComponentType(rightPanelData?.Type) ==
             'CocurricularComponent' ? (
-            <Form.Item
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              label="Component Category"
-              validateTrigger="onBlur"
-              tooltip="Identifies the type of PathwayComponent subclass not explicitly covered in the current array of PathwayComponent subclasses."
-            >
-              <InputBox
-                onChange={onChangeHandler}
-                placeholder="Component Category"
-                name="ComponentCategory"
-                value={rightPanelData?.ComponentCategory}
-              />
-            </Form.Item>
-          ) : (
-            ''
-          )}
-
-          <Form.Item
-            label="Component Designation"
-            className="swNoMargin"
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            validateTrigger="onBlur"
-            tooltip="Label identifying the category to further distinguish one component from another as designated by the promulgating body."
-          >
-            <MultiSelect
-              mode="tags"
-              tagRender={tagRender}
-              placeholder="Add Component Designation"
-              optionLabelProp="label"
-              value={rightPanelData?.ComponentDesignation}
-              onChange={(e) => onSelectChangeHandler(e, 'ComponentDesignation')}
-            />
-          </Form.Item>
-          {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
-            <Form.Item
-              label="Industry Type"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-              tooltip="Type of industry; select from an existing enumeration of such types such as the SIC, NAICS, and ISIC classifications."
-            >
-              <DebounceSelect
-                mode="multiple"
-                value={industryTypes}
-                placeholder="Select Industry Type"
-                fetchOptions={fetchIndustryList}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
-                onDeselect={(e: any) =>
-                  onDebounceDeSelectHnadler(e, 'Industry')
-                }
-              />
-            </Form.Item>
-          ) : (
-            ''
-          )}
-          {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
-            <Form.Item
-              label="Occupation Type"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-              tooltip="Type of occupation; select from an existing enumeration of such types."
-            >
-              <DebounceSelect
-                mode="multiple"
-                value={occupationTypes}
-                placeholder="Select Occupation Type"
-                fetchOptions={fetchOccupationList}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
-                onDeselect={(e: any) =>
-                  onDebounceDeSelectHnadler(e, 'Occupation')
-                }
-              />
-            </Form.Item>
-          ) : (
-            ''
-          )}
-          {extractComponentType(rightPanelData?.Type) == 'CourseComponent' ? (
-            rightPanelData?.CreditValue?.[0]?.Value == undefined &&
-            rightPanelData?.FinderResource == undefined ? (
-              <u
-                style={{ cursor: 'pointer' }}
-                onClick={() => setVisible(!visibleCreditValue)}
-              >
-                Add a Credit Value
-                <br />
-              </u>
+            isViewMode ? (
+              rightPanelData?.ComponentCategory !== null && (
+                <Form.Item
+                  label="Component Category"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {customToolTipIcon('ComponentCategory')}
+                  {rightPanelData?.ComponentCategory}
+                  {toolTip.find(
+                    (item: any) => item.type === 'ComponentCategory'
+                  ).isVisible && customToolTip('ComponentCategory')}
+                </Form.Item>
+              )
             ) : (
-              ''
+              <Form.Item
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                label="Component Category"
+                validateTrigger="onBlur"
+                tooltip=""
+              >
+                {customToolTipIcon('ComponentCategory')}
+                <InputBox
+                  disabled={isViewMode}
+                  onChange={onChangeHandler}
+                  placeholder="Component Category"
+                  name="ComponentCategory"
+                  value={rightPanelData?.ComponentCategory}
+                />
+                {toolTip.find((item: any) => item.type === 'ComponentCategory')
+                  .isVisible && customToolTip('ComponentCategory')}
+              </Form.Item>
             )
           ) : (
             ''
           )}
+          {isViewMode ? (
+            rightPanelData?.ComponentDesignation.length > 0 && (
+              <Form.Item
+                label="Component Designation"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {customToolTipIcon('Designation')}
+                {rightPanelData?.ComponentDesignation}
+                {toolTip.find((item: any) => item.type === 'Designation')
+                  .isVisible && customToolTip('Designation')}
+              </Form.Item>
+            )
+          ) : (
+            <Form.Item
+              label="Component Designation"
+              className="swNoMargin"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              validateTrigger="onBlur"
+              tooltip=""
+            >
+              {customToolTipIcon('Designation')}
+              <MultiSelect
+                disabled={isViewMode}
+                mode="tags"
+                tagRender={tagRender}
+                placeholder="Add Component Designation"
+                optionLabelProp="label"
+                value={rightPanelData?.ComponentDesignation}
+                onChange={(e) =>
+                  onSelectChangeHandler(e, 'ComponentDesignation')
+                }
+              />
+              {toolTip.find((item: any) => item.type === 'Designation')
+                .isVisible && customToolTip('Designation')}
+            </Form.Item>
+          )}
+
+          {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
+            isViewMode ? (
+              rightPanelData?.ComponentCategory !== null && (
+                <Form.Item
+                  label="Industry Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {customToolTipIcon('Industry')}
+                  {industryTypes}
+                  {toolTip.find((item: any) => item.type === 'Industry')
+                    .isVisible && customToolTip('Industry')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Industry Type"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                {customToolTipIcon('Industry')}
+                <DebounceSelect
+                  disabled={isViewMode}
+                  mode="multiple"
+                  value={industryTypes}
+                  placeholder="Select Industry Type"
+                  fetchOptions={fetchIndustryList}
+                  onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
+                  onDeselect={(e: any) =>
+                    onDebounceDeSelectHnadler(e, 'Industry')
+                  }
+                />
+                {toolTip.find((item: any) => item.type === 'Industry')
+                  .isVisible && customToolTip('Industry')}
+              </Form.Item>
+            )
+          ) : (
+            ''
+          )}
+
+          {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
+            isViewMode ? (
+              rightPanelData?.ComponentCategory !== null && (
+                <Form.Item
+                  label="Occupation Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {customToolTipIcon('Occupation')}
+                  {occupationTypes}
+                  {toolTip.find((item: any) => item.type === 'Occupation')
+                    .isVisible && customToolTip('Occupation')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Occupation Type"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                {customToolTipIcon('Occupation')}
+                <DebounceSelect
+                  disabled={isViewMode}
+                  mode="multiple"
+                  value={occupationTypes}
+                  placeholder="Select Occupation Type"
+                  fetchOptions={fetchOccupationList}
+                  onSelect={(e: any) =>
+                    onDebounceSelectHnadler(e, 'Occupation')
+                  }
+                  onDeselect={(e: any) =>
+                    onDebounceDeSelectHnadler(e, 'Occupation')
+                  }
+                />
+                {toolTip.find((item: any) => item.type === 'Occupation')
+                  .isVisible && customToolTip('Occupation')}
+              </Form.Item>
+            )
+          ) : (
+            ''
+          )}
+          {extractComponentType(rightPanelData?.Type) == 'CourseComponent'
+            ? rightPanelData?.CreditValue?.[0]?.Value == undefined &&
+              rightPanelData?.FinderResource == undefined
+              ? !isViewMode && (
+                  <u
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setVisible(!visibleCreditValue)}
+                  >
+                    Add a Credit Value
+                    <br />
+                  </u>
+                )
+              : ''
+            : ''}
           <div
             className={
               visibleCreditValue ? 'element-visible' : 'element-hidden'
             }
           >
             <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
+
             <Form.Item
               required={true}
               label="Credit Unit Type"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip="The type of credit associated with the credit awarded or required."
+              tooltip=""
             >
+              {customToolTipIcon('CreditUnit')}
               <Dropdown
+                disabled={isViewMode}
                 options={allCreditUnitTypes?.CreditUnitType}
                 showSearch={false}
                 onChange={(e) => selectedCreditUnits(e)}
                 placeholder="Select Credit Unit Type"
                 value={creditUnitType}
               />
+              {toolTip.find((item: any) => item.type === 'CreditUnit')
+                .isVisible && customToolTip('CreditUnit')}
             </Form.Item>
             {/* <Form.Item
           required={true}
@@ -826,39 +1645,61 @@ const EditComponent: React.FC<Props> = ({
               label="Credit Value"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip="A credit-related value."
+              tooltip=""
             >
+              {customToolTipIcon('CreditValue')}
               <InputBox
+                disabled={isViewMode}
                 onChange={onChangeHandler}
                 placeholder="Credit Value"
                 name="Value"
                 value={rightPanelData?.Value}
               />
+              {toolTip.find((item: any) => item.type === 'CreditValue')
+                .isVisible && customToolTip('CreditValue')}
             </Form.Item>
             <Form.Item
               label="Credit Description"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip=" Statement, characterization or account of the entity."
+              tooltip=" "
             >
+              {customToolTipIcon('Creditdescription')}
               <InputBox
+                disabled={isViewMode}
                 onChange={onChangeHandler}
                 placeholder="Description"
                 name="Creditdescription"
                 value={rightPanelData?.Creditdescription}
               />
+              {toolTip.find((item: any) => item.type === 'Creditdescription')
+                .isVisible && customToolTip('Creditdescription')}
             </Form.Item>
           </div>
-          {rightPanelData?.Identifier?.[0] == undefined ? (
-            <u
-              style={{ cursor: 'pointer' }}
-              onClick={() => setVisibleIdentifier(!visibleIdentfier)}
-            >
-              Add an Identifier
-            </u>
-          ) : (
-            ''
-          )}
+          {extractComponentType(rightPanelData?.Type) == 'CourseComponent' &&
+            isViewMode &&
+            rightPanelData?.CreditValue[0]?.CreditUnitType !== null && (
+              <Form.Item
+                label="Occupation Type"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {customToolTipIcon('Occupation')}
+                {occupationTypes}
+                {toolTip.find((item: any) => item.type === 'Occupation')
+                  .isVisible && customToolTip('Occupation')}
+              </Form.Item>
+            )}
+          {rightPanelData?.Identifier?.[0] == undefined
+            ? !isViewMode && (
+                <u
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setVisibleIdentifier(!visibleIdentfier)}
+                >
+                  Add an Identifier
+                </u>
+              )
+            : ''}
           <div
             className={visibleIdentfier ? 'element-visible' : 'element-hidden'}
           >
@@ -867,28 +1708,35 @@ const EditComponent: React.FC<Props> = ({
               label="Identfier Type"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip=" Framework, scheme, type, or other organizing principle of this identifier."
             >
+              {customToolTipIcon('IdentifierType')}
               <InputBox
+                disabled={isViewMode}
                 onChange={onChangeHandler}
                 placeholder="Indentifier Type"
                 name="IdentifierType"
                 value={rightPanelData?.IdentifierType}
               />
+              {toolTip.find((item: any) => item.type === 'IdentifierType')
+                .isVisible && customToolTip('IdentifierType')}
             </Form.Item>
             <Form.Item
               required={true}
               label="Identfier Name"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip=" Formal name or acronym of the framework, scheme, type, or other organizing principle of this identifier, such as ISBN or ISSN."
+              tooltip=" "
             >
+              {customToolTipIcon('IdentifierName')}
               <InputBox
+                disabled={isViewMode}
                 onChange={onChangeHandler}
                 placeholder="Indentifier Name"
                 name="IdentifierName"
                 value={rightPanelData?.IdentifierName}
               />
+              {toolTip.find((item: any) => item.type === 'IdentifierName')
+                .isVisible && customToolTip('IdentifierName')}
             </Form.Item>
 
             <Form.Item
@@ -896,24 +1744,68 @@ const EditComponent: React.FC<Props> = ({
               label="Identfier Code"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip=" Alphanumeric string identifier of the entity."
+              tooltip=" "
             >
+              {customToolTipIcon('IdentifierCode')}
               <InputBox
+                disabled={isViewMode}
                 onChange={onChangeHandler}
                 placeholder="Indentifier Code"
                 name="IdentifierCode"
                 value={rightPanelData?.IdentifierCode}
               />
+              {toolTip.find((item: any) => item.type === 'IdentifierCode')
+                .isVisible && customToolTip('IdentifierCode')}
             </Form.Item>
           </div>
+          {isViewMode ? (
+            rightPanelData?.FinderResource !== null && (
+              <Form.Item>
+                <Button
+                  className={Styles.button}
+                  onClick={openInNewTab}
+                  type={Type.LINK}
+                  text="View in Finder"
+                />
+              </Form.Item>
+            )
+          ) : rightPanelData?.FinderResource !== undefined ? (
+            <Form.Item>
+              <Button
+                className={Styles.button}
+                onClick={openInNewTab}
+                type={Type.LINK}
+                text="View in Finder"
+              />
+            </Form.Item>
+          ) : (
+            ''
+          )}
           <hr />
-          <Button
-            size="medium"
-            text="Save Component"
-            type="primary"
-            disabled={_.isEmpty(rightPanelData?.Name)}
-            onClick={SaveComponent}
-          />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            {!isViewMode && (
+              <Button
+                size="medium"
+                text={isChecked ? 'Save Resource' : 'Save Component'}
+                type="primary"
+                disabled={_.isEmpty(rightPanelData?.Name)}
+                onClick={isChecked ? SaveResource : SaveComponent}
+              />
+            )}
+            <Button
+              type={Type.PRIMARY}
+              size="small"
+              onClick={handleOutsideClick}
+              key="Cancel"
+              text="Cancel"
+            />
+          </div>
         </Form>
       </div>
     </Drawer>

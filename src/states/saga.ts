@@ -7,6 +7,7 @@ import {
   GET_DATA_FOR_PATHWAY,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY,
   SAVE_DATA_FOR_PATHWAY,
+  SAVE_DATA_FOR_RESOURCE,
 } from '../apiConfig/endpoint';
 import { IS_LOCALHOST, TEMP_BASE_URL } from '../apiConfig/setting';
 import TokenManager from '../services/tokenManager';
@@ -20,12 +21,15 @@ import {
   getDataForPathwayAndComponentsSuccess,
   savePathwayFailure,
   savePathwaySuccess,
+  saveResourceFailure,
+  saveResourceSuccess,
 } from './actions';
 import {
   GET_CURRENT_USER_REQUEST,
   GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
   PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST,
   SAVE_PATHWAY_DATA_REQUEST,
+  SAVE_RESOURCE_REQUEST,
 } from './actionTypes';
 
 export function* getCurrentUserData(): Generator {
@@ -128,6 +132,30 @@ export function* getSavePathwayWrapper(payload: any): Generator {
   }
 }
 
+export function* getSaveResource(payload: any): Generator {
+  try {
+    const userCreds = IS_LOCALHOST ? TokenManager.getToken() : null;
+    const result: any = yield call(request, {
+      url: `${TEMP_BASE_URL}${SAVE_DATA_FOR_RESOURCE}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      params: {
+        userCreds,
+      },
+      data: JSON.stringify(payload.payload),
+    });
+    if (result.Valid) {
+      yield put(saveResourceSuccess(result));
+    } else if (!result.Valid && result?.Messages?.length > 0) {
+      yield put(saveResourceFailure(result));
+    }
+  } catch (error) {
+    yield put(saveResourceFailure(error));
+  }
+}
+
 function* saga() {
   yield takeLatest(GET_CURRENT_USER_REQUEST, getCurrentUserData);
   yield takeLatest(
@@ -136,6 +164,7 @@ function* saga() {
   );
   yield takeLatest(PATHWAYBUILDERAPI_APPROVE_PATHWAY_REQUEST, approvePathway);
   yield takeLatest(SAVE_PATHWAY_DATA_REQUEST, getSavePathwayWrapper);
+  yield takeLatest(SAVE_RESOURCE_REQUEST, getSaveResource);
 }
 
 export default saga;

@@ -70,10 +70,10 @@ export function* getAllCreditLevelTypes(): Generator {
   }
 }
 
-function* addConditionalComponentSaga() {
+function* editComponentSaga() {
   yield takeLatest(GET_CREDENTIAL_TYPES_REQUEST, getAllCredentialTypes);
   yield takeLatest(GET_CREDIT_UNIT_TYPES_REQUEST, getAllCreditUnitypes);
   yield takeLatest(GET_CREDIT_LEVEL_TYPES_REQUEST, getAllCreditLevelTypes);
 }
 
-export default addConditionalComponentSaga;
+export default editComponentSaga;

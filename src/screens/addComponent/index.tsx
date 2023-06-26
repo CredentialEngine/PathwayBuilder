@@ -1,6 +1,13 @@
-import { faCubes } from '@fortawesome/free-solid-svg-icons';
+import CloseOutlined from '@ant-design/icons/CloseOutlined';
+import {
+  faCubes,
+  faCircle,
+  faQuestion,
+  faChevronCircleDown,
+  faChevronCircleUp,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Form, Row } from 'antd';
+import { Col, Form, Modal, Row, Tag } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -9,11 +16,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
 import Button from '../../components/button';
-import Dropdown from '../../components/formFields/dropdown';
+//import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
 import { updateMappedDataRequest } from '../../states/actions';
 
 import Constraint from './constraint';
+import ConstraintV2 from './constraintV2';
 
 import Styles from './index.module.scss';
 import { ComponentConditionEntity } from './model';
@@ -67,12 +75,19 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     requiredNumber: false,
     Name: false,
   });
+  const [isTextShown, setIsTextShown] = useState(false);
+  const [isActionTextShown, setActionIsTextShown] = useState(false);
+  // const [isComparatorTextShown, setComparatorIsTextShown] = useState(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
+  const [isEditConstraintModalStatus, setIsEditConstraintModalStatus] =
+    useState<boolean>(false);
+  const [constraint, setConstraint] = useState<any>([]);
+  const [rowIndex, setRowIndex] = useState<number>(1);
+
   const { mappedData: pathwayComponent } = pathwayWrapper;
   useEffect(() => {
     const allGameboardCards = [
       ...pathwayComponent.PathwayComponents,
-
       ...pathwayComponent.ComponentConditions,
     ];
 
@@ -175,31 +190,71 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             _.toString(conditional_Card?.HasProgressionLevel) ===
               _.toString(progressionLevelForAddComponent) &&
             _.toString(conditional_Card?.RowId) !==
-              _.toString(currentConditionalComponent?.RowId)
+              _.toString(currentConditionalComponent?.RowId) &&
+            conditional_Card?.RowNumber == conditionalComponent[0].RowNumber
+        );
+      const conditionalComponentOutOfProgressionLevelRow =
+        updatedPathwayComponentConditionCards?.filter(
+          (conditional_Card: any) =>
+            _.toString(conditional_Card?.HasProgressionLevel) ===
+              _.toString(progressionLevelForAddComponent) &&
+            conditional_Card?.RowNumber !== conditionalComponent[0].RowNumber
         );
       const uniqueConditionalArray: any =
         !_.isUndefined(currentConditionalComponent) &&
-        !_.isNull(currentConditionalComponent)
+        !_.isNull(currentConditionalComponent) &&
+        currentConditionalComponent?.RowNumber >
+          conditionalComponent[0].RowNumber
           ? [
               ...new Set([
                 ...restConditionalComponentInProgressionLevel1,
                 currentConditionalComponent,
+                currentComponent,
               ]),
             ]
           : [...new Set([...restConditionalComponentInProgressionLevel1])];
-
-      const componentCardInProgressionLevel =
-        progressionLevelForAddComponent !== ''
-          ? pathwayComponent?.PathwayComponents?.filter(
+      let componentCardInProgressionLevel: any = [];
+      if (
+        pathwayComponent?.Pathway?.HasProgressionModel &&
+        pathwayComponent?.Pathway?.HasProgressionModel.length > 0
+      ) {
+        if (progressionLevelForAddComponent !== '') {
+          componentCardInProgressionLevel =
+            pathwayComponent?.PathwayComponents?.filter(
               (card: any) =>
-                card?.HasProgressionLevel === progressionLevelForAddComponent
-            )
-          : pathwayComponent?.PathwayComponents?.filter(
+                card?.HasProgressionLevel === progressionLevelForAddComponent &&
+                card?.RowNumber == conditionalComponent[0].RowNumber
+            );
+        } else {
+          componentCardInProgressionLevel =
+            pathwayComponent?.PathwayComponents?.filter(
               (card: any) =>
                 card?.CTID !==
+                  pathwayComponent?.Pathway?.HasDestinationComponent &&
+                card?.RowNumber == conditionalComponent[0].RowNumber
+            );
+        }
+      } else {
+        if (
+          progressionLevelForAddComponent !== '' &&
+          progressionLevelForAddComponent !== undefined
+        ) {
+          componentCardInProgressionLevel =
+            pathwayComponent?.PathwayComponents?.filter(
+              (card: any) =>
+                card?.CTID !==
+                  pathwayComponent?.Pathway?.HasDestinationComponent &&
+                card?.RowNumber == conditionalComponent[0].RowNumber
+            );
+        } else {
+          componentCardInProgressionLevel =
+            pathwayComponent?.PathwayComponents?.filter(
+              (card: any) =>
+                card?.CTID ===
                 pathwayComponent?.Pathway?.HasDestinationComponent
             );
-
+        }
+      }
       const uniquePathwayComponentArray =
         !_.isUndefined(currentPathwayComponent) &&
         !_.isNull(currentPathwayComponent)
@@ -244,6 +299,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
       }
 
       const allComponentConditionalCard = [
+        ...conditionalComponentOutOfProgressionLevelRow,
         ...conditionalComponentOutOfProgressionLevel,
         ...updatedConditionalArray,
       ];
@@ -286,7 +342,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           .concat({
             ...currentComponent,
             TargetComponent: [],
-            ColumnNumber: currentComponent?.ColumnNumber + 1,
+            ColumnNumber:
+              currentComponent?.ColumnNumber ===
+              conditionalComponent[0].ColumnNumber
+                ? currentComponent?.ColumnNumber + 1
+                : currentComponent?.ColumnNumber,
           });
       } else {
         finalConditionalComponentsList = uniqueAllConditionalArray;
@@ -323,7 +383,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             _.toString(condtional_card?.ParentIdentifier) ===
             _.toString(currentComponent?.RowId)
         );
-
+      //debugger;
       const maximumRowNumber = conditionalCardAlreadyExistForDestination.reduce(
         (acc: any, curr: any) => {
           if (acc >= curr) {
@@ -348,6 +408,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             : currentComponent?.RowId,
         Description: componentConditionFields.Description,
         RequiredNumber: componentConditionFields.RequiredNumber,
+        RequiredConstraints: componentConditionFields.RequiredConstraints,
         LogicalOperator: getLogicalOperatorURI[0]?.URI,
         HasConstraint: hasConstraints,
         ColumnNumber:
@@ -386,6 +447,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           '0'
         );
 
+        if (data.HasProgressionLevel == '') {
+          componentConditionFields.HasProgressionLevel =
+            currentConditionalComponent?.HasProgressionLevel;
+          // console.log(componentConditionFields);
+        }
         if (
           !_.isUndefined(currentConditionalComponent) &&
           !_.isNull(currentConditionalComponent)
@@ -465,8 +531,8 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         ...constraintRow.map((v: any) => ({
           ...v,
           RowId: consRowID,
-          Name: componentConditionFields.Name,
-          Description: componentConditionFields.Description,
+          // Name: "",
+          // Description: "",
           ParentIdentifier: componentConditionFields.RowId,
         })),
       ];
@@ -495,11 +561,19 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     RightAction: [],
     RightSource: [],
     id: 0,
-    Name: componentConditionFields.Name,
+    Name: '',
     RowId: currentComponent?.RowId,
-    Description: componentConditionFields.Description,
+    Description: '',
   };
-
+  const toggleText = () => {
+    setIsTextShown(!isTextShown);
+  };
+  const toggleActionText = () => {
+    setActionIsTextShown(!isActionTextShown);
+  };
+  // const toggleComparatorText = () => {
+  //   setComparatorIsTextShown(!isComparatorTextShown);
+  // };
   useEffect(() => {
     if (getAllLogicalOperator.valid)
       setAllLogicalOperator({
@@ -532,11 +606,139 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     setConstraintRow(rowCon);
     setConstRowId(mId);
     setHasConstraints([...hasConstraints, mId]);
+    setIsEditConstraintModalStatus(true);
+    //debugger;
+    // console.log(rowCon[rowCon.length - 1])
+    setConstraint(rowCon[rowCon.length - 1]);
     //	console.log("rowCon", rowCon);
     //console.log("Has constraints", hasConstraints);
   };
-  const selectedComparators = (value: any) => {
-    setLogicalOperator(value);
+
+  const EditConstraintRow = (RowIndex: any, ConstraintData: any) => {
+    setIsEditConstraintModalStatus(true);
+    setConstraint(ConstraintData);
+    setRowIndex(RowIndex);
+    //	console.log("rowCon", rowCon);
+    //console.log("Has constraints", hasConstraints);
+  };
+  // const selectedComparators = (value: any) => {
+  //   setLogicalOperator(value);
+  // };
+  const customToolTipIcon = (type: any) => (
+    <span
+      className={Styles.iconSpacing}
+      style={{ position: 'absolute', right: 0, top: -23, zIndex: 200 }}
+      onClick={() => onShowCloseToolTip(type, true)}
+    >
+      <span className="fa-layers fa-fw fa-lg">
+        <FontAwesomeIcon icon={faCircle} className={Styles.iconPrimary} />
+        <FontAwesomeIcon
+          icon={faQuestion}
+          transform="shrink-6"
+          className={Styles.iconSecondary}
+        />
+      </span>
+    </span>
+  );
+  const [toolTip, setToolTip] = useState<any>([
+    {
+      type: 'Name',
+      isVisible: false,
+    },
+    {
+      type: 'Description',
+      isVisible: false,
+    },
+    {
+      type: 'RequiredNumber',
+      isVisible: false,
+    },
+    {
+      type: 'Logic',
+      isVisible: false,
+    },
+    {
+      type: 'RequiredConstraints',
+      isVisible: false,
+    },
+    {
+      type: 'ParentComponent',
+      isVisible: false,
+    },
+    {
+      type: 'test',
+      isVisible: false,
+    },
+  ]);
+
+  const getToolTipText = (value: string) => {
+    let text = '';
+    switch (value) {
+      case 'Name':
+        text = 'Name of the Condition.';
+        break;
+      case 'Description':
+        text = 'Statement, characterization or account of the entity.';
+        break;
+      case 'RequiredNumber':
+        text =
+          'The Required Number field indicates how many of the Components and Conditions that branch out to the left of these Condtions are required to be satisfied in order for these Conditions to be true (in addition to any other constraints indicated below). Use 0 if the items that branch out to the left are entirely optional';
+        break;
+      case 'Logic':
+        text =
+          'The logical operator indicates how the constraints below, as well as any other Conditions that branch out to the left of these Conditions, should be evaluated. For example, select "And" to indicate that all of the constraints must be true in order for these conditions to be met; select "Or" to indicate that only one needs to be true.';
+        break;
+      case 'RequiredConstraints':
+        text =
+          'The Required Constraints field indicates the number of constraints that are required to satisfy this condition';
+        break;
+      case 'ParentComponent':
+        text = 'Parent Component of this condition.';
+        break;
+      case 'test':
+        text = 'Parent Component of this condition.';
+        break;
+    }
+    return text;
+  };
+
+  const customToolTip = (type: any) => (
+    <Tag
+      color="rgb(220,250,249)"
+      style={{
+        width: '100%',
+        padding: 10,
+        paddingRight: 20,
+        marginTop: 10,
+        blockOverflow: 'ellipsis',
+        whiteSpace: 'pre-wrap',
+        position: 'relative',
+      }}
+    >
+      <>
+        <CloseOutlined
+          style={{
+            marginLeft: 3,
+            fontSize: '10',
+            position: 'absolute',
+            right: 5,
+            top: 5,
+            cursor: 'pointer',
+          }}
+          onClick={() => onShowCloseToolTip(type, false)}
+        />
+        {getToolTipText(type)}
+      </>
+    </Tag>
+  );
+
+  const onShowCloseToolTip = (type: any, visibility: boolean) => {
+    const toolTipArray =
+      toolTip &&
+      toolTip.map((item: any) =>
+        item.type === type ? { ...item, isVisible: visibility } : item
+      );
+    setToolTip(toolTipArray);
   };
   const getConstraintData = (val: any) => {
     let matchIndex = -1;
@@ -557,6 +759,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
 		*/
   };
   const handleDeleteRow = (rowIndex: number) => {
+    // debugger;
     const deletedRow = constraintRow.splice(rowIndex, 1);
     const updatedPathwayWrapper = { ...pathwayComponent };
     _.remove(
@@ -565,16 +768,16 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     );
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
 
-    if (rowIndex !== 0) {
-      setConstraintRow([...constraintRow]);
-    } else {
-      setConstraintRow([]);
-    }
+    // if (rowIndex !== 0) {
+    setConstraintRow([...constraintRow]);
+    // } else {
+    //   setConstraintRow([]);
+    // }
   };
   return (
     <div className={Styles.addComponentwrapper}>
       <Form>
-        <h2>Add Condition</h2>
+        {/* <h2>Add Condition</h2> */}
         <div className={Styles.iconheader}>
           <span className={Styles.iconwrapper + ' iconwrapper'}>
             <FontAwesomeIcon
@@ -583,22 +786,29 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               color="black"
             />
           </span>
-          <h4>Component Condition</h4>
+          <h2 style={{ margin: 0 }}>
+            Component Condition for{' '}
+            <i>{currentComponent?.Name || 'Parent Component'}</i>
+          </h2>
         </div>
-        <Form.Item>
-          <label>Parent Component</label>
+        {/* <Form.Item
+        wrapperCol={{ span: 24 }}
+        labelCol={{ span: 24 }}
+        label="Parent Component">
+          {customToolTipIcon('ParentComponent')}
           <InputBox
             disabled={isViewMode}
             name="ParentIdentifier"
             value={currentComponent?.Name}
           />
-        </Form.Item>
+            {toolTip.find((item: any) => item.type === 'ParentComponent')
+                .isVisible && customToolTip('ParentComponent')}
+        </Form.Item> */}
         <Form.Item
           required={true}
           wrapperCol={{ span: 24 }}
           labelCol={{ span: 24 }}
           label="Name"
-          tooltip="Name of the Condition"
           validateTrigger="onBlur"
           help={
             (_.isEmpty(componentConditionFields.Name) ||
@@ -608,6 +818,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               : null
           }
         >
+          {customToolTipIcon('Name')}
           <InputBox
             disabled={isViewMode}
             onChange={onInputChangeHandler}
@@ -621,13 +832,15 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                 : setisTouched({ ...isTouched, Name: true })
             }
           />
+          {toolTip.find((item: any) => item.type === 'Name').isVisible &&
+            customToolTip('Name')}
         </Form.Item>
         <Form.Item
           label="Condition Description"
-          tooltip="Statement, characterization or account of the entity."
           wrapperCol={{ span: 24 }}
           labelCol={{ span: 24 }}
         >
+          {customToolTipIcon('Description')}
           <TextArea
             disabled={isViewMode}
             onChange={onInputChangeHandler}
@@ -636,15 +849,16 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             value={componentConditionFields.Description}
             placeholder="Description"
           />
+          {toolTip.find((item: any) => item.type === 'Description').isVisible &&
+            customToolTip('Description')}
         </Form.Item>
         <Row gutter={20}>
           <Col span="12">
             <Form.Item
-              tooltip="Required number of Target Components to fullfill the condition"
               required={true}
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              label="Required Number"
+              label="Required Target Components and Conditions"
               validateTrigger="onBlur"
               help={
                 (_.isEmpty(componentConditionFields.RequiredNumber) ||
@@ -654,10 +868,11 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                   : null
               }
             >
+              {customToolTipIcon('RequiredNumber')}
               <InputBox
                 disabled={isViewMode}
                 type="number"
-                placeholder="Required Number"
+                placeholder="Required Target Components and Conditions"
                 onChange={onInputChangeHandler}
                 min={1}
                 name="RequiredNumber"
@@ -669,15 +884,18 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                     : setisTouched({ ...isTouched, requiredNumber: true })
                 }
               />
+              {toolTip.find((item: any) => item.type === 'RequiredNumber')
+                .isVisible && customToolTip('RequiredNumber')}
             </Form.Item>
           </Col>
-          <Col span="12">
+
+          {/* <Col span="12">
             <Form.Item
               label="Logical Operator"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              tooltip=" Type that denotes a logical operation such as And, Or, OnlyOne select from an existing enumeration of such types."
             >
+              {customToolTipIcon('Logic')}
               <Dropdown
                 disabled={isViewMode}
                 options={allogicalOperator?.LogicalOperator}
@@ -686,8 +904,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                 value={logicalOperator}
                 onChange={(e) => selectedComparators(e)}
               />
+                 {toolTip.find((item: any) => item.type === 'Logic')
+                .isVisible && customToolTip('Logic')}
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
         <div className={Styles.divider}>
           <label>Constraints</label>
@@ -706,20 +926,219 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             </a>
             .
           </div>
+          <Row>
+            <Col span="14">
+              <a onClick={toggleText}>
+                {isTextShown
+                  ? 'Hide Constraints Description'
+                  : 'Show Constraints Description'}
+                {isTextShown ? (
+                  <FontAwesomeIcon
+                    icon={faChevronCircleUp}
+                    className={Styles.iconPrimary}
+                  ></FontAwesomeIcon>
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faChevronCircleDown}
+                    className={Styles.iconPrimary}
+                  ></FontAwesomeIcon>
+                )}
+              </a>
+              {isTextShown && (
+                <>
+                  <ul>
+                    Each Constraint consists of several fields:
+                    <li>
+                      The <b>Left Source</b> and <b>Right Source</b> fields each
+                      reference one or more data points related to the Pathway
+                      Components and/or Component Conditions referenced by this
+                      Component Condition.
+                    </li>
+                    <li>
+                      <b>Left Source</b> and <b>Right Source</b> may reference
+                      CTDL classes, properties, concepts, or your own custom
+                      concepts, or simple text or numeric values.
+                    </li>
+                    <li>
+                      If either the <b>Left Source</b> or <b>Right Source</b>{' '}
+                      references more than one data point, provide the
+                      corresponding <b>Left Action</b> or <b>Right Action</b> to
+                      indicate how that Source should be treated (see below).{' '}
+                    </li>
+                    <li>
+                      The <b>Comparator </b> field indicates how those two sets
+                      of data points should be compared, e.g.{' '}
+                      <b>
+                        <i>
+                          &quot; Credit Value must be greater than 3 &quot; or
+                          &quot;Student Grade must be one of A, B, or C&quot;,
+                          or &quot;Sum of years of experience and apprenticeship
+                          experience must be greater than or equal to one of six
+                          months or the estimated duration&quot;
+                        </i>
+                      </b>{' '}
+                      of the items referenced by this Component Condition
+                    </li>
+                  </ul>
+                  <p></p>
+                </>
+              )}
+            </Col>
+            <Col span="10">
+              <a onClick={toggleActionText}>
+                {isActionTextShown
+                  ? 'Hide Actions Vocabulary'
+                  : 'Show Actions Vocabulary'}
+                {isActionTextShown ? (
+                  <FontAwesomeIcon
+                    icon={faChevronCircleUp}
+                    className={Styles.iconPrimary}
+                  ></FontAwesomeIcon>
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faChevronCircleDown}
+                    className={Styles.iconPrimary}
+                  ></FontAwesomeIcon>
+                )}
+              </a>
+              {isActionTextShown && (
+                <>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Action</th>
+                        <th>Action Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>All Of</td>
+                        <td>All of the values.</td>
+                      </tr>
+                      <tr>
+                        <td>Any Of</td>
+                        <td>Any (one or more) of the values.</td>
+                      </tr>
+                      <tr>
+                        <td>Count Distinct</td>
+                        <td>The number of unique values; yields a number.</td>
+                      </tr>
+                      <tr>
+                        <td>Maximum</td>
+                        <td>Maximum Value</td>
+                      </tr>
+                      <tr>
+                        <td>Mean</td>
+                        <td>The arithmetic mean of all the values.</td>
+                      </tr>
+                      <tr>
+                        <td>Minimum</td>
+                        <td>Minimum Value</td>
+                      </tr>
+                      <tr>
+                        <td>One Of</td>
+                        <td>One of the values.</td>
+                      </tr>
+                      <tr>
+                        <td>Sum</td>
+                        <td>Sum of the Values</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
+              )}
+            </Col>
+            {/* <Col span="5">
+          <a onClick={toggleComparatorText}>
+          {isComparatorTextShown?"Hide Comparator Vocabulary":"Show Comparator Vocabulary"}
+          {isComparatorTextShown ?<FontAwesomeIcon icon={faChevronCircleUp} className={Styles.iconPrimary}></FontAwesomeIcon>:  <FontAwesomeIcon icon={faChevronCircleDown} className={Styles.iconPrimary}></FontAwesomeIcon>}
+          </a>
+      {isComparatorTextShown && (
+          <><table>
+          <thead>
+            <tr>
+              <th>Comparator</th>
+              <th>Comparator Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Equal To</td>
+              <td>Left source equals to right source, eg Credits Equal to 120</td>
+            </tr>
+            <tr>
+              <td>Greater Than</td>
+              <td>Any (one or more) of the values.</td>
+            </tr>
+            <tr>
+              <td>Greater Than or Equal To</td>
+              <td>The number of unique values; yields a number.</td>
+            </tr>
+            <tr>
+              <td>Less Than</td>
+              <td>Maximum Value</td>
+            </tr>
+            <tr>
+              <td>Less Than or Equal To</td>
+              <td>The arithmetic mean of all the values.</td>
+            </tr>
+            <tr>
+              <td>Not Equal To</td>
+              <td>Minimum Value</td>
+            </tr>
+          </tbody>
+        </table></>
+      )}
+          </Col> */}
+          </Row>
+
           <hr className="min-top" />
         </div>
+        <Col span="12">
+          <Form.Item
+            //required={true}
+            wrapperCol={{ span: 24 }}
+            labelCol={{ span: 24 }}
+            label="Required Constraints"
+            validateTrigger="onBlur"
+          >
+            {customToolTipIcon('RequiredConstraints')}
+            <InputBox
+              disabled={isViewMode}
+              type="number"
+              placeholder="Required Constraints"
+              onChange={onInputChangeHandler}
+              min={1}
+              name="RequiredConstraints"
+              value={componentConditionFields.RequiredConstraints}
+            />
+            {toolTip.find((item: any) => item.type === 'RequiredConstraints')
+              .isVisible && customToolTip('RequiredConstraints')}
+          </Form.Item>
+        </Col>
+
         {constraintRow &&
           constraintRow?.map((constraintRowData: any, RowIndex: any) => (
-            <Constraint
-              key={RowIndex}
-              RowIndex={RowIndex}
-              constraintRow={constraintRowData}
-              getConstraintData={(val: any) => getConstraintData(val)}
-              deleteRowByIndex={(rowIndex: any) => handleDeleteRow(rowIndex)}
-              isViewMode={isViewMode}
-            />
-          ))}
+            <>
+              {!isViewMode && (
+                <u
+                  onClick={() => EditConstraintRow(RowIndex, constraintRowData)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Edit Constraint
+                </u>
+              )}
 
+              <Constraint
+                key={RowIndex}
+                RowIndex={RowIndex}
+                constraintRow={constraintRowData}
+                getConstraintData={(val: any) => getConstraintData(val)}
+                deleteRowByIndex={(rowIndex: any) => handleDeleteRow(rowIndex)}
+                isViewMode={isViewMode}
+              />
+            </>
+          ))}
         <p>
           {!isViewMode && (
             <u onClick={() => addConstraintRow()} style={{ cursor: 'pointer' }}>
@@ -727,6 +1146,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             </u>
           )}
         </p>
+
         <hr />
         <Button
           size="medium"
@@ -741,6 +1161,29 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
           onClick={saveCondition}
         />
       </Form>
+      {isEditConstraintModalStatus && (
+        <Modal
+          width="20vw"
+          visible={isEditConstraintModalStatus}
+          title=""
+          footer={[]}
+          onCancel={() => {
+            setIsEditConstraintModalStatus(false);
+          }}
+        >
+          {constraintRow && (
+            <ConstraintV2
+              key={rowIndex}
+              RowIndex={rowIndex}
+              constraintRow={constraint}
+              getConstraintData={(val: any) => getConstraintData(val)}
+              deleteRowByIndex={(rowIndex: any) => handleDeleteRow(rowIndex)}
+              isViewMode={isViewMode}
+              setIsEditConstraintModalStatus={setIsEditConstraintModalStatus}
+            />
+          )}
+        </Modal>
+      )}
     </div>
   );
 };

@@ -29,6 +29,11 @@ export type RootState = {
     data: any;
     valid: boolean;
   };
+  saveResource: {
+    loading: boolean;
+    data: any;
+    valid: boolean;
+  };
   isDestinationSelected: boolean;
   selectedOrganization: any;
 };

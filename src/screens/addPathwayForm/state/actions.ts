@@ -10,6 +10,9 @@ import {
   SEARCH_FOR_PROGRESSION_MODAL_FAILURE,
   SEARCH_FOR_PROGRESSION_MODAL_REQUEST,
   SEARCH_FOR_PROGRESSION_MODAL_SUCCESS,
+  SEARCH_FOR_SUPPORT_SERVICES_REQUEST,
+  SEARCH_FOR_SUPPORT_SERVICES_SUCCESS,
+  SEARCH_FOR_SUPPORT_SERVICES_FAILURE,
 } from './actionTypes';
 
 export const getHasProgressionModel = (payload: any) => ({
@@ -63,5 +66,19 @@ export const getDataForOccupationTypeCodeFailure = (payload: any) => ({
 // Need to remove this method
 export const saveAddPAthWayFormFields = (payload: any) => ({
   type: SAVE_ADD_PATH_WAY_FORM_FIELDS,
+  payload,
+});
+
+export const getDataForSupportServicesFailure = (payload: any) => ({
+  type: SEARCH_FOR_SUPPORT_SERVICES_FAILURE,
+  payload,
+});
+export const getDataForSupportServicesRequest = (payload: any) => ({
+  type: SEARCH_FOR_SUPPORT_SERVICES_REQUEST,
+  payload,
+});
+
+export const getDataForSupportServicesSuccess = (payload: any) => ({
+  type: SEARCH_FOR_SUPPORT_SERVICES_SUCCESS,
   payload,
 });

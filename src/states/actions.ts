@@ -18,6 +18,9 @@ import {
   SELECT_DESTINATION_REQUEST,
   SAVE_SELECTED_ORGANISATION,
   GET_DATA_FOR_PATHWAY_ON_FIRST_LOAD,
+  SAVE_RESOURCE_FAILURE,
+  SAVE_RESOURCE_REQUEST,
+  SAVE_RESOURCE_SUCCESS,
 } from './actionTypes';
 
 export const getCurrentUserDataRequest = () => ({
@@ -34,7 +37,7 @@ export const getCurrentUserDataFailure = (payload: any) => ({
   payload,
 });
 
-export const getDataForPathwayAndComponentsRequest = (id: number) => ({
+export const getDataForPathwayAndComponentsRequest = (id: string) => ({
   type: GET_DATA_FOR_PATHWAY_AND_COMPONENTS_REQUEST,
   id,
 });
@@ -107,4 +110,18 @@ export const saveSelectedOrganization = (payload: any) => ({
 
 export const onFirstLoad = () => ({
   type: GET_DATA_FOR_PATHWAY_ON_FIRST_LOAD,
+});
+export const saveResourceRequest = (payload: any) => ({
+  type: SAVE_RESOURCE_REQUEST,
+  payload,
+});
+
+export const saveResourceSuccess = (payload: any) => ({
+  type: SAVE_RESOURCE_SUCCESS,
+  payload,
+});
+
+export const saveResourceFailure = (payload: any) => ({
+  type: SAVE_RESOURCE_FAILURE,
+  payload,
 });

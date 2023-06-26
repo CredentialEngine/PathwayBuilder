@@ -5,12 +5,26 @@ import {
   faMinus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Card, Row, Form, Dropdown, Typography, Space, Menu } from 'antd';
+import {
+  Col,
+  Card,
+  Row,
+  Form,
+  Dropdown,
+  Typography,
+  Space,
+  Menu,
+  Tag,
+} from 'antd';
 import _, { noop } from 'lodash';
 
+import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+//import AutoCompleteBox from '../../components/autoComplete';
 
+import { GET_ORGANIZATION } from '../../apiConfig/endpoint';
+import { TEMP_BASE_URL } from '../../apiConfig/setting';
 import Button from '../../components/button';
 
 import { Type } from '../../components/button/type';
@@ -21,6 +35,8 @@ import SearchBox from '../../components/formFields/searchBox';
 import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
 import Modal from '../../components/modal';
 import { updateMappedDataRequest } from '../../states/actions';
+//import { SelectAutoCompleteProps } from '../../utils/selectProps';
+import DebounceSelect from '../addPathwayForm/debounceSelect';
 
 import Styles from './index.module.scss';
 import { getAllProxyForResourcesRequest } from './state/actions';
@@ -48,6 +64,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const [nextDisabled, setNextDisabled] = useState(false);
   const [displaySearchContainer, setDisplaySearchContainer] =
     React.useState(true);
+  const [allOrganizations, setAllOrganizations] = useState<[]>([]);
+  const [selectedOrganization, setSelectedOrganization] = useState<any>([]);
   const [selectedResource, setSelectedResource] = useState<any>([]);
   const [deletedResource, setDeletedResource] = useState<any>([]);
   const [selectedAlphaResource, setSelectedAlphaResource] = useState<any>([]);
@@ -60,6 +78,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const resultSection = useRef(document.createElement('div'));
   const appState = useSelector((state: any) => state?.initalReducer);
+  const [isVisible, setIsVisible] = useState(true);
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
     Keywords: '',
     Skip: 0,
@@ -72,6 +91,9 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       },
     ],
   });
+  // const [searchOrgFilterValue, setOrgSearchFilterValue] = useState<any>({
+  //   Keywords: '',
+  // });
 
   const {
     mappedData: {
@@ -97,7 +119,63 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       setPreviousDisabled(false);
     }
   });
+  const tagRender = (props: CustomTagProps) => {
+    const { label, value, closable, onClose } = props;
+    const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    return (
+      <Tag
+        color={value}
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        // className={styles.content}
+      >
+        {label && label.toString().substring(0, 72)}
+      </Tag>
+    );
+  };
+  async function fetchIndustryList(e: string): Promise<any[]> {
+    const data = new FormData();
+    data.append('json', JSON.stringify({ Keywords: e }));
 
+    return fetch(`${TEMP_BASE_URL}${GET_ORGANIZATION}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Keywords: e }),
+    })
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          CTID: dta.CTID,
+          label: dta.Name,
+          value: dta.CTID,
+        }));
+        setAllOrganizations(updatedBody);
+        return updatedBody;
+      });
+  }
+
+  const onDebounceSelectHnadler = (e: any) => {
+    const filteredOccupations = allOrganizations?.filter(
+      (data: any) => data.value === e.value
+    );
+    const selected = filteredOccupations.map((obj: any) => obj.Name);
+    setSelectedOrganization(selected);
+  };
+
+  const onDebounceDeSelectHnadler = (e: any) => {
+    const selected = selectedOrganization
+      ?.filter((item: any) => item !== e.value)
+      .map((obj: any) => obj.Name);
+    setSelectedOrganization(selected);
+  };
   const searchComponent = (e: any) => {
     setSearchFilterValue({
       ...searchFilterValue,
@@ -106,6 +184,34 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     });
     setDisplaySearchContainer(true);
   };
+  useEffect(() => {
+    const updatedSearchValue = { ...searchFilterValue };
+    updatedSearchValue.Skip = 0;
+    if (selectedOrganization != null && selectedOrganization != '') {
+      _.remove(
+        updatedSearchValue.Filters,
+        (item: any) => item.URI == 'search:recordOwnedBy'
+      );
+      const filteredOccupations = allOrganizations
+        ?.filter((data: any) => data.Name === selectedOrganization[0])
+        .map((obj: any) => obj.value);
+      updatedSearchValue.Filters = [
+        ...updatedSearchValue.Filters,
+        {
+          URI: 'search:recordOwnedBy',
+          ItemTexts: filteredOccupations,
+        },
+      ];
+    } else {
+      _.remove(
+        updatedSearchValue.Filters,
+        (item: any) => item.URI == 'search:recordOwnedBy'
+      );
+    }
+
+    setSearchFilterValue(updatedSearchValue);
+    // setDisplaySearchContainer(true);
+  }, [selectedOrganization]);
 
   const getNextSearchComponent = () => {
     const currentsearch = searchFilterValue;
@@ -182,6 +288,10 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   useEffect(() => {
     const updatedSearchValue = { ...searchFilterValue };
     if (!_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)) {
+      _.remove(
+        updatedSearchValue.Filters,
+        (item: any) => item.URI == 'search:recordOwnedBy'
+      );
       if (checkboxForOrganisation) {
         updatedSearchValue.Filters = [
           ...updatedSearchValue.Filters,
@@ -224,7 +334,12 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         ];
         setSearchFilterValue(updatedSearchValue);
       } else {
+        _.remove(
+          updatedSearchValue.Filters,
+          (item: any) => item.URI == 'meta:pathwayComponentType'
+        );
         updatedSearchValue.Filters = [
+          ...updatedSearchValue.Filters,
           {
             URI: 'meta:pathwayComponentType',
             ItemTexts: [_.get(selectedCardType, '0').label],
@@ -250,6 +365,8 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       const updatedoptions = allTypesOfComponentCards.filter(
         (opt: any) => opt.label !== 'ceterms:ComponentCondition'
       );
+      const allresources = { key: 9, label: 'All resources' };
+      updatedoptions.push(allresources);
       setAllComponentTypes(updatedoptions);
     }
   }, [selectedResource, allComponentTabCards]);
@@ -377,6 +494,9 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   const handleCheckBox = () => {
     setCheckboxForOrganisation(!checkboxForOrganisation);
+    checkboxForOrganisation === false
+      ? setIsVisible(false)
+      : setIsVisible(true);
   };
 
   const arrangeAlphabetically = (value: string) => {
@@ -404,9 +524,12 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         <Col span="12">
           <div className={Styles.dropDownRefDiv}>
             <div className="child">
-              <h5>Select Resources</h5>
+              <h5>Filter Registry Resources</h5>
             </div>
-            <div className="child">
+            <div
+              className="child"
+              style={{ backgroundColor: '#4ee5e1', borderRadius: '5px' }}
+            >
               <Dropdown overlay={menu} trigger={['click']}>
                 <Typography.Link>
                   <Space>
@@ -431,6 +554,25 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
             placeholder="Search your components"
             onKeyUp={searchComponent}
           />
+          {isVisible && (
+            <Form.Item
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              validateTrigger="onBlur"
+            >
+              <DebounceSelect
+                // disabled={isViewMode}
+                mode="multiple"
+                tagRender={tagRender}
+                value={selectedOrganization}
+                placeholder=" Start Typing to select the organization"
+                fetchOptions={fetchIndustryList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e)}
+                onDeselect={(e: any) => onDebounceDeSelectHnadler(e)}
+              />
+            </Form.Item>
+          )}
+
           <CheckBox
             name="progressionModel"
             label="Only components published by my organization"

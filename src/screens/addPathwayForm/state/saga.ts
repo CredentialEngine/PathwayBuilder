@@ -5,6 +5,7 @@ import {
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
   SEARCH_FOR_PROGRESSION_MODAL,
+  SEARCH_FOR_HAS_SUPPORT_SERVICE,
 } from '../../../apiConfig/endpoint';
 import { IS_LOCALHOST, TEMP_BASE_URL } from '../../../apiConfig/setting';
 
@@ -17,11 +18,14 @@ import {
   getDataForIndustryTypeCodeFailure,
   getDataForOccupationTypeCodeSuccess,
   getDataForOccupationTypeCodeFailure,
+  getDataForSupportServicesSuccess,
+  getDataForSupportServicesFailure,
 } from './actions';
 import {
   SEARCH_FOR_INDUSTRY_TYPE_CODE_REQUEST,
   SEARCH_FOR_OCCUPATION_TYPE_CODE_REQUEST,
   SEARCH_FOR_PROGRESSION_MODAL_REQUEST,
+  SEARCH_FOR_SUPPORT_SERVICES_REQUEST,
 } from './actionTypes';
 
 export function* getAllProgressionModelData(payload: any): Generator {
@@ -82,6 +86,25 @@ export function* getAllOccupationTypeCodeData(payload: any): Generator {
     yield put(getDataForOccupationTypeCodeFailure(error));
   }
 }
+
+export function* getAllSupportServicesData(payload: any): Generator {
+  try {
+    const result: any = yield call(request, {
+      url: `${TEMP_BASE_URL}${SEARCH_FOR_HAS_SUPPORT_SERVICE}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      params: {
+        search: payload.payload,
+      },
+    });
+
+    yield put(getDataForSupportServicesSuccess(result));
+  } catch (error) {
+    yield put(getDataForSupportServicesFailure(error));
+  }
+}
 function* pathwayFormsaga() {
   yield debounce(
     400,
@@ -96,6 +119,10 @@ function* pathwayFormsaga() {
   yield takeLatest(
     SEARCH_FOR_OCCUPATION_TYPE_CODE_REQUEST,
     getAllOccupationTypeCodeData
+  );
+  yield takeLatest(
+    SEARCH_FOR_SUPPORT_SERVICES_REQUEST,
+    getAllSupportServicesData
   );
 }
 

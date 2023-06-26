@@ -5,6 +5,7 @@ import React from 'react';
 import SVG from 'react-inlinesvg';
 
 import Close from '../../assets/images/icons/close.svg';
+import Notice from '../../assets/images/icons/closed-and-reviewed.svg';
 import Loading from '../../assets/images/icons/loading-dash.svg';
 import Reminder from '../../assets/images/icons/reminder.svg';
 import Right from '../../assets/images/icons/right.svg';
@@ -59,7 +60,14 @@ export const Message = ({
         onClose={onClose}
       />
     ),
-    duration: type === 'success' ? 1 : type === 'loading' ? 7 : 0,
+    duration:
+      type === 'success'
+        ? 3
+        : type === 'loading'
+        ? 7
+        : type === 'notice'
+        ? 5
+        : 0,
     icon: <span />,
   });
 };
@@ -94,7 +102,7 @@ export const MessageContent = ({
     ),
     notice: (
       <SVG
-        src={Reminder}
+        src={Notice}
         style={{ width: 24, height: 24, fill: 'currentColor' }}
       />
     ),

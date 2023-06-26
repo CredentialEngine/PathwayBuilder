@@ -21,6 +21,9 @@
       margin-top: 5px;
     }
   }
+  .ant-form-item-control-input input[disabled] {
+    color: black;
+  }
 }
 .clearRowIcon {
   cursor: pointer;

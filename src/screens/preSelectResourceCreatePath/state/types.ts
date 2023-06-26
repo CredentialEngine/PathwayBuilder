@@ -4,4 +4,9 @@ export type RootState = {
     data: null;
     valid: false;
   };
+  allOrganizationsdata: {
+    loading: false;
+    data: null;
+    valid: false;
+  };
 };

@@ -4,7 +4,7 @@ import { Col, Row } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TEMP_BASE_URL } from '../../apiConfig/setting';
+import { TEMP_BASE_URL, IS_LOCALHOST } from '../../apiConfig/setting';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
 import HelpAddingComponent from '../../screens/helpAddingComponent';
@@ -25,9 +25,17 @@ interface Props {
   setIsEditPathwayFormVisible: (a: boolean) => void;
   isLeftPanelVisible: boolean;
   isViewMode: boolean;
+  extraCss: (a: boolean) => void;
+  setCollapsed: (a: boolean) => void;
 }
 const Header = (props: Props) => {
-  const { setIsEditPathwayFormVisible, isLeftPanelVisible, isViewMode } = props;
+  const {
+    setIsEditPathwayFormVisible,
+    isLeftPanelVisible,
+    isViewMode,
+    extraCss,
+    setCollapsed,
+  } = props;
   const pathwayWrapper = useSelector(
     (state: any) => state?.initalReducer?.mappedData
   );
@@ -38,15 +46,27 @@ const Header = (props: Props) => {
     (state: any) => state?.initalReducer?.savePathway
   );
   const dispatch = useDispatch();
-  //const [isViewModeEdit, setViewModeEdit] = useState<boolean>(false);
   const [hasConflicts, setHasConflicts] = useState<boolean>(false);
   const [approveDisable, setApproveDisable] = useState<boolean>(true);
   const [conflictMessages, setConflictMessages] = useState<[]>([]);
+  const [GridName, setGridName] = useState<any>();
   const [visible, setVisible] = useState(false);
   // const [loadings, setLoadings] = useState<boolean>(false);
   const [visibleHelpAddingComponent, setHelpAddingComponent] =
     useState<boolean>(false);
+  const [extraCSS, setExtraCSS] = useState(false);
   // const delay = 10;
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handlePrint = () => {
+    setCollapsed(true);
+    setTimeout(() => window.print(), 1000);
+    // window.print();
+  };
 
   useEffect(() => {
     if (
@@ -72,12 +92,12 @@ const Header = (props: Props) => {
       setApproveDisable(false);
     } else if (savePathwayResult?.error) {
       // setLoadings(false);
-      savePathwayResult?.data?.map((message: any) =>
-        Message({
-          description: message,
-          type: 'error',
-        })
-      );
+      // savePathwayResult?.data?.map((message: any) =>
+      //   Message({
+      //     description: message,
+      //     type: 'error',
+      //   })
+      // );
       setHasConflicts(true);
       setConflictMessages(savePathwayResult?.data || []);
       setApproveDisable(true);
@@ -135,7 +155,7 @@ const Header = (props: Props) => {
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Button
-          type={Type.LINK}
+          type={Type.PRIMARY}
           onClick={() => conflictHandler()}
           text={`show ${conflictMessages?.length} conflicts`}
           disabled={!hasConflicts}
@@ -153,14 +173,44 @@ const Header = (props: Props) => {
       </div>
     </div>
   );
+  function addExtraCSSClick() {
+    if (extraCSS !== true) {
+      extraCss(true);
+      setExtraCSS(true);
+    } else {
+      extraCss(false);
+      setExtraCSS(false);
+    }
+  }
+  useEffect(() => {
+    if (extraCSS == true) {
+      setGridName('Grid Off');
+    } else {
+      setGridName('Grid On');
+    }
+  });
 
   useEffect(() => {
-    if (!isViewMode) {
+    if (!isViewMode && !IS_LOCALHOST) {
       let interval: any;
       const counter = 60000;
       if (pathwayWrapper?.Pathway?.Name !== '' && isLeftPanelVisible) {
         interval = setTimeout(() => {
-          dispatch(saveDataForPathwayRequest(pathwayWrapper));
+          const pathwayModel =
+            pathwayWrapper?.Pathway?.HasProgressionModel?.length > 0;
+          if (pathwayModel) {
+            dispatch(saveDataForPathwayRequest(pathwayWrapper));
+          } else {
+            const updatedPathwayWrapper = { ...pathwayWrapper };
+            updatedPathwayWrapper.PathwayComponents =
+              updatedPathwayWrapper.PathwayComponents.map((card: any) => {
+                const { HasProgressionLevel, ...restProps } = card;
+                HasProgressionLevel;
+                return { ...restProps };
+              });
+            dispatch(saveDataForPathwayRequest(updatedPathwayWrapper));
+          }
+          //dispatch(saveDataForPathwayRequest(pathwayWrapper));
         }, counter);
         return () => clearTimeout(interval);
       }
@@ -168,10 +218,15 @@ const Header = (props: Props) => {
   }, [JSON.stringify(pathwayWrapper)]);
 
   const savePathwayWrapper = () => {
+    Message({
+      description: 'Saving the pathway',
+      type: 'notice',
+    });
     // setLoadings(true);
     const pathwayModel =
       pathwayWrapper?.Pathway?.HasProgressionModel?.length > 0;
     if (pathwayModel) {
+      debugger;
       dispatch(saveDataForPathwayRequest(pathwayWrapper));
     } else {
       const updatedPathwayWrapper = { ...pathwayWrapper };
@@ -194,14 +249,24 @@ const Header = (props: Props) => {
     //setViewModeEdit(isViewMode)
   };
   const redicrectTO = () => {
-    window.open(TEMP_BASE_URL, '_blank');
+    location.href = TEMP_BASE_URL + '/pathways';
+    // window.open(TEMP_BASE_URL+'/pathways', '_blank');
   };
+  // const exitWithoutSaving = () => {
+  //   Modal.confirm({
+  //     cancelText: 'Cancel',
+  //     okText: 'Exit',
+  //     title:
+  //       'You have unsaved changes. If you continue those changes will be lost.',
+  //     onOk: () => redicrectTO(),
+  //   });
+  // };
   const exitWithSaving = () => {
     Modal.confirm({
-      cancelText: 'Cancel',
-      okText: 'Exit',
+      cancelText: 'No',
+      okText: 'Yes',
       title:
-        'You have unsaved changes. If you continue those changes will be lost.',
+        'Are you sure you want to exit the Pathway Builder, unsaved changes will be lost.',
       onOk: () => redicrectTO(),
     });
   };
@@ -227,7 +292,7 @@ const Header = (props: Props) => {
                 </Col>
                 <Col span={24}>
                   <span className={styles.foundation}>
-                    {pathwayWrapper?.Pathway?.Organization?.Name}
+                    {/* {pathwayWrapper?.Pathway?.Organization?.Name} */}
                   </span>
                 </Col>
               </Row>
@@ -238,6 +303,7 @@ const Header = (props: Props) => {
           <div className={styles.headerCenter}>
             <div className={styles.titleContainer}>
               <span className={styles.title}>
+                {pathwayWrapper?.Pathway?.Organization?.Name} -
                 {pathwayWrapper?.Pathway?.Name}
               </span>
               <span className={styles.editPathway} onClick={onEditPathwayClick}>
@@ -245,14 +311,14 @@ const Header = (props: Props) => {
               </span>
             </div>
             <div className={styles.saveButtonWrapper}>
-              {!isViewMode && (
+              {/* {!isViewMode && (
                 <Button
                   disabled={isViewMode}
                   type={Type.LINK}
-                  onClick={exitWithSaving}
+                  onClick={exitWithoutSaving}
                   text="Exit Without Saving"
                 />
-              )}
+              )} */}
               {!isViewMode && (
                 <Button
                   className={styles.saveButtonSpecification}
@@ -264,10 +330,47 @@ const Header = (props: Props) => {
                   text="Save"
                 ></Button>
               )}
+              {!isViewMode && (
+                <Button
+                  className={styles.saveButtonSpecification}
+                  disabled={isViewMode || hasConflicts}
+                  type={Type.PRIMARY}
+                  size="small"
+                  onClick={exitWithSaving}
+                  key="Exit"
+                  text="Exit"
+                ></Button>
+              )}
             </div>
           </div>
           {!isViewMode && (
             <Col className={styles.conflictComponent}>{ApprovedComponent}</Col>
+          )}
+          {!isViewMode && (
+            <div className={styles.dropdown}>
+              <Button
+                onClick={toggleDropdown}
+                className={styles.approveButtonSpecification}
+                type={Type.PRIMARY}
+                text="Settings"
+              />
+              <div className={styles.dropdownOptions}>
+                <div
+                  className={styles.dropdownOption}
+                  onClick={addExtraCSSClick}
+                >
+                  {GridName}
+                </div>
+                <div
+                  className={styles.dropdownOption}
+                  title="Set the Layout to landscape mode,Under more settings, set the Scale to custom and adjust the percentage to fit the pathway into a single page "
+                  onClick={handlePrint}
+                >
+                  {' '}
+                  Print <FontAwesomeIcon icon={faCircleQuestion} />
+                </div>
+              </div>
+            </div>
           )}
         </div>
         {!isViewMode && (
@@ -282,6 +385,7 @@ const Header = (props: Props) => {
           </div>
         )}
       </div>
+
       <Modal
         visible={visibleHelpAddingComponent}
         title=""

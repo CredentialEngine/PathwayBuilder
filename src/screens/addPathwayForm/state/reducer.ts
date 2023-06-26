@@ -9,6 +9,9 @@ import {
   SEARCH_FOR_PROGRESSION_MODAL_FAILURE,
   SEARCH_FOR_PROGRESSION_MODAL_REQUEST,
   SEARCH_FOR_PROGRESSION_MODAL_SUCCESS,
+  SEARCH_FOR_SUPPORT_SERVICES_FAILURE,
+  SEARCH_FOR_SUPPORT_SERVICES_REQUEST,
+  SEARCH_FOR_SUPPORT_SERVICES_SUCCESS,
 } from './actionTypes';
 import { RootState } from './types';
 
@@ -29,6 +32,11 @@ const initState: RootState = {
     valid: false,
   },
   allHasProgressionLevel: {
+    loading: false,
+    data: null,
+    valid: false,
+  },
+  allHasSupportService: {
     loading: false,
     data: null,
     valid: false,
@@ -139,6 +147,35 @@ export default (state = initState, action: { type: string; payload: any }) => {
         ...state,
         allFormFields: action.payload,
       };
+    case SEARCH_FOR_SUPPORT_SERVICES_REQUEST:
+      return {
+        ...state,
+        allHasSupportService: {
+          ...state.allHasSupportService,
+          loading: true,
+        },
+      };
+    case SEARCH_FOR_SUPPORT_SERVICES_SUCCESS:
+      return {
+        ...state,
+        allHasSupportService: {
+          ...state.allHasSupportService,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+    case SEARCH_FOR_SUPPORT_SERVICES_FAILURE:
+      return {
+        ...state,
+        allHasSupportService: {
+          ...state.allHasSupportService,
+          loading: false,
+          data: action.payload.Data,
+          valid: action?.payload?.Valid,
+        },
+      };
+
     default:
       return {
         ...state,

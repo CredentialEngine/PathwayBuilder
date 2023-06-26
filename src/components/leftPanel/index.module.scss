@@ -51,7 +51,7 @@
   }
 }
 .cardwrapper {
-  height: calc(100vh - 200px);
+  height: calc(110vh - 330px);
   overflow-y: auto;
   padding-right: 5px;
   :global {
@@ -61,6 +61,27 @@
     .ant-card-bordered {
       border: none;
     }
+  }
+}
+.flexGrowCenter {
+  @include flexSpaceBetween;
+  & > div {
+    flex-grow: 1;
+  }
+}
+.iconCircle {
+  border: 2px solid $selection;
+  background-color: $selection;
+  border-radius: 50%;
+  height: 21px;
+  min-width: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+  svg {
+    fill: black !important;
   }
 }
 

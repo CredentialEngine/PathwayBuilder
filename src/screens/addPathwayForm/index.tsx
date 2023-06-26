@@ -10,11 +10,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+  SEARCH_FOR_HAS_SUPPORT_SERVICE,
   SEARCH_FOR_INDUSTRICAL_PROGRAM_TYPE,
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
 } from '../../apiConfig/endpoint';
-import { TEMP_BASE_URL } from '../../apiConfig/setting';
+import { TEMP_BASE_URL, progressionModelUrl } from '../../apiConfig/setting';
 
 import AutoCompleteBox from '../../components/autoComplete';
 import Button from '../../components/button';
@@ -30,7 +31,7 @@ import {
   updateMappedDataRequest,
 } from '../../states/actions';
 import fetchProgressionList from '../../utils/fetchSearchResponse';
-import { isValidUrl } from '../../utils/object';
+//import { isValidUrl } from '../../utils/object';
 import { SelectAutoCompleteProps } from '../../utils/selectProps';
 
 import DebounceSelect from './debounceSelect';
@@ -91,6 +92,7 @@ const AddPathwayForm: React.FC<Props> = ({
   const [allProgressionModel, setAllProgressionModel] = useState<[]>([]);
   const [allProgressionLevel, setAllProgressionLevel] = useState<[]>([]);
   const [allOccupationTypeData, setAllOccupationTypeData] = useState<[]>([]);
+  const [allSupportServicesData, setAllSupportServicesData] = useState<[]>([]);
 
   const [allIndustryTypeData, setAllIndustryTypeData] = useState<[]>([]);
 
@@ -111,7 +113,7 @@ const AddPathwayForm: React.FC<Props> = ({
   const [isTouched, setisTouched] = useState({
     Name: false,
     Description: false,
-    SubjectWebpage: false,
+    //SubjectWebpage: false,
     Organization: false,
   });
 
@@ -145,11 +147,19 @@ const AddPathwayForm: React.FC<Props> = ({
       isVisible: false,
     },
     {
+      type: 'Progression',
+      isVisible: false,
+    },
+    {
       type: 'Schemes',
       isVisible: false,
     },
     {
       type: 'Details',
+      isVisible: false,
+    },
+    {
+      type: 'Support',
       isVisible: false,
     },
   ]);
@@ -168,7 +178,6 @@ const AddPathwayForm: React.FC<Props> = ({
   });
 
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
-
   const savePathwayResult = useSelector(
     (state: any) => state?.initalReducer?.savePathway
   );
@@ -214,6 +223,8 @@ const AddPathwayForm: React.FC<Props> = ({
         PathwayWrapper.Pathway.IndustryType;
       updatedPathwayFormFields.InstructionalProgramType =
         PathwayWrapper.Pathway.InstructionalProgramType;
+      updatedPathwayFormFields.HasSupportService =
+        PathwayWrapper.Pathway.HasSupportService;
       updatedPathwayFormFields.OccupationType =
         PathwayWrapper.Pathway.OccupationType;
       updatedPathwayFormFields.SubjectWebpage =
@@ -261,9 +272,9 @@ const AddPathwayForm: React.FC<Props> = ({
   useEffect(() => {
     setIsAddPathwayFormNextButtonDisable(
       !_.isEmpty(addPathwayFormFields.Name) &&
-        !_.isEmpty(addPathwayFormFields.Description) &&
-        !_.isEmpty(addPathwayFormFields.SubjectWebpage) &&
-        isValidUrl(addPathwayFormFields.SubjectWebpage)
+        !_.isEmpty(addPathwayFormFields.Description)
+      //!_.isEmpty(addPathwayFormFields.SubjectWebpage) &&
+      // isValidUrl(addPathwayFormFields.SubjectWebpage)
     );
   }, [addPathwayFormFields]);
 
@@ -327,6 +338,7 @@ const AddPathwayForm: React.FC<Props> = ({
   };
 
   const onProgressionModelSearchHandler = (e: any) => {
+    //debugger;
     setSearchFilterValue({ ...searchFilterValue, keywords: e });
   };
   const onProgressionModelHandler = (e: any) => {
@@ -464,34 +476,115 @@ const AddPathwayForm: React.FC<Props> = ({
         return updatedBody;
       });
   }
+
+  async function fetchSupportServices(e: string): Promise<any[]> {
+    return fetch(`${TEMP_BASE_URL}${SEARCH_FOR_HAS_SUPPORT_SERVICE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Keywords: e }),
+    })
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          URI: dta.URI,
+          CodedNotation: dta.CodedNotation,
+          Id: dta.Id,
+          RowId: dta.RowId,
+          label: dta.Name,
+          value: dta.Name,
+        }));
+        setAllSupportServicesData(updatedBody);
+        return updatedBody;
+      });
+  }
   const onDebounceSelectHnadler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
-    if (name === 'Occupation') {
-      const filteredOccupations = allOccupationTypeData?.filter(
-        (data: any) => data.Name === e.value
-      );
-      const occData = addPathwayFormFields?.OccupationType ?? [];
-      updatedData.OccupationType = [...occData, ...filteredOccupations];
+    if (!e.label) {
+      // if(addPathwayFormFields.hasOwnProperty('OccupationType')){
+      //   name='OccupationType';
+      // }else if(addPathwayFormFields.hasOwnProperty('IndustryType')){
+      //   name='IndustryType'
+      // }else if(addPathwayFormFields.hasOwnProperty('InstructionalProgramType')){
+      //   name='InstructionalProgramType'
+      // }
+      const newType = [
+        {
+          CodedNotation: null,
+          Description: '',
+          Id: null,
+          Name: e.value,
+          RowId: undefined,
+          URI: undefined,
+          label: e.value,
+          value: e.value,
+        },
+      ];
+
+      if (name === 'Occupation') {
+        const occData = addPathwayFormFields?.OccupationType ?? [];
+        updatedData.OccupationType = [...occData, ...newType];
+      }
+      if (name === 'Industry') {
+        const indData = addPathwayFormFields?.IndustryType ?? [];
+        updatedData.IndustryType = [...indData, ...newType];
+      }
+      if (name === 'InstructionalProgram') {
+        const insData = addPathwayFormFields?.InstructionalProgramType ?? [];
+        updatedData.InstructionalProgramType = [...insData, ...newType];
+      }
+      if (name === 'Support') {
+        const insData = addPathwayFormFields?.HasSupportService ?? [];
+        updatedData.HasSupportService = [...insData, ...newType];
+      }
+      //console.log(updatedData);
+      setAddPathwayFormFields(updatedData);
     }
-    if (name === 'Industry') {
-      const filteredIndustry = allIndustryTypeData?.filter(
-        (data: any) => data.Name === e.value
-      );
-      const indData = addPathwayFormFields?.IndustryType ?? [];
-      updatedData.IndustryType = [...indData, ...filteredIndustry];
-    }
-    if (name === 'InstructionalProgram') {
-      const filteredInstructionalProgram =
-        allInstructionalProgramTypeData?.filter(
+    // appendSourceItem({
+    //   Name: e.value,
+    //   CodedNotation: e.value,
+    //  Id: (crypto as any).randomUUID(),
+    // });}
+    else {
+      if (name === 'Occupation') {
+        const filteredOccupations = allOccupationTypeData?.filter(
           (data: any) => data.Name === e.value
         );
-      const insData = addPathwayFormFields?.InstructionalProgramType ?? [];
-      updatedData.InstructionalProgramType = [
-        ...insData,
-        ...filteredInstructionalProgram,
-      ];
+        const occData = addPathwayFormFields?.OccupationType ?? [];
+        updatedData.OccupationType = [...occData, ...filteredOccupations];
+      }
+      if (name === 'Industry') {
+        const filteredIndustry = allIndustryTypeData?.filter(
+          (data: any) => data.Name === e.value
+        );
+        const indData = addPathwayFormFields?.IndustryType ?? [];
+        updatedData.IndustryType = [...indData, ...filteredIndustry];
+      }
+      if (name === 'InstructionalProgram') {
+        //console.log(allInstructionalProgramTypeData);
+        const filteredInstructionalProgram =
+          allInstructionalProgramTypeData?.filter(
+            (data: any) => data.Name === e.value
+          );
+        const insData = addPathwayFormFields?.InstructionalProgramType ?? [];
+        updatedData.InstructionalProgramType = [
+          ...insData,
+          ...filteredInstructionalProgram,
+        ];
+      }
+      if (name === 'Support') {
+        const filteredIndustry = allSupportServicesData?.filter(
+          (data: any) => data.Name === e.value
+        );
+        const indData = addPathwayFormFields?.HasSupportService ?? [];
+        updatedData.HasSupportService = [...indData, ...filteredIndustry];
+      }
+      //console.log(updatedData);
+      setAddPathwayFormFields(updatedData);
     }
-    setAddPathwayFormFields(updatedData);
   };
 
   const onDebounceDeSelectHnadler = (e: any, name: string) => {
@@ -511,6 +604,11 @@ const AddPathwayForm: React.FC<Props> = ({
         updatedData?.InstructionalProgramType?.filter(
           (item: any) => item.Name !== e.key
         );
+    }
+    if (name === 'Support') {
+      updatedData.IndustryType = updatedData.IndustryType?.filter(
+        (item: any) => item.Name !== e.key
+      );
     }
     setAddPathwayFormFields(updatedData);
   };
@@ -646,7 +744,7 @@ const AddPathwayForm: React.FC<Props> = ({
     switch (value) {
       case 'Industry':
         text =
-          'Identify the specific industries that apply to this pathway. We recommend using the NAICS codes.';
+          'Identify the specific industries that apply to this pathway. We recommend using the NAICS codes. You can add more than one Industry type';
         break;
       case 'Keywords':
         text =
@@ -654,11 +752,11 @@ const AddPathwayForm: React.FC<Props> = ({
         break;
       case 'Occupations':
         text =
-          'Identify the specific occupations that apply to this pathway. We recommend using the SOC codes.';
+          'Identify the specific occupations that apply to this pathway. We recommend using the SOC codes. You can add more than on Occupation type';
         break;
       case 'Instructional':
         text =
-          'Identify the specific instructional program classifications that apply to this pathway. We recommend using the CIP codes.';
+          'Identify the specific instructional program classifications that apply to this pathway. We recommend using the CIP codes. You can add more than one Instructional program type.';
         break;
       case 'Subjects':
         text =
@@ -670,6 +768,13 @@ const AddPathwayForm: React.FC<Props> = ({
         break;
       case 'Model':
         text = 'Select an applicable Progression Model for this pathway.';
+        break;
+      case 'Progression':
+        text =
+          'A progression Model is a developmental progression including increasing levels of competence, achievement or temporal position (e.g., "First Quarter, Second Quarter"). To Create your own progression model, click  ';
+        break;
+      case 'Support':
+        text = 'Reference to a relevant support service.';
         break;
     }
     return text;
@@ -700,7 +805,24 @@ const AddPathwayForm: React.FC<Props> = ({
           }}
           onClick={() => onShowCloseToolTip(type, false)}
         />
-        {getToolTipText(type)}
+        {type == 'Progression' ? (
+          <p>
+            A progression Model is a developmental progression including
+            increasing levels of competence, achievement or temporal position
+            (e.g., &quot; First Quarter, Second Quarter &quot;). To Create your
+            own progression model,{' '}
+            <a
+              style={{ color: 'black', textDecoration: 'underline' }}
+              href={progressionModelUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Click Here
+            </a>
+          </p>
+        ) : (
+          getToolTipText(type)
+        )}
       </>
     </Tag>
   );
@@ -768,7 +890,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 (_.isNil(addPathwayFormFields.Description) ||
                   addPathwayFormFields.Description === '') &&
                 isTouched.Description
-                  ? 'Description is Required'
+                  ? 'Description is Required, 15 Characters minimum'
                   : null
               }
             >
@@ -789,6 +911,42 @@ const AddPathwayForm: React.FC<Props> = ({
           </Col>
           <Col span={24}>
             <Form.Item
+              label="Subject Webpage"
+              className="swNoMargin"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              //required={true}
+              //validateTrigger="onBlur"
+              // help={
+              //   // (!_.isNil(addPathwayFormFields.SubjectWebpage) ||
+              //   //   addPathwayFormFields.SubjectWebpage !== '') &&
+              //   !isValidUrl(addPathwayFormFields.SubjectWebpage) &&
+              //   !addPathwayFormFields?.SubjectWebpage?.includes('http')
+              //  // isTouched.SubjectWebpage
+              //     ? 'Subject Webpage is Required in Correct Format'
+              //     : null
+              // }
+            >
+              {customToolTipIcon('Website')}
+              <InputBox
+                disabled={isViewMode}
+                placeholder="add a URL"
+                maxLength={500}
+                value={addPathwayFormFields?.SubjectWebpage}
+                name="SubjectWebpage"
+                onChange={onInputChangeHandler}
+                // onBlur={() =>
+                //   isTouched.SubjectWebpage === true
+                //     ? null
+                //     : setisTouched({ ...isTouched, SubjectWebpage: true })
+                // }
+              />
+              {toolTip.find((item: any) => item.type === 'Website').isVisible &&
+                customToolTip('Website')}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
               label="Industry Type"
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
@@ -798,16 +956,29 @@ const AddPathwayForm: React.FC<Props> = ({
               {customToolTipIcon('Industry')}
               <DebounceSelect
                 disabled={isViewMode}
-                mode="multiple"
+                showSearch
+                mode="tags"
                 tagRender={tagRender}
                 value={isEditPathwayFormVisible ? industryTypes : undefined}
-                placeholder="Select Industry"
+                placeholder="Start typing to select Industry Types"
                 fetchOptions={fetchIndustryList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
                 onDeselect={(e: any) =>
                   onDebounceDeSelectHnadler(e, 'Industry')
                 }
               />
+              {/* <DebounceSelect
+                disabled={isViewMode}
+                mode="multiple"
+                tagRender={tagRender}
+                value={isEditPathwayFormVisible ? industryTypes : undefined}
+                placeholder=" Start Typing to select the Industry type"
+                fetchOptions={fetchIndustryList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Industry')
+                }
+              /> */}
 
               {toolTip.find((item: any) => item.type === 'Industry')
                 .isVisible && customToolTip('Industry')}
@@ -846,16 +1017,29 @@ const AddPathwayForm: React.FC<Props> = ({
               {customToolTipIcon('Occupations')}
               <DebounceSelect
                 disabled={isViewMode}
-                mode="multiple"
+                showSearch
+                mode="tags"
                 tagRender={tagRender}
                 value={isEditPathwayFormVisible ? occupationTypes : undefined}
-                placeholder="Select Occupations"
+                placeholder="Start typing to select occupation types"
                 fetchOptions={fetchOccupationList}
                 onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
                 onDeselect={(e: any) =>
                   onDebounceDeSelectHnadler(e, 'Occupation')
                 }
               />
+              {/* <DebounceSelect
+                disabled={isViewMode}
+                mode="multiple"
+                tagRender={tagRender}
+                value={isEditPathwayFormVisible ? occupationTypes : undefined}
+                placeholder="Start typing to select the Occupation types"
+                fetchOptions={fetchOccupationList}
+                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
+                onDeselect={(e: any) =>
+                  onDebounceDeSelectHnadler(e, 'Occupation')
+                }
+              /> */}
               {toolTip.find((item: any) => item.type === 'Occupations')
                 .isVisible && customToolTip('Occupations')}
             </Form.Item>
@@ -872,6 +1056,25 @@ const AddPathwayForm: React.FC<Props> = ({
                 {customToolTipIcon('Instructional')}
                 <DebounceSelect
                   disabled={isViewMode}
+                  showSearch
+                  mode="tags"
+                  tagRender={tagRender}
+                  value={
+                    isEditPathwayFormVisible
+                      ? instructionalProgramTypes
+                      : undefined
+                  }
+                  placeholder="Start typing to select Instructional Program Types"
+                  fetchOptions={fetchInstructionalProgramList}
+                  onSelect={(e: any) =>
+                    onDebounceSelectHnadler(e, 'InstructionalProgram')
+                  }
+                  onDeselect={(e: any) =>
+                    onDebounceDeSelectHnadler(e, 'InstructionalProgram')
+                  }
+                />
+                {/* <DebounceSelect
+                  disabled={isViewMode}
                   mode="multiple"
                   tagRender={tagRender}
                   value={
@@ -887,7 +1090,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   onDeselect={(e: any) =>
                     onDebounceDeSelectHnadler(e, 'InstructionalProgram')
                   }
-                />
+                /> */}
               </>
               {toolTip.find((item: any) => item.type === 'Instructional')
                 .isVisible && customToolTip('Instructional')}
@@ -917,60 +1120,64 @@ const AddPathwayForm: React.FC<Props> = ({
           </Col>
           <Col span={24}>
             <Form.Item
-              label="Subject Webpage"
+              label="Support Services"
               className="swNoMargin"
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              required={true}
               validateTrigger="onBlur"
-              help={
-                (!_.isNil(addPathwayFormFields.SubjectWebpage) ||
-                  addPathwayFormFields.SubjectWebpage !== '') &&
-                !isValidUrl(addPathwayFormFields.SubjectWebpage) &&
-                !addPathwayFormFields?.SubjectWebpage?.includes('http') &&
-                isTouched.SubjectWebpage
-                  ? 'Subject Webpage is Required in Correct Format'
-                  : null
-              }
             >
-              {customToolTipIcon('Website')}
-              <InputBox
-                disabled={isViewMode}
-                placeholder="add a URL"
-                maxLength={75}
-                value={addPathwayFormFields?.SubjectWebpage}
-                name="SubjectWebpage"
-                onChange={onInputChangeHandler}
-                onBlur={() =>
-                  isTouched.SubjectWebpage === true
-                    ? null
-                    : setisTouched({ ...isTouched, SubjectWebpage: true })
-                }
-              />
-              {toolTip.find((item: any) => item.type === 'Website').isVisible &&
-                customToolTip('Website')}
+              <>
+                {customToolTipIcon('Support')}
+                <DebounceSelect
+                  disabled={isViewMode}
+                  showSearch
+                  mode="tags"
+                  tagRender={tagRender}
+                  //value={isEditPathwayFormVisible ? instructionalProgramTypes : undefined}
+                  placeholder="Start typing to select Support Services"
+                  fetchOptions={fetchSupportServices}
+                  onSelect={(e: any) => onDebounceSelectHnadler(e, 'Support')}
+                  onDeselect={(e: any) =>
+                    onDebounceDeSelectHnadler(e, 'Support')
+                  }
+                />
+              </>
+              {toolTip.find((item: any) => item.type === 'Support').isVisible &&
+                customToolTip('Support')}
             </Form.Item>
           </Col>
           <Divider className={styles.divider} />
+          <br /> <br />
           <Col span={24}>
-            <CheckBox
-              disabled={isEditPathwayFormVisible || isViewMode}
-              onChange={onCheckBoxChangeHandler}
-              checked={checkboxValues.progressionModel}
-              name="progressionModel"
-              label="This Pathway Contains a Progression Model"
-            />
+            <Form.Item
+              label="Progression Model"
+              className="swNoMargin"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              validateTrigger="onBlur"
+            >
+              {customToolTipIcon('Progression')}
+              <CheckBox
+                disabled={isEditPathwayFormVisible || isViewMode}
+                onChange={onCheckBoxChangeHandler}
+                checked={checkboxValues.progressionModel}
+                name="progressionModel"
+                label="This Pathway Contains a Progression Model"
+              />
+              {toolTip.find((item: any) => item.type === 'Progression')
+                .isVisible && customToolTip('Progression')}
+            </Form.Item>
           </Col>
           {!!checkboxValues.progressionModel && (
             <Col span={24}>
               <Form.Item
-                label="Progression Model"
+                // label="Progression Model"
                 className="swNoMargin"
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
                 validateTrigger="onBlur"
               >
-                {customToolTipIcon('Model')}
+                {/* {customToolTipIcon('Model')} */}
                 <AutoCompleteBox
                   {...SelectAutoCompleteProps(
                     allProgressionModel,
@@ -986,8 +1193,8 @@ const AddPathwayForm: React.FC<Props> = ({
                   onSelect={(e: any) => onProgressionModelSelectHandler(e)}
                   onChange={(e: any) => onProgressionModelHandler(e)}
                 />
-                {toolTip.find((item: any) => item.type === 'Model').isVisible &&
-                  customToolTip('Model')}
+                {/* {toolTip.find((item: any) => item.type === 'Progression').isVisible &&
+                  customToolTip('Progression')} */}
               </Form.Item>
             </Col>
           )}

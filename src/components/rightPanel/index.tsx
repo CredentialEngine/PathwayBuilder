@@ -4,7 +4,9 @@ import _, { noop } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TEMP_BASE_URL } from '../../apiConfig/setting';
+import { GET_ICON_URL } from '../../apiConfig/endpoint';
+
+//import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
 const { Panel } = Collapse;
 import Button from '../button';
@@ -103,7 +105,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CredentialComponent.png`}
+                    src={`${GET_ICON_URL}CredentialComponent.png`}
                     alt="CredentialComponent"
                   />
                 </span>
@@ -113,7 +115,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' courseCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CourseComponent.png`}
+                    src={`${GET_ICON_URL}CourseComponent.png`}
                     alt="courseComponent"
                   />
                 </span>
@@ -123,7 +125,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' basicCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/BasicComponent.png`}
+                    src={`${GET_ICON_URL}BasicComponent.png`}
                     alt="BasicComponent"
                   />
                 </span>
@@ -133,7 +135,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' competencyCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CompetencyComponent.png`}
+                    src={`${GET_ICON_URL}CompetencyComponent.png`}
                     alt="CompetencyComponent"
                   />
                 </span>
@@ -143,7 +145,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' assessmentCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AssessmentComponent.png`}
+                    src={`${GET_ICON_URL}AssessmentComponent.png`}
                     alt="AssessmentComponent"
                   />
                 </span>
@@ -154,7 +156,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' cocurricularCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/CocurricularComponent.png`}
+                    src={`${GET_ICON_URL}CocurricularComponent.png`}
                     alt="CocurricularComponent"
                   />
                 </span>
@@ -164,7 +166,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' extraCurricularCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/ExtracurricularComponent.png`}
+                    src={`${GET_ICON_URL}ExtracurricularComponent.png`}
                     alt="ExtracurricularComponent"
                   />
                 </span>
@@ -174,7 +176,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/SelectionComponent.png`}
+                    src={`${GET_ICON_URL}SelectionComponent.png`}
                     alt="SelectionComponent"
                   />
                 </span>
@@ -184,7 +186,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' workExperienceCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/WorkExperienceComponent.png`}
+                    src={`${GET_ICON_URL}WorkExperienceComponent.png`}
                     alt="WorkExperienceComponent"
                   />
                 </span>
@@ -194,7 +196,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' jobCard'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/JobComponent.png`}
+                    src={`${GET_ICON_URL}JobComponent.png`}
                     alt="JobComponent"
                   />
                 </span>
@@ -204,7 +206,7 @@ const RightPanel: React.FC<Props> = ({
               ) && (
                 <span className={styles.iconwrapper + ' customicon'}>
                   <img
-                    src={`${TEMP_BASE_URL}Images/PathwayBuilder/AddressingComponent.png`}
+                    src={`${GET_ICON_URL}AddressingComponent.png`}
                     alt="AddressingConflictComponent"
                   />
                 </span>
@@ -249,42 +251,43 @@ const RightPanel: React.FC<Props> = ({
             </Row>
           )
         )}
-        {rightPanelData?.Description != '' && (
-          <Row className={styles.infoContainer}>
-            <p className={styles.label}>Description</p>
-            <p className={styles.value}>{rightPanelData?.Description}</p>
-          </Row>
-        )}
-        {rightPanelData?.SubjectWebpage != '' && (
+        {rightPanelData?.Description != '' &&
+          rightPanelData?.Description != undefined && (
+            <Row className={styles.infoContainer}>
+              <p className={styles.label}>Description</p>
+              <p className={styles.value}>{rightPanelData?.Description}</p>
+            </Row>
+          )}
+        {/* {(rightPanelData?.SubjectWebpage != '' && rightPanelData?.SubjectWebpage != undefined) && (
           <Row className={styles.infoContainer}>
             <p className={styles.label}>Subject Webpage</p>
             <p className={styles.value}>{rightPanelData?.SubjectWebpage}</p>
           </Row>
-        )}
-        {rightPanelData?.CreditValue[0]?.Value > 0 && (
+        )} */}
+        {/* {rightPanelData?.CreditValue[0]?.Value > 0 && (
           <Row className={styles.infoContainer}>
             <p className={styles.label}>Credit Value</p>
             <p className={styles.value}>
               {rightPanelData?.CreditValue[0]?.Value}
             </p>
           </Row>
-        )}
-        {rightPanelData?.ComponentDesignation != '' && (
+        )} */}
+        {/* {(rightPanelData?.ComponentDesignation != '' && rightPanelData?.ComponentDesignation != undefined) && (
           <Row className={styles.infoContainer}>
             <p className={styles.label}>Component Designation</p>
             <p className={styles.value}>
               {rightPanelData?.ComponentDesignation.join(', ')}
             </p>
           </Row>
-        )}
-        {rightPanelData?.Identifier[0]?.Value > 0 && (
+        )} */}
+        {/* {rightPanelData?.Identifier[0]?.Value > 0 && (
           <Row className={styles.infoContainer}>
-            <p className={styles.label}>Credit Value</p>
+            <p className={styles.label}>Identifier Value</p>
             <p className={styles.value}>
-              {rightPanelData?.CreditValue[0]?.Value}
+              {rightPanelData?.Identifier[0]?.Value}
             </p>
           </Row>
-        )}
+        )} */}
         <Row className={styles.infoContainer}>
           <p className={styles.label}>
             {rightPanelData?.Type?.split(':')[1].replace('Component', '')}{' '}
