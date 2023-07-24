@@ -15,7 +15,7 @@ import {
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
 } from '../../apiConfig/endpoint';
-import { TEMP_BASE_URL, progressionModelUrl } from '../../apiConfig/setting';
+import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
 import AutoCompleteBox from '../../components/autoComplete';
 import Button from '../../components/button';
@@ -495,7 +495,8 @@ const AddPathwayForm: React.FC<Props> = ({
           Id: dta.Id,
           RowId: dta.RowId,
           label: dta.Name,
-          value: dta.Name,
+          value: dta.CTID,
+          CTID: dta.CTID,
         }));
         setAllSupportServicesData(updatedBody);
         return updatedBody;
@@ -503,7 +504,7 @@ const AddPathwayForm: React.FC<Props> = ({
   }
   const onDebounceSelectHnadler = (e: any, name: string) => {
     const updatedData = { ...addPathwayFormFields };
-    if (!e.label) {
+    if (!e.label && name !== 'Support') {
       // if(addPathwayFormFields.hasOwnProperty('OccupationType')){
       //   name='OccupationType';
       // }else if(addPathwayFormFields.hasOwnProperty('IndustryType')){
@@ -535,10 +536,6 @@ const AddPathwayForm: React.FC<Props> = ({
       if (name === 'InstructionalProgram') {
         const insData = addPathwayFormFields?.InstructionalProgramType ?? [];
         updatedData.InstructionalProgramType = [...insData, ...newType];
-      }
-      if (name === 'Support') {
-        const insData = addPathwayFormFields?.HasSupportService ?? [];
-        updatedData.HasSupportService = [...insData, ...newType];
       }
       //console.log(updatedData);
       setAddPathwayFormFields(updatedData);
@@ -576,11 +573,17 @@ const AddPathwayForm: React.FC<Props> = ({
         ];
       }
       if (name === 'Support') {
+        debugger;
         const filteredIndustry = allSupportServicesData?.filter(
-          (data: any) => data.Name === e.value
+          (data: any) => data.Name === e.label
         );
         const indData = addPathwayFormFields?.HasSupportService ?? [];
-        updatedData.HasSupportService = [...indData, ...filteredIndustry];
+        const matchingItem2 = addPathwayFormFields?.HasSupportService.find(
+          (item: any) => item.label === e.label
+        );
+        if (matchingItem2 == undefined) {
+          updatedData.HasSupportService = [...indData, ...filteredIndustry];
+        }
       }
       //console.log(updatedData);
       setAddPathwayFormFields(updatedData);
@@ -606,7 +609,7 @@ const AddPathwayForm: React.FC<Props> = ({
         );
     }
     if (name === 'Support') {
-      updatedData.IndustryType = updatedData.IndustryType?.filter(
+      updatedData.HasSupportService = updatedData.HasSupportService?.filter(
         (item: any) => item.Name !== e.key
       );
     }
@@ -774,7 +777,8 @@ const AddPathwayForm: React.FC<Props> = ({
           'A progression Model is a developmental progression including increasing levels of competence, achievement or temporal position (e.g., "First Quarter, Second Quarter"). To Create your own progression model, click  ';
         break;
       case 'Support':
-        text = 'Reference to a relevant support service.';
+        text =
+          'To include Support Services with this pathway, they need to be published first.  Use the Support Services Publishing Resources (https://credentialengine.org/2023/06/28/support-services-resources/).';
         break;
     }
     return text;
@@ -809,15 +813,27 @@ const AddPathwayForm: React.FC<Props> = ({
           <p>
             A progression Model is a developmental progression including
             increasing levels of competence, achievement or temporal position
-            (e.g., &quot; First Quarter, Second Quarter &quot;). To Create your
-            own progression model,{' '}
+            (e.g., &quot; First Quarter, Second Quarter &quot;).{' '}
             <a
               style={{ color: 'black', textDecoration: 'underline' }}
-              href={progressionModelUrl}
+              href="https://docs.google.com/document/d/1s5yKuTm9u5SGapOyEXV3tSS1jNV1XF0WAtRN_JXyWuM/edit#heading=h.seqak5guu936"
               target="_blank"
               rel="noreferrer"
             >
-              Click Here
+              Learn more about the benefits of Publishing a Progression Model..
+            </a>
+          </p>
+        ) : type == 'Support' ? (
+          <p>
+            To include Support Services with this pathway, they need to be
+            published first.{' '}
+            <a
+              style={{ color: 'black', textDecoration: 'underline' }}
+              href="https://credentialengine.org/2023/06/28/support-services-resources/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Use the Support Services Publishing Resources
             </a>
           </p>
         ) : (
@@ -843,131 +859,193 @@ const AddPathwayForm: React.FC<Props> = ({
   const industryTypes = addPathwayFormFields?.IndustryType?.map(
     (obj: any) => obj.Name
   );
+  const supportservices = addPathwayFormFields?.HasSupportService?.map(
+    (obj: any) => obj.Name
+  );
+  const supportServiceslist = addPathwayFormFields?.HasSupportService?.map(
+    (obj: any) => obj.Name
+  );
 
   return (
     <>
       <Form className={styles.addPathwayForm}>
         <Row gutter={24}>
           <Col span={24}>
-            <Form.Item
-              label="Pathway Name"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              required={true}
-              validateTrigger="onBlur"
-              help={
-                (_.isNil(addPathwayFormFields.Name) ||
-                  addPathwayFormFields.Name === '') &&
-                isTouched.Name
-                  ? 'Name is Required'
-                  : null
-              }
-            >
-              <InputBox
-                disabled={isViewMode}
-                placeholder="Add a Pathway Name"
-                name="Name"
+            {isViewMode && (
+              <Form.Item
+                label="Pathway CTID"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {addPathwayFormFields?.CTID}
+              </Form.Item>
+            )}
+            {isViewMode ? (
+              addPathwayFormFields?.Name !== null && (
+                <Form.Item
+                  label="Pathway Name"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {addPathwayFormFields?.Name}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Pathway Name"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
                 required={true}
-                onChange={onInputChangeHandler}
-                value={addPathwayFormFields?.Name}
-                onBlur={() =>
-                  isTouched.Name === true
-                    ? null
-                    : setisTouched({ ...isTouched, Name: true })
+                validateTrigger="onBlur"
+                help={
+                  (_.isNil(addPathwayFormFields.Name) ||
+                    addPathwayFormFields.Name === '') &&
+                  isTouched.Name
+                    ? 'Name is Required'
+                    : null
                 }
-              />
-            </Form.Item>
+              >
+                <InputBox
+                  disabled={isViewMode}
+                  placeholder="Add a Pathway Name"
+                  name="Name"
+                  required={true}
+                  onChange={onInputChangeHandler}
+                  value={addPathwayFormFields?.Name}
+                  onBlur={() =>
+                    isTouched.Name === true
+                      ? null
+                      : setisTouched({ ...isTouched, Name: true })
+                  }
+                />
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="Pathway Description"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              required={true}
-              validateTrigger="onBlur"
-              help={
-                (_.isNil(addPathwayFormFields.Description) ||
-                  addPathwayFormFields.Description === '') &&
-                isTouched.Description
-                  ? 'Description is Required, 15 Characters minimum'
-                  : null
-              }
-            >
-              <Textarea
-                disabled={isViewMode}
-                placeholder="Add a Pathway Description"
-                name="Description"
-                onChange={onInputChangeHandler}
-                value={addPathwayFormFields.Description}
+            {isViewMode ? (
+              addPathwayFormFields?.Description !== null && (
+                <Form.Item
+                  label="Pathway Description"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {addPathwayFormFields?.Description}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Pathway Description"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
                 required={true}
-                onBlur={() =>
-                  isTouched.Description === true
-                    ? null
-                    : setisTouched({ ...isTouched, Description: true })
+                validateTrigger="onBlur"
+                help={
+                  (_.isNil(addPathwayFormFields.Description) ||
+                    addPathwayFormFields.Description === '') &&
+                  isTouched.Description
+                    ? 'Description is Required, 15 Characters minimum'
+                    : null
                 }
-              />
-            </Form.Item>
+              >
+                <Textarea
+                  disabled={isViewMode}
+                  placeholder="Add a Pathway Description"
+                  name="Description"
+                  onChange={onInputChangeHandler}
+                  value={addPathwayFormFields.Description}
+                  required={true}
+                  onBlur={() =>
+                    isTouched.Description === true
+                      ? null
+                      : setisTouched({ ...isTouched, Description: true })
+                  }
+                />
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="Subject Webpage"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              //required={true}
-              //validateTrigger="onBlur"
-              // help={
-              //   // (!_.isNil(addPathwayFormFields.SubjectWebpage) ||
-              //   //   addPathwayFormFields.SubjectWebpage !== '') &&
-              //   !isValidUrl(addPathwayFormFields.SubjectWebpage) &&
-              //   !addPathwayFormFields?.SubjectWebpage?.includes('http')
-              //  // isTouched.SubjectWebpage
-              //     ? 'Subject Webpage is Required in Correct Format'
-              //     : null
-              // }
-            >
-              {customToolTipIcon('Website')}
-              <InputBox
-                disabled={isViewMode}
-                placeholder="add a URL"
-                maxLength={500}
-                value={addPathwayFormFields?.SubjectWebpage}
-                name="SubjectWebpage"
-                onChange={onInputChangeHandler}
-                // onBlur={() =>
-                //   isTouched.SubjectWebpage === true
-                //     ? null
-                //     : setisTouched({ ...isTouched, SubjectWebpage: true })
+            {isViewMode ? (
+              addPathwayFormFields?.SubjectWebpage !== '' && (
+                <Form.Item
+                  label="Subject Webpage"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {addPathwayFormFields?.SubjectWebpage}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Subject Webpage"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                //required={true}
+                //validateTrigger="onBlur"
+                // help={
+                //   // (!_.isNil(addPathwayFormFields.SubjectWebpage) ||
+                //   //   addPathwayFormFields.SubjectWebpage !== '') &&
+                //   !isValidUrl(addPathwayFormFields.SubjectWebpage) &&
+                //   !addPathwayFormFields?.SubjectWebpage?.includes('http')
+                //  // isTouched.SubjectWebpage
+                //     ? 'Subject Webpage is Required in Correct Format'
+                //     : null
                 // }
-              />
-              {toolTip.find((item: any) => item.type === 'Website').isVisible &&
-                customToolTip('Website')}
-            </Form.Item>
+              >
+                {customToolTipIcon('Website')}
+                <InputBox
+                  disabled={isViewMode}
+                  placeholder="add a URL"
+                  maxLength={500}
+                  value={addPathwayFormFields?.SubjectWebpage}
+                  name="SubjectWebpage"
+                  onChange={onInputChangeHandler}
+                  // onBlur={() =>
+                  //   isTouched.SubjectWebpage === true
+                  //     ? null
+                  //     : setisTouched({ ...isTouched, SubjectWebpage: true })
+                  // }
+                />
+                {toolTip.find((item: any) => item.type === 'Website')
+                  .isVisible && customToolTip('Website')}
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="Industry Type"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              {customToolTipIcon('Industry')}
-              <DebounceSelect
-                disabled={isViewMode}
-                showSearch
-                mode="tags"
-                tagRender={tagRender}
-                value={isEditPathwayFormVisible ? industryTypes : undefined}
-                placeholder="Start typing to select Industry Types"
-                fetchOptions={fetchIndustryList}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
-                onDeselect={(e: any) =>
-                  onDebounceDeSelectHnadler(e, 'Industry')
-                }
-              />
-              {/* <DebounceSelect
+            {isViewMode ? (
+              addPathwayFormFields?.IndustryType?.length > 0 && (
+                <Form.Item
+                  label="Industry Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {industryTypes.join(', ')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Industry Type"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                {customToolTipIcon('Industry')}
+                <DebounceSelect
+                  disabled={isViewMode}
+                  showSearch
+                  mode="tags"
+                  tagRender={tagRender}
+                  value={isEditPathwayFormVisible ? industryTypes : undefined}
+                  placeholder="Start typing to select Industry Types"
+                  fetchOptions={fetchIndustryList}
+                  onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
+                  onDeselect={(e: any) =>
+                    onDebounceDeSelectHnadler(e, 'Industry')
+                  }
+                />
+                {/* <DebounceSelect
                 disabled={isViewMode}
                 mode="multiple"
                 tagRender={tagRender}
@@ -980,55 +1058,81 @@ const AddPathwayForm: React.FC<Props> = ({
                 }
               /> */}
 
-              {toolTip.find((item: any) => item.type === 'Industry')
-                .isVisible && customToolTip('Industry')}
-            </Form.Item>
+                {toolTip.find((item: any) => item.type === 'Industry')
+                  .isVisible && customToolTip('Industry')}
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="Keywords"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              {customToolTipIcon('Keywords')}
-              <MultiSelect
-                disabled={isViewMode}
-                mode="tags"
-                tagRender={tagRender}
-                placeholder="Add Keywords"
-                optionLabelProp="label"
-                value={addPathwayFormFields?.Keyword}
-                onChange={(e) => onSelectChangeHandler(e, 'Keyword')}
-              />
-              {toolTip.find((item: any) => item.type === 'Keywords')
-                .isVisible && customToolTip('Keywords')}
-            </Form.Item>
+            {isViewMode ? (
+              addPathwayFormFields?.Keyword?.length > 0 && (
+                <Form.Item
+                  label="Keywords"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {addPathwayFormFields?.Keyword.join(', ')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Keywords"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                {customToolTipIcon('Keywords')}
+                <MultiSelect
+                  disabled={isViewMode}
+                  mode="tags"
+                  tagRender={tagRender}
+                  placeholder="Add Keywords"
+                  optionLabelProp="label"
+                  value={addPathwayFormFields?.Keyword}
+                  onChange={(e) => onSelectChangeHandler(e, 'Keyword')}
+                />
+                {toolTip.find((item: any) => item.type === 'Keywords')
+                  .isVisible && customToolTip('Keywords')}
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="Occupation Types"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              {customToolTipIcon('Occupations')}
-              <DebounceSelect
-                disabled={isViewMode}
-                showSearch
-                mode="tags"
-                tagRender={tagRender}
-                value={isEditPathwayFormVisible ? occupationTypes : undefined}
-                placeholder="Start typing to select occupation types"
-                fetchOptions={fetchOccupationList}
-                onSelect={(e: any) => onDebounceSelectHnadler(e, 'Occupation')}
-                onDeselect={(e: any) =>
-                  onDebounceDeSelectHnadler(e, 'Occupation')
-                }
-              />
-              {/* <DebounceSelect
+            {isViewMode ? (
+              addPathwayFormFields?.OccupationType?.length > 0 && (
+                <Form.Item
+                  label="Occupation Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {occupationTypes.join(', ')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Occupation Types"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                {customToolTipIcon('Occupations')}
+                <DebounceSelect
+                  disabled={isViewMode}
+                  showSearch
+                  mode="tags"
+                  tagRender={tagRender}
+                  value={isEditPathwayFormVisible ? occupationTypes : undefined}
+                  placeholder="Start typing to select occupation types"
+                  fetchOptions={fetchOccupationList}
+                  onSelect={(e: any) =>
+                    onDebounceSelectHnadler(e, 'Occupation')
+                  }
+                  onDeselect={(e: any) =>
+                    onDebounceDeSelectHnadler(e, 'Occupation')
+                  }
+                />
+                {/* <DebounceSelect
                 disabled={isViewMode}
                 mode="multiple"
                 tagRender={tagRender}
@@ -1040,40 +1144,52 @@ const AddPathwayForm: React.FC<Props> = ({
                   onDebounceDeSelectHnadler(e, 'Occupation')
                 }
               /> */}
-              {toolTip.find((item: any) => item.type === 'Occupations')
-                .isVisible && customToolTip('Occupations')}
-            </Form.Item>
+                {toolTip.find((item: any) => item.type === 'Occupations')
+                  .isVisible && customToolTip('Occupations')}
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="Instructional Program Type"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              <>
-                {customToolTipIcon('Instructional')}
-                <DebounceSelect
-                  disabled={isViewMode}
-                  showSearch
-                  mode="tags"
-                  tagRender={tagRender}
-                  value={
-                    isEditPathwayFormVisible
-                      ? instructionalProgramTypes
-                      : undefined
-                  }
-                  placeholder="Start typing to select Instructional Program Types"
-                  fetchOptions={fetchInstructionalProgramList}
-                  onSelect={(e: any) =>
-                    onDebounceSelectHnadler(e, 'InstructionalProgram')
-                  }
-                  onDeselect={(e: any) =>
-                    onDebounceDeSelectHnadler(e, 'InstructionalProgram')
-                  }
-                />
-                {/* <DebounceSelect
+            {isViewMode ? (
+              addPathwayFormFields?.InstructionalProgramType?.length > 0 && (
+                <Form.Item
+                  label="Instructional Program Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {instructionalProgramTypes.join(', ')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Instructional Program Type"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                <>
+                  {customToolTipIcon('Instructional')}
+                  <DebounceSelect
+                    disabled={isViewMode}
+                    showSearch
+                    mode="tags"
+                    tagRender={tagRender}
+                    value={
+                      isEditPathwayFormVisible
+                        ? instructionalProgramTypes
+                        : undefined
+                    }
+                    placeholder="Start typing to select Instructional Program Types"
+                    fetchOptions={fetchInstructionalProgramList}
+                    onSelect={(e: any) =>
+                      onDebounceSelectHnadler(e, 'InstructionalProgram')
+                    }
+                    onDeselect={(e: any) =>
+                      onDebounceDeSelectHnadler(e, 'InstructionalProgram')
+                    }
+                  />
+                  {/* <DebounceSelect
                   disabled={isViewMode}
                   mode="multiple"
                   tagRender={tagRender}
@@ -1091,111 +1207,152 @@ const AddPathwayForm: React.FC<Props> = ({
                     onDebounceDeSelectHnadler(e, 'InstructionalProgram')
                   }
                 /> */}
-              </>
-              {toolTip.find((item: any) => item.type === 'Instructional')
-                .isVisible && customToolTip('Instructional')}
-            </Form.Item>
+                </>
+                {toolTip.find((item: any) => item.type === 'Instructional')
+                  .isVisible && customToolTip('Instructional')}
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="Subjects"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              {customToolTipIcon('Subjects')}
-              <MultiSelect
-                disabled={isViewMode}
-                mode="tags"
-                tagRender={tagRender}
-                placeholder="Select Subjects"
-                optionLabelProp="label"
-                value={addPathwayFormFields?.Subject}
-                onChange={(e) => onSelectChangeHandler(e, 'Subject')}
-              />
-              {toolTip.find((item: any) => item.type === 'Subjects')
-                .isVisible && customToolTip('Subjects')}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Support Services"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              <>
-                {customToolTipIcon('Support')}
-                <DebounceSelect
-                  disabled={isViewMode}
-                  showSearch
-                  mode="tags"
-                  tagRender={tagRender}
-                  //value={isEditPathwayFormVisible ? instructionalProgramTypes : undefined}
-                  placeholder="Start typing to select Support Services"
-                  fetchOptions={fetchSupportServices}
-                  onSelect={(e: any) => onDebounceSelectHnadler(e, 'Support')}
-                  onDeselect={(e: any) =>
-                    onDebounceDeSelectHnadler(e, 'Support')
-                  }
-                />
-              </>
-              {toolTip.find((item: any) => item.type === 'Support').isVisible &&
-                customToolTip('Support')}
-            </Form.Item>
-          </Col>
-          <Divider className={styles.divider} />
-          <br /> <br />
-          <Col span={24}>
-            <Form.Item
-              label="Progression Model"
-              className="swNoMargin"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              {customToolTipIcon('Progression')}
-              <CheckBox
-                disabled={isEditPathwayFormVisible || isViewMode}
-                onChange={onCheckBoxChangeHandler}
-                checked={checkboxValues.progressionModel}
-                name="progressionModel"
-                label="This Pathway Contains a Progression Model"
-              />
-              {toolTip.find((item: any) => item.type === 'Progression')
-                .isVisible && customToolTip('Progression')}
-            </Form.Item>
-          </Col>
-          {!!checkboxValues.progressionModel && (
-            <Col span={24}>
+            {isViewMode ? (
+              addPathwayFormFields?.Subject?.length > 0 && (
+                <Form.Item
+                  label="Subjects"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {addPathwayFormFields?.Subject.join(', ')}
+                </Form.Item>
+              )
+            ) : (
               <Form.Item
-                // label="Progression Model"
+                label="Subjects"
                 className="swNoMargin"
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
                 validateTrigger="onBlur"
               >
-                {/* {customToolTipIcon('Model')} */}
-                <AutoCompleteBox
-                  {...SelectAutoCompleteProps(
-                    allProgressionModel,
-                    selectedProgressionModelValue,
-                    'Name',
-                    'Name'
-                  )}
-                  allowClear={true}
-                  disabled={isEditPathwayFormVisible || isViewMode}
-                  value={selectedProgressionModelValue}
-                  placeholder="Start typing to choose a Progression Model"
-                  onSearch={onProgressionModelSearchHandler}
-                  onSelect={(e: any) => onProgressionModelSelectHandler(e)}
-                  onChange={(e: any) => onProgressionModelHandler(e)}
+                {customToolTipIcon('Subjects')}
+                <MultiSelect
+                  disabled={isViewMode}
+                  mode="tags"
+                  tagRender={tagRender}
+                  placeholder="Select Subjects"
+                  optionLabelProp="label"
+                  value={addPathwayFormFields?.Subject}
+                  onChange={(e) => onSelectChangeHandler(e, 'Subject')}
                 />
-                {/* {toolTip.find((item: any) => item.type === 'Progression').isVisible &&
-                  customToolTip('Progression')} */}
+                {toolTip.find((item: any) => item.type === 'Subjects')
+                  .isVisible && customToolTip('Subjects')}
               </Form.Item>
+            )}
+          </Col>
+          <Col span={24}>
+            {isViewMode ? (
+              addPathwayFormFields?.HasSupportService?.length > 0 && (
+                <Form.Item
+                  label="Support Services"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {supportServiceslist.join(', ')}
+                </Form.Item>
+              )
+            ) : (
+              <Form.Item
+                label="Support Services"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                <>
+                  {customToolTipIcon('Support')}
+                  <DebounceSelect
+                    disabled={isViewMode}
+                    showSearch
+                    mode="tags"
+                    tagRender={tagRender}
+                    value={
+                      isEditPathwayFormVisible ? supportservices : undefined
+                    }
+                    placeholder="Start typing to select Support Services"
+                    fetchOptions={fetchSupportServices}
+                    onSelect={(e: any) => onDebounceSelectHnadler(e, 'Support')}
+                    onDeselect={(e: any) =>
+                      onDebounceDeSelectHnadler(e, 'Support')
+                    }
+                  />
+                </>
+                {toolTip.find((item: any) => item.type === 'Support')
+                  .isVisible && customToolTip('Support')}
+              </Form.Item>
+            )}
+          </Col>
+          <Divider className={styles.divider} />
+          <br /> <br />
+          {!isViewMode && (
+            <Col span={24}>
+              <Form.Item
+                label="Progression Model"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                {customToolTipIcon('Progression')}
+                <CheckBox
+                  disabled={isEditPathwayFormVisible || isViewMode}
+                  onChange={onCheckBoxChangeHandler}
+                  checked={checkboxValues.progressionModel}
+                  name="progressionModel"
+                  label="This Pathway Contains a Progression Model"
+                />
+                {toolTip.find((item: any) => item.type === 'Progression')
+                  .isVisible && customToolTip('Progression')}
+              </Form.Item>
+            </Col>
+          )}
+          {!!checkboxValues.progressionModel && (
+            <Col span={24}>
+              {isViewMode ? (
+                selectedProgressionModelValue != undefined && (
+                  <Form.Item
+                    label="Progression Model"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {selectedProgressionModelValue}
+                  </Form.Item>
+                )
+              ) : (
+                <Form.Item
+                  // label="Progression Model"
+                  className="swNoMargin"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                  validateTrigger="onBlur"
+                >
+                  {/* {customToolTipIcon('Model')} */}
+                  <AutoCompleteBox
+                    {...SelectAutoCompleteProps(
+                      allProgressionModel,
+                      selectedProgressionModelValue,
+                      'Name',
+                      'Name'
+                    )}
+                    allowClear={true}
+                    disabled={isEditPathwayFormVisible || isViewMode}
+                    value={selectedProgressionModelValue}
+                    placeholder="Start typing to choose a Progression Model"
+                    onSearch={onProgressionModelSearchHandler}
+                    onSelect={(e: any) => onProgressionModelSelectHandler(e)}
+                    onChange={(e: any) => onProgressionModelHandler(e)}
+                  />
+                  {/* {toolTip.find((item: any) => item.type === 'Progression').isVisible &&
+                  customToolTip('Progression')} */}
+                </Form.Item>
+              )}
             </Col>
           )}
           {!isViewMode && (

@@ -207,6 +207,7 @@ export default (state = initState, action: { type: string; payload: any }) => {
           loading: false,
           data: action.payload.Data,
           valid: action?.payload?.Valid,
+          error: false,
         },
       };
     case PATHWAYBUILDERAPI_APPROVE_PATHWAY_FAILURE:

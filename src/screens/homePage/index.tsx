@@ -17,6 +17,7 @@ import Xarrow, { Xwrapper } from 'react-xarrows';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { v4 as uuidv4 } from 'uuid';
 
+import { FINDER_URL } from '../../apiConfig/endpoint';
 import Button from '../../components/button';
 import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import DropWrapper from '../../components/dropWrapper';
@@ -1238,6 +1239,13 @@ const HomePage: React.FC<Props> = ({
                 (preceded: any) => preceded !== data?.CTID
               ),
             };
+          } else if (component_card?.IsChildOf.includes(data?.CTID)) {
+            return {
+              ...component_card,
+              IsChildOf: component_card?.IsChildOf.filter(
+                (preceded: any) => preceded !== data?.CTID
+              ),
+            };
           } else {
             return { ...component_card };
           }
@@ -1325,7 +1333,7 @@ const HomePage: React.FC<Props> = ({
     for (let i = 1; i <= maxColumnNumber; i++) {
       let conditions: any[];
       let components: any[];
-      if (pathwayComponent.Pathway.HasProgressionModel.length > 0) {
+      if (pathwayComponent.Pathway.HasProgressionModel?.length > 0) {
         components = pathwayComponent.PathwayComponents.filter(
           (item: any) =>
             item.ColumnNumber === i &&
@@ -1338,7 +1346,7 @@ const HomePage: React.FC<Props> = ({
             item.CTID !== pathwayComponent.Pathway.HasDestinationComponent
         );
       }
-      if (pathwayComponent.Pathway.HasProgressionModel.length > 0) {
+      if (pathwayComponent.Pathway.HasProgressionModel?.length > 0) {
         conditions = pathwayComponent.ComponentConditions.filter(
           (item: any) =>
             item.ColumnNumber === i &&
@@ -1352,7 +1360,7 @@ const HomePage: React.FC<Props> = ({
       }
       if (components.length == 0 && conditions.length == 0) {
         let cardsintheprogressionlevel: any[];
-        if (pathwayComponent.Pathway.HasProgressionModel.length > 0) {
+        if (pathwayComponent.Pathway.HasProgressionModel?.length > 0) {
           cardsintheprogressionlevel =
             pathwayComponent.PathwayComponents.filter(
               (item: any) =>
@@ -1431,7 +1439,7 @@ const HomePage: React.FC<Props> = ({
           end: id,
         });
         e?.target?.classList?.add('active');
-
+        debugger;
         const startCard: any = _.get(
           [
             ...pathwayComponentCards,
@@ -1508,11 +1516,16 @@ const HomePage: React.FC<Props> = ({
               );
               if (cardToUpdate) {
                 if (!_cond?.TargetComponent?.includes(id)) {
-                  const previousParent = pathwayComponentCards?.find(
-                    (_card: any) => _cond.RowId === _card?.HasCondition[0]
+                  const previousParent = pathwayComponentCards.find((card) =>
+                    card.HasCondition.includes(_cond.RowId)
                   );
                   if (previousParent !== undefined) {
-                    previousParent.HasCondition = [];
+                    const indexToRemove = previousParent.HasCondition.indexOf(
+                      _cond.RowId
+                    );
+                    if (indexToRemove !== -1) {
+                      previousParent.HasCondition.splice(indexToRemove, 1);
+                    }
                     pathwayComponentCards.map((item: any) => {
                       if (item.CTID === previousParent.CTID) {
                         return previousParent;
@@ -1537,6 +1550,24 @@ const HomePage: React.FC<Props> = ({
                   if (endCard?.Type !== 'conditional') {
                     endCard?.TargetComponent?.push(point.start);
                   } else {
+                    const previousParent =
+                      updatedPathwayComponentConditionCards.find((card) =>
+                        card.HasCondition.includes(_cond.RowId)
+                      );
+                    if (previousParent !== undefined) {
+                      const indexToRemove = previousParent.HasCondition.indexOf(
+                        _cond.RowId
+                      );
+                      if (indexToRemove !== -1) {
+                        previousParent.HasCondition.splice(indexToRemove, 1);
+                      }
+                      pathwayComponentCards.map((item: any) => {
+                        if (item.CTID === previousParent.CTID) {
+                          return previousParent;
+                        }
+                        return item;
+                      });
+                    }
                     if (!endCard?.HasCondition?.includes(point.start)) {
                       endCard?.HasCondition?.push(point.start);
                       _cond.ParentIdentifier = endCard?.RowId;
@@ -1878,6 +1909,7 @@ const HomePage: React.FC<Props> = ({
     }
   };
   const checkIfSameRow = (item: any) => {
+    debugger;
     const filteredEndComponent = [
       ...pathwayComponentCards,
       ...updatedPathwayComponentConditionCards,
@@ -1893,6 +1925,12 @@ const HomePage: React.FC<Props> = ({
       (card: any) =>
         _.toString(card?.CTID) === _.toString(item?.end) ||
         _.toString(card?.RowId) === _.toString(item?.end)
+    );
+    const idList = pathwayComponent?.ProgressionLevels?.map(
+      (item: any) => item.CTID
+    );
+    const indexA = idList?.indexOf(
+      filteredStartComponent[0]?.HasProgressionLevel
     );
     const component = [
       ...pathwayComponentCards,
@@ -1940,20 +1978,36 @@ const HomePage: React.FC<Props> = ({
     if (
       filteredEndComponent[0]?.RowNumber ==
         filteredStartComponent[0]?.RowNumber &&
-      (filteredEndComponent[0]?.CTID ==
+      (filteredStartComponent[0]?.CTID ==
         pathwayComponent?.Pathway?.HasDestinationComponent ||
         filteredEndComponent[0]?.HasProgressionLevel == undefined)
     ) {
       if (filteredStartComponent[0]?.HasProgressionLevel == undefined) {
         return false;
       }
-      const idList = pathwayComponent.ProgressionLevels.map(
-        (item: any) => item.CTID
-      );
-      const indexA = idList.indexOf(
-        filteredStartComponent[0]?.HasProgressionLevel
-      );
-      if (indexA + 1 != idList.length) {
+
+      if (
+        indexA + 1 != idList?.length &&
+        indexA != undefined &&
+        idList != undefined
+      ) {
+        if (
+          filteredEndComponent[0]?.CTID ==
+          pathwayComponent?.Pathway?.HasDestinationComponent
+        ) {
+          const cardsintheProgressionlevelintheSameColumn =
+            pathwayComponentCards.filter(
+              (card) =>
+                card?.HasProgressionLevel == idList[indexA + 1] &&
+                card.RowNumber == filteredEndComponent[0]?.RowNumber
+            );
+          if (cardsintheProgressionlevelintheSameColumn?.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+          // return false;
+        }
         return true;
       } else if (
         filteredStartComponent[0].ColumnNumber != maxColumnNumberStart
@@ -1965,12 +2019,29 @@ const HomePage: React.FC<Props> = ({
           (card: any) =>
             filteredStartComponent[0]?.ColumnNumber > card?.ColumnNumber &&
             card?.ColumnNumber < maxColumnNumberStart &&
-            card?.RowNumber == filteredEndComponent[0]?.RowNumber &&
+            card?.RowNumber == filteredStartComponent[0]?.RowNumber &&
             card?.HasProgressionLevel ==
-              filteredEndComponent[0]?.HasProgressionLevel
+              filteredEndComponent[0]?.HasProgressionLevel &&
+            card?.CTID !== pathwayComponent?.Pathway?.HasDestinationComponent
         );
         if (component2.length > 0) {
           return true;
+        } else {
+          const component2 = [
+            ...pathwayComponentCards,
+            ...updatedPathwayComponentConditionCards,
+          ].filter(
+            (card: any) =>
+              filteredStartComponent[0]?.ColumnNumber > card?.ColumnNumber &&
+              card?.ColumnNumber < maxColumnNumberStart &&
+              card?.RowNumber == filteredStartComponent[0]?.RowNumber &&
+              card?.HasProgressionLevel ==
+                filteredEndComponent[0]?.HasProgressionLevel &&
+              card?.CTID !== pathwayComponent?.Pathway?.HasDestinationComponent
+          );
+          if (component2.length > 0) {
+            return true;
+          }
         }
       }
     } else if (
@@ -1979,17 +2050,32 @@ const HomePage: React.FC<Props> = ({
       filteredEndComponent[0]?.HasProgressionLevel !=
         filteredStartComponent[0]?.HasProgressionLevel
     ) {
-      const idList = pathwayComponent.ProgressionLevels.map(
-        (item: any) => item.CTID
-      );
-      const indexA = idList.indexOf(
-        filteredStartComponent[0]?.HasProgressionLevel
-      );
+      // const idList = pathwayComponent?.ProgressionLevels?.map(
+      //   (card: any) => card.CTID
+      // );
+      // const indexA = idList?.indexOf(
+      //   filteredStartComponent[0]?.HasProgressionLevel
+      // );
       if (
-        indexA + 1 != idList.length &&
+        indexA + 1 != idList?.length &&
         filteredEndComponent[0].ColumnNumber != 1
       ) {
-        return true;
+        // debugger;
+        const cards = pathwayComponentCards?.filter(
+          (card: any) =>
+            card.HasProgressionLevel ===
+              filteredEndComponent[0]?.HasProgressionLevel &&
+            card.ColumnNumber < filteredEndComponent[0]?.ColumnNumber &&
+            card.RowNumber == filteredEndComponent[0]?.RowNumber
+        );
+        // const cardsintheProgressionlevelintheSameColumn = pathwayComponentCards.filter(card => card?.HasProgressionLevel === filteredEndComponent[0]?.HasProgressionLevel );
+        if (cards?.length > 0 && cards != undefined) {
+          return true;
+        } else {
+          return false;
+        }
+        //  return false;
+        // return true;
       }
       const component2 = [
         ...pathwayComponentCards,
@@ -2093,6 +2179,7 @@ const HomePage: React.FC<Props> = ({
     }
   };
   const CheckIfItsGoingtoDestination = (item: any) => {
+    debugger;
     const filteredEndComponent = [
       ...pathwayComponentCards,
       ...updatedPathwayComponentConditionCards,
@@ -2110,14 +2197,14 @@ const HomePage: React.FC<Props> = ({
         _.toString(card?.RowId) === _.toString(item?.end)
     );
     if (
-      filteredEndComponent[0]?.CTID ==
+      filteredStartComponent[0]?.CTID ==
         pathwayComponent?.Pathway?.HasDestinationComponent ||
-      filteredEndComponent[0]?.HasProgressionLevel == undefined
+      filteredStartComponent[0]?.HasProgressionLevel == undefined
     ) {
       if (
         filteredStartComponent[0]?.HasProgressionLevel !=
           filteredEndComponent[0]?.HasProgressionLevel &&
-        filteredEndComponent[0]?.ColumnNumber <= 1
+        filteredStartComponent[0]?.ColumnNumber == 1
       ) {
         return true;
       } else {
@@ -2126,6 +2213,80 @@ const HomePage: React.FC<Props> = ({
       //return true;
     }
   };
+  // const CheckIfItsGoingtoDestinationandIsLastColumn = (item: any) => {
+  //  if( pathwayComponent?.Pathway?.HasProgressionModel?.length > 0){
+  //   CheckIfItsGoingtoDestination(item);
+  //  }else{
+  //   const filteredEndComponent = [
+  //     ...pathwayComponentCards,
+  //     ...updatedPathwayComponentConditionCards,
+  //   ].filter(
+  //     (card: any) =>
+  //       _.toString(card?.CTID) === _.toString(item?.start) ||
+  //       _.toString(card?.RowId) === _.toString(item?.start)
+  //   );
+  //   const filteredStartComponent = [
+  //     ...pathwayComponentCards,
+  //     ...updatedPathwayComponentConditionCards,
+  //   ].filter(
+  //     (card: any) =>
+  //       _.toString(card?.CTID) === _.toString(item?.end) ||
+  //       _.toString(card?.RowId) === _.toString(item?.end)
+  //   );
+  //   const pathwayComponentColumnNumber = pathwayComponentCards
+  //   ?.filter(
+  //     (card: any) =>
+  //       card.HasProgressionLevel ===
+  //       filteredStartComponent[0]?.HasProgressionLevel
+  //   )
+  //   .reduce((acc: any, curr: any) => {
+  //     if (acc >= curr.ColumnNumber) {
+  //       return acc;
+  //     } else {
+  //       return curr.ColumnNumber;
+  //     }
+  //   }, 1);
+
+  // const conditinalComponentColumnNumber =
+  //   updatedPathwayComponentConditionCards
+  //     .filter(
+  //       (card: any) =>
+  //         card.HasProgressionLevel ===
+  //         filteredStartComponent[0]?.HasProgressionLevel
+  //     )
+  //     .reduce((acc: any, curr: any) => {
+  //       if (acc >= curr.ColumnNumber) {
+  //         return acc;
+  //       } else {
+  //         return curr.ColumnNumber;
+  //       }
+  //     }, 1);
+
+  // const maxColumnNumberStart = Math.max(
+  //   pathwayComponentColumnNumber,
+  //   conditinalComponentColumnNumber
+  // );
+
+  //   if (
+  //     filteredStartComponent[0]?.CTID ==
+  //       pathwayComponent?.Pathway?.HasDestinationComponent ||
+  //       filteredStartComponent[0]?.HasProgressionLevel == undefined
+  //   ) {
+  //     if (
+  //       filteredStartComponent[0]?.HasProgressionLevel !=
+  //         filteredEndComponent[0]?.HasProgressionLevel &&
+  //         filteredStartComponent[0]?.ColumnNumber == 1 &&
+  //         filteredEndComponent[0]?.ColumnNumber==maxColumnNumberStart
+  //     ) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //     //return true;
+  //   }
+  //  }
+
+  // };
   const checkIfAnyCardsInTheMiddle = (item: any) => {
     const filteredStartComponent = [
       ...pathwayComponentCards,
@@ -2254,13 +2415,13 @@ const HomePage: React.FC<Props> = ({
         filteredEndComponent[0]?.HasProgressionLevel &&
       filteredEndComponent[0]?.ColumnNumber == 1
     ) {
-      const idList = pathwayComponent.ProgressionLevels.map(
+      const idList = pathwayComponent?.ProgressionLevels?.map(
         (item: any) => item.CTID
       );
-      const indexA = idList.indexOf(
+      const indexA = idList?.indexOf(
         filteredStartComponent[0]?.HasProgressionLevel
       );
-      const indexB = idList.indexOf(
+      const indexB = idList?.indexOf(
         filteredEndComponent[0]?.HasProgressionLevel
       );
       return Math.abs(indexA - indexB) === 1;
@@ -2281,9 +2442,13 @@ const HomePage: React.FC<Props> = ({
       if (card?.CTID === items?.end) {
         const idx = card?.Precedes?.findIndex((i: any) => i === items?.start);
         card?.Precedes?.splice(idx, 1);
+        if (!card?.card?.includes(items?.start)) {
+          card?.IsChildOf?.push(items?.start);
+        }
       }
     });
     setPathwayComponentCards(pathwayComponentCards);
+    setIsViewConnectionsModalStatus(false);
   };
 
   const updateToPrecededBy = (items: any) => {
@@ -2296,12 +2461,15 @@ const HomePage: React.FC<Props> = ({
         }
       }
       if (card?.CTID === items?.end) {
+        const idx = card?.IsChildOf?.findIndex((i: any) => i === items?.start);
+        card?.IsChildOf?.splice(idx, 1);
         if (!card?.Precedes?.includes(items?.end)) {
           card?.Precedes?.push(items?.end);
         }
       }
     });
     setPathwayComponentCards(pathwayComponentCards);
+    setIsViewConnectionsModalStatus(false);
   };
 
   const removeConnection = (item: any) => {
@@ -2329,6 +2497,10 @@ const HomePage: React.FC<Props> = ({
       if (card?.CTID === item?.end && !hasCondComp) {
         const idx = card?.Precedes?.findIndex((i: any) => i === item?.start);
         card?.Precedes?.splice(idx, 1);
+      }
+      if (card?.CTID === item?.end && !hasCondComp) {
+        const idx = card?.IsChildOf?.findIndex((i: any) => i === item?.start);
+        card?.IsChildOf?.splice(idx, 1);
       }
     });
 
@@ -2410,7 +2582,11 @@ const HomePage: React.FC<Props> = ({
       return component[0];
     }
   };
-
+  const HasProgressionModelUrl = () => {
+    const url =
+      FINDER_URL + pathwayWrapper?.mappedData?.Pathway?.HasProgressionModel[0];
+    return url;
+  };
   const getDropWrapperLayout = (column: any, index: any = 0) => {
     if (!column.semesters || !column.semesters.length) {
       // if (pathwayComponent?.Pathway?.HasProgressionModel !== undefined) {
@@ -2562,16 +2738,20 @@ const HomePage: React.FC<Props> = ({
                                           strokeWidth={1}
                                           startAnchor={
                                             checkIfSameRow(items)
-                                              ? 'bottom'
+                                              ? //CheckIfItsGoingtoDestinationandIsLastColumn(items)?'right':
+                                                'bottom'
                                               : 'right'
                                           }
                                           endAnchor={
                                             checkIfSameRow(items)
                                               ? 'bottom'
-                                              : 'left'
+                                              : // ?  CheckIfItsGoingtoDestinationandIsLastColumn(items)?'right':'bottom'
+                                                'left'
                                           }
                                           gridBreak={
-                                            checkIfSameRow(items)
+                                            CheckIfItsGoingtoDestination(items)
+                                              ? '50%'
+                                              : checkIfSameRow(items)
                                               ? '65%-35'
                                               : checkIfItsNextColumn(items)
                                               ? '50%'
@@ -2654,7 +2834,9 @@ const HomePage: React.FC<Props> = ({
                                           }
                                           zIndex={997}
                                           gridBreak={
-                                            checkIfSameRow(items)
+                                            CheckIfItsGoingtoDestination(items)
+                                              ? '50%'
+                                              : checkIfSameRow(items)
                                               ? '65%-35'
                                               : checkIfItsNextColumn(items)
                                               ? '50%'
@@ -2678,7 +2860,7 @@ const HomePage: React.FC<Props> = ({
                                               ? !checkIfItsNextRow(items)
                                                 ? '50%-63'
                                                 : '15%-15'
-                                              : '15%-15'
+                                              : '50%'
                                           }
                                           //gridBreak= '65%-35'
                                           headSize={16}
@@ -3077,7 +3259,22 @@ const HomePage: React.FC<Props> = ({
                                       }`,
                                     }}
                                   >
-                                    {column.Name}
+                                    {pathwayComponent?.Pathway
+                                      ?.HasProgressionModel?.length > 0 ? (
+                                      <a
+                                        style={{
+                                          color: 'black',
+                                          textDecoration: 'underline',
+                                        }}
+                                        href={HasProgressionModelUrl()}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        {column.Name}
+                                      </a>
+                                    ) : (
+                                      column.Name
+                                    )}
                                   </span>
                                 </div>
                                 <div style={{ display: 'flex' }}>
@@ -3111,34 +3308,32 @@ const HomePage: React.FC<Props> = ({
         )}
       </Layout>
       {(isConditionalModalStatus || isConditionalEditing) && (
-        <Modal
-          width="80vw"
-          visible={isConditionalModalStatus || isConditionalEditing}
-          title=""
-          footer={[]}
-          onCancel={() => {
-            setIsConditionalModalStatus(false);
-            setIsConditionalEditing(false);
-          }}
-        >
-          <AddConditionalComponent
-            visibleConstraintConditionProp={setIsConditionalModalStatus}
-            setIsConditionalModalStatus={setIsConditionalModalStatus}
-            allComponentCardsData={allComponentCardsData}
-            allConditionalCardsData={allConditionalCardsData}
-            connectionsCTID={connectionsCTID}
-            updatedPathwayComponentConditionCards={
-              updatedPathwayComponentConditionCards
-            }
-            isConditionalEditing={isConditionalEditing}
-            setIsConditionalEditing={setIsConditionalEditing}
-            progressionLevelForAddComponent={progressionLevelForAddComponent}
-            data={
-              isConditionalEditing ? componentConditionData : currentCardData
-            }
-            isViewMode={isViewMode}
-          />
-        </Modal>
+        // <Modal
+        //   width="80vw"
+        //   visible={isConditionalModalStatus || isConditionalEditing}
+        //   title=""
+        //   footer={[]}
+        //   onCancel={() => {
+        //     setIsConditionalModalStatus(false);
+        //     setIsConditionalEditing(false);
+        //   }}
+        // >
+        <AddConditionalComponent
+          visibleConstraintConditionProp={setIsConditionalModalStatus}
+          setIsConditionalModalStatus={setIsConditionalModalStatus}
+          allComponentCardsData={allComponentCardsData}
+          allConditionalCardsData={allConditionalCardsData}
+          connectionsCTID={connectionsCTID}
+          updatedPathwayComponentConditionCards={
+            updatedPathwayComponentConditionCards
+          }
+          isConditionalEditing={isConditionalEditing}
+          setIsConditionalEditing={setIsConditionalEditing}
+          progressionLevelForAddComponent={progressionLevelForAddComponent}
+          data={isConditionalEditing ? componentConditionData : currentCardData}
+          isViewMode={isViewMode}
+        />
+        // </Modal>
       )}
       {isViewConnectionsModalStatus && (
         <Modal

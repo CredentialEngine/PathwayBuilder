@@ -1,0 +1,154 @@
+@import '../../styles/global.scss';
+.skinwrapper {
+  margin: 20px 0;
+
+  .ant-card-body {
+    h5,
+    p {
+      line-height: 1.2;
+    }
+  }
+  :global {
+    .customacardstyle {
+      min-height: 460px;
+      max-height: 510px;
+      overflow-y: auto;
+    }
+    .child {
+      float: left;
+      width: 37%;
+    }
+    .assessmentCard,
+    .customicon {
+      background-color: #00a0ff;
+    }
+    .basicCard,
+    .customicon {
+      background-color: #eca140;
+    }
+    .cocurricularCard,
+    .customicon {
+      background-color: #4ee5e1;
+    }
+    .competencyCard,
+    .customicon {
+      background-color: #8494a0;
+    }
+    .courseCard,
+    .customicon {
+      background-color: #996c48;
+    }
+    .credentialCard,
+    .customicon {
+      background-color: #d3f8f7;
+    }
+    .extraCurricularCard,
+    .customicon {
+      background-color: #e6eaec;
+    }
+    .jobCard,
+    .customicon {
+      background-color: #a7c7e7;
+    }
+    .workExperienceCard,
+    .customicon {
+      background-color: #17609a;
+    }
+    .customicon {
+      padding: 8px;
+      margin-right: 5px;
+      svg {
+        font-size: 18px;
+      }
+    }
+    .anticon-plus {
+      border: 2px solid $selection;
+      border-radius: 50px;
+      background-color: $selection;
+      padding: 2px;
+      margin-left: 13px;
+      margin-bottom: 15px;
+      svg {
+        fill: black !important;
+      }
+    }
+    .ant-modal-body {
+      .ant-row {
+        align-items: center;
+      }
+    }
+    .ant-card-bordered {
+      border-color: $inactive1;
+      border-radius: 4px;
+    }
+    .ant-card-body {
+      padding: 10px;
+      box-shadow: none;
+    }
+    .ant-typography {
+      color: #1f2123;
+      font-weight: 600;
+      :hover {
+        color: #1f2123;
+        font-weight: 600;
+      }
+    }
+  }
+  .infoCard {
+    background: #ffd263 0% 0% no-repeat padding-box;
+    border-radius: 6px;
+    padding: 10px;
+  }
+  .searchItemWrapper {
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border: 2px solid $selection;
+    border-radius: 6px;
+    padding: 15px;
+    max-height: 418px;
+    overflow-y: auto;
+    :global {
+      .ant-card-bordered {
+        box-shadow: none;
+        border-color: $inactive3;
+      }
+    }
+  }
+  :global {
+    label span {
+      font-weight: 400;
+      font-size: 12px;
+    }
+  }
+}
+
+.antModal {
+  width: 720px !important;
+}
+.flexCenter {
+  @include flexSpaceBetween;
+}
+.flexGrowCenter {
+  @include flexSpaceBetween;
+  & > div {
+    flex-grow: 1;
+  }
+}
+.dropDownRef {
+  color: $selection;
+  background-color: #00a0ff;
+}
+.iconCircle {
+  border: 2px solid $selection;
+  background-color: $selection;
+  border-radius: 50%;
+  height: 21px;
+  min-width: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+  svg {
+    fill: black !important;
+  }
+}

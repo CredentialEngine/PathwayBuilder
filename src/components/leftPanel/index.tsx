@@ -1,15 +1,20 @@
 import { faCaretDown, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Dropdown, Menu } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
+
+//import Modal from 'antd/lib/modal/Modal';
 import _ from 'lodash';
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import Modal from '../../components/modal';
+
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
+import SelectExistingComponents from '../../screens/selectExistingComponents';
 import {
   saveDataForPathwayRequest,
   updateMappedDataRequest,
@@ -44,9 +49,13 @@ const LeftPanel: React.FC<any> = ({
   // const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
     useState(false);
+  const [isSelectedExistingVisible, setIsSelectedExistingVisible] =
+    useState(false);
+  const [isExisting, setIsExisting] = useState(false);
   const [droppedCard, setDroppedCard] = useState<any>();
 
   const dispatch = useDispatch();
+  const updatedPathwayWrapper = { ...result.mappedData };
 
   // useEffect(() => {
   //   isDraggableCardVisibleMethod(isDraggableCardVisible);
@@ -67,7 +76,7 @@ const LeftPanel: React.FC<any> = ({
         updatedPathwayWrapper?.PathwayComponents?.length > 0 &&
         selectedPathwayComponents !== updatedPathwayWrapper.PathwayComponents
       ) {
-        const filteredPendingCards = selectedTabCards?.filter(
+        const filteredPendingCards = selectedTabCardData?.filter(
           (selected_card: any) =>
             !updatedPathwayWrapper?.PathwayComponents?.some(
               (pathway_card: any) =>
@@ -81,7 +90,7 @@ const LeftPanel: React.FC<any> = ({
         } else {
           setSelectedtabCards(filteredPendingCards);
           updatedPathwayWrapper.PendingComponents =
-            filteredPendingCards?.length === 0 ? [] : selectedTabCards;
+            filteredPendingCards?.length === 0 ? [] : selectedTabCardData;
           setSelectedtabCards(filteredPendingCards);
           if (
             filteredPendingCards.length <
@@ -151,7 +160,12 @@ const LeftPanel: React.FC<any> = ({
       setSelectedtabCards(selectedTabCardData);
     }
     isDraggableCardVisibleMethod(false);
-  }, [selectedTabCardData, droppedCard, result.mappedData.PathwayComponents]);
+  }, [
+    selectedTabCardData,
+    droppedCard,
+    result.mappedData.PathwayComponents,
+    result.mappedData.PendingComponents,
+  ]);
 
   const createCard = (card: any) => {
     if (card?.URI === 'ceterms:ComponentCondition') {
@@ -165,7 +179,7 @@ const LeftPanel: React.FC<any> = ({
         ParentIdentifier: '',
         RequiredNumber: null,
         LogicalOperator: '',
-        PathwayCTID: result.mappedData.Pathway.CTID,
+        PathwayCTID: result?.mappedData?.Pathway?.CTID,
         HasConstraint: [],
         TargetComponent: [],
       };
@@ -230,14 +244,24 @@ const LeftPanel: React.FC<any> = ({
       (item: any) => item.CTID !== itemId
     );
     updatedPathwayWrapper.PendingComponents = filteredpending;
-    const filteredItems = selectedTabCardData.filter(
-      (item: any) => item.CTID !== itemId
+    const deletedItems = selectedTabCardData.filter(
+      (item: any) => item.CTID === itemId
     );
-    setSelectedtabCards(filteredItems);
+    setSelectedtabCards(filteredpending);
+    const deletedResource = updatedPathwayWrapper.DeletedComponents;
+    if (!deletedResource?.some((item: any) => item.CTID === itemId)) {
+      const updatesDeletedResource = [...deletedResource, ...deletedItems];
+      updatedPathwayWrapper.DeletedComponents = updatesDeletedResource;
+      //setDeletedResource([...deletedResource, ...filteredpending]);
+    }
     dispatch(updateMappedDataRequest(updatedPathwayWrapper));
   };
   const searchComponent = (value: any) => {
     setSearchValue(value.target.value);
+  };
+
+  const searchComponentsInvisible = () => {
+    setIsSelectedExistingVisible(isExisting);
   };
   const onDropHandler = (
     tab: string,
@@ -560,17 +584,28 @@ const LeftPanel: React.FC<any> = ({
       <div className={Styles.drawerheader}>
         <h2>Add Components</h2>
       </div>
-      <u
+      <button
+        style={{
+          cursor: 'pointer',
+          backgroundColor: '#4ee5e1',
+          borderRadius: '5px',
+          fontSize: '13px',
+        }}
+        onClick={onClickPreselectComponent}
+      >
+        Search Registry Resources
+      </button>
+      <br />
+      {/* <u
         style={{
           cursor: 'pointer',
           backgroundColor: '#4ee5e1',
           borderRadius: '5px',
         }}
-        onClick={onClickPreselectComponent}
+        onClick={searchComponentsVisible}
       >
-        Search Registry Resources
-      </u>
-
+        Search Pathway Components
+      </u> */}
       <Tab {...tabVal} />
 
       <Modal
@@ -583,6 +618,25 @@ const LeftPanel: React.FC<any> = ({
           isVisible={(value: any) => setShowAddComponentToPathway(value)}
         />
       </Modal>
+      {isSelectedExistingVisible && (
+        <Modal
+          visible={true}
+          //width="650px"
+          width="50vw"
+          footer={[]}
+          onCancel={searchComponentsInvisible}
+          title="Link to a component from another pathway "
+        >
+          <SelectExistingComponents
+            setIsSelectedExistingVisible={setIsSelectedExistingVisible}
+            setIsDestinationColumnSelected={setIsExisting}
+            fromPreSelect={true}
+            addPathwayWrapperFields={updatedPathwayWrapper?.Pathway}
+            setIsAddPathwayDestinationVisible={setIsSelectedExistingVisible}
+            getSkipValueOfPreSelectResources={setIsExisting}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

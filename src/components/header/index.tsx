@@ -1,4 +1,5 @@
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
+import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Row } from 'antd';
 import React, { useState, useEffect } from 'react';
@@ -66,6 +67,14 @@ const Header = (props: Props) => {
     setCollapsed(true);
     setTimeout(() => window.print(), 1000);
     // window.print();
+  };
+  const handleCopy = () => {
+    const currentURL = window.location.href;
+    navigator.clipboard.writeText(currentURL);
+    Message({
+      description: 'Share URL has been copied to the clipboard.',
+      type: 'success',
+    });
   };
 
   useEffect(() => {
@@ -193,7 +202,7 @@ const Header = (props: Props) => {
   useEffect(() => {
     if (!isViewMode && !IS_LOCALHOST) {
       let interval: any;
-      const counter = 60000;
+      const counter = 50000;
       if (pathwayWrapper?.Pathway?.Name !== '' && isLeftPanelVisible) {
         interval = setTimeout(() => {
           const pathwayModel =
@@ -306,9 +315,12 @@ const Header = (props: Props) => {
                 {pathwayWrapper?.Pathway?.Organization?.Name} -
                 {pathwayWrapper?.Pathway?.Name}
               </span>
-              <span className={styles.editPathway} onClick={onEditPathwayClick}>
+              <button
+                className={styles.editPathway}
+                onClick={onEditPathwayClick}
+              >
                 {!isViewMode ? 'Edit Pathway Details' : 'View Pathway Details'}
-              </span>
+              </button>
             </div>
             <div className={styles.saveButtonWrapper}>
               {/* {!isViewMode && (
@@ -372,6 +384,12 @@ const Header = (props: Props) => {
               </div>
             </div>
           )}
+          <div
+            className={styles.helpContainer + ' headerright'}
+            onClick={() => handleCopy()}
+          >
+            <FontAwesomeIcon icon={faShare} className={styles.imgDimensions} />
+          </div>
         </div>
         {!isViewMode && (
           <div

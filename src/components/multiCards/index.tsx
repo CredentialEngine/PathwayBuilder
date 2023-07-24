@@ -703,6 +703,9 @@ const MultiCard: React.FC<Props> = ({
                   {renderImage(data)}
                   <span className={styles.title}>
                     {data?.Type?.split(':')[1].replace('Component', '')}
+                    <br />
+                    {data?.IsExternalComponent &&
+                      data?.FromExternalPathway?.Name?.slice(0, 30)}
                   </span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -782,12 +785,14 @@ const MultiCard: React.FC<Props> = ({
                     </>
                   ) : (
                     <>
-                      <span>{data?.FinderResource?.Provider?.Name}</span>
+                      <span>
+                        {data?.FinderResource?.Provider?.Name?.slice(0, 45)}
+                      </span>
                       <span onClick={openInNewTab}>
                         {data?.FinderResource?.URI != null ? (
-                          <u>{data?.Name}</u>
+                          <u>{data?.Name?.slice(0, 50)}</u>
                         ) : (
-                          data?.Name
+                          data?.Name?.slice(0, 50)
                         )}
                       </span>
                     </>
@@ -836,6 +841,9 @@ const MultiCard: React.FC<Props> = ({
                   {renderImage(data)}
                   <span className={styles.title}>
                     {data?.Type?.split(':')[1].replace('Component', '')}
+                    <br />
+                    {data?.IsExternalComponent &&
+                      data?.FromExternalPathway?.Name?.slice(0, 30)}
                   </span>
                   <FontAwesomeIcon
                     color={darkColor}
@@ -903,7 +911,7 @@ const MultiCard: React.FC<Props> = ({
                 />
                 <div className={styles.courseNameContainter}>
                   <span>
-                    {data?.FinderResource?.Provider?.Name.slice(0, 0)}
+                    {data?.FinderResource?.Provider?.Name?.slice(0, 0)}
                   </span>
                   <span title={data?.Name} onClick={openInNewTab}>
                     {data?.FinderResource?.URI != null ? (
@@ -915,7 +923,12 @@ const MultiCard: React.FC<Props> = ({
                   <span>
                     Type:{' '}
                     {data?.CredentialType != undefined
-                      ? data?.CredentialType.replace('ceterms:', '')
+                      ? data?.IsExternalComponent
+                        ? data?.CredentialType.split(':')[1].replace(
+                            '//purl.org/ctdl/terms/',
+                            ''
+                          )
+                        : data?.CredentialType.replace('ceterms:', '')
                       : ''}
                   </span>
                 </div>

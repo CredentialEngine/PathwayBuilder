@@ -2,7 +2,7 @@ import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Form, Row, Col, Tag } from 'antd';
+import { Form, Row, Col, Tag, Drawer } from 'antd';
 
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -387,7 +387,9 @@ const Constraintv2: React.FC<Props> = (Props) => {
       </>
     </Tag>
   );
-
+  const handleOutsideClick = () => {
+    !!setIsEditConstraintModalStatus && setIsEditConstraintModalStatus(false);
+  };
   const onShowCloseToolTip = (type: any, visibility: boolean) => {
     const toolTipArray =
       toolTip &&
@@ -401,177 +403,191 @@ const Constraintv2: React.FC<Props> = (Props) => {
   };
 
   return (
-    <>
+    <Drawer visible={true} className={Styles.right_drawer}>
       <>
-        <Form.Item
-          label="Left Action"
-          wrapperCol={{ span: 24 }}
-          labelCol={{ span: 24 }}
-        >
-          {customToolTipIcon('LeftAction')}
-          <Dropdown
-            disabled={!(constraintData?.LeftSource?.length > 1) || isViewMode}
-            options={constraintEntityFields.LeftAction}
-            placeholder="..."
-            showSearch={false}
-            onChange={(e) => handleConstraintAction(e, 'LeftAction')}
-            defaultValue={constraintData?.LeftAction}
-            value={constraintData?.LeftAction}
+        <div style={{ display: 'flex' }}>
+          <h2>Constraints</h2>
+          <Button
+            style={{ float: 'right', background: 'White', border: 'none' }}
+            text="X"
+            onClick={handleOutsideClick}
           />
-          {toolTip.find((item: any) => item.type === 'LeftAction').isVisible &&
-            customToolTip('LeftAction')}
-        </Form.Item>
-        <Form.Item
-          label="Left Source"
-          required={true}
-          wrapperCol={{ span: 24 }}
-          labelCol={{ span: 24 }}
-          className="swNoMargin"
-          validateTrigger="onBlur"
-        >
-          {customToolTipIcon('LeftSource')}
-          <DebounceSelect
-            disabled={isViewMode}
-            showSearch
-            mode="tags"
-            value={LeftSourceList}
-            placeholder="Start typing to select or provide Left Value(s)"
-            fetchOptions={allConstraintOperandFunc}
-            onSelect={(e: any) =>
-              onDebounceSelectHandler(e, 'LeftSource', leftSourceData)
-            }
-            onDeselect={(e: any) =>
-              onDeselectHandler(e, 'LeftSource', 'LeftAction')
-            }
-          />
-          {toolTip.find((item: any) => item.type === 'LeftSource').isVisible &&
-            customToolTip('LeftSource')}
-        </Form.Item>
-      </>
-      <Form.Item
-        label="Comparator"
-        wrapperCol={{ span: 24 }}
-        labelCol={{ span: 24 }}
-        required={true}
-      >
-        {customToolTipIcon('Comparator')}
-        <Dropdown
-          disabled={isViewMode}
-          options={Comparator}
-          defaultValue={constraintData?.Comparator}
-          value={constraintData?.Comparator}
-          showSearch={false}
-          onChange={(e) => selectedComparators(e)}
-          placeholder="..."
-        />
-        {toolTip.find((item: any) => item.type === 'Comparator').isVisible &&
-          customToolTip('Comparator')}
-      </Form.Item>
-      <Form.Item
-        label="Right Action"
-        wrapperCol={{ span: 24 }}
-        labelCol={{ span: 24 }}
-      >
-        {customToolTipIcon('RightAction')}
-        <Dropdown
-          disabled={!(constraintData?.RightSource?.length > 1) || isViewMode}
-          options={constraintEntityFields.RightAction}
-          placeholder="..."
-          showSearch={false}
-          onChange={(e) => handleConstraintAction(e, 'RightAction')}
-          defaultValue={constraintData?.RightAction}
-          value={constraintData?.RightAction}
-        />
-        {toolTip.find((item: any) => item.type === 'RightAction').isVisible &&
-          customToolTip('RightAction')}
-      </Form.Item>
-      <Form.Item>
+        </div>
+
         <>
           <Form.Item
+            label="Left Source"
             required={true}
-            label="Right Source"
             wrapperCol={{ span: 24 }}
             labelCol={{ span: 24 }}
             className="swNoMargin"
             validateTrigger="onBlur"
           >
-            {customToolTipIcon('RightSource')}
+            {customToolTipIcon('LeftSource')}
             <DebounceSelect
               disabled={isViewMode}
               showSearch
               mode="tags"
-              value={RightSourceList}
-              placeholder="Start typing to select or provide Right Value(s)"
+              value={LeftSourceList}
+              placeholder="Start typing to select or provide Left Value(s)"
               fetchOptions={allConstraintOperandFunc}
               onSelect={(e: any) =>
-                onDebounceSelectHandler(e, 'RightSource', rightSourceData)
+                onDebounceSelectHandler(e, 'LeftSource', leftSourceData)
               }
               onDeselect={(e: any) =>
-                onDeselectHandler(e, 'RightSource', 'RightAction')
+                onDeselectHandler(e, 'LeftSource', 'LeftAction')
               }
             />
-            {toolTip.find((item: any) => item.type === 'RightSource')
-              .isVisible && customToolTip('RightSource')}
+            {toolTip.find((item: any) => item.type === 'LeftSource')
+              .isVisible && customToolTip('LeftSource')}
+          </Form.Item>
+          <Form.Item
+            label="Left Action"
+            wrapperCol={{ span: 24 }}
+            labelCol={{ span: 24 }}
+          >
+            {customToolTipIcon('LeftAction')}
+            <Dropdown
+              disabled={!(constraintData?.LeftSource?.length > 1) || isViewMode}
+              options={constraintEntityFields.LeftAction}
+              placeholder="..."
+              showSearch={false}
+              onChange={(e) => handleConstraintAction(e, 'LeftAction')}
+              defaultValue={constraintData?.LeftAction}
+              value={constraintData?.LeftAction}
+            />
+            {toolTip.find((item: any) => item.type === 'LeftAction')
+              .isVisible && customToolTip('LeftAction')}
           </Form.Item>
         </>
-      </Form.Item>
-      <Form.Item
-        label="Name"
-        wrapperCol={{ span: 24 }}
-        labelCol={{ span: 24 }}
-        // required={true}
-        validateTrigger="onBlur"
-      >
-        <InputBox
-          disabled={isViewMode}
-          placeholder="Add a Constraint Name"
-          name="Name"
-          // required={true}
-          onChange={onInputChangeHandler}
-          value={constraintData?.Name}
-        />
-      </Form.Item>
-      <Form.Item
-        label="Description"
-        className="swNoMargin"
-        wrapperCol={{ span: 24 }}
-        labelCol={{ span: 24 }}
-        // required={true}
-        validateTrigger="onBlur"
-      >
-        <Textarea
-          disabled={isViewMode}
-          placeholder="Add a Constraint Description"
-          name="Description"
-          onChange={onInputChangeHandler}
-          value={constraintData.Description}
-        />
-      </Form.Item>
-      <Row gutter={24}>
-        <Col span={12}>
-          <Button
-            size="medium"
-            text="Save Constraint"
-            type="primary"
-            disabled={
-              _.isEmpty(constraintData.Comparator) ||
-              _.isEmpty(constraintData.LeftSource) ||
-              _.isEmpty(constraintData.RightSource)
-            }
-            onClick={SaveConstraint}
-          />
-        </Col>
-        <Col span={12}>
-          <Button
+        <Form.Item
+          label="Comparator"
+          wrapperCol={{ span: 24 }}
+          labelCol={{ span: 24 }}
+          required={true}
+        >
+          {customToolTipIcon('Comparator')}
+          <Dropdown
             disabled={isViewMode}
-            size="medium"
-            text="Delete Constraint"
-            type="primary"
-            onClick={DeleteConstraint}
+            options={Comparator}
+            defaultValue={constraintData?.Comparator}
+            value={constraintData?.Comparator}
+            showSearch={false}
+            onChange={(e) => selectedComparators(e)}
+            placeholder="..."
           />
-        </Col>
-      </Row>
-    </>
+          {toolTip.find((item: any) => item.type === 'Comparator').isVisible &&
+            customToolTip('Comparator')}
+        </Form.Item>
+
+        <Form.Item>
+          <>
+            <Form.Item
+              required={true}
+              label="Right Source"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+              className="swNoMargin"
+              validateTrigger="onBlur"
+            >
+              {customToolTipIcon('RightSource')}
+              <DebounceSelect
+                disabled={isViewMode}
+                showSearch
+                mode="tags"
+                value={RightSourceList}
+                placeholder="Start typing to select or provide Right Value(s)"
+                fetchOptions={allConstraintOperandFunc}
+                onSelect={(e: any) =>
+                  onDebounceSelectHandler(e, 'RightSource', rightSourceData)
+                }
+                onDeselect={(e: any) =>
+                  onDeselectHandler(e, 'RightSource', 'RightAction')
+                }
+              />
+              {toolTip.find((item: any) => item.type === 'RightSource')
+                .isVisible && customToolTip('RightSource')}
+            </Form.Item>
+            <Form.Item
+              label="Right Action"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              {customToolTipIcon('RightAction')}
+              <Dropdown
+                disabled={
+                  !(constraintData?.RightSource?.length > 1) || isViewMode
+                }
+                options={constraintEntityFields.RightAction}
+                placeholder="..."
+                showSearch={false}
+                onChange={(e) => handleConstraintAction(e, 'RightAction')}
+                defaultValue={constraintData?.RightAction}
+                value={constraintData?.RightAction}
+              />
+              {toolTip.find((item: any) => item.type === 'RightAction')
+                .isVisible && customToolTip('RightAction')}
+            </Form.Item>
+          </>
+        </Form.Item>
+        <Form.Item
+          label="Name"
+          wrapperCol={{ span: 24 }}
+          labelCol={{ span: 24 }}
+          // required={true}
+          validateTrigger="onBlur"
+        >
+          <InputBox
+            disabled={isViewMode}
+            placeholder="Add a Constraint Name"
+            name="Name"
+            // required={true}
+            onChange={onInputChangeHandler}
+            value={constraintData?.Name}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Description"
+          className="swNoMargin"
+          wrapperCol={{ span: 24 }}
+          labelCol={{ span: 24 }}
+          // required={true}
+          validateTrigger="onBlur"
+        >
+          <Textarea
+            disabled={isViewMode}
+            placeholder="Add a Constraint Description"
+            name="Description"
+            onChange={onInputChangeHandler}
+            value={constraintData.Description}
+          />
+        </Form.Item>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Button
+              size="medium"
+              text="Save Constraint"
+              type="primary"
+              disabled={
+                _.isEmpty(constraintData.Comparator) ||
+                _.isEmpty(constraintData.LeftSource) ||
+                _.isEmpty(constraintData.RightSource)
+              }
+              onClick={SaveConstraint}
+            />
+          </Col>
+          <Col span={12}>
+            <Button
+              disabled={isViewMode}
+              size="medium"
+              text="Delete Constraint"
+              type="primary"
+              onClick={DeleteConstraint}
+            />
+          </Col>
+        </Row>
+      </>
+    </Drawer>
   );
 };
 

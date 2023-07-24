@@ -64,7 +64,7 @@ const EditComponent: React.FC<Props> = ({
     OfferedBy: [],
     CTID: 'ce-' + uuidv4(),
     inLanguage: [],
-    AvailableAt: '',
+    AvailabilityAt: '',
     AvailabilityListing: '',
     LifeCycleStatusType: 'Active',
     CredentialType: [],
@@ -99,9 +99,9 @@ const EditComponent: React.FC<Props> = ({
       Name: rightPanelData.Name,
       SubjectWebpage: rightPanelData.SubjectWebpage,
       CredentialType: getCredentialTypeURI[0],
-      AvailableAt: resourceData.AvailabilityAt,
+      AvailabilityAt: resourceData.AvailabilityAt,
       AvailabilityListing: resourceData.AvailabilityListing,
-      OwnedBy: pathwayWrapper?.mappedData?.Pathway?.Organization?.CTID,
+      OwnedBy: pathwayWrapper?.mappedData?.Pathway?.Organization,
       OfferedBy: resourceData?.OfferedBy,
       inLanguage: resourceData?.inLanguage,
       Organization: pathwayWrapper?.mappedData?.Pathway?.Organization,
@@ -174,6 +174,8 @@ const EditComponent: React.FC<Props> = ({
         CreditValue.CreditUnitType = getCreditUnitTypeURI[0]?.URI;
       }
     }
+    // console.log(rightPanelData.FinderResource);
+    debugger;
     const isemptyIdentifier = Object.values(Identfier).every((x) => x === '');
     const rightediteddata = {
       Description: rightPanelData.Description,
@@ -186,8 +188,11 @@ const EditComponent: React.FC<Props> = ({
       CredentialType: getCredentialTypeURI[0]?.URI,
       Identifier: [Identfier],
       CreditValue: [CreditValue],
+      FinderResource: rightPanelData.FinderResource,
+      ProxyFor: rightPanelData.ProxyFor,
     };
     setRightPanelData([rightediteddata]);
+
     if (pathwayWrapper?.mappedData?.PathwayComponents.length > 0) {
       let currentConditionalComponent = _.get(
         pathwayWrapper?.mappedData?.PathwayComponents?.filter(
@@ -281,12 +286,13 @@ const EditComponent: React.FC<Props> = ({
           error: false,
         })
       );
-      const FinderResource = rightPanelData?.FinderResource ?? [];
+      const FinderResource = rightPanelData?.FinderResource ?? {};
       FinderResource.CTID = resourceData?.CTID;
       FinderResource.URI = FINDER_URL + resourceData?.CTID;
+      FinderResource.Name = 'View Resource in Credential Finder';
       rightPanelData.FinderResource = FinderResource;
+      rightPanelData.ProxyFor = resourceData?.CTID;
       setIsChecked(false);
-      SaveComponent;
     } else if (saveResourceResult?.error) {
       saveResourceResult?.data?.map((message: any) =>
         Message({
@@ -294,6 +300,12 @@ const EditComponent: React.FC<Props> = ({
           type: 'error',
         })
       );
+      saveResourceResult?.data?.map((message: any) => {
+        if (message.includes('Failed to Publish')) {
+          setIsChecked(false);
+          onCloseHandler(false);
+        }
+      });
     }
   }, [saveResourceResult]);
 
@@ -321,6 +333,7 @@ const EditComponent: React.FC<Props> = ({
   const getAllCreditUnitTypes = useSelector(
     (state: any) => state.editComponent.creditUnitTypeData
   );
+
   const [allCreditLevelTypes, setAllCreditLevelTypes] = useState<any>({});
   const [creditLevelType, setCreditLevelType] = useState<string>('');
   const getAllCreditLevelTypes = useSelector(
@@ -328,6 +341,7 @@ const EditComponent: React.FC<Props> = ({
   );
   //const [ isSaveDisabled, setIsSavedDisabled,] = useState<boolean>(false);
   useEffect(() => {
+    saveResourceResult.data = [];
     if (!_.isEmpty(panelData) && !_.isNull(panelData)) {
       const currentConditionalComponent = _.get(
         pathwayWrapper?.mappedData?.PathwayComponents?.filter(
@@ -370,6 +384,7 @@ const EditComponent: React.FC<Props> = ({
   const occupationTypes = rightPanelData?.OccupationType?.map(
     (obj: any) => obj.Name
   );
+  debugger;
   const industryTypes = rightPanelData?.IndustryType?.map(
     (obj: any) => obj.Name
   );
@@ -898,7 +913,7 @@ const EditComponent: React.FC<Props> = ({
     );
   };
   return (
-    <Drawer visible={visible} className={Styles.right_drawer}>
+    <Drawer visible={visible} className={Styles.right_drawer} width={500}>
       <div ref={ref} className={Styles.rightPanelContainer}>
         <Form>
           <Row>
@@ -1044,7 +1059,8 @@ const EditComponent: React.FC<Props> = ({
               'CredentialComponent' ||
             extractComponentType(rightPanelData?.Type) ==
               'AssessmentComponent') &&
-          rightPanelData?.FinderResource == null ? (
+          rightPanelData?.FinderResource == null &&
+          !isViewMode ? (
             <>
               <label className="toggle-slider">
                 <input
@@ -1068,10 +1084,7 @@ const EditComponent: React.FC<Props> = ({
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
               >
-                {customToolTipIcon('Name')}
                 {rightPanelData?.Name}
-                {toolTip.find((item: any) => item.type === 'Name').isVisible &&
-                  customToolTip('Name')}
               </Form.Item>
             )
           ) : (
@@ -1117,10 +1130,7 @@ const EditComponent: React.FC<Props> = ({
                   wrapperCol={{ span: 24 }}
                   labelCol={{ span: 24 }}
                 >
-                  {customToolTipIcon('CredentialType')}
                   {credentialType}
-                  {toolTip.find((item: any) => item.type === 'CredentialType')
-                    .isVisible && customToolTip('CredentialType')}
                 </Form.Item>
               )
             ) : (
@@ -1163,10 +1173,7 @@ const EditComponent: React.FC<Props> = ({
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
               >
-                {customToolTipIcon('Description')}
                 {rightPanelData?.Description}
-                {toolTip.find((item: any) => item.type === 'Description')
-                  .isVisible && customToolTip('Description')}
               </Form.Item>
             )
           ) : (
@@ -1209,10 +1216,7 @@ const EditComponent: React.FC<Props> = ({
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
               >
-                {customToolTipIcon('SubjectWebpage')}
                 {rightPanelData?.SubjectWebpage}
-                {toolTip.find((item: any) => item.type === 'SubjectWebpage')
-                  .isVisible && customToolTip('SubjectWebpage')}
               </Form.Item>
             )
           ) : (
@@ -1366,8 +1370,6 @@ const EditComponent: React.FC<Props> = ({
           {isChecked &&
           (extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
             extractComponentType(rightPanelData?.Type) ==
-              'CredentialComponent' ||
-            extractComponentType(rightPanelData?.Type) ==
               'AssessmentComponent') ? (
             <Form.Item
               wrapperCol={{ span: 24 }}
@@ -1393,8 +1395,6 @@ const EditComponent: React.FC<Props> = ({
           )}
           {isChecked &&
           (extractComponentType(rightPanelData?.Type) == 'CourseComponent' ||
-            extractComponentType(rightPanelData?.Type) ==
-              'CredentialComponent' ||
             extractComponentType(rightPanelData?.Type) ==
               'AssessmentComponent') ? (
             <Form.Item
@@ -1431,11 +1431,7 @@ const EditComponent: React.FC<Props> = ({
                   wrapperCol={{ span: 24 }}
                   labelCol={{ span: 24 }}
                 >
-                  {customToolTipIcon('ComponentCategory')}
                   {rightPanelData?.ComponentCategory}
-                  {toolTip.find(
-                    (item: any) => item.type === 'ComponentCategory'
-                  ).isVisible && customToolTip('ComponentCategory')}
                 </Form.Item>
               )
             ) : (
@@ -1468,10 +1464,7 @@ const EditComponent: React.FC<Props> = ({
                 wrapperCol={{ span: 24 }}
                 labelCol={{ span: 24 }}
               >
-                {customToolTipIcon('Designation')}
                 {rightPanelData?.ComponentDesignation}
-                {toolTip.find((item: any) => item.type === 'Designation')
-                  .isVisible && customToolTip('Designation')}
               </Form.Item>
             )
           ) : (
@@ -1502,16 +1495,13 @@ const EditComponent: React.FC<Props> = ({
 
           {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
             isViewMode ? (
-              rightPanelData?.ComponentCategory !== null && (
+              rightPanelData?.IndustryType.length > 0 && (
                 <Form.Item
                   label="Industry Type"
                   wrapperCol={{ span: 24 }}
                   labelCol={{ span: 24 }}
                 >
-                  {customToolTipIcon('Industry')}
                   {industryTypes}
-                  {toolTip.find((item: any) => item.type === 'Industry')
-                    .isVisible && customToolTip('Industry')}
                 </Form.Item>
               )
             ) : (
@@ -1544,16 +1534,13 @@ const EditComponent: React.FC<Props> = ({
 
           {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
             isViewMode ? (
-              rightPanelData?.ComponentCategory !== null && (
+              rightPanelData?.OccupationType.length > 0 && (
                 <Form.Item
                   label="Occupation Type"
                   wrapperCol={{ span: 24 }}
                   labelCol={{ span: 24 }}
                 >
-                  {customToolTipIcon('Occupation')}
                   {occupationTypes}
-                  {toolTip.find((item: any) => item.type === 'Occupation')
-                    .isVisible && customToolTip('Occupation')}
                 </Form.Item>
               )
             ) : (
@@ -1605,91 +1592,94 @@ const EditComponent: React.FC<Props> = ({
             }
           >
             <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
-
-            <Form.Item
-              required={true}
-              label="Credit Unit Type"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              tooltip=""
-            >
-              {customToolTipIcon('CreditUnit')}
-              <Dropdown
-                disabled={isViewMode}
-                options={allCreditUnitTypes?.CreditUnitType}
-                showSearch={false}
-                onChange={(e) => selectedCreditUnits(e)}
-                placeholder="Select Credit Unit Type"
-                value={creditUnitType}
-              />
-              {toolTip.find((item: any) => item.type === 'CreditUnit')
-                .isVisible && customToolTip('CreditUnit')}
-            </Form.Item>
-            {/* <Form.Item
-          required={true}
-          label="Credit Level Type"
-          wrapperCol={{ span: 24 }}
-          labelCol={{ span: 24 }}
-        >
-              <Dropdown
-              options={allCreditLevelTypes?.CreditLevelType}
-              showSearch={false}
-              onChange={(e) => selectedCreditUnits(e)}
-              placeholder="Select Credit Level Type"
-              value={creditLevelType}
-              
-            />
-             </Form.Item> */}
-            <Form.Item
-              required={true}
-              label="Credit Value"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              tooltip=""
-            >
-              {customToolTipIcon('CreditValue')}
-              <InputBox
-                disabled={isViewMode}
-                onChange={onChangeHandler}
-                placeholder="Credit Value"
-                name="Value"
-                value={rightPanelData?.Value}
-              />
-              {toolTip.find((item: any) => item.type === 'CreditValue')
-                .isVisible && customToolTip('CreditValue')}
-            </Form.Item>
-            <Form.Item
-              label="Credit Description"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              tooltip=" "
-            >
-              {customToolTipIcon('Creditdescription')}
-              <InputBox
-                disabled={isViewMode}
-                onChange={onChangeHandler}
-                placeholder="Description"
-                name="Creditdescription"
-                value={rightPanelData?.Creditdescription}
-              />
-              {toolTip.find((item: any) => item.type === 'Creditdescription')
-                .isVisible && customToolTip('Creditdescription')}
-            </Form.Item>
-          </div>
-          {extractComponentType(rightPanelData?.Type) == 'CourseComponent' &&
-            isViewMode &&
-            rightPanelData?.CreditValue[0]?.CreditUnitType !== null && (
-              <Form.Item
-                label="Occupation Type"
-                wrapperCol={{ span: 24 }}
-                labelCol={{ span: 24 }}
-              >
-                {customToolTipIcon('Occupation')}
-                {occupationTypes}
-                {toolTip.find((item: any) => item.type === 'Occupation')
-                  .isVisible && customToolTip('Occupation')}
-              </Form.Item>
+            {isViewMode && rightPanelData?.CreditValue?.[0]?.Value !== null ? (
+              <>
+                <Form.Item
+                  label="Credit Unit Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {
+                    rightPanelData?.CreditValue?.[0]?.CreditUnitType?.Items?.[0]
+                      ?.Name
+                  }
+                </Form.Item>
+                <Form.Item
+                  label="Credit Value"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {rightPanelData?.Value}
+                </Form.Item>
+                <Form.Item
+                  label="Credit Description"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {rightPanelData?.Creditdescription}
+                </Form.Item>
+              </>
+            ) : (
+              <>
+                <Form.Item
+                  required={true}
+                  label="Credit Unit Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                  tooltip=""
+                >
+                  {customToolTipIcon('CreditUnit')}
+                  <Dropdown
+                    disabled={isViewMode}
+                    options={allCreditUnitTypes?.CreditUnitType}
+                    showSearch={false}
+                    onChange={(e) => selectedCreditUnits(e)}
+                    placeholder="Select Credit Unit Type"
+                    value={creditUnitType}
+                  />
+                  {toolTip.find((item: any) => item.type === 'CreditUnit')
+                    .isVisible && customToolTip('CreditUnit')}
+                </Form.Item>
+                <Form.Item
+                  required={true}
+                  label="Credit Value"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                  tooltip=""
+                >
+                  {customToolTipIcon('CreditValue')}
+                  <InputBox
+                    disabled={isViewMode}
+                    onChange={onChangeHandler}
+                    placeholder="Credit Value"
+                    name="Value"
+                    value={rightPanelData?.Value}
+                  />
+                  {toolTip.find((item: any) => item.type === 'CreditValue')
+                    .isVisible && customToolTip('CreditValue')}
+                </Form.Item>
+                <Form.Item
+                  label="Credit Description"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                  tooltip=" "
+                >
+                  {customToolTipIcon('Creditdescription')}
+                  <InputBox
+                    disabled={isViewMode}
+                    onChange={onChangeHandler}
+                    placeholder="Description"
+                    name="Creditdescription"
+                    value={rightPanelData?.Creditdescription}
+                  />
+                  {toolTip.find(
+                    (item: any) => item.type === 'Creditdescription'
+                  ).isVisible && customToolTip('Creditdescription')}
+                </Form.Item>
+              </>
             )}
+          </div>
+
           {rightPanelData?.Identifier?.[0] == undefined
             ? !isViewMode && (
                 <u
@@ -1704,59 +1694,86 @@ const EditComponent: React.FC<Props> = ({
             className={visibleIdentfier ? 'element-visible' : 'element-hidden'}
           >
             <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
-            <Form.Item
-              label="Identfier Type"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-            >
-              {customToolTipIcon('IdentifierType')}
-              <InputBox
-                disabled={isViewMode}
-                onChange={onChangeHandler}
-                placeholder="Indentifier Type"
-                name="IdentifierType"
-                value={rightPanelData?.IdentifierType}
-              />
-              {toolTip.find((item: any) => item.type === 'IdentifierType')
-                .isVisible && customToolTip('IdentifierType')}
-            </Form.Item>
-            <Form.Item
-              required={true}
-              label="Identfier Name"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              tooltip=" "
-            >
-              {customToolTipIcon('IdentifierName')}
-              <InputBox
-                disabled={isViewMode}
-                onChange={onChangeHandler}
-                placeholder="Indentifier Name"
-                name="IdentifierName"
-                value={rightPanelData?.IdentifierName}
-              />
-              {toolTip.find((item: any) => item.type === 'IdentifierName')
-                .isVisible && customToolTip('IdentifierName')}
-            </Form.Item>
-
-            <Form.Item
-              required={true}
-              label="Identfier Code"
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              tooltip=" "
-            >
-              {customToolTipIcon('IdentifierCode')}
-              <InputBox
-                disabled={isViewMode}
-                onChange={onChangeHandler}
-                placeholder="Indentifier Code"
-                name="IdentifierCode"
-                value={rightPanelData?.IdentifierCode}
-              />
-              {toolTip.find((item: any) => item.type === 'IdentifierCode')
-                .isVisible && customToolTip('IdentifierCode')}
-            </Form.Item>
+            {isViewMode && rightPanelData?.Identifier?.[0] !== null ? (
+              <>
+                <Form.Item
+                  label="Identifier Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {rightPanelData?.IdentifierType}
+                </Form.Item>
+                <Form.Item
+                  label="Identifier Name"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {rightPanelData?.IdentifierName}
+                </Form.Item>
+                <Form.Item
+                  label="Identifier Code"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {rightPanelData?.IdentifierCode}
+                </Form.Item>
+              </>
+            ) : (
+              <>
+                <Form.Item
+                  label="Identfier Type"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                >
+                  {customToolTipIcon('IdentifierType')}
+                  <InputBox
+                    disabled={isViewMode}
+                    onChange={onChangeHandler}
+                    placeholder="Indentifier Type"
+                    name="IdentifierType"
+                    value={rightPanelData?.IdentifierType}
+                  />
+                  {toolTip.find((item: any) => item.type === 'IdentifierType')
+                    .isVisible && customToolTip('IdentifierType')}
+                </Form.Item>
+                <Form.Item
+                  required={true}
+                  label="Identfier Name"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                  tooltip=" "
+                >
+                  {customToolTipIcon('IdentifierName')}
+                  <InputBox
+                    disabled={isViewMode}
+                    onChange={onChangeHandler}
+                    placeholder="Indentifier Name"
+                    name="IdentifierName"
+                    value={rightPanelData?.IdentifierName}
+                  />
+                  {toolTip.find((item: any) => item.type === 'IdentifierName')
+                    .isVisible && customToolTip('IdentifierName')}
+                </Form.Item>
+                <Form.Item
+                  required={true}
+                  label="Identfier Code"
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                  tooltip=" "
+                >
+                  {customToolTipIcon('IdentifierCode')}
+                  <InputBox
+                    disabled={isViewMode}
+                    onChange={onChangeHandler}
+                    placeholder="Indentifier Code"
+                    name="IdentifierCode"
+                    value={rightPanelData?.IdentifierCode}
+                  />
+                  {toolTip.find((item: any) => item.type === 'IdentifierCode')
+                    .isVisible && customToolTip('IdentifierCode')}
+                </Form.Item>
+              </>
+            )}
           </div>
           {isViewMode ? (
             rightPanelData?.FinderResource !== null && (
@@ -1792,7 +1809,7 @@ const EditComponent: React.FC<Props> = ({
             {!isViewMode && (
               <Button
                 size="medium"
-                text={isChecked ? 'Save Resource' : 'Save Component'}
+                text={isChecked ? 'Publish Resource' : 'Save Component'}
                 type="primary"
                 disabled={_.isEmpty(rightPanelData?.Name)}
                 onClick={isChecked ? SaveResource : SaveComponent}

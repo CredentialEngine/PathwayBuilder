@@ -58,11 +58,12 @@ const Constraint: React.FC<Props> = (Props) => {
   // const getAllArrayConcept = useSelector(
   //   (state: any) => state.addConditionalComponent.arrayOperationData
   // );
-  const LeftSourceList = constraintData?.LeftSource.map(
-    (obj: any) => obj.Name
+  const LeftSourceList = constraintRow?.LeftSource.map(
+    (obj: any) => obj.Name || obj
   ).join(', ');
-  const RightSourceList = constraintData?.RightSource.map(
-    (obj: any) => obj.Name
+  //debugger;
+  const RightSourceList = constraintRow?.RightSource.map(
+    (obj: any) => obj.Name || obj
   ).join(', ');
 
   // const handleConstraintAction = (value: string, property: string) => {

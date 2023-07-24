@@ -109,6 +109,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       setSelectedResource(pathwayComponent?.PendingComponents);
     }
   }, [pathwayComponent]);
+
   const scrollToTop = () => {
     resultSection.current.scrollTo(0, 0);
   };
@@ -248,7 +249,9 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         setDisplaySearchContainer(true);
       } else {
         setNextDisabled(false);
-        scrollToTop();
+        if (displaySearchContainer) {
+          scrollToTop();
+        }
       }
     }
   }, [allProxyForResourcesComponent.data]);
@@ -325,7 +328,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         updatedSearchValue.Filters = [
           {
             URI: 'meta:pathwayComponentType',
-            ItemTexts: [_.get(selectedCardType, '0').label],
+            ItemTexts: [_.get(selectedCardType, '0').Name],
           },
           {
             URI: 'search:recordOwnedBy',
@@ -342,7 +345,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
           ...updatedSearchValue.Filters,
           {
             URI: 'meta:pathwayComponentType',
-            ItemTexts: [_.get(selectedCardType, '0').label],
+            ItemTexts: [_.get(selectedCardType, '0').Name],
           },
         ];
         setSearchFilterValue(updatedSearchValue);
@@ -359,11 +362,15 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   useEffect(() => {
     if (allComponentTabCards?.data?.length > 0) {
       const allTypesOfComponentCards = allComponentTabCards.data.map(
-        (card: any, index: any) => ({ key: index, label: card.URI })
+        (card: any, index: any) => ({
+          key: index,
+          label: card.Name,
+          Name: card.URI,
+        })
       );
       //remove the component condition from the list
       const updatedoptions = allTypesOfComponentCards.filter(
-        (opt: any) => opt.label !== 'ceterms:ComponentCondition'
+        (opt: any) => opt.label !== 'Component Condition'
       );
       const allresources = { key: 9, label: 'All resources' };
       updatedoptions.push(allresources);
@@ -416,7 +423,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     }
     setAllProxyResourcesCard(allProxyResourcesCard);
     if (allProxyResourcesCard.length === 0) {
-      setDisplaySearchContainer(false);
+      setDisplaySearchContainer(true);
     }
   };
 
@@ -520,6 +527,9 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
 
   return (
     <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
+      Use registry search to include resources into your pathway, The Purpose of
+      using the registry search is to use the data already included with the
+      resource and to link directly to it.
       <Row gutter={20}>
         <Col span="12">
           <div className={Styles.dropDownRefDiv}>
@@ -535,10 +545,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
                   <Space>
                     {dropDownRef ? (
                       <span className={Styles.dropDownRef}>
-                        {allComponentTypes[Number(dropDownRef)]?.label.replace(
-                          'ceterms:',
-                          ''
-                        )}
+                        {allComponentTypes[Number(dropDownRef)]?.label}
                       </span>
                     ) : (
                       'All resources'

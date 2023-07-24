@@ -7,7 +7,7 @@ import {
   faChevronCircleUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Col, Form, Modal, Row, Tag } from 'antd';
+import { Col, Drawer, Form, Row, Tag } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -408,9 +408,9 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             : currentComponent?.RowId,
         Description: componentConditionFields.Description,
         RequiredNumber: componentConditionFields.RequiredNumber,
-        RequiredConstraints: componentConditionFields.RequiredConstraints,
-        LogicalOperator: getLogicalOperatorURI[0]?.URI,
         HasConstraint: hasConstraints,
+        RequiredConstraints: componentConditionFields?.HasConstraint?.length,
+        LogicalOperator: getLogicalOperatorURI[0]?.URI,
         ColumnNumber:
           conditionalCardAlreadyExistForDestination.length > 0
             ? conditionalCardAlreadyExistForDestination[0]?.ColumnNumber
@@ -682,7 +682,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
         break;
       case 'RequiredNumber':
         text =
-          'The Required Number field indicates how many of the Components and Conditions that branch out to the left of these Condtions are required to be satisfied in order for these Conditions to be true (in addition to any other constraints indicated below). Use 0 if the items that branch out to the left are entirely optional';
+          'The Required Number field indicates how many of the Components and Conditions that branch out to the left of these Conditions are required to be satisfied in order for these Conditions to be true (in addition to any other constraints indicated below). Use 0 if the items that branch out to the left are entirely optional';
         break;
       case 'Logic':
         text =
@@ -732,6 +732,12 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     </Tag>
   );
 
+  const handleOutsideClick = () => {
+    !!visibleConstraintConditionProp && visibleConstraintConditionProp(false);
+    !!setIsConditionalModalStatus && setIsConditionalModalStatus(false);
+    !!setIsConditionalEditing && setIsConditionalEditing(false);
+  };
+
   const onShowCloseToolTip = (type: any, visibility: boolean) => {
     const toolTipArray =
       toolTip &&
@@ -775,23 +781,29 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
     // }
   };
   return (
-    <div className={Styles.addComponentwrapper}>
-      <Form>
-        {/* <h2>Add Condition</h2> */}
-        <div className={Styles.iconheader}>
-          <span className={Styles.iconwrapper + ' iconwrapper'}>
-            <FontAwesomeIcon
-              icon={faCubes}
-              style={{ height: '15px' }}
-              color="black"
+    <Drawer visible={true} className={Styles.right_drawer} width={500}>
+      <div className={Styles.addComponentwrapper}>
+        <Form>
+          {/* <h2>Add Condition</h2> */}
+          <div className={Styles.iconheader}>
+            <span className={Styles.iconwrapper + ' iconwrapper'}>
+              <FontAwesomeIcon
+                icon={faCubes}
+                style={{ height: '15px' }}
+                color="black"
+              />
+            </span>
+            <h2 style={{ margin: 0 }}>
+              Component Condition for{' '}
+              <i>{currentComponent?.Name || 'Parent Component'}</i>
+            </h2>
+            <Button
+              style={{ float: 'right', background: 'White', border: 'none' }}
+              text="X"
+              onClick={handleOutsideClick}
             />
-          </span>
-          <h2 style={{ margin: 0 }}>
-            Component Condition for{' '}
-            <i>{currentComponent?.Name || 'Parent Component'}</i>
-          </h2>
-        </div>
-        {/* <Form.Item
+          </div>
+          {/* <Form.Item
         wrapperCol={{ span: 24 }}
         labelCol={{ span: 24 }}
         label="Parent Component">
@@ -804,92 +816,128 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
             {toolTip.find((item: any) => item.type === 'ParentComponent')
                 .isVisible && customToolTip('ParentComponent')}
         </Form.Item> */}
-        <Form.Item
-          required={true}
-          wrapperCol={{ span: 24 }}
-          labelCol={{ span: 24 }}
-          label="Name"
-          validateTrigger="onBlur"
-          help={
-            (_.isEmpty(componentConditionFields.Name) ||
-              _.isNull(componentConditionFields.Name)) &&
-            isTouched.Name
-              ? 'Name is Required'
-              : null
-          }
-        >
-          {customToolTipIcon('Name')}
-          <InputBox
-            disabled={isViewMode}
-            onChange={onInputChangeHandler}
-            placeholder="Name"
-            name="Name"
-            value={componentConditionFields.Name}
-            required={true}
-            onBlur={() =>
-              isTouched.Name === true
-                ? null
-                : setisTouched({ ...isTouched, Name: true })
-            }
-          />
-          {toolTip.find((item: any) => item.type === 'Name').isVisible &&
-            customToolTip('Name')}
-        </Form.Item>
-        <Form.Item
-          label="Condition Description"
-          wrapperCol={{ span: 24 }}
-          labelCol={{ span: 24 }}
-        >
-          {customToolTipIcon('Description')}
-          <TextArea
-            disabled={isViewMode}
-            onChange={onInputChangeHandler}
-            rows={3}
-            name="Description"
-            value={componentConditionFields.Description}
-            placeholder="Description"
-          />
-          {toolTip.find((item: any) => item.type === 'Description').isVisible &&
-            customToolTip('Description')}
-        </Form.Item>
-        <Row gutter={20}>
-          <Col span="12">
+          {isViewMode ? (
+            componentConditionFields?.Name !== null && (
+              <Form.Item
+                label="Name"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {componentConditionFields?.Name}
+              </Form.Item>
+            )
+          ) : (
             <Form.Item
               required={true}
               wrapperCol={{ span: 24 }}
               labelCol={{ span: 24 }}
-              label="Required Target Components and Conditions"
+              label="Name"
               validateTrigger="onBlur"
               help={
-                (_.isEmpty(componentConditionFields.RequiredNumber) ||
-                  _.isNull(componentConditionFields.RequiredNumber)) &&
-                isTouched.requiredNumber
-                  ? 'Number is Required'
+                (_.isEmpty(componentConditionFields.Name) ||
+                  _.isNull(componentConditionFields.Name)) &&
+                isTouched.Name
+                  ? 'Name is Required'
                   : null
               }
             >
-              {customToolTipIcon('RequiredNumber')}
+              {customToolTipIcon('Name')}
               <InputBox
                 disabled={isViewMode}
-                type="number"
-                placeholder="Required Target Components and Conditions"
                 onChange={onInputChangeHandler}
-                min={1}
-                name="RequiredNumber"
-                value={componentConditionFields.RequiredNumber}
+                placeholder="Name"
+                name="Name"
+                value={componentConditionFields.Name}
                 required={true}
                 onBlur={() =>
-                  isTouched.requiredNumber === true
+                  isTouched.Name === true
                     ? null
-                    : setisTouched({ ...isTouched, requiredNumber: true })
+                    : setisTouched({ ...isTouched, Name: true })
                 }
               />
-              {toolTip.find((item: any) => item.type === 'RequiredNumber')
-                .isVisible && customToolTip('RequiredNumber')}
+              {toolTip.find((item: any) => item.type === 'Name').isVisible &&
+                customToolTip('Name')}
             </Form.Item>
-          </Col>
+          )}
+          {isViewMode ? (
+            componentConditionFields?.Description !== null && (
+              <Form.Item
+                label="Condition Description"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+              >
+                {componentConditionFields?.Description}
+              </Form.Item>
+            )
+          ) : (
+            <Form.Item
+              label="Condition Description"
+              wrapperCol={{ span: 24 }}
+              labelCol={{ span: 24 }}
+            >
+              {customToolTipIcon('Description')}
+              <TextArea
+                disabled={isViewMode}
+                onChange={onInputChangeHandler}
+                rows={3}
+                name="Description"
+                value={componentConditionFields.Description}
+                placeholder="Description"
+              />
+              {toolTip.find((item: any) => item.type === 'Description')
+                .isVisible && customToolTip('Description')}
+            </Form.Item>
+          )}
+          <Row gutter={20}>
+            <Col span="24">
+              {isViewMode ? (
+                componentConditionFields?.RequiredNumber > 0 && (
+                  <Form.Item
+                    label="Required Target Components and Conditions"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {componentConditionFields?.RequiredNumber}
+                  </Form.Item>
+                )
+              ) : (
+                <Form.Item
+                  required={true}
+                  wrapperCol={{ span: 24 }}
+                  labelCol={{ span: 24 }}
+                  label="Required Target Components and Conditions"
+                  validateTrigger="onBlur"
+                  help={
+                    (_.isEmpty(componentConditionFields.RequiredNumber) ||
+                      _.isNull(componentConditionFields.RequiredNumber)) &&
+                    isTouched.requiredNumber
+                      ? 'Number is Required'
+                      : null
+                  }
+                >
+                  {customToolTipIcon('RequiredNumber')}
+                  <InputBox
+                    disabled={isViewMode}
+                    type="number"
+                    placeholder="Required Target Components and Conditions"
+                    onChange={onInputChangeHandler}
+                    min={1}
+                    name="RequiredNumber"
+                    value={componentConditionFields.RequiredNumber}
+                    required={true}
+                    onBlur={() =>
+                      isTouched.requiredNumber === true
+                        ? null
+                        : setisTouched({ ...isTouched, requiredNumber: true })
+                    }
+                  />
+                  {toolTip.find((item: any) => item.type === 'RequiredNumber')
+                    .isVisible && customToolTip('RequiredNumber')}
+                </Form.Item>
+              )}
+            </Col>
 
-          {/* <Col span="12">
+            {/* <Col span="12">
             <Form.Item
               label="Logical Operator"
               wrapperCol={{ span: 24 }}
@@ -908,270 +956,306 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                 .isVisible && customToolTip('Logic')}
             </Form.Item>
           </Col> */}
-        </Row>
-        <div className={Styles.divider}>
-          <label>Constraints</label>
-          <div>
-            Constraints enable you to precisely define the requirements that
-            must be satisfied by the components and conditions on the left of
-            these conditions in order to progress to the component on the right
-            of these conditions. For a detailed explanation of how constraints
-            work, consult the{' '}
-            <a
-              href="https://credreg.net/ctdl/handbook#pathwaylevel3"
-              target="_blank"
-              rel="noreferrer"
-            >
-              CTDL Handbook
-            </a>
-            .
-          </div>
-          <Row>
-            <Col span="14">
-              <a onClick={toggleText}>
-                {isTextShown
-                  ? 'Hide Constraints Description'
-                  : 'Show Constraints Description'}
-                {isTextShown ? (
-                  <FontAwesomeIcon
-                    icon={faChevronCircleUp}
-                    className={Styles.iconPrimary}
-                  ></FontAwesomeIcon>
-                ) : (
-                  <FontAwesomeIcon
-                    icon={faChevronCircleDown}
-                    className={Styles.iconPrimary}
-                  ></FontAwesomeIcon>
-                )}
-              </a>
-              {isTextShown && (
-                <>
-                  <ul>
-                    Each Constraint consists of several fields:
-                    <li>
-                      The <b>Left Source</b> and <b>Right Source</b> fields each
-                      reference one or more data points related to the Pathway
-                      Components and/or Component Conditions referenced by this
-                      Component Condition.
-                    </li>
-                    <li>
-                      <b>Left Source</b> and <b>Right Source</b> may reference
-                      CTDL classes, properties, concepts, or your own custom
-                      concepts, or simple text or numeric values.
-                    </li>
-                    <li>
-                      If either the <b>Left Source</b> or <b>Right Source</b>{' '}
-                      references more than one data point, provide the
-                      corresponding <b>Left Action</b> or <b>Right Action</b> to
-                      indicate how that Source should be treated (see below).{' '}
-                    </li>
-                    <li>
-                      The <b>Comparator </b> field indicates how those two sets
-                      of data points should be compared, e.g.{' '}
-                      <b>
-                        <i>
-                          &quot; Credit Value must be greater than 3 &quot; or
-                          &quot;Student Grade must be one of A, B, or C&quot;,
-                          or &quot;Sum of years of experience and apprenticeship
-                          experience must be greater than or equal to one of six
-                          months or the estimated duration&quot;
-                        </i>
-                      </b>{' '}
-                      of the items referenced by this Component Condition
-                    </li>
-                  </ul>
-                  <p></p>
-                </>
-              )}
-            </Col>
-            <Col span="10">
-              <a onClick={toggleActionText}>
-                {isActionTextShown
-                  ? 'Hide Actions Vocabulary'
-                  : 'Show Actions Vocabulary'}
-                {isActionTextShown ? (
-                  <FontAwesomeIcon
-                    icon={faChevronCircleUp}
-                    className={Styles.iconPrimary}
-                  ></FontAwesomeIcon>
-                ) : (
-                  <FontAwesomeIcon
-                    icon={faChevronCircleDown}
-                    className={Styles.iconPrimary}
-                  ></FontAwesomeIcon>
-                )}
-              </a>
-              {isActionTextShown && (
-                <>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Action</th>
-                        <th>Action Description</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>All Of</td>
-                        <td>All of the values.</td>
-                      </tr>
-                      <tr>
-                        <td>Any Of</td>
-                        <td>Any (one or more) of the values.</td>
-                      </tr>
-                      <tr>
-                        <td>Count Distinct</td>
-                        <td>The number of unique values; yields a number.</td>
-                      </tr>
-                      <tr>
-                        <td>Maximum</td>
-                        <td>Maximum Value</td>
-                      </tr>
-                      <tr>
-                        <td>Mean</td>
-                        <td>The arithmetic mean of all the values.</td>
-                      </tr>
-                      <tr>
-                        <td>Minimum</td>
-                        <td>Minimum Value</td>
-                      </tr>
-                      <tr>
-                        <td>One Of</td>
-                        <td>One of the values.</td>
-                      </tr>
-                      <tr>
-                        <td>Sum</td>
-                        <td>Sum of the Values</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </>
-              )}
-            </Col>
-            {/* <Col span="5">
-          <a onClick={toggleComparatorText}>
-          {isComparatorTextShown?"Hide Comparator Vocabulary":"Show Comparator Vocabulary"}
-          {isComparatorTextShown ?<FontAwesomeIcon icon={faChevronCircleUp} className={Styles.iconPrimary}></FontAwesomeIcon>:  <FontAwesomeIcon icon={faChevronCircleDown} className={Styles.iconPrimary}></FontAwesomeIcon>}
-          </a>
-      {isComparatorTextShown && (
-          <><table>
-          <thead>
-            <tr>
-              <th>Comparator</th>
-              <th>Comparator Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Equal To</td>
-              <td>Left source equals to right source, eg Credits Equal to 120</td>
-            </tr>
-            <tr>
-              <td>Greater Than</td>
-              <td>Any (one or more) of the values.</td>
-            </tr>
-            <tr>
-              <td>Greater Than or Equal To</td>
-              <td>The number of unique values; yields a number.</td>
-            </tr>
-            <tr>
-              <td>Less Than</td>
-              <td>Maximum Value</td>
-            </tr>
-            <tr>
-              <td>Less Than or Equal To</td>
-              <td>The arithmetic mean of all the values.</td>
-            </tr>
-            <tr>
-              <td>Not Equal To</td>
-              <td>Minimum Value</td>
-            </tr>
-          </tbody>
-        </table></>
-      )}
-          </Col> */}
           </Row>
-
-          <hr className="min-top" />
-        </div>
-        <Col span="12">
-          <Form.Item
-            //required={true}
-            wrapperCol={{ span: 24 }}
-            labelCol={{ span: 24 }}
-            label="Required Constraints"
-            validateTrigger="onBlur"
-          >
-            {customToolTipIcon('RequiredConstraints')}
-            <InputBox
-              disabled={isViewMode}
-              type="number"
-              placeholder="Required Constraints"
-              onChange={onInputChangeHandler}
-              min={1}
-              name="RequiredConstraints"
-              value={componentConditionFields.RequiredConstraints}
-            />
-            {toolTip.find((item: any) => item.type === 'RequiredConstraints')
-              .isVisible && customToolTip('RequiredConstraints')}
-          </Form.Item>
-        </Col>
-
-        {constraintRow &&
-          constraintRow?.map((constraintRowData: any, RowIndex: any) => (
-            <>
-              {!isViewMode && (
-                <u
-                  onClick={() => EditConstraintRow(RowIndex, constraintRowData)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Edit Constraint
-                </u>
-              )}
-
-              <Constraint
-                key={RowIndex}
-                RowIndex={RowIndex}
-                constraintRow={constraintRowData}
-                getConstraintData={(val: any) => getConstraintData(val)}
-                deleteRowByIndex={(rowIndex: any) => handleDeleteRow(rowIndex)}
-                isViewMode={isViewMode}
-              />
-            </>
-          ))}
-        <p>
           {!isViewMode && (
-            <u onClick={() => addConstraintRow()} style={{ cursor: 'pointer' }}>
-              Add another constraint
-            </u>
+            <div className={Styles.divider}>
+              <hr className="min-top" />
+              <label>Constraints</label>
+              <div>
+                Constraints enable you to precisely define the requirements that
+                must be satisfied by the components and conditions on the left
+                of these conditions in order to progress to the component on the
+                right of these conditions. For a detailed explanation of how
+                constraints work, consult the{' '}
+                <a
+                  href="https://credreg.net/ctdl/handbook#pathwaylevel3"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  CTDL Handbook
+                </a>
+                .
+              </div>
+              <Row>
+                <Col span="24">
+                  <a onClick={toggleText}>
+                    {isTextShown
+                      ? 'Hide Constraints Description'
+                      : 'Show Constraints Description'}
+                    {isTextShown ? (
+                      <FontAwesomeIcon
+                        icon={faChevronCircleUp}
+                        className={Styles.iconPrimary}
+                      ></FontAwesomeIcon>
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faChevronCircleDown}
+                        className={Styles.iconPrimary}
+                      ></FontAwesomeIcon>
+                    )}
+                  </a>
+                  {isTextShown && (
+                    <>
+                      <ul>
+                        Each Constraint consists of several fields:
+                        <li>
+                          The <b>Left Source</b> and <b>Right Source</b> fields
+                          each reference one or more data points related to the
+                          Pathway Components and/or Component Conditions
+                          referenced by this Component Condition.
+                        </li>
+                        <li>
+                          <b>Left Source</b> and <b>Right Source</b> may
+                          reference CTDL classes, properties, concepts, or your
+                          own custom concepts, or simple text or numeric values.
+                        </li>
+                        <li>
+                          If either the <b>Left Source</b> or{' '}
+                          <b>Right Source</b> references more than one data
+                          point, provide the corresponding <b>Left Action</b> or{' '}
+                          <b>Right Action</b> to indicate how that Source should
+                          be treated (see below).{' '}
+                        </li>
+                        <li>
+                          The <b>Comparator </b> field indicates how those two
+                          sets of data points should be compared, e.g.{' '}
+                          <b>
+                            <i>
+                              &quot; Credit Value must be greater than 3 &quot;
+                              or &quot;Student Grade must be one of A, B, or
+                              C&quot;, or &quot;Sum of years of experience and
+                              apprenticeship experience must be greater than or
+                              equal to one of six months or the estimated
+                              duration&quot;
+                            </i>
+                          </b>{' '}
+                          of the items referenced by this Component Condition
+                        </li>
+                      </ul>
+                      <p></p>
+                    </>
+                  )}
+                </Col>
+                <Col span="24">
+                  <a onClick={toggleActionText}>
+                    {isActionTextShown
+                      ? 'Hide Actions Vocabulary'
+                      : 'Show Actions Vocabulary'}
+                    {isActionTextShown ? (
+                      <FontAwesomeIcon
+                        icon={faChevronCircleUp}
+                        className={Styles.iconPrimary}
+                      ></FontAwesomeIcon>
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faChevronCircleDown}
+                        className={Styles.iconPrimary}
+                      ></FontAwesomeIcon>
+                    )}
+                  </a>
+                  {isActionTextShown && (
+                    <>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Action</th>
+                            <th>Action Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>All Of</td>
+                            <td>All of the values.</td>
+                          </tr>
+                          <tr>
+                            <td>Any Of</td>
+                            <td>Any (one or more) of the values.</td>
+                          </tr>
+                          <tr>
+                            <td>Count Distinct</td>
+                            <td>
+                              The number of unique values; yields a number.
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Maximum</td>
+                            <td>Maximum Value</td>
+                          </tr>
+                          <tr>
+                            <td>Mean</td>
+                            <td>The arithmetic mean of all the values.</td>
+                          </tr>
+                          <tr>
+                            <td>Minimum</td>
+                            <td>Minimum Value</td>
+                          </tr>
+                          <tr>
+                            <td>One Of</td>
+                            <td>One of the values.</td>
+                          </tr>
+                          <tr>
+                            <td>Sum</td>
+                            <td>Sum of the Values</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </>
+                  )}
+                </Col>
+                {/* <Col span="5">
+         <a onClick={toggleComparatorText}>
+         {isComparatorTextShown?"Hide Comparator Vocabulary":"Show Comparator Vocabulary"}
+         {isComparatorTextShown ?<FontAwesomeIcon icon={faChevronCircleUp} className={Styles.iconPrimary}></FontAwesomeIcon>:  <FontAwesomeIcon icon={faChevronCircleDown} className={Styles.iconPrimary}></FontAwesomeIcon>}
+         </a>
+     {isComparatorTextShown && (
+         <><table>
+         <thead>
+           <tr>
+             <th>Comparator</th>
+             <th>Comparator Description</th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr>
+             <td>Equal To</td>
+             <td>Left source equals to right source, eg Credits Equal to 120</td>
+           </tr>
+           <tr>
+             <td>Greater Than</td>
+             <td>Any (one or more) of the values.</td>
+           </tr>
+           <tr>
+             <td>Greater Than or Equal To</td>
+             <td>The number of unique values; yields a number.</td>
+           </tr>
+           <tr>
+             <td>Less Than</td>
+             <td>Maximum Value</td>
+           </tr>
+           <tr>
+             <td>Less Than or Equal To</td>
+             <td>The arithmetic mean of all the values.</td>
+           </tr>
+           <tr>
+             <td>Not Equal To</td>
+             <td>Minimum Value</td>
+           </tr>
+         </tbody>
+       </table></>
+     )}
+         </Col> */}
+              </Row>
+            </div>
           )}
-        </p>
 
-        <hr />
-        <Button
-          size="medium"
-          text="Save Condition"
-          type="primary"
-          disabled={
-            _.isEmpty(
-              componentConditionFields.RequiredNumber &&
-                componentConditionFields.Name
-            ) || isViewMode
-          }
-          onClick={saveCondition}
-        />
-      </Form>
-      {isEditConstraintModalStatus && (
-        <Modal
-          width="20vw"
-          visible={isEditConstraintModalStatus}
-          title=""
-          footer={[]}
-          onCancel={() => {
-            setIsEditConstraintModalStatus(false);
-          }}
-        >
-          {constraintRow && (
+          <Col span="12">
+            {isViewMode ? (
+              componentConditionFields?.RequiredConstraints > 0 && (
+                <>
+                  <b>Constraints</b>
+                  <Form.Item
+                    label="Required Constraints"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {componentConditionFields?.RequiredConstraints}
+                  </Form.Item>
+                </>
+              )
+            ) : (
+              <Form.Item
+                //required={true}
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                label="Required Constraints"
+                validateTrigger="onBlur"
+              >
+                {customToolTipIcon('RequiredConstraints')}
+                <InputBox
+                  disabled={isViewMode}
+                  type="number"
+                  placeholder="Required Constraints"
+                  onChange={onInputChangeHandler}
+                  min={1}
+                  name="RequiredConstraints"
+                  value={
+                    componentConditionFields?.HasConstraint?.length +
+                    hasConstraints?.length
+                  }
+                />
+                {toolTip.find(
+                  (item: any) => item.type === 'RequiredConstraints'
+                ).isVisible && customToolTip('RequiredConstraints')}
+              </Form.Item>
+            )}
+          </Col>
+
+          {constraintRow &&
+            constraintRow?.map((constraintRowData: any, RowIndex: any) => (
+              <>
+                {!isViewMode && (
+                  <u
+                    onClick={() =>
+                      EditConstraintRow(RowIndex, constraintRowData)
+                    }
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Edit Constraint
+                  </u>
+                )}
+
+                <Constraint
+                  key={RowIndex}
+                  RowIndex={RowIndex}
+                  constraintRow={constraintRowData}
+                  getConstraintData={(val: any) => getConstraintData(val)}
+                  deleteRowByIndex={(rowIndex: any) =>
+                    handleDeleteRow(rowIndex)
+                  }
+                  isViewMode={isViewMode}
+                />
+              </>
+            ))}
+          <p>
+            {!isViewMode && (
+              <u
+                onClick={() => addConstraintRow()}
+                style={{ cursor: 'pointer' }}
+              >
+                Add another constraint
+              </u>
+            )}
+          </p>
+
+          <hr />
+          {!isViewMode ? (
+            <Button
+              size="medium"
+              text="Save Condition"
+              type="primary"
+              disabled={
+                _.isEmpty(
+                  componentConditionFields.RequiredNumber &&
+                    componentConditionFields.Name
+                ) || isViewMode
+              }
+              onClick={saveCondition}
+            />
+          ) : (
+            ''
+          )}
+        </Form>
+        {isEditConstraintModalStatus &&
+          // <Modal
+          //   width="20vw"
+          //   visible={isEditConstraintModalStatus}
+          //   title=""
+          //   footer={[]}
+          //   onCancel={() => {
+          //     setIsEditConstraintModalStatus(false);
+          //   }}
+          // >
+          constraintRow && (
             <ConstraintV2
               key={rowIndex}
               RowIndex={rowIndex}
@@ -1182,9 +1266,10 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
               setIsEditConstraintModalStatus={setIsEditConstraintModalStatus}
             />
           )}
-        </Modal>
-      )}
-    </div>
+        {/* </Modal>
+        )} */}
+      </div>
+    </Drawer>
   );
 };
 

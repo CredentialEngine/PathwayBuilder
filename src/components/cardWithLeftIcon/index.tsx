@@ -71,43 +71,42 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
     switch (type) {
       case 'ceterms:assessmentcomponent':
         text =
-          'Resource that identifies a direct, indirect, formative, and summative evaluation or estimation of the nature, ability, or quality of a resource, performance, or outcome of an action.';
+          'Direct, indirect, formative, and summative evaluation or estimation of the nature, ability, or quality of a resource, performance, or outcome of an action.';
         break;
       case 'ceterms:credentialcomponent':
         text =
-          ' Resource that identifies another resource that describes qualification, achievement, personal or organizational quality, or aspect of an identity typically used to indicate suitability.';
+          'Any of the types of credentials supported by CTDL ranging from badges, degrees, certificates, licenses, certifications and more. ';
         break;
       case 'ceterms:jobcomponent':
-        text =
-          'Resource that identifies a work position, employment, or occupation.';
+        text = 'Work position, employment, or occupation.';
         break;
       case 'ceterms:workexperiencecomponent':
         text =
-          'Resource describing an activity or training through which a person gains job experience.';
+          'Activity or training through which a person gains job experience.';
         break;
       case 'ceterms:cocurricularcomponent':
         text =
-          'Resource that identifies an activity, program, or informal learning experience such as a civic or service activity that supplements and complements the curriculum.';
+          'Activity, program, or informal learning experience such as a civic or service activity that supplements and complements the curriculum.';
         break;
       case 'ceterms:extracurricularcomponent':
         text =
-          'Resource that identifies an activity, program, or informal learning experience that may be offered or provided by a school, college, or other organization that is not connected to a curriculum.';
+          'Activity, program, or informal learning experience that may be offered or provided by a school, college, or other organization that is connected to a curriculum.curriculum.';
         break;
       case 'ceterms:basiccomponent':
         text =
-          'Resource that identifies a resource not otherwise covered by the enumerated PathwayComponent subclasses.';
+          'Resource not otherwise covered by the enumerated Pathway Component subclasses.';
         break;
       case 'ceterms:competencycomponent':
         text =
-          'Resource that identifies a measurable or observable knowledge, skill, or ability necessary to successful performance of a person in a given context.';
+          'Measurable or observable knowledge, skill, or ability necessary to successful performance of a person in a given context.';
         break;
       case 'ceterms:coursecomponent':
         text =
-          'Resource that identifies a structured sequence of one or more learning activities that aims to develop a prescribed set of knowledge, skill, or ability of learners.';
+          'Structured sequence of one or more learning activities that aims to develop a prescribed set of knowledge, skill, or ability of learners.';
         break;
       case 'ceterms:componentcondition':
         text =
-          ' Resource that describes what must be done to complete a PathwayComponent, or part thereof, as determined by the issuer of the Pathway.';
+          ' What must be done to complete a Pathway Component, or part thereof, as determined by the issuer of the pathway.';
         break;
     }
     return text;
@@ -369,6 +368,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
           <>
             <p>{data?.Type?.split(':')[1].replace('Component', '')}</p>
             {data?.FinderResource?.Provider?.Name}
+            {data?.IsExternalComponent && data?.FromExternalPathway?.Name}
             {data?.Name == null && (
               <span
                 className="fa-layers fa-fw fa-lg"
@@ -421,8 +421,17 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   <br />
                   {data?.CredentialType !== '' &&
                   data?.CredentialType !== undefined
-                    ? 'Type:' +
-                      data?.CredentialType.split(':')[1].replace('ceterms:', '')
+                    ? data?.IsExternalComponent
+                      ? 'Type:' +
+                        data?.CredentialType.split(':')[1].replace(
+                          '//purl.org/ctdl/terms/',
+                          ''
+                        )
+                      : 'Type:' +
+                        data?.CredentialType.split(':')[1].replace(
+                          'ceterms:',
+                          ''
+                        )
                     : ''}
                 </h5>
               </>
