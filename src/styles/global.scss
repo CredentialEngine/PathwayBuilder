@@ -1,0 +1,227 @@
+@import './core.scss';
+
+/* Global Text Styles */
+
+body {
+  margin: 0;
+  font-family: $app-font-primary;
+  font-weight: $normal-weight;
+  font-size: 12px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: $primary-dark;
+}
+p {
+  margin-bottom: 8px;
+}
+h1 {
+  font-size: 18px;
+  letter-spacing: 0px;
+  color: $primary-dark;
+  font-weight: bold;
+}
+h2 {
+  font-size: 16px;
+  letter-spacing: 0px;
+  color: $primary-dark;
+  font-weight: bold;
+}
+h3 {
+  font-size: 15px;
+  letter-spacing: 0px;
+  color: $primary-dark;
+  font-weight: bold;
+}
+h4 {
+  font-size: 14px;
+  letter-spacing: 0px;
+  color: $primary-dark;
+  font-weight: bold;
+}
+h5 {
+  font-size: 12px;
+  letter-spacing: 0px;
+  color: $primary-dark;
+  font-weight: bold;
+}
+.heading {
+  font-size: 18px;
+  font-weight: $bold-weight;
+  margin-bottom: 4px;
+}
+.subHeading {
+  font-size: 13px;
+  font-weight: $bold-weight;
+  margin-bottom: 4px;
+}
+
+/* Icon Styles */
+.iconPrimary {
+  color: $selection;
+}
+.iconSecondary {
+  color: $primary-dark;
+}
+.iconSpacing {
+  margin: 0 3px 0 0;
+}
+
+img {
+  width: 100%;
+  mix-blend-mode: multiply;
+}
+hr {
+  margin: 30px 0;
+}
+.min-top {
+  margin-top: 10px;
+}
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.margin {
+  margin: 0 10px;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.resize-n {
+  resize: none;
+}
+
+.r0 {
+  right: 0;
+}
+
+.t0 {
+  top: 0;
+}
+
+.bg-white3 {
+  background-color: $white-color;
+}
+
+.bg-white {
+  background-color: $white-color;
+}
+
+.x-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.y-center {
+  display: flex;
+  align-items: center;
+}
+
+.twocol {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &.center {
+    justify-content: center;
+  }
+}
+
+.mb-5 {
+  margin-bottom: 50px;
+}
+
+.mb-3 {
+  margin-bottom: 30px;
+}
+
+.mb-2 {
+  margin-bottom: 20px;
+}
+
+.section {
+  margin: 60px;
+}
+
+label {
+  input {
+    vertical-align: middle;
+  }
+  input[type='checkbox'] {
+    margin-right: 2px;
+  }
+}
+
+.iconActive {
+  background: #1d3be6 !important;
+  border: 1px solid #1d3be6 !important;
+  svg {
+    fill: #fff;
+  }
+}
+
+.opportunityManagementTabs {
+  .customTabs {
+    color: rgb(51, 51, 51) !important;
+    max-height: 150px;
+    border: 2px solid #8494a0;
+    box-shadow: none;
+    background-color: #fff;
+    margin-left: -1px;
+  }
+}
+
+.job-visits {
+  border-style: dashed !important;
+}
+
+.leftAlignParent {
+  background-color: rgb(187, 187, 187) !important;
+  text-align: left;
+  padding-left: 12px;
+  span {
+    margin-right: 3px;
+  }
+}
+
+.leftAlignChild {
+  background-color: rgb(224, 224, 224) !important;
+  text-align: left;
+  padding-left: 18px;
+  span {
+    margin-right: 3px;
+  }
+}
+
+:global {
+  .ant-modal {
+    /* width: 600px;*/
+    width: 90vw;
+    min-width: 600px;
+    max-width: 1500px;
+  }
+  .ant-picker-content {
+    max-width: 100% !important;
+  }
+}
+
+.minWidth {
+  min-width: 20px !important;
+}
+.iconwrapper {
+  background: $inactive3;
+  border-radius: 50px;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

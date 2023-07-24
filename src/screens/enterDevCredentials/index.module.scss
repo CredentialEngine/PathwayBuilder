@@ -1,0 +1,14 @@
+@import '../../styles/core.scss';
+@import '../../styles/global.scss';
+
+.enterDevCredentialsWrapper {
+  display: flex;
+}
+
+:global {
+  .ant-modal-footer {
+    .ant-btn.ant-btn-primary {
+      width: 70px;
+    }
+  }
+}

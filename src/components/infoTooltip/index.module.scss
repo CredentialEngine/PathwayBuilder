@@ -1,0 +1,71 @@
+@import '../../styles/core.scss';
+
+.infoTooltipContainer {
+  line-height: 1.2rem;
+  font-family: $app-font-primary;
+  width: 260px;
+  position: absolute;
+  right: 420px;
+  margin-top: -20px;
+
+  .arrow {
+    width: 40px;
+    height: 20px;
+    border-left: 14px solid rgba(242, 213, 194, 1);
+    position: absolute;
+    top: 70px;
+    left: 290px;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+  }
+
+  .buttonContainer {
+    position: relative;
+    top: 32px;
+    left: 260px;
+    width: 20px;
+    cursor: pointer;
+  }
+
+  .tooltipContent {
+    height: 120px;
+    width: 260px;
+    background-color: #f2d5c2;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 30px;
+    box-shadow: 6px 6px 10px #00000029;
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+  .title {
+    margin-top: 10px;
+    margin-left: 4px;
+    margin-right: 30px;
+    font-weight: 900;
+    font-size: 14px;
+  }
+
+  .content {
+    margin-top: 0px;
+    margin-left: 4px;
+    margin-right: 10px;
+  }
+}
+
+.isDestination {
+  right: 424px;
+}
+
+.isFirst {
+  right: -170px;
+  top: 66px;
+}
+.direction {
+  right: -170px;
+  .arrow {
+    left: -9px;
+    transform: rotate(180deg);
+  }
+}

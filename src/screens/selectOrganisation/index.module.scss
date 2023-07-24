@@ -1,0 +1,25 @@
+@import '../../styles/core.scss';
+@import '../../styles/global.scss';
+
+.selectOrganisationWrapper {
+  display: flex;
+}
+.dropdown {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 40px;
+
+  > span {
+    margin-right: 16px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+}
+:global {
+  .ant-modal-footer {
+    .ant-btn.ant-btn-primary {
+      width: 70px;
+    }
+  }
+}

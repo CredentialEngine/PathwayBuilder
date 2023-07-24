@@ -1,0 +1,76 @@
+@import '../../styles/global.scss';
+
+.cardwrapper {
+  margin-bottom: 15px;
+  p {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: $primary-dark;
+    word-break: break-word;
+  }
+  h5 {
+    font-size: 12px;
+    color: $primary-dark;
+    margin-bottom: 0;
+  }
+  :global {
+    .ant-card {
+      margin-bottom: 15px;
+    }
+    .ant-card-body {
+      background: #ffffff 0% 0% no-repeat padding-box;
+      border: 1px solid $inactive3;
+      border-radius: 6px;
+      padding: 10px 12px 8px;
+    }
+    .assessmentCard,
+    .iconwrapper {
+      background-color: #00a0ff;
+    }
+    .basicCard,
+    .iconwrapper {
+      background-color: #eca140;
+    }
+    .cocurricularCard,
+    .iconwrapper {
+      background-color: #4ee5e1;
+    }
+    .competencyCard,
+    .iconwrapper {
+      background-color: #8494a0;
+    }
+    .courseCard,
+    .iconwrapper {
+      background-color: #996c48;
+    }
+    .credentialCard,
+    .iconwrapper {
+      background-color: #d3f8f7;
+    }
+    .extraCurricularCard,
+    .iconwrapper {
+      background-color: #e6eaec;
+    }
+    .jobCard,
+    .iconwrapper {
+      background-color: #a7c7e7;
+    }
+    .workExperienceCard,
+    .iconwrapper {
+      background-color: #17609a;
+    }
+  }
+  .iconwrapper {
+    font-size: 19px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    width: max-content;
+    padding: 7px;
+    margin-top: 2px;
+    min-width: 35px;
+  }
+  .image {
+    background-color: #00a0ff;
+  }
+}

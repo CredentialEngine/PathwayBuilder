@@ -1,0 +1,118 @@
+@import '../../styles/global.scss';
+
+.drawerheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  h1 {
+    margin: 0;
+    text-align: center;
+    font-size: 16px;
+    color: $primary-dark;
+  }
+  span {
+    text-align: center;
+    font-size: 12px;
+    color: $primary-dark;
+  }
+}
+.drawercontroller {
+  display: block;
+  :global {
+    .tabBar {
+      border: 1px solid $inactive1;
+      border-radius: $button-radius;
+      color: $primary-dark;
+      padding: 2px 8px;
+      text-align: center;
+      flex: 1 0;
+      margin-right: 10px;
+      cursor: pointer;
+      &:hover {
+        background-color: $inactive-outline-btn;
+        border: 1px solid $primary-dark;
+        color: $primary-dark;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .active {
+      background-color: $primary-dark;
+      color: $white-color;
+      border-radius: $button-radius;
+      border: 1px solid $primary-dark;
+      color: $white-color !important;
+      padding: 5px 16px;
+      &:hover {
+        background-color: $primary !important;
+      }
+    }
+  }
+}
+.cardwrapper {
+  height: calc(110vh - 330px);
+  overflow-y: auto;
+  padding-right: 5px;
+  :global {
+    .ant-card-body {
+      margin-bottom: 15px;
+    }
+    .ant-card-bordered {
+      border: none;
+    }
+  }
+}
+.flexGrowCenter {
+  @include flexSpaceBetween;
+  & > div {
+    flex-grow: 1;
+  }
+}
+.iconCircle {
+  border: 2px solid $selection;
+  background-color: $selection;
+  border-radius: 50%;
+  height: 21px;
+  min-width: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+  svg {
+    fill: black !important;
+  }
+}
+
+.tooltipContent {
+  background-color: #ffd263;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  padding: 10px;
+}
+.title {
+  margin-left: 4px;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.content {
+  margin-top: 0px;
+  margin-left: 4px;
+  margin-right: 10px;
+}
+
+.contentLink {
+  margin-top: 0px;
+  margin-left: 4px;
+  margin-right: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.PreSelectComponents {
+  background: $inactive4 0% 0% no-repeat padding-box;
+  border-radius: 6px;
+  padding: 10px;
+}

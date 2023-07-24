@@ -1,0 +1,85 @@
+@import './styles/core.scss';
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-dark;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $primary-dark;
+}
+// global
+.flex {
+  display: flex;
+}
+.flex > * {
+  margin-right: 15px;
+}
+.btn-grp {
+  display: flex;
+}
+.btn-grp > * {
+  margin: 0 10px;
+}
+.btn-grp > *:first-child {
+  margin-left: 0;
+}
+.tipicon {
+  color: $selection;
+  background: black;
+  border-radius: 100%;
+  font-size: 15px;
+}
+.logowrapper {
+  min-width: 278px;
+}
+.headerright {
+  padding: 10px 17px;
+}
+.error {
+  color: red;
+}
+.archerContainer div {
+  display: block;
+}
+.d-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.zoom-tools {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
+}
+.react-transform-wrapper {
+  width: 100% !important;
+}
+.componentIcon {
+  width: 20px;
+  height: 20px;
+}

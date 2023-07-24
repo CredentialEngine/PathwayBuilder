@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\public",
+    "\\src",
+    "\\src\\components",
+    "\\src\\components\\card",
+    "\\src\\screens",
+    "\\src\\screens\\addComponent",
+    "\\src\\screens\\addComponent\\constraint",
+    "\\src\\styles"
+  ],
+  "SelectedNode": "\\src\\App.tsx",
+  "PreviewInSolutionExplorer": false
+}

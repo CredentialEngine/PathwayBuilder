@@ -1,0 +1,46 @@
+@import '../../styles/core.scss';
+@import '../../styles/global.scss';
+
+.addPathwayForm {
+  :global {
+    .ant-checkbox-wrapper {
+      span:last-child {
+        font-weight: normal;
+        font-size: 13px;
+        color: $primary-dark;
+      }
+    }
+    .ant-select-selection-overflow-item {
+      white-space: nowrap;
+      overflow: hidden;
+      .ant-tag {
+        background-color: $selection;
+        border-radius: 15px;
+        color: $black;
+        margin: 1px;
+      }
+    }
+    .ant-form-item-control-input input[disabled] {
+      color: black;
+    }
+    .ant-form-item-control-input-content input[disabled] {
+      color: black;
+    }
+  }
+  .divider {
+    border-top: 1px solid $inactive1;
+    margin: 14px 0;
+  }
+
+  .content {
+    white-space: pre;
+    flex: auto;
+    flex-wrap: wrap;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  a {
+    font-size: 12px;
+  }
+}

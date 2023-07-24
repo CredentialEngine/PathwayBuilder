@@ -1,0 +1,9 @@
+.mainContainer {
+  background-color: #777777;
+  top: 62px; /* as the height of the other div is 30px */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: calc(100vh - 70px);
+  position: relative;
+}

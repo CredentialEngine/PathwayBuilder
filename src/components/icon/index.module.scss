@@ -1,0 +1,27 @@
+@import '../../styles/core.scss';
+
+.icon {
+  display: inline-block;
+  color: inherit;
+  text-align: center;
+  text-transform: none;
+  line-height: 0;
+  text-rendering: optimizeLegibility;
+}
+
+// color
+.blue1 {
+  color: $primary;
+}
+
+.white {
+  color: $white-color;
+}
+
+.grey6 {
+  color: #8494a0;
+}
+
+.red4 {
+  color: $gold;
+}

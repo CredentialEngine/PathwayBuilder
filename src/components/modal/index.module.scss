@@ -1,0 +1,114 @@
+@import '../../styles/core.scss';
+
+$disabled-opacity: 0.51;
+.modal {
+  :global {
+    .ant-modal-wrap {
+      z-index: 1000;
+    }
+
+    .ant-modal-wrap {
+      position: fixed;
+      inset: 0;
+      overflow: auto;
+      outline: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ant-modal-header,
+    .ant-modal-footer {
+      border: none;
+      padding: 0;
+    }
+    .ant-modal-header {
+      margin-bottom: 10px;
+    }
+    .ant-modal-footer {
+      padding-top: 15px;
+      text-align: left;
+    }
+    .ant-modal-body {
+      padding: 0;
+      margin-top: 8px;
+      font: normal normal normal 14px/18px IBM Plex Sans;
+      letter-spacing: 0px;
+      color: #0a2942;
+    }
+
+    .ant-modal-content {
+      border-radius: 10px;
+      box-shadow: 0px -1px 4px 0px #8494a0;
+      padding: 24px;
+      border: 3px solid $selection;
+    }
+
+    .ant-modal-confirm-title,
+    .ant-modal-title {
+      font-size: 18px;
+      font-weight: $bold;
+    }
+
+    .ant-modal-confirm-content,
+    .ant-modal-body {
+      color: $black;
+    }
+
+    .ant-modal-body {
+      margin-top: 8px;
+    }
+
+    .ant-btn {
+      min-width: 50px;
+    }
+    .ant-modal-header,
+    .ant-modal-footer {
+      border: none;
+      padding: 0;
+    }
+    .ant-btn-primary {
+      margin-left: 16px !important;
+      font-size: 14px;
+      background-color: $primary-dark;
+      color: $white-color;
+      border-radius: $button-radius;
+      border: 1px solid $primary-dark;
+      &:hover,
+      &:focus,
+      &:active {
+        height: 32px;
+        background-color: $primary;
+      }
+      &:disabled {
+        background-color: $inactive1;
+        opacity: $opacity;
+        color: $white-color;
+        cursor: not-allowed;
+        border-color: $inactive1;
+      }
+    }
+
+    .ant-btn-ghost {
+      font-size: 14px;
+      background-color: $white-color;
+      color: $primary-dark;
+      font-weight: 600;
+      border-radius: $button-radius;
+      border: 1px solid $primary-dark;
+      padding: 6px 16px;
+      line-height: 1;
+      span {
+        color: $primary;
+      }
+      &:hover {
+        background-color: $inactive-outline-btn;
+        border: 1px solid $primary-dark;
+        color: $primary-dark;
+      }
+      &:disabled {
+        opacity: 0.5;
+        border: 1px solid #8494a0;
+        background: #8494a0;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

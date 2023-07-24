@@ -1,0 +1,162 @@
+@import '../../styles/core.scss';
+@import '../../styles/global.scss';
+
+@mixin buttonSpecification {
+  height: 36px;
+  margin: 0 10px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.saveButtonSpecification {
+  width: 90px;
+  border: 1px solid $selection;
+  background-color: $selection;
+  color: $primary-dark;
+  @include buttonSpecification;
+}
+
+.approveButtonSpecification {
+  @include buttonSpecification;
+}
+
+.publishButtonSpecification {
+  border: none;
+  @include buttonSpecification;
+  color: $primary-dark;
+}
+
+.container {
+  display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 200;
+  height: 62px;
+}
+
+.productImgLayout {
+  background: $primary-dark 0% 0% no-repeat padding-box;
+  display: flex;
+  padding: 0 5px 0 10px;
+  & > img {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+@mixin displayFlex {
+  display: flex;
+  flex-direction: column;
+}
+
+.createNewContainer {
+  @include displayFlex;
+  padding: 0 5px 0 10px;
+}
+
+.titleContainer {
+  @include displayFlex();
+  margin-left: 15px;
+}
+
+.newPathway {
+  color: $selection;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.foundation {
+  font-size: 13px;
+  color: $selection;
+}
+
+.titleDescriptionContainer {
+  display: flex;
+  flex-direction: row;
+  width: calc(100% - 278px);
+  background: #edfcfc 0% 0% no-repeat padding-box;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: bold;
+  color: $primary-dark;
+  cursor: pointer;
+}
+
+.editPathway {
+  color: $primary-dark;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  background-color: rgb(78, 229, 225);
+  width: fit-content;
+  border-radius: 4px;
+}
+
+.helpContainer {
+  display: flex;
+  align-items: center;
+  background-color: $primary-dark;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.imgDimensions {
+  font-size: 32px;
+  color: $white-color;
+}
+
+.conflictComponent {
+  display: flex;
+  justify-content: space-between;
+  background-color: $gray-back;
+  align-items: center;
+  padding: 10px;
+}
+
+.headerCenter {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.saveButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 10px;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  justify-content: space-between;
+  background-color: #c0d2d7;
+  align-items: center;
+  padding: 10px;
+}
+.dropdownButton {
+  @include buttonSpecification;
+}
+.dropdownOptions {
+  padding: 8px 16px;
+  position: absolute;
+  text-align: center;
+  background-color: white;
+  display: none;
+  font-size: 14px;
+}
+.dropdownOption {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.dropdown:hover .dropdownOptions {
+  display: block;
+}
+.dropdownOption:hover {
+  background-color: #4ee5e1;
+}
