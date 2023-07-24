@@ -14,7 +14,7 @@ import Modal from '../../components/modal';
 
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
-import SelectExistingComponents from '../../screens/selectExistingComponents';
+//import SelectExistingComponents from '../../screens/selectExistingComponents';
 import {
   saveDataForPathwayRequest,
   updateMappedDataRequest,
@@ -49,13 +49,12 @@ const LeftPanel: React.FC<any> = ({
   // const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
     useState(false);
-  const [isSelectedExistingVisible, setIsSelectedExistingVisible] =
-    useState(false);
-  const [isExisting, setIsExisting] = useState(false);
+  // const [isSelectedExistingVisible, setIsSelectedExistingVisible] =useState(false);
+  //const [isExisting, setIsExisting] = useState(false);
   const [droppedCard, setDroppedCard] = useState<any>();
 
   const dispatch = useDispatch();
-  const updatedPathwayWrapper = { ...result.mappedData };
+  //const updatedPathwayWrapper = { ...result.mappedData };
 
   // useEffect(() => {
   //   isDraggableCardVisibleMethod(isDraggableCardVisible);
@@ -260,9 +259,9 @@ const LeftPanel: React.FC<any> = ({
     setSearchValue(value.target.value);
   };
 
-  const searchComponentsInvisible = () => {
-    setIsSelectedExistingVisible(isExisting);
-  };
+  // const searchComponentsInvisible = () => {
+  //   setIsSelectedExistingVisible(isExisting);
+  // };
   const onDropHandler = (
     tab: string,
     card: any,
@@ -618,7 +617,7 @@ const LeftPanel: React.FC<any> = ({
           isVisible={(value: any) => setShowAddComponentToPathway(value)}
         />
       </Modal>
-      {isSelectedExistingVisible && (
+      {/* {isSelectedExistingVisible && (
         <Modal
           visible={true}
           //width="650px"
@@ -636,7 +635,7 @@ const LeftPanel: React.FC<any> = ({
             getSkipValueOfPreSelectResources={setIsExisting}
           />
         </Modal>
-      )}
+      )} */}
     </div>
   );
 };
