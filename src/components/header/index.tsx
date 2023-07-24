@@ -5,6 +5,7 @@ import { Col, Row } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { FINDER_URL } from '../../apiConfig/endpoint';
 import { TEMP_BASE_URL, IS_LOCALHOST } from '../../apiConfig/setting';
 
 import Logo from '../../assets/images/pathwayBuilderLogo.svg';
@@ -69,7 +70,7 @@ const Header = (props: Props) => {
     // window.print();
   };
   const handleCopy = () => {
-    const currentURL = window.location.href;
+    const currentURL = FINDER_URL + pathwayWrapper?.Pathway?.CTID;
     navigator.clipboard.writeText(currentURL);
     Message({
       description: 'Share URL has been copied to the clipboard.',

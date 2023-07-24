@@ -177,7 +177,7 @@ const HelpAddingComponent: React.FC = () => (
         <br />
         <ReactPlayer
           className={Styles.player}
-          url="https://youtu.be/qedR5enJ7cM"
+          url="https://www.youtube.com/playlist?list=PLGIuhTYIrqoTPmx2VxxzVnvErSP2-7Gjm"
           controls
         />
       </Col>
