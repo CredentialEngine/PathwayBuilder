@@ -14,7 +14,7 @@ import Modal from '../../components/modal';
 
 import AddComponentToPathway from '../../screens/addComponentToPathway';
 
-//import SelectExistingComponents from '../../screens/selectExistingComponents';
+import SelectExistingComponents from '../../screens/selectExistingComponents';
 import {
   saveDataForPathwayRequest,
   updateMappedDataRequest,
@@ -49,12 +49,13 @@ const LeftPanel: React.FC<any> = ({
   // const [isDraggableCardVisible, setDraggableCardVisible] = useState(false);
   const [showAddComponentToPathway, setShowAddComponentToPathway] =
     useState(false);
-  // const [isSelectedExistingVisible, setIsSelectedExistingVisible] =useState(false);
-  //const [isExisting, setIsExisting] = useState(false);
+  const [isSelectedExistingVisible, setIsSelectedExistingVisible] =
+    useState(false);
+  const [isExisting, setIsExisting] = useState(false);
   const [droppedCard, setDroppedCard] = useState<any>();
 
   const dispatch = useDispatch();
-  //const updatedPathwayWrapper = { ...result.mappedData };
+  const updatedPathwayWrapper = { ...result.mappedData };
 
   // useEffect(() => {
   //   isDraggableCardVisibleMethod(isDraggableCardVisible);
@@ -63,6 +64,7 @@ const LeftPanel: React.FC<any> = ({
   const allComponentTabCards = useSelector(
     (state: any) => state.leftPanelReducer.allLeftPathwayComponent
   );
+
   const [selectedTabCards, setSelectedtabCards] =
     useState<any>(selectedTabCardData);
   const [selectedPathwayComponents, setSelectedPathwayComponents] =
@@ -207,13 +209,20 @@ const LeftPanel: React.FC<any> = ({
   };
 
   useEffect(() => {
-    if (allComponentTabCards.valid)
+    if (allComponentTabCards.valid) {
+      // const updated=allComponentTabCards.data.filter(
+      //   (opt: any) =>opt.Name !== 'Collection Component'
+      // );
+      const updated = allComponentTabCards?.data?.sort((a: any, b: any) =>
+        a.Name.localeCompare(b.Name)
+      );
       setComponentTabCards(
-        allComponentTabCards.data.map((comp_data: any) => ({
+        updated.map((comp_data: any) => ({
           ...createCard(comp_data),
           Type: comp_data.URI,
         }))
       );
+    }
   }, [allComponentTabCards]);
 
   let conditionalComponent: any = [];
@@ -259,9 +268,12 @@ const LeftPanel: React.FC<any> = ({
     setSearchValue(value.target.value);
   };
 
-  // const searchComponentsInvisible = () => {
-  //   setIsSelectedExistingVisible(isExisting);
-  // };
+  const searchComponentsVisible = () => {
+    setIsSelectedExistingVisible(true);
+  };
+  const searchComponentsInvisible = () => {
+    setIsSelectedExistingVisible(isExisting);
+  };
   const onDropHandler = (
     tab: string,
     card: any,
@@ -595,16 +607,19 @@ const LeftPanel: React.FC<any> = ({
         Search Registry Resources
       </button>
       <br />
-      {/* <u
+      <br />
+      <button
         style={{
           cursor: 'pointer',
           backgroundColor: '#4ee5e1',
           borderRadius: '5px',
+          fontSize: '13px',
         }}
         onClick={searchComponentsVisible}
       >
         Search Pathway Components
-      </u> */}
+      </button>
+
       <Tab {...tabVal} />
 
       <Modal
@@ -617,14 +632,14 @@ const LeftPanel: React.FC<any> = ({
           isVisible={(value: any) => setShowAddComponentToPathway(value)}
         />
       </Modal>
-      {/* {isSelectedExistingVisible && (
+      {isSelectedExistingVisible && (
         <Modal
           visible={true}
           //width="650px"
           width="50vw"
           footer={[]}
           onCancel={searchComponentsInvisible}
-          title="Link to a component from another pathway "
+          title="Search for Components in another Pathway "
         >
           <SelectExistingComponents
             setIsSelectedExistingVisible={setIsSelectedExistingVisible}
@@ -635,7 +650,7 @@ const LeftPanel: React.FC<any> = ({
             getSkipValueOfPreSelectResources={setIsExisting}
           />
         </Modal>
-      )} */}
+      )}
     </div>
   );
 };

@@ -6,20 +6,19 @@ export const localSetting = {
 export const sanboxSetting = {
   api: {
     //url:'https://sandbox.credentialengine.org/finderApi/'
-    // url:'https://localhost:44356/',
+    //url:'https://localhost:44356/',
     // url: 'https://localhost:44330/',
     url: 'https://sandbox.credentialengine.org/publisher/',
-    url: 'https://sandbox.credentialengine.org/publisher/',
     //  url: 'https://apps.credentialengine.org/publisher/',
-    // url:'https://apps.credentialengine.org/finderApi/'
+    //url:'https://apps.credentialengine.org/finderApi/'
   },
 };
 export const productionSetting = {
   api: {
-    //  url:'https://sandbox.credentialengine.org/finderApi/'
+    //url:'https://sandbox.credentialengine.org/finderApi/'
     url: 'https://sandbox.credentialengine.org/publisher/',
     //url: 'https://apps.credentialengine.org/publisher/',
-    //url:'https://apps.credentialengine.org/finderApi/'
+    // url:'https://apps.credentialengine.org/finderApi/'
     /* for production url */
   },
 };

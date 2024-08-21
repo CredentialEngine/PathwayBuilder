@@ -38,14 +38,12 @@ export const Tab: React.FC<Props> = (props: Props) => {
 
   const [currentActiveKey, setActiveKey] = React.useState(defaultActiveKey);
   const [inkBarLeft, setInkBarLeft] = React.useState(0);
-  const [inkBarWidth, setInkBarWidth] = React.useState(0);
 
   const defaultActiveTabRef = React.useRef(null);
 
   const syncInkBarWithActiveTab = (target: HTMLDivElement) => {
-    const { offsetLeft, clientWidth } = target;
+    const { offsetLeft } = target;
     setInkBarLeft(offsetLeft);
-    setInkBarWidth(clientWidth);
   };
 
   React.useEffect(() => {
@@ -73,7 +71,7 @@ export const Tab: React.FC<Props> = (props: Props) => {
 
   const handleTabClick = (activeKey: string) => {
     setActiveKey(activeKey);
-    console.log('inkBarWidth -->', inkBarWidth);
+    //console.log('inkBarWidth -->', inkBarWidth);
     return onTabChange && onTabChange(activeKey);
   };
 

@@ -1,8 +1,17 @@
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
-import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircle,
+  faQuestion,
+  faGears,
+  faLink,
+  faGear,
+  faChevronCircleUp,
+  faChevronCircleDown,
+  faMinus,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Form, Tag, Drawer, Row } from 'antd';
+import { Form, Tag, Drawer, Row, Card } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
@@ -19,8 +28,11 @@ import {
   FINDER_URL,
 } from '../../apiConfig/endpoint';
 import { TEMP_BASE_URL } from '../../apiConfig/setting';
+import Multi from '../../assets/images/Multi.png';
+
 import Button from '../../components/button';
 import { Type } from '../../components/button/type';
+import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import Dropdown from '../../components/formFields/dropdown';
 import InputBox from '../../components/formFields/inputBox';
 import MultiSelect from '../../components/formFields/multiSelect';
@@ -34,6 +46,7 @@ import {
 import { isValidUrl } from '../../utils/object';
 
 import DebounceSelect from './debounceSelect';
+import GroupComponents from './GroupComponents';
 import Styles from './index.module.scss';
 import {
   getCredentialTypesRequest,
@@ -56,6 +69,7 @@ const EditComponent: React.FC<Props> = ({
 }) => {
   const ref = useRef(null);
   const [rightPanelData, setRightPanelData] = useState<any>();
+  const [isExternalViewMode, setExternalViewMode] = useState<boolean>(false);
   const [resourceData, setResourceData] = useState<any>({
     Name: '',
     Description: '',
@@ -333,9 +347,14 @@ const EditComponent: React.FC<Props> = ({
   const getAllCreditUnitTypes = useSelector(
     (state: any) => state.editComponent.creditUnitTypeData
   );
-
+  const [recordsToShow, setRecordsToShow] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [allCreditLevelTypes, setAllCreditLevelTypes] = useState<any>({});
   const [creditLevelType, setCreditLevelType] = useState<string>('');
+  const [isGroupComponentsModalStatus, setisGroupComponentsModalStatus] =
+    useState<boolean>(false);
+  const [showGroupComponents, setShowGroupComponents] =
+    useState<boolean>(false);
   const getAllCreditLevelTypes = useSelector(
     (state: any) => state.editComponent.creditLevelTypeData
   );
@@ -374,6 +393,9 @@ const EditComponent: React.FC<Props> = ({
           panelData?.Identifier?.[0]?.IdentifierValueCode;
         setRightPanelData(currentConditionalComponent);
       }
+    }
+    if (panelData?.IsExternalComponent) {
+      setExternalViewMode(true);
     }
   }, [panelData]);
   const extractComponentType = (type: string) => {
@@ -728,6 +750,13 @@ const EditComponent: React.FC<Props> = ({
       'noopener,noreferrer'
     );
   };
+  const openPathwayInNewTab = () => {
+    window.open(
+      FINDER_URL + rightPanelData?.FromExternalPathway?.CTID,
+      '_blank',
+      'noopener,noreferrer'
+    );
+  };
   const onShowCloseToolTip = (type: any, visibility: boolean) => {
     const toolTipArray =
       toolTip &&
@@ -751,6 +780,24 @@ const EditComponent: React.FC<Props> = ({
   //       )
   //   }
   // }, [rightPanelData,resourceData]);
+
+  const UnSelectSelectedItem = (CTID: string) => {
+    const updatedProxyForList = [...(rightPanelData?.ProxyForList || [])];
+    const itemIndex = updatedProxyForList.findIndex(
+      (item) => item.CTID === CTID
+    );
+
+    updatedProxyForList.splice(itemIndex, 1);
+
+    rightPanelData.ProxyForList = updatedProxyForList;
+
+    const startIndex = (currentPage - 1) * RecordsPerPage;
+    const endIndex = startIndex + RecordsPerPage;
+    const updatedRecordsToShow =
+      rightPanelData.ProxyForList?.slice(startIndex, endIndex) || [];
+
+    setRecordsToShow(updatedRecordsToShow);
+  };
 
   useEffect(() => {
     if (getAllCredentialTypes.valid)
@@ -866,6 +913,22 @@ const EditComponent: React.FC<Props> = ({
     setResourceData(updatedResource);
     setRightPanelData(updatedData);
   };
+  const RecordsPerPage = 10;
+  const totalRecords = rightPanelData?.ProxyForList?.length || 0;
+  const totalPages = Math.ceil(totalRecords / RecordsPerPage);
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * RecordsPerPage;
+    const endIndex = startIndex + RecordsPerPage;
+    const updatedRecordsToShow =
+      rightPanelData?.ProxyForList?.slice(startIndex, endIndex) || [];
+    setRecordsToShow(updatedRecordsToShow);
+  }, [currentPage, rightPanelData]);
+
+  const handlePageChange = (newPage: any) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const onSelectChangeHandler = (e: any, name: string) => {
     const updatedData = { ...rightPanelData };
@@ -917,7 +980,11 @@ const EditComponent: React.FC<Props> = ({
       <div ref={ref} className={Styles.rightPanelContainer}>
         <Form>
           <Row>
-            <h2>Edit Component</h2>
+            <h2>
+              {isViewMode || isExternalViewMode
+                ? 'View Component'
+                : 'Edit Component'}
+            </h2>
             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
             <Button
               style={{ float: 'right', background: 'White', border: 'none' }}
@@ -930,7 +997,158 @@ const EditComponent: React.FC<Props> = ({
             <Row className={Styles.topRow}>
               <Row>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
-                  {rightPanelData?.Type?.toLowerCase().includes(
+                  {(rightPanelData?.IsExternalComponent && (
+                    <FontAwesomeIcon
+                      style={{ height: '26px', width: '26px' }}
+                      icon={faLink}
+                    />
+                  )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'AssessmentComponent'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' assessmentCard'}>
+                        <img
+                          src={`${GET_ICON_URL}AssessmentComponent.png`}
+                          alt="AssessmentComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'BasicComponent'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' basicCard'}>
+                        <img
+                          src={`${GET_ICON_URL}BasicComponent.png`}
+                          alt="BasicComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'CocurricularComponent'.toLowerCase()
+                    ) && (
+                      <span
+                        className={Styles.iconwrapper + ' cocurricularCard'}
+                      >
+                        <img
+                          src={`${GET_ICON_URL}CocurricularComponent.png`}
+                          alt="CocurricularComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'CompetencyComponent'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' competencyCard'}>
+                        <img
+                          src={`${GET_ICON_URL}CompetencyComponent.png`}
+                          alt="CompetencyComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'CourseComponent'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' courseCard'}>
+                        <img
+                          src={`${GET_ICON_URL}CourseComponent.png`}
+                          alt="CourseComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'ExtracurricularComponent'.toLowerCase()
+                    ) && (
+                      <span
+                        className={Styles.iconwrapper + ' extraCurricularCard'}
+                      >
+                        <img
+                          src={`${GET_ICON_URL}ExtracurricularComponent.png`}
+                          alt="ExtracurricularComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'JobComponent'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' jobCard'}>
+                        <img
+                          src={`${GET_ICON_URL}JobComponent.png`}
+                          alt="JobComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'WorkExperienceComponent'.toLowerCase()
+                    ) && (
+                      <span
+                        className={Styles.iconwrapper + ' workExperienceCard'}
+                      >
+                        <img
+                          src={`${GET_ICON_URL}WorkExperienceComponent.png`}
+                          alt="WorkExperienceComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'CredentialComponent'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' credentialCard'}>
+                        <img
+                          src={`${GET_ICON_URL}CredentialComponent.png`}
+                          alt="CredentialComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'ComponentCondition'.toLowerCase()
+                    ) && (
+                      <img
+                        src={`${GET_ICON_URL}ComponentCondition.png`}
+                        alt="ComponentCondition"
+                        className="componentIcon"
+                      />
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'selection'.toLowerCase()
+                    ) && (
+                      <img
+                        src={`${GET_ICON_URL}SelectionCondition.png`}
+                        alt="SelectionCondition"
+                        className="componentIcon"
+                      />
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'collection'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' collectionCard'}>
+                        <FontAwesomeIcon
+                          style={{ height: '26px', width: '26px' }}
+                          icon={faGears}
+                        />
+                      </span>
+                    )) ||
+                    (rightPanelData?.Type?.toLowerCase().includes(
+                      'multi'.toLowerCase()
+                    ) && (
+                      <span className={Styles.iconwrapper + ' multiCard'}>
+                        <img
+                          src={Multi}
+                          alt="MultiComponent"
+                          className="componentIcon"
+                        />
+                      </span>
+                    ))}
+
+                  {/* {rightPanelData?.Type?.toLowerCase().includes(
                     'credential'.toLowerCase()
                   ) && (
                     <span className={Styles.iconwrapper + ' credentialCard'}>
@@ -1045,9 +1263,37 @@ const EditComponent: React.FC<Props> = ({
                       />
                     </span>
                   )}
+                   {rightPanelData?.Type?.toLowerCase().includes(
+                    'Collection'.toLowerCase()
+                  ) && (
+                    <span className={Styles.iconwrapper + ' customicon'}>
+                   <FontAwesomeIcon
+                  style={{ height: '26px', width: '26px' }}
+                  icon={faGears}
+                />
+                </span>
+                  )}
+                  {rightPanelData?.IsExternalComponent
+                   && (
+                    <span className={Styles.iconwrapper + ' customicon'}>
+                   <FontAwesomeIcon
+                  style={{ height: '26px', width: '26px' }}
+                  icon={faLink}
+                />
+                </span> 
+                  )}*/}
                   <h1 className={Styles.name}>
-                    {rightPanelData &&
-                      extractComponentType(rightPanelData?.Type)}
+                    {rightPanelData && rightPanelData?.IsExternalComponent
+                      ? 'External ' +
+                        extractComponentType(rightPanelData?.Type)?.replace(
+                          'Component',
+                          ' Component'
+                        )
+                      : '' +
+                        extractComponentType(rightPanelData?.Type)?.replace(
+                          'Component',
+                          ' Component'
+                        )}
                   </h1>
                 </div>
                 <span>&emsp;&emsp;&emsp;{rightPanelData?.CTID}</span>
@@ -1060,7 +1306,8 @@ const EditComponent: React.FC<Props> = ({
             extractComponentType(rightPanelData?.Type) ==
               'AssessmentComponent') &&
           rightPanelData?.FinderResource == null &&
-          !isViewMode ? (
+          !isViewMode &&
+          !isExternalViewMode ? (
             <>
               <label className="toggle-slider">
                 <input
@@ -1077,7 +1324,12 @@ const EditComponent: React.FC<Props> = ({
           ) : (
             ''
           )}
-          {isViewMode ? (
+          {!isViewMode && !isExternalViewMode && (
+            <span style={{ color: 'rgb(255, 77, 79)' }}>
+              * Indicates Required Fields
+            </span>
+          )}
+          {isViewMode || isExternalViewMode ? (
             rightPanelData?.Name !== null && (
               <Form.Item
                 label="Name"
@@ -1123,14 +1375,19 @@ const EditComponent: React.FC<Props> = ({
           )}
           {extractComponentType(rightPanelData?.Type) ==
           'CredentialComponent' ? (
-            isViewMode ? (
+            isViewMode || isExternalViewMode ? (
               rightPanelData?.CredentialType !== null && (
                 <Form.Item
                   label="Credential Type"
                   wrapperCol={{ span: 24 }}
                   labelCol={{ span: 24 }}
                 >
-                  {credentialType}
+                  {rightPanelData?.IsExternalComponent
+                    ? credentialType
+                        ?.split(':')[1]
+                        ?.replace('//purl.org/ctdl/terms/', '') ??
+                      credentialType
+                    : credentialType}
                 </Form.Item>
               )
             ) : (
@@ -1165,7 +1422,7 @@ const EditComponent: React.FC<Props> = ({
           ) : (
             ''
           )}
-          {isViewMode ? (
+          {isViewMode || isExternalViewMode ? (
             rightPanelData?.Description !== null &&
             rightPanelData?.Description !== '' && (
               <Form.Item
@@ -1209,8 +1466,9 @@ const EditComponent: React.FC<Props> = ({
                 .isVisible && customToolTip('Description')}
             </Form.Item>
           )}
-          {isViewMode ? (
-            rightPanelData?.SubjectWebpage !== null && (
+          {isViewMode || isExternalViewMode ? (
+            rightPanelData?.SubjectWebpage !== null &&
+            rightPanelData?.SubjectWebpage !== '' && (
               <Form.Item
                 label="SubjectWebpage"
                 wrapperCol={{ span: 24 }}
@@ -1424,7 +1682,7 @@ const EditComponent: React.FC<Props> = ({
             'ExtraCurricularComponent' ||
           extractComponentType(rightPanelData?.Type) ==
             'CocurricularComponent' ? (
-            isViewMode ? (
+            isViewMode || isExternalViewMode ? (
               rightPanelData?.ComponentCategory !== null && (
                 <Form.Item
                   label="Component Category"
@@ -1457,7 +1715,7 @@ const EditComponent: React.FC<Props> = ({
           ) : (
             ''
           )}
-          {isViewMode ? (
+          {isViewMode || isExternalViewMode ? (
             rightPanelData?.ComponentDesignation.length > 0 && (
               <Form.Item
                 label="Component Designation"
@@ -1494,7 +1752,7 @@ const EditComponent: React.FC<Props> = ({
           )}
 
           {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
-            isViewMode ? (
+            isViewMode || isExternalViewMode ? (
               rightPanelData?.IndustryType.length > 0 && (
                 <Form.Item
                   label="Industry Type"
@@ -1533,7 +1791,7 @@ const EditComponent: React.FC<Props> = ({
           )}
 
           {extractComponentType(rightPanelData?.Type) == 'JobComponent' ? (
-            isViewMode ? (
+            isViewMode || isExternalViewMode ? (
               rightPanelData?.OccupationType.length > 0 && (
                 <Form.Item
                   label="Occupation Type"
@@ -1575,7 +1833,8 @@ const EditComponent: React.FC<Props> = ({
           {extractComponentType(rightPanelData?.Type) == 'CourseComponent'
             ? rightPanelData?.CreditValue?.[0]?.Value == undefined &&
               rightPanelData?.FinderResource == undefined
-              ? !isViewMode && (
+              ? !isViewMode &&
+                !isExternalViewMode && (
                   <u
                     style={{ cursor: 'pointer' }}
                     onClick={() => setVisible(!visibleCreditValue)}
@@ -1592,7 +1851,8 @@ const EditComponent: React.FC<Props> = ({
             }
           >
             <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
-            {isViewMode && rightPanelData?.CreditValue?.[0]?.Value !== null ? (
+            {(isViewMode || isExternalViewMode) &&
+            rightPanelData?.CreditValue?.[0]?.Value !== null ? (
               <>
                 <Form.Item
                   label="Credit Unit Type"
@@ -1681,7 +1941,8 @@ const EditComponent: React.FC<Props> = ({
           </div>
 
           {rightPanelData?.Identifier?.[0] == undefined
-            ? !isViewMode && (
+            ? !isViewMode &&
+              !isExternalViewMode && (
                 <u
                   style={{ cursor: 'pointer' }}
                   onClick={() => setVisibleIdentifier(!visibleIdentfier)}
@@ -1694,7 +1955,8 @@ const EditComponent: React.FC<Props> = ({
             className={visibleIdentfier ? 'element-visible' : 'element-hidden'}
           >
             <style>{`.element-visible { display: block }.element-hidden { display: none }`}</style>
-            {isViewMode && rightPanelData?.Identifier?.[0] !== null ? (
+            {(isViewMode || isExternalViewMode) &&
+            rightPanelData?.Identifier?.[0] !== null ? (
               <>
                 <Form.Item
                   label="Identifier Type"
@@ -1775,7 +2037,115 @@ const EditComponent: React.FC<Props> = ({
               </>
             )}
           </div>
-          {isViewMode ? (
+
+          {extractComponentType(rightPanelData?.Type) == 'MultiComponent'
+            ? !isViewMode && (
+                <>
+                  <br />
+                  <a
+                    onClick={() => setisGroupComponentsModalStatus(true)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <b>Group Components to make a Multi Component </b>
+                  </a>
+                </>
+              )
+            : ''}
+
+          {extractComponentType(rightPanelData?.Type) == 'MultiComponent' ? (
+            <>
+              <Form.Item
+                label="No of resources this component represents"
+                wrapperCol={{ span: 16 }}
+                labelCol={{ span: 16 }}
+              >
+                {rightPanelData?.ProxyForList?.length || 0}
+              </Form.Item>
+              {rightPanelData?.ProxyForList?.length > 0 && (
+                <u onClick={() => setShowGroupComponents(!showGroupComponents)}>
+                  {!showGroupComponents
+                    ? 'View Selected Components'
+                    : 'Hide  Selected Components'}
+                  {showGroupComponents ? (
+                    <FontAwesomeIcon
+                      icon={faChevronCircleUp}
+                      className={Styles.iconPrimary}
+                    ></FontAwesomeIcon>
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faChevronCircleDown}
+                      className={Styles.iconPrimary}
+                    ></FontAwesomeIcon>
+                  )}
+                </u>
+              )}
+              {showGroupComponents && (
+                <>
+                  <Card className="customacardstyle">
+                    <div className={Styles.cardwrapper}>
+                      {recordsToShow?.map((select_resource: any, i: number) => (
+                        <div className={Styles.flexGrowCenter} key={i}>
+                          <CardWithLeftIcon
+                            draggable={true}
+                            data={select_resource}
+                            key={i}
+                            name={select_resource.Name}
+                            type={select_resource.Type}
+                            description={select_resource.Description?.slice(
+                              0,
+                              30
+                            )}
+                            IconName={faGear}
+                            IconColor="black"
+                          />
+                          {!isViewMode && (
+                            <span
+                              className={Styles.iconCircle}
+                              onClick={() =>
+                                UnSelectSelectedItem(select_resource.CTID)
+                              }
+                            >
+                              <FontAwesomeIcon icon={faMinus} />
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                  <br />
+                  {rightPanelData?.ProxyForList?.length > 10 && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Button
+                        size="small"
+                        text="Previous"
+                        type="primary"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      />
+                      <span>
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <Button
+                        type={Type.PRIMARY}
+                        size="small"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        key="Next"
+                        text="Next"
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          ) : (
+            ''
+          )}
+          {isViewMode || isExternalViewMode ? (
             rightPanelData?.FinderResource !== null && (
               <Form.Item>
                 <Button
@@ -1798,6 +2168,18 @@ const EditComponent: React.FC<Props> = ({
           ) : (
             ''
           )}
+          {isExternalViewMode
+            ? rightPanelData?.FromExternalPathway !== null && (
+                <Form.Item>
+                  <Button
+                    className={Styles.button}
+                    onClick={openPathwayInNewTab}
+                    type={Type.LINK}
+                    text="View the External Pathway"
+                  />
+                </Form.Item>
+              )
+            : ''}
           <hr />
           <div
             style={{
@@ -1806,7 +2188,7 @@ const EditComponent: React.FC<Props> = ({
               justifyContent: 'space-between',
             }}
           >
-            {!isViewMode && (
+            {!isViewMode && !isExternalViewMode && (
               <Button
                 size="medium"
                 text={isChecked ? 'Publish Resource' : 'Save Component'}
@@ -1825,6 +2207,14 @@ const EditComponent: React.FC<Props> = ({
           </div>
         </Form>
       </div>
+      {isGroupComponentsModalStatus && (
+        <GroupComponents
+          setIsPreSelectedCreateResourceVisible={
+            setisGroupComponentsModalStatus
+          }
+          panelData={rightPanelData}
+        />
+      )}
     </Drawer>
   );
 };

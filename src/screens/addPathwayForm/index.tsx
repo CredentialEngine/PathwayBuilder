@@ -1,7 +1,7 @@
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, Col, Form, Divider, Tag, Modal } from 'antd';
+import { Row, Col, Form, Divider, Tag, Modal, Select } from 'antd';
 
 import _, { noop } from 'lodash';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
@@ -14,6 +14,7 @@ import {
   SEARCH_FOR_INDUSTRICAL_PROGRAM_TYPE,
   SEARCH_FOR_INDUSTRY_TYPE,
   SEARCH_FOR_OCCUPATION_TYPE,
+  FINDER_URL,
 } from '../../apiConfig/endpoint';
 import { TEMP_BASE_URL } from '../../apiConfig/setting';
 
@@ -108,6 +109,7 @@ const AddPathwayForm: React.FC<Props> = ({
     progressionModel: false,
     conceptSchema: false,
     furtherDetails: false,
+    additionalinfo: false,
   });
 
   const [isTouched, setisTouched] = useState({
@@ -176,12 +178,15 @@ const AddPathwayForm: React.FC<Props> = ({
       },
     ],
   });
-
+  const [errors, setErrors] = useState({ Description: '' });
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const savePathwayResult = useSelector(
     (state: any) => state?.initalReducer?.savePathway
   );
-
+  const openSupportServicesInNewTab = (ctid: any) => {
+    debugger;
+    window.open(FINDER_URL + ctid, '_blank', 'noopener,noreferrer');
+  };
   useEffect(() => {
     if (savePathwayResult.valid) {
       setIsAddPathwayFormVisible(false);
@@ -196,6 +201,10 @@ const AddPathwayForm: React.FC<Props> = ({
         })
       );
       !isEditPathwayFormVisible && setIsPreSelectedCreateResourceVisible(true);
+      const url = window.location.href;
+      const updatedUrl = url + '?Id=' + `${savePathwayResult?.PathwayId}`;
+      // Optionally, update the browser URL without reloading the page
+      window.history.pushState({}, '', updatedUrl);
     }
   }, [savePathwayResult]);
 
@@ -241,6 +250,12 @@ const AddPathwayForm: React.FC<Props> = ({
     setCheckboxvalues({
       ...checkboxValues,
       progressionModel: PathwayWrapper.Pathway?.HasProgressionModel?.length > 0,
+      additionalinfo:
+        pathwayWrapper?.mappedData?.Pathway?.PreviousVersion?.length > 0 ||
+        pathwayWrapper?.mappedData?.Pathway?.LatestVersion?.length > 0 ||
+        pathwayWrapper?.mappedData?.Pathway?.NextVersion?.length > 0 ||
+        pathwayWrapper?.mappedData?.Pathway?.VersionIdentifier?.length > 0 ||
+        pathwayWrapper?.mappedData?.Pathway?.LifeCycleStatus?.length > 0,
     });
 
     if (
@@ -323,6 +338,16 @@ const AddPathwayForm: React.FC<Props> = ({
     const updatedData = { ...addPathwayFormFields };
     const { name, value } = e.target;
     updatedData[name] = value;
+    if (name === 'Description') {
+      if (value.length <= 15) {
+        setErrors({
+          ...errors,
+          Description: 'Description must be more than 15 characters',
+        });
+      } else {
+        setErrors({ ...errors, Description: '' });
+      }
+    }
     setAddPathwayFormFields(updatedData);
   };
 
@@ -370,6 +395,7 @@ const AddPathwayForm: React.FC<Props> = ({
   };
 
   const onProgressionModelSelectHandler = (e: any) => {
+    debugger;
     const selectedProgressionModel = allProgressionModel.filter(
       (model: any) => model.Name === e
     );
@@ -377,9 +403,12 @@ const AddPathwayForm: React.FC<Props> = ({
       selectedProgressionModel,
       '0'
     ).CTID;
+    const hasTopConceptId = _.get(selectedProgressionModel, '0').HasTopConcept;
 
     const selectedProgressionLevel = allProgressionLevel.filter(
-      (level: any) => level.InProgressionModel === selectedProgressionModelCTID
+      (level: any) =>
+        level.InProgressionModel === selectedProgressionModelCTID ||
+        hasTopConceptId.includes(level.CTID)
     );
     const updatedAddPathwayWrapperFields = { ...addPathwayWrapperFields };
     updatedAddPathwayWrapperFields.ProgressionModels =
@@ -578,7 +607,7 @@ const AddPathwayForm: React.FC<Props> = ({
           (data: any) => data.Name === e.label
         );
         const indData = addPathwayFormFields?.HasSupportService ?? [];
-        const matchingItem2 = addPathwayFormFields?.HasSupportService.find(
+        const matchingItem2 = addPathwayFormFields?.HasSupportService?.find(
           (item: any) => item.label === e.label
         );
         if (matchingItem2 == undefined) {
@@ -724,7 +753,11 @@ const AddPathwayForm: React.FC<Props> = ({
       );
     }
   };
-
+  const handleLifeCycleStatusChange = (value: any) => {
+    const updatedData = { ...addPathwayFormFields };
+    updatedData.LifeCycleStatusType = value;
+    setAddPathwayFormFields(updatedData);
+  };
   const customToolTipIcon = (type: any) => (
     <span
       className={styles.iconSpacing}
@@ -862,8 +895,8 @@ const AddPathwayForm: React.FC<Props> = ({
   const supportservices = addPathwayFormFields?.HasSupportService?.map(
     (obj: any) => obj.Name
   );
-  const supportServiceslist = addPathwayFormFields?.HasSupportService?.map(
-    (obj: any) => obj.Name
+  const supportServicesList = addPathwayFormFields?.HasSupportService?.map(
+    (obj: any) => ({ Name: obj.Name, CTID: obj.CTID })
   );
 
   return (
@@ -879,6 +912,11 @@ const AddPathwayForm: React.FC<Props> = ({
               >
                 {addPathwayFormFields?.CTID}
               </Form.Item>
+            )}
+            {!isViewMode && (
+              <span style={{ color: 'rgb(255, 77, 79)' }}>
+                * Indicates Required Fields
+              </span>
             )}
             {isViewMode ? (
               addPathwayFormFields?.Name !== null && (
@@ -961,6 +999,9 @@ const AddPathwayForm: React.FC<Props> = ({
                       : setisTouched({ ...isTouched, Description: true })
                   }
                 />
+                {errors.Description && (
+                  <p style={{ color: 'red' }}>{errors.Description}</p>
+                )}
               </Form.Item>
             )}
           </Col>
@@ -996,7 +1037,7 @@ const AddPathwayForm: React.FC<Props> = ({
                 {customToolTipIcon('Website')}
                 <InputBox
                   disabled={isViewMode}
-                  placeholder="add a URL"
+                  placeholder="Add an URL"
                   maxLength={500}
                   value={addPathwayFormFields?.SubjectWebpage}
                   name="SubjectWebpage"
@@ -1038,7 +1079,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   mode="tags"
                   tagRender={tagRender}
                   value={isEditPathwayFormVisible ? industryTypes : undefined}
-                  placeholder="Start typing to select Industry Types"
+                  placeholder=" &nbsp; Start typing to select Industry Types"
                   fetchOptions={fetchIndustryList}
                   onSelect={(e: any) => onDebounceSelectHnadler(e, 'Industry')}
                   onDeselect={(e: any) =>
@@ -1087,7 +1128,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   disabled={isViewMode}
                   mode="tags"
                   tagRender={tagRender}
-                  placeholder="Add Keywords"
+                  placeholder="&nbsp; Add Keywords"
                   optionLabelProp="label"
                   value={addPathwayFormFields?.Keyword}
                   onChange={(e) => onSelectChangeHandler(e, 'Keyword')}
@@ -1123,7 +1164,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   mode="tags"
                   tagRender={tagRender}
                   value={isEditPathwayFormVisible ? occupationTypes : undefined}
-                  placeholder="Start typing to select occupation types"
+                  placeholder="&nbsp; Start typing to select occupation types"
                   fetchOptions={fetchOccupationList}
                   onSelect={(e: any) =>
                     onDebounceSelectHnadler(e, 'Occupation')
@@ -1180,7 +1221,7 @@ const AddPathwayForm: React.FC<Props> = ({
                         ? instructionalProgramTypes
                         : undefined
                     }
-                    placeholder="Start typing to select Instructional Program Types"
+                    placeholder="&nbsp; Start typing to select Instructional Program Types"
                     fetchOptions={fetchInstructionalProgramList}
                     onSelect={(e: any) =>
                       onDebounceSelectHnadler(e, 'InstructionalProgram')
@@ -1237,7 +1278,7 @@ const AddPathwayForm: React.FC<Props> = ({
                   disabled={isViewMode}
                   mode="tags"
                   tagRender={tagRender}
-                  placeholder="Select Subjects"
+                  placeholder="&nbsp; Select Subjects"
                   optionLabelProp="label"
                   value={addPathwayFormFields?.Subject}
                   onChange={(e) => onSelectChangeHandler(e, 'Subject')}
@@ -1255,7 +1296,16 @@ const AddPathwayForm: React.FC<Props> = ({
                   wrapperCol={{ span: 24 }}
                   labelCol={{ span: 24 }}
                 >
-                  {supportServiceslist.join(', ')}
+                  {supportServicesList?.map((serviceName: any) => (
+                    <a
+                      key={serviceName.CTID}
+                      onClick={() =>
+                        openSupportServicesInNewTab(serviceName?.CTID)
+                      }
+                    >
+                      {serviceName?.Name}
+                    </a>
+                  ))}
                 </Form.Item>
               )
             ) : (
@@ -1276,7 +1326,7 @@ const AddPathwayForm: React.FC<Props> = ({
                     value={
                       isEditPathwayFormVisible ? supportservices : undefined
                     }
-                    placeholder="Start typing to select Support Services"
+                    placeholder="&nbsp; Start typing to select Support Services"
                     fetchOptions={fetchSupportServices}
                     onSelect={(e: any) => onDebounceSelectHnadler(e, 'Support')}
                     onDeselect={(e: any) =>
@@ -1344,7 +1394,7 @@ const AddPathwayForm: React.FC<Props> = ({
                     allowClear={true}
                     disabled={isEditPathwayFormVisible || isViewMode}
                     value={selectedProgressionModelValue}
-                    placeholder="Start typing to choose a Progression Model"
+                    placeholder=" &nbsp; Start typing to choose a Progression Model"
                     onSearch={onProgressionModelSearchHandler}
                     onSelect={(e: any) => onProgressionModelSelectHandler(e)}
                     onChange={(e: any) => onProgressionModelHandler(e)}
@@ -1354,6 +1404,196 @@ const AddPathwayForm: React.FC<Props> = ({
                 </Form.Item>
               )}
             </Col>
+          )}
+          <Divider className={styles.divider} />
+          <br /> <br />
+          {!isViewMode && (
+            <Col span={24}>
+              <Form.Item
+                label="Additional Information"
+                className="swNoMargin"
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                <CheckBox
+                  disabled={isViewMode}
+                  onChange={onCheckBoxChangeHandler}
+                  checked={checkboxValues.additionalinfo}
+                  name="additionalinfo"
+                  label="This Pathway Contains additional information"
+                />
+              </Form.Item>
+            </Col>
+          )}
+          {!!checkboxValues.additionalinfo && (
+            <>
+              <Col span={24}>
+                {isViewMode ? (
+                  addPathwayFormFields?.PreviousVersion !== '' && (
+                    <Form.Item
+                      label="PreviousVersion"
+                      wrapperCol={{ span: 24 }}
+                      labelCol={{ span: 24 }}
+                    >
+                      {addPathwayFormFields?.PreviousVersion}
+                    </Form.Item>
+                  )
+                ) : (
+                  <Form.Item
+                    label="PreviousVersion"
+                    className="swNoMargin"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {customToolTipIcon('Website')}
+                    <InputBox
+                      disabled={isViewMode}
+                      placeholder="Add an URL"
+                      maxLength={500}
+                      value={addPathwayFormFields?.PreviousVersion}
+                      name="PreviousVersion"
+                      onChange={onInputChangeHandler}
+                    />
+                    {toolTip.find((item: any) => item.type === 'Website')
+                      .isVisible && customToolTip('Website')}
+                  </Form.Item>
+                )}
+              </Col>
+              <Col span={24}>
+                {isViewMode ? (
+                  addPathwayFormFields?.NextVersion !== '' && (
+                    <Form.Item
+                      label="NextVersion"
+                      wrapperCol={{ span: 24 }}
+                      labelCol={{ span: 24 }}
+                    >
+                      {addPathwayFormFields?.NextVersion}
+                    </Form.Item>
+                  )
+                ) : (
+                  <Form.Item
+                    label="NextVersion"
+                    className="swNoMargin"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {customToolTipIcon('Website')}
+                    <InputBox
+                      disabled={isViewMode}
+                      placeholder="Add an URL"
+                      maxLength={500}
+                      value={addPathwayFormFields?.NextVersion}
+                      name="NextVersion"
+                      onChange={onInputChangeHandler}
+                    />
+                    {toolTip.find((item: any) => item.type === 'Website')
+                      .isVisible && customToolTip('Website')}
+                  </Form.Item>
+                )}
+              </Col>
+              <Col span={24}>
+                {isViewMode ? (
+                  addPathwayFormFields?.LatestVersion !== '' && (
+                    <Form.Item
+                      label="LatestVersion"
+                      wrapperCol={{ span: 24 }}
+                      labelCol={{ span: 24 }}
+                    >
+                      {addPathwayFormFields?.LatestVersion}
+                    </Form.Item>
+                  )
+                ) : (
+                  <Form.Item
+                    label="LatestVersion"
+                    className="swNoMargin"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {customToolTipIcon('Website')}
+                    <InputBox
+                      disabled={isViewMode}
+                      placeholder="Add an URL"
+                      maxLength={500}
+                      value={addPathwayFormFields?.LatestVersion}
+                      name="LatestVersion"
+                      onChange={onInputChangeHandler}
+                    />
+                    {toolTip.find((item: any) => item.type === 'Website')
+                      .isVisible && customToolTip('Website')}
+                  </Form.Item>
+                )}
+              </Col>
+              <Col span={24}>
+                {isViewMode ? (
+                  addPathwayFormFields?.VersionIdentifier !== '' && (
+                    <Form.Item
+                      label="Version Identifier"
+                      wrapperCol={{ span: 24 }}
+                      labelCol={{ span: 24 }}
+                    >
+                      {addPathwayFormFields?.VersionIdentifier}
+                    </Form.Item>
+                  )
+                ) : (
+                  <Form.Item
+                    label="Version Identifier"
+                    className="swNoMargin"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {customToolTipIcon('Website')}
+                    <InputBox
+                      disabled={isViewMode}
+                      placeholder="Add a version identifier"
+                      value={addPathwayFormFields?.VersionIdentifier}
+                      name="VersionIdentifier"
+                      onChange={onInputChangeHandler}
+                    />
+                    {toolTip.find((item: any) => item.type === 'Website')
+                      .isVisible && customToolTip('Website')}
+                  </Form.Item>
+                )}
+              </Col>
+              <Col span={24}>
+                {isViewMode ? (
+                  <Form.Item
+                    label="Select Status"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    {addPathwayFormFields?.LifeCycleStatusType}
+                  </Form.Item>
+                ) : (
+                  <Form.Item
+                    label="Select Life Cycle Status"
+                    className="swNoMargin"
+                    wrapperCol={{ span: 24 }}
+                    labelCol={{ span: 24 }}
+                  >
+                    <Select
+                      placeholder="Select Life Cycle Status"
+                      style={{
+                        width: '100%',
+                        borderRadius: '8px',
+                        border: '1px solid #d9d9d9',
+                      }}
+                      onChange={handleLifeCycleStatusChange}
+                      value={addPathwayFormFields?.LifeCycleStatusType}
+                    >
+                      <Select.Option value="Active">Active</Select.Option>
+                      <Select.Option value="Ceased">Ceased</Select.Option>
+                      <Select.Option value="Developing">
+                        Developing
+                      </Select.Option>
+                      <Select.Option value="Suspended">Suspended</Select.Option>
+                      <Select.Option value="Ceasing">Ceasing</Select.Option>
+                      <Select.Option value="TeachOut">Teach Out</Select.Option>
+                    </Select>
+                  </Form.Item>
+                )}
+              </Col>
+            </>
           )}
           {!isViewMode && (
             <Col span={24}>

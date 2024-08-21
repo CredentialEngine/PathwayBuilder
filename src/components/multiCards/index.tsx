@@ -2,6 +2,8 @@ import {
   faCirclePlus,
   faEllipsis,
   faSitemap,
+  faLink,
+  faGears,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Popover } from 'antd';
@@ -13,6 +15,7 @@ import { useXarrow } from 'react-xarrows';
 
 //import { TEMP_BASE_URL } from '../../apiConfig/setting';
 import { GET_ICON_URL } from '../../apiConfig/endpoint';
+import Multi from '../../assets/images/Multi.png';
 import EditComponent from '../../screens/editComponent';
 import InfoTooltip from '../infoTooltip';
 import RightPanel from '../rightPanel';
@@ -45,6 +48,7 @@ interface Props {
   forwardRef: any;
   leftpanelSelectedElem: any;
   onDelete?: any;
+  onCopy?: any;
   rowNumber: number;
   columnNumber: number;
   HasProgressionLevel: string;
@@ -90,6 +94,7 @@ const MultiCard: React.FC<Props> = ({
   setSelected,
   isDraggableCardVisible,
   onDelete,
+  onCopy,
   rowNumber,
   columnNumber,
   skipPreSelect,
@@ -205,6 +210,12 @@ const MultiCard: React.FC<Props> = ({
   };
 
   const renderImage = (data: any) =>
+    (data?.IsExternalComponent && (
+      <FontAwesomeIcon
+        style={{ height: '26px', width: '26px' }}
+        icon={faLink}
+      />
+    )) ||
     (data?.Type?.toLowerCase().includes(
       'AssessmentComponent'.toLowerCase()
     ) && (
@@ -322,8 +333,24 @@ const MultiCard: React.FC<Props> = ({
         className="componentIcon"
         style={{ height: '26px', width: '26px' }}
       />
+    )) ||
+    (data?.Type?.toLowerCase().includes('collection'.toLowerCase()) && (
+      <>
+        <span className={styles.iconwrapper + ' collectionCard'}>
+          <FontAwesomeIcon
+            style={{ height: '26px', width: '26px' }}
+            icon={faGears}
+          />
+        </span>
+      </>
+    )) ||
+    (data?.Type?.toLowerCase().includes('multi'.toLowerCase()) && (
+      <>
+        <span className={styles.iconwrapper + ' multiCard'}>
+          <img src={Multi} alt="MultiComponent" className="componentIcon" />
+        </span>
+      </>
     ));
-
   const ProgressionLevelName =
     _.toString(pathwayComponent?.Pathway?.HasDestinationComponent) ===
     _.toString(data?.CTID)
@@ -353,11 +380,14 @@ const MultiCard: React.FC<Props> = ({
                 (isAddFirst && firstComponent)
                   ? styles.addDestinationCard
                   : ''
-              } ${isDestination ? styles.isDestination : ''} ${
-                isCourseCard ? styles?.isCourseCard : ''
-              } ${isConditionalCard ? styles.conditionalCard : ''} ${
-                isAddComponentCard ? styles.addComponentCard : ''
-              } ${isCredentialCard ? styles.isCredentialCard : ''}`}
+              } 
+              ${data?.IsExternalComponent ? styles.isExternalCard : ''}
+              ${isDestination ? styles.isDestination : ''}
+               ${isCourseCard ? styles?.isCourseCard : ''}
+               ${isConditionalCard ? styles.conditionalCard : ''} 
+               ${isAddComponentCard ? styles.addComponentCard : ''} 
+              ${isCredentialCard ? styles.isCredentialCard : ''}
+              `}
               draggable={true}
               onDragStart={onDragStart}
               onDragOver={onDragOver}
@@ -621,8 +651,14 @@ const MultiCard: React.FC<Props> = ({
             isCourseCard ? styles?.isCourseCard : ''
           } ${isConditionalCard ? styles.conditionalCard : ''} ${
             isAddComponentCard ? styles.addComponentCard : ''
-          } ${isCredentialCard ? styles.isCredentialCard : ''} ${
-            isDestination && isCourseCard ? styles.onDestinationLeft : ''
+          } ${
+            isCredentialCard && data?.IsExternalComponent
+              ? styles.isExternalCard
+              : isCredentialCard
+              ? styles.isCredentialCard
+              : ''
+          } ${isDestination && isCourseCard ? styles.onDestinationLeft : ''} ${
+            data?.IsExternalComponent ? styles.isExternalCard : ''
           }`}
           draggable={true}
           onDragStart={onDragStart}
@@ -680,12 +716,15 @@ const MultiCard: React.FC<Props> = ({
           )}
           {((isCourseCard && !isCredentialCard) || data?.Type === 'course') && (
             <>
-              <span
-                className={styles.ornageSection + ' ' + styles.leftSide}
-                onClick={(e: any) => {
-                  getEndClick(e);
-                }}
-              ></span>
+              {!data?.IsExternalComponent && (
+                <span
+                  className={styles.ornageSection + ' ' + styles.leftSide}
+                  onClick={(e: any) => {
+                    getEndClick(e);
+                  }}
+                ></span>
+              )}
+
               {/* <span
                 className={styles.ornageSection + ' ' + styles.top}
                 onClick={(e: any) => {
@@ -702,6 +741,7 @@ const MultiCard: React.FC<Props> = ({
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
                   <span className={styles.title}>
+                    {data?.IsExternalComponent ? 'Reference ' : ''}
                     {data?.Type?.split(':')[1].replace('Component', '')}
                     <br />
                     {data?.IsExternalComponent &&
@@ -744,7 +784,9 @@ const MultiCard: React.FC<Props> = ({
                               setShowPopover(false);
                             }}
                           >
-                            {!isViewMode ? 'Edit' : 'View'}
+                            {!isViewMode && !data?.IsExternalComponent
+                              ? 'Edit'
+                              : 'View'}
                           </span>
                           {!isViewMode && (
                             <span
@@ -756,6 +798,18 @@ const MultiCard: React.FC<Props> = ({
                               }}
                             >
                               Delete
+                            </span>
+                          )}
+                          {!isViewMode && (
+                            <span
+                              style={{ color: 'black' }}
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                onCopy(data);
+                              }}
+                            >
+                              Copy
                             </span>
                           )}
                         </div>
@@ -809,16 +863,19 @@ const MultiCard: React.FC<Props> = ({
                   )}
 
                   <span title={ProgressionLevelName}>
-                    Level {ProgressionLevelName?.slice(0, 30)}
+                    Level- {ProgressionLevelName?.slice(0, 30)}
                   </span>
                 </div>
               </div>
-              <span
-                className={styles.ornageSection + ' ' + styles.bottom}
-                onClick={(e: any) => {
-                  getEndClick(e);
-                }}
-              ></span>
+              {!data?.IsExternalComponent && (
+                <span
+                  className={styles.ornageSection + ' ' + styles.bottom}
+                  onClick={(e: any) => {
+                    getEndClick(e);
+                  }}
+                ></span>
+              )}
+
               <span
                 className={styles.ornageSection + ' ' + styles.right}
                 onClick={(e: any) => {
@@ -830,16 +887,19 @@ const MultiCard: React.FC<Props> = ({
 
           {isCredentialCard && (
             <>
-              <span
-                className={styles.ornageSection + ' ' + styles.leftSide}
-                onClick={(e: any) => {
-                  getEndClick(e);
-                }}
-              ></span>
+              {!data?.IsExternalComponent && (
+                <span
+                  className={styles.ornageSection + ' ' + styles.leftSide}
+                  onClick={(e: any) => {
+                    getEndClick(e);
+                  }}
+                ></span>
+              )}
               <div className={styles.courseCredCardWrapper}>
                 <div className={styles.topCourseContent}>
                   {renderImage(data)}
                   <span className={styles.title}>
+                    {data?.IsExternalComponent ? 'Reference ' : ''}
                     {data?.Type?.split(':')[1].replace('Component', '')}
                     <br />
                     {data?.IsExternalComponent &&
@@ -883,7 +943,9 @@ const MultiCard: React.FC<Props> = ({
                               setShowPopover(false);
                             }}
                           >
-                            {!isViewMode ? 'Edit' : 'View'}
+                            {!isViewMode && !data?.IsExternalComponent
+                              ? 'Edit'
+                              : 'View'}
                           </span>
 
                           {!isViewMode && (
@@ -896,6 +958,19 @@ const MultiCard: React.FC<Props> = ({
                               }}
                             >
                               Delete
+                            </span>
+                          )}
+
+                          {!isViewMode && (
+                            <span
+                              style={{ color: 'black' }}
+                              onClick={(e: any) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                onCopy(data);
+                              }}
+                            >
+                              Copy
                             </span>
                           )}
                         </div>
@@ -922,29 +997,31 @@ const MultiCard: React.FC<Props> = ({
                   </span>
                   <span>
                     Type:{' '}
-                    {data?.CredentialType != undefined
+                    {data?.CredentialType !== undefined
                       ? data?.IsExternalComponent
-                        ? data?.CredentialType.split(':')[1].replace(
-                            '//purl.org/ctdl/terms/',
-                            ''
-                          )
-                        : data?.CredentialType.replace('ceterms:', '')
-                      : ''}
+                        ? data?.CredentialType?.split(
+                            '://purl.org/ctdl/terms/'
+                          )[1] ?? data?.CredentialType
+                        : data?.CredentialType?.replace('ceterms:', '') ??
+                          data?.CredentialType
+                      : data?.CredentialType ?? ''}
                   </span>
                 </div>
                 <div className={styles.creditSection}>
                   <span></span>
                   <span title={ProgressionLevelName}>
-                    Level {ProgressionLevelName?.slice(0, 30)}
+                    Level- {ProgressionLevelName?.slice(0, 30)}
                   </span>
                 </div>
               </div>
-              <span
-                className={styles.ornageSection + ' ' + styles.bottom}
-                onClick={(e: any) => {
-                  getEndClick(e);
-                }}
-              ></span>
+              {!data?.IsExternalComponent && (
+                <span
+                  className={styles.ornageSection + ' ' + styles.bottom}
+                  onClick={(e: any) => {
+                    getEndClick(e);
+                  }}
+                ></span>
+              )}
               <span
                 className={styles.ornageSection + ' ' + styles.right}
                 onClick={(e: any) => {
@@ -1033,7 +1110,7 @@ const MultiCard: React.FC<Props> = ({
                   <span>
                     {/* Logic: {data?.LogicalOperator?.replace('logic:', '')} */}
                   </span>
-                  <span>Constraints: {data?.HasConstraint.length}</span>
+                  <span>Constraints: {data?.HasConstraint?.length}</span>
                 </div>
                 <span
                   className={

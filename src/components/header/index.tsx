@@ -259,7 +259,7 @@ const Header = (props: Props) => {
     //setViewModeEdit(isViewMode)
   };
   const redicrectTO = () => {
-    location.href = TEMP_BASE_URL + '/pathways';
+    location.href = TEMP_BASE_URL + 'pathways';
     // window.open(TEMP_BASE_URL+'/pathways', '_blank');
   };
   // const exitWithoutSaving = () => {
@@ -285,7 +285,7 @@ const Header = (props: Props) => {
     <>
       <div id="header" className={styles.container + ' header-container'}>
         <div className={styles.productImgLayout + ' logowrapper'}>
-          <Row align="middle" style={{ width: '100%' }}>
+          <Row align="middle" style={{ width: '325px' }}>
             <Col span={4}>
               <img
                 src={Logo}

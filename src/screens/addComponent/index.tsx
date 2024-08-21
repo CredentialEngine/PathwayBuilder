@@ -905,7 +905,7 @@ const AddConditionalComponent: React.FC<Props> = (Props) => {
                   required={true}
                   wrapperCol={{ span: 24 }}
                   labelCol={{ span: 24 }}
-                  label="Required Target Components and Conditions"
+                  label="Required Number of Target Components and Conditions"
                   validateTrigger="onBlur"
                   help={
                     (_.isEmpty(componentConditionFields.RequiredNumber) ||

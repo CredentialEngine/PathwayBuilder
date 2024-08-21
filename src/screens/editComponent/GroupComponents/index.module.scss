@@ -1,4 +1,4 @@
-@import '../../styles/global.scss';
+@import '../../../styles/global.scss';
 .skinwrapper {
   margin: 20px 0;
 
@@ -10,8 +10,7 @@
   }
   :global {
     .customacardstyle {
-      min-height: 460px;
-      max-height: 510px;
+      max-height: 850px;
       overflow-y: auto;
     }
     .child {
@@ -112,7 +111,7 @@
     border: 2px solid $selection;
     border-radius: 6px;
     padding: 15px;
-    max-height: 418px;
+    max-height: 700px;
     overflow-y: auto;
     :global {
       .ant-card-bordered {

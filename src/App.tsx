@@ -221,6 +221,15 @@ const App = () => {
   const destinationColumnSelected = (value: boolean) => {
     setDestinationColumnSelected(value);
   };
+  const onAddPathwayFormClose = () => {
+    const url = window.location.href;
+    if (url?.toLowerCase().includes('?id=')) {
+      setIsAddPathwayFormVisible(false);
+      setIsEditPathwayFormVisible(false);
+    } else {
+      window.location.href = TEMP_BASE_URL;
+    }
+  };
   return pathwayLoad?.valid ? (
     <>
       <div>
@@ -271,10 +280,7 @@ const App = () => {
             title={
               isViewMode == true ? 'View Pathway Details' : 'Add a Pathway'
             }
-            onCancel={() => {
-              setIsAddPathwayFormVisible(false);
-              setIsEditPathwayFormVisible(false);
-            }}
+            onCancel={onAddPathwayFormClose}
             maskClosable={false}
             footer={[]}
           >

@@ -90,16 +90,6 @@
     margin-left: 20px;
     font-weight: 600;
   }
-  .ant-select-selection-overflow-item {
-    white-space: nowrap;
-    overflow: hidden;
-    .ant-tag {
-      background-color: $selection;
-      border-radius: 15px;
-      color: $black;
-      margin: 1px;
-    }
-  }
 }
 
 .divider {
@@ -107,13 +97,6 @@
 }
 .right_drawer {
   :global {
-    .ant-checkbox-wrapper {
-      span:last-child {
-        font-weight: normal;
-        font-size: 13px;
-        color: $primary-dark;
-      }
-    }
     .ant-select-selection-overflow-item {
       white-space: nowrap;
       overflow: hidden;
@@ -124,13 +107,21 @@
         margin: 1px;
       }
     }
+    .ant-select-multiple .ant-select-selection-item {
+      white-space: nowrap;
+      overflow: hidden;
+
+      background-color: $selection;
+      border-radius: 15px;
+      color: $black;
+      margin: 1px;
+    }
     .ant-form-item-control-input input[disabled] {
       color: black;
     }
     .ant-form-item-control-input-content input[disabled] {
       color: black;
     }
-
     .toggle-slider {
       position: relative;
       display: inline-block;
@@ -216,6 +207,14 @@
     .iconwrapper {
       background-color: #17609a;
     }
+    .collectionCard,
+    .iconwrapper {
+      background-color: #999999;
+    }
+    .multiCard,
+    .iconwrapper {
+      background-color: #bfffff;
+    }
     .ant-drawer-header-close-only button.ant-drawer-close {
       margin-right: 0;
       display: none;
@@ -248,6 +247,30 @@
   padding: 7px;
   min-width: 40px;
   max-width: 40px;
+}
+.iconCircle {
+  border: 2px solid $selection;
+  background-color: $selection;
+  border-radius: 50%;
+  height: 21px;
+  min-width: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+  svg {
+    fill: black !important;
+  }
+}
+.flexCenter {
+  @include flexSpaceBetween;
+}
+.flexGrowCenter {
+  @include flexSpaceBetween;
+  & > div {
+    flex-grow: 1;
+  }
 }
 .image {
   background-color: #00a0ff;

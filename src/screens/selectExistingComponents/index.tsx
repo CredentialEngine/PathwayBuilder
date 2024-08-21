@@ -1,21 +1,11 @@
-import { PlusOutlined, DownOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   faCaretDown,
   faGear,
   faMinus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Col,
-  Card,
-  Row,
-  Form,
-  Dropdown,
-  Typography,
-  Space,
-  Menu,
-  Tag,
-} from 'antd';
+import { Col, Card, Row, Form, Dropdown, Menu, Tag } from 'antd';
 import _, { noop } from 'lodash';
 
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
@@ -23,14 +13,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 //import AutoCompleteBox from '../../components/autoComplete';
 
-import { GET_ORGANIZATION } from '../../apiConfig/endpoint';
+import {
+  GET_PUBLISHED_PATHWAYS,
+  PATHWAY_COMPONENTS_FROM,
+} from '../../apiConfig/endpoint';
 import { TEMP_BASE_URL } from '../../apiConfig/setting';
 import Button from '../../components/button';
 
 import { Type } from '../../components/button/type';
 
 import CardWithLeftIcon from '../../components/cardWithLeftIcon';
-import CheckBox from '../../components/formFields/checkbox';
 import SearchBox from '../../components/formFields/searchBox';
 import { getLeftPanelPathwayComponentRequest } from '../../components/leftPanel/state/actions';
 import Modal from '../../components/modal';
@@ -39,10 +31,9 @@ import { updateMappedDataRequest } from '../../states/actions';
 import DebounceSelect from '../addPathwayForm/debounceSelect';
 
 import Styles from './index.module.scss';
-import { getAllProxyForResourcesRequest } from './state/actions';
 
 export interface Props {
-  setIsPreSelectedCreateResourceVisible: (a: boolean) => void;
+  setIsSelectedExistingVisible: (a: boolean) => void;
   addPathwayWrapperFields: any;
   setIsAddPathwayDestinationVisible: (a: boolean) => void;
   fromPreSelect: boolean;
@@ -50,46 +41,40 @@ export interface Props {
   getSkipValueOfPreSelectResources?: (a: boolean) => void;
 }
 const PreSelectResourceCreatePath: React.FC<Props> = ({
-  setIsPreSelectedCreateResourceVisible,
+  setIsSelectedExistingVisible,
   addPathwayWrapperFields,
   setIsAddPathwayDestinationVisible,
   fromPreSelect,
   setIsDestinationColumnSelected,
   getSkipValueOfPreSelectResources,
 }) => {
-  const [allComponentTypes, setAllComponentTypes] = useState<Array<any>>(
-    new Array<any>([])
-  );
   const [previousDisabled, setPreviousDisabled] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(false);
   const [displaySearchContainer, setDisplaySearchContainer] =
-    React.useState(true);
+    React.useState(false);
   const [allOrganizations, setAllOrganizations] = useState<[]>([]);
   const [selectedOrganization, setSelectedOrganization] = useState<any>([]);
   const [selectedResource, setSelectedResource] = useState<any>([]);
   const [deletedResource, setDeletedResource] = useState<any>([]);
   const [selectedAlphaResource, setSelectedAlphaResource] = useState<any>([]);
   const [allProxyResourcesCard, setAllProxyResourcesCard] = useState<any>([]);
-  const [dropDownRef, setDropDownRef] = useState<string>('');
   const [alphabetical, setAlphabetical] = useState<string>('');
-  const [checkboxForOrganisation, setCheckboxForOrganisation] =
-    useState<boolean>(false);
+  const [search, setSearch] = useState<string>('');
+  const [isJoin, setIsJoin] = useState(false);
+  const [isCopy, setIsCopy] = useState(false);
+  //   const [checkboxForOrganisation, setCheckboxForOrganisation] =
+  //     useState<boolean>(false);
   const pathwayWrapper = useSelector((state: any) => state.initalReducer);
   const { mappedData: pathwayComponent } = pathwayWrapper;
   const resultSection = useRef(document.createElement('div'));
   const appState = useSelector((state: any) => state?.initalReducer);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const [searchFilterValue, setSearchFilterValue] = useState<any>({
     Keywords: '',
     Skip: 0,
     Take: 20,
     Sort: '',
-    Filters: [
-      {
-        URI: 'meta:pathwayComponentType',
-        ItemTexts: [],
-      },
-    ],
+    Filters: [],
   });
   // const [searchOrgFilterValue, setOrgSearchFilterValue] = useState<any>({
   //   Keywords: '',
@@ -142,7 +127,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     const data = new FormData();
     data.append('json', JSON.stringify({ Keywords: e }));
 
-    return fetch(`${TEMP_BASE_URL}${GET_ORGANIZATION}`, {
+    return fetch(`${TEMP_BASE_URL}${GET_PUBLISHED_PATHWAYS}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -162,7 +147,47 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
         return updatedBody;
       });
   }
+  async function fetchPathwayResults(): Promise<any[]> {
+    const data = JSON.stringify({ searchFilterValue });
+    const parsedJSON = JSON.parse(data);
+    const searchFilterContent = parsedJSON.searchFilterValue;
+    const stringifiedResult = JSON.stringify(searchFilterContent, null, 2);
 
+    debugger;
+    return fetch(`${TEMP_BASE_URL}${PATHWAY_COMPONENTS_FROM}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: stringifiedResult,
+    })
+      .then((response: any) => response.clone().json())
+      .then((body: any) => {
+        const updatedBody = body.Data.Results.map((dta: any) => ({
+          Name: dta.Name,
+          Description: dta.Description,
+          CTID: dta.CTID,
+          label: dta.Name,
+          value: dta.CTID,
+        }));
+        if (isCopy) {
+          const updatedResults = body.Data.Results.map((dta: any) => ({
+            ...dta,
+            IsExternalComponent: false,
+            FromExternalPathway: [],
+            CredentialType: dta?.CredentialType?.split(':')[1].replace(
+              '//purl.org/ctdl/terms/',
+              'ceterms:'
+            ),
+          }));
+          setAllProxyResourcesCard(updatedResults);
+        } else {
+          setAllProxyResourcesCard(body.Data.Results);
+        }
+
+        return updatedBody;
+      });
+  }
   const onDebounceSelectHnadler = (e: any) => {
     const filteredOccupations = allOrganizations?.filter(
       (data: any) => data.value === e.value
@@ -191,7 +216,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     if (selectedOrganization != null && selectedOrganization != '') {
       _.remove(
         updatedSearchValue.Filters,
-        (item: any) => item.URI == 'search:recordOwnedBy'
+        (item: any) => item.URI == 'ceterms:isPartOf_ceterms:ctid'
       );
       const filteredOccupations = allOrganizations
         ?.filter((data: any) => data.Name === selectedOrganization[0])
@@ -199,14 +224,14 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       updatedSearchValue.Filters = [
         ...updatedSearchValue.Filters,
         {
-          URI: 'search:recordOwnedBy',
+          URI: 'ceterms:isPartOf_ceterms:ctid',
           ItemTexts: filteredOccupations,
         },
       ];
     } else {
       _.remove(
         updatedSearchValue.Filters,
-        (item: any) => item.URI == 'search:recordOwnedBy'
+        (item: any) => item.URI == 'ceterms:isPartOf_ceterms:ctid'
       );
     }
 
@@ -261,22 +286,9 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    dispatch(getAllProxyForResourcesRequest(searchFilterValue));
+    fetchPathwayResults();
   }, [searchFilterValue]);
 
-  const allComponentTabCards = useSelector(
-    (state: any) => state.leftPanelReducer.allLeftPathwayComponent
-  );
-  const menu = (
-    <Menu
-      onClick={(e) => {
-        setDropDownRef(e?.key);
-        onMenuClickHandler(e);
-      }}
-      selectable
-      items={allComponentTypes}
-    />
-  );
   const alphabeticalMenu = [
     {
       label: 'Alphabetical',
@@ -287,109 +299,20 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       key: '1',
     },
   ];
-
-  useEffect(() => {
-    const updatedSearchValue = { ...searchFilterValue };
-    if (!_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID)) {
-      _.remove(
-        updatedSearchValue.Filters,
-        (item: any) => item.URI == 'search:recordOwnedBy'
-      );
-      if (checkboxForOrganisation) {
-        updatedSearchValue.Filters = [
-          ...updatedSearchValue.Filters,
-          {
-            URI: 'search:recordOwnedBy',
-            ItemTexts: [pathwayWrapper.mappedData.Pathway.Organization.CTID],
-          },
-        ];
-        setSearchFilterValue(updatedSearchValue);
-      } else {
-        _.remove(
-          updatedSearchValue.Filters,
-          (item: any) => item.URI == 'search:recordOwnedBy'
-        );
-        setSearchFilterValue(updatedSearchValue);
-      }
-    }
-  }, [checkboxForOrganisation]);
-
-  const onMenuClickHandler = (e: any) => {
-    const selectedCardType = allComponentTypes.filter(
-      (comp_type: any) => comp_type.key === _.toNumber(e.key)
-    );
-    const updatedSearchValue = { ...searchFilterValue };
-    updatedSearchValue.Skip = 0;
-    if (e?.key) {
-      if (
-        !_.isNull(pathwayWrapper.mappedData.Pathway.Organization.CTID) &&
-        checkboxForOrganisation
-      ) {
-        updatedSearchValue.Filters = [
-          {
-            URI: 'meta:pathwayComponentType',
-            ItemTexts: [_.get(selectedCardType, '0').Name],
-          },
-          {
-            URI: 'search:recordOwnedBy',
-            ItemTexts: [pathwayWrapper.mappedData.Pathway.Organization.CTID],
-          },
-        ];
-        setSearchFilterValue(updatedSearchValue);
-      } else {
-        _.remove(
-          updatedSearchValue.Filters,
-          (item: any) => item.URI == 'meta:pathwayComponentType'
-        );
-        updatedSearchValue.Filters = [
-          ...updatedSearchValue.Filters,
-          {
-            URI: 'meta:pathwayComponentType',
-            ItemTexts: [_.get(selectedCardType, '0').Name],
-          },
-        ];
-        setSearchFilterValue(updatedSearchValue);
-        setDisplaySearchContainer(true);
-      }
-    } else {
-      _.remove(
-        updatedSearchValue.Filters,
-        (item: any) => item.URI == 'meta:pathwayComponentType'
-      );
-      setSearchFilterValue(updatedSearchValue);
-    }
-  };
-  useEffect(() => {
-    if (allComponentTabCards?.data?.length > 0) {
-      const updated = allComponentTabCards.data.filter(
-        (opt: any) =>
-          opt.Name !== 'Component Condition' && opt.Name !== 'Multi Component'
-      );
-      const updatedoptions = updated.map((card: any, index: any) => ({
-        key: index,
-        label: card.Name,
-        Name: card.URI,
-      }));
-      // const allTypesOfComponentCards = allComponentTabCards.data.map(
-      //   (card: any, index: any) => ({
-      //     key: index,
-      //     label: card.Name,
-      //     Name: card.URI,
-      //   })
-      // );
-      // //remove the component condition from the list
-      // const updatedoptions = allTypesOfComponentCards.filter(
-      //   (opt: any) => opt.label !== 'Component Condition' && opt.label !== 'Multi Component'
-      // );
-      const allresources = {
-        key: 10,
-        label: 'All resources',
-        Name: 'All resources',
-      };
-      updatedoptions.push(allresources);
-      setAllComponentTypes(updatedoptions);
-    }
-  }, [selectedResource, allComponentTabCards]);
+  const searchTypeMenu = [
+    {
+      label: 'Select the action Type',
+      key: '0',
+    },
+    {
+      label: 'Join Components',
+      key: '1',
+    },
+    {
+      label: 'Copy Components',
+      key: '2',
+    },
+  ];
 
   const addResource = (selectedItem: any, itemIndex: number) => {
     const filteredItem = allProxyResourcesCard.filter(
@@ -456,7 +379,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
   };
 
   const onPathwaySaveHandler = () => {
-    setIsPreSelectedCreateResourceVisible(false);
+    setIsSelectedExistingVisible(false);
     !!getSkipValueOfPreSelectResources &&
       getSkipValueOfPreSelectResources(true);
     const updatedPathwayWrapper = { ...appState.mappedData };
@@ -466,7 +389,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     updatedPathwayWrapper.DeletedComponents =
       deletedResource.length > 0 ? deletedResource : DeletedComponents;
 
-    !fromPreSelect && setIsAddPathwayDestinationVisible(false);
+    !fromPreSelect && setIsAddPathwayDestinationVisible(true);
     !fromPreSelect
       ? dispatch(
           updateMappedDataRequest({
@@ -490,7 +413,7 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
     updatedPathwayWrapper.ComponentConditions = ComponentConditions;
     updatedPathwayWrapper.Constraints = Constraints;
     updatedPathwayWrapper.DeletedComponents = DeletedComponents;
-    !fromPreSelect && setIsAddPathwayDestinationVisible(false);
+    !fromPreSelect && setIsAddPathwayDestinationVisible(true);
     !fromPreSelect
       ? dispatch(
           updateMappedDataRequest({
@@ -504,19 +427,12 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
             ...updatedPathwayWrapper,
           })
         );
-    setIsPreSelectedCreateResourceVisible(false);
+    setIsSelectedExistingVisible(false);
     !fromPreSelect &&
       !!setIsDestinationColumnSelected &&
       setIsDestinationColumnSelected(true);
     !!getSkipValueOfPreSelectResources &&
       getSkipValueOfPreSelectResources(true);
-  };
-
-  const handleCheckBox = () => {
-    setCheckboxForOrganisation(!checkboxForOrganisation);
-    checkboxForOrganisation === false
-      ? setIsVisible(false)
-      : setIsVisible(true);
   };
 
   const arrangeAlphabetically = (value: string) => {
@@ -538,71 +454,116 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
       : arrangeAlphabetically('recentAdded');
   }, [alphabetical]);
 
+  useEffect(() => {
+    if (search == '1') {
+      setIsJoin(true);
+      setIsCopy(false);
+      setIsVisible(true);
+      setDisplaySearchContainer(true);
+    }
+    if (search == '2') {
+      setIsJoin(false);
+      setIsCopy(true);
+      setIsVisible(true);
+      setDisplaySearchContainer(true);
+    }
+    if (search == '0') {
+      setIsJoin(false);
+      setIsCopy(false);
+      setIsVisible(false);
+      setDisplaySearchContainer(false);
+    }
+  }, [search]);
+
   return (
     <Form className={Styles.skinwrapper} onFinish={noop} autoComplete="off">
-      Use registry search to include resources into your pathway, The Purpose of
-      using the registry search is to use the data already included with the
-      resource and to link directly to it.
+      <span style={{ color: 'rgb(255, 77, 79)' }}>
+        This search is only for previously published components that were
+        created with another pathways
+      </span>
+      <br />
+      <br />
       <Row gutter={20}>
         <Col span="12">
           <div className={Styles.dropDownRefDiv}>
             <div className="child">
-              <h5>Filter Registry Resources</h5>
+              <Form.Item
+                required={true}
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                label="Component Action"
+                validateTrigger="onBlur"
+                tooltip=""
+              ></Form.Item>
             </div>
             <div
               className="child"
               style={{ backgroundColor: '#4ee5e1', borderRadius: '5px' }}
             >
-              <Dropdown overlay={menu} trigger={['click']}>
-                <Typography.Link>
-                  <Space>
-                    {dropDownRef ? (
-                      <span className={Styles.dropDownRef}>
-                        {allComponentTypes[Number(dropDownRef)]?.label}
-                      </span>
-                    ) : (
-                      'All resources'
-                    )}
-
-                    <DownOutlined />
-                  </Space>
-                </Typography.Link>
+              <Dropdown
+                overlay={
+                  <Menu
+                    items={searchTypeMenu}
+                    selectable
+                    onClick={(e) => {
+                      setSearch(e.key);
+                    }}
+                  />
+                }
+                trigger={['click']}
+              >
+                <p className="dropdown-title d-flex">
+                  {searchTypeMenu[Number(search)]?.label}&nbsp;
+                  <FontAwesomeIcon icon={faCaretDown} color="black" />
+                </p>
               </Dropdown>
             </div>
           </div>
-          <SearchBox
-            placeholder="Search your components"
-            onKeyUp={searchComponent}
-          />
+          <br />
+          <br />
+          <br />
+          {isJoin && (
+            <span style={{ color: 'rgb(255, 77, 79)' }}>
+              The purpose of re-using a component is to be able to link directly
+              to the pathway from where the component is used.
+            </span>
+          )}
+          {isCopy && (
+            <span style={{ color: 'rgb(255, 77, 79)' }}>
+              The purpose of copying a components is to avoid manually entering
+              the date again.
+            </span>
+          )}
+          <br />
+          <br />
           {isVisible && (
-            <Form.Item
-              wrapperCol={{ span: 24 }}
-              labelCol={{ span: 24 }}
-              validateTrigger="onBlur"
-            >
-              <DebounceSelect
-                // disabled={isViewMode}
-                mode="multiple"
-                tagRender={tagRender}
-                value={selectedOrganization}
-                placeholder=" Start Typing to select the organization"
-                fetchOptions={fetchIndustryList}
-                onSelect={(e: any) => onDebounceSelectHnadler(e)}
-                onDeselect={(e: any) => onDebounceDeSelectHnadler(e)}
+            <>
+              <Form.Item
+                wrapperCol={{ span: 24 }}
+                labelCol={{ span: 24 }}
+                validateTrigger="onBlur"
+              >
+                <DebounceSelect
+                  // disabled={isViewMode}
+                  mode="multiple"
+                  tagRender={tagRender}
+                  value={selectedOrganization}
+                  placeholder=" Start typing the name of the pathway"
+                  fetchOptions={fetchIndustryList}
+                  onSelect={(e: any) => onDebounceSelectHnadler(e)}
+                  onDeselect={(e: any) => onDebounceDeSelectHnadler(e)}
+                />
+              </Form.Item>
+              <SearchBox
+                placeholder="Search your components"
+                onKeyUp={searchComponent}
               />
-            </Form.Item>
+            </>
           )}
 
-          <CheckBox
-            name="progressionModel"
-            label="Only components published by my organization"
-            className=" fontweightlight checkboxlabel"
-            value={checkboxForOrganisation}
-            onChange={handleCheckBox}
-            checked={checkboxForOrganisation ? true : false}
-          />
           <br />
           <br />
+
           {displaySearchContainer && (
             <div className={Styles.searchItemWrapper} ref={resultSection}>
               {allProxyResourcesCard.map(
@@ -718,7 +679,6 @@ const PreSelectResourceCreatePath: React.FC<Props> = ({
               type={Type.PRIMARY}
               onClick={() => onPathwaySaveHandler()}
               text="Done Adding"
-              // disabled={selectedResource?.length === 0}
             />
             <Button
               type={Type.CANCEL}

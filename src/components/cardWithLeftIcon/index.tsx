@@ -1,10 +1,16 @@
-import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircle,
+  faQuestion,
+  faLink,
+  faGears,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Card, Col, Row } from 'antd';
 import React, { useState } from 'react';
 
 import { GET_ICON_URL } from '../../apiConfig/endpoint';
+import Multi from '../../assets/images/Multi.png';
 
 import styles from './index.module.scss';
 
@@ -123,7 +129,11 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
       onDragEnd={onDragEnd}
       id={id?.toString()}
       bodyStyle={
-        data?.Type?.toLowerCase().includes('CredentialComponent'.toLowerCase())
+        data?.IsExternalComponent
+          ? { background: '#d3d3d3' }
+          : data?.Type?.toLowerCase().includes(
+              'CredentialComponent'.toLowerCase()
+            )
           ? { background: '#dcfaf9' }
           : data?.Type?.toLowerCase().includes('condition'.toLowerCase())
           ? { background: '#ffd263' }
@@ -255,9 +265,167 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   />
                 </span>
               )}
+              {data?.Type?.toLowerCase().includes(
+                'collection'.toLowerCase()
+              ) && (
+                <span className={styles.iconwrapper + ' collectionCard'}>
+                  <FontAwesomeIcon
+                    style={{ height: '20px', width: '20px' }}
+                    icon={faGears}
+                  />
+                </span>
+              )}
+              {data?.Type?.toLowerCase().includes('multi'.toLowerCase()) && (
+                <span className={styles.iconwrapper + ' multiCard'}>
+                  <img
+                    src={Multi}
+                    alt="MultiComponent"
+                    className="componentIcon"
+                  />
+                </span>
+              )}
             </>
           ) : (
-            <>
+            (data?.IsExternalComponent && (
+              <FontAwesomeIcon
+                style={{ height: '26px', width: '26px' }}
+                icon={faLink}
+              />
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'AssessmentComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' assessmentCard'}>
+                <img
+                  src={`${GET_ICON_URL}AssessmentComponent.png`}
+                  alt="AssessmentComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'BasicComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' basicCard'}>
+                <img
+                  src={`${GET_ICON_URL}BasicComponent.png`}
+                  alt="BasicComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'CocurricularComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' cocurricularCard'}>
+                <img
+                  src={`${GET_ICON_URL}CocurricularComponent.png`}
+                  alt="CocurricularComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'CompetencyComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' competencyCard'}>
+                <img
+                  src={`${GET_ICON_URL}CompetencyComponent.png`}
+                  alt="CompetencyComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'CourseComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' courseCard'}>
+                <img
+                  src={`${GET_ICON_URL}CourseComponent.png`}
+                  alt="CourseComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'ExtracurricularComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' extraCurricularCard'}>
+                <img
+                  src={`${GET_ICON_URL}ExtracurricularComponent.png`}
+                  alt="ExtracurricularComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'JobComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' jobCard'}>
+                <img
+                  src={`${GET_ICON_URL}JobComponent.png`}
+                  alt="JobComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'WorkExperienceComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + ' workExperienceCard'}>
+                <img
+                  src={`${GET_ICON_URL}WorkExperienceComponent.png`}
+                  alt="WorkExperienceComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'CredentialComponent'.toLowerCase()
+            ) && (
+              <span className={styles.iconwrapper + 'credentialCard'}>
+                <img
+                  src={`${GET_ICON_URL}CredentialComponent.png`}
+                  alt="CredentialComponent"
+                  className="componentIcon"
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes(
+              'ComponentCondition'.toLowerCase()
+            ) && (
+              <img
+                src={`${GET_ICON_URL}ComponentCondition.png`}
+                alt="ComponentCondition"
+                className="componentIcon"
+              />
+            )) ||
+            (data?.Type?.toLowerCase().includes('selection'.toLowerCase()) && (
+              <img
+                src={`${GET_ICON_URL}SelectionCondition.png`}
+                alt="SelectionCondition"
+                className="componentIcon"
+              />
+            )) ||
+            (data?.Type?.toLowerCase().includes('collection'.toLowerCase()) && (
+              <span className={styles.iconwrapper + ' collectionCard'}>
+                <FontAwesomeIcon
+                  style={{ height: '20px', width: '20px' }}
+                  icon={faGears}
+                />
+              </span>
+            )) ||
+            (data?.Type?.toLowerCase().includes('multi'.toLowerCase()) && (
+              <span className={styles.iconwrapper + ' multiCard'}>
+                <img
+                  src={Multi}
+                  alt="MultiComponent"
+                  className="componentIcon"
+                />
+              </span>
+            ))
+          )}
+          {/*<>
               {Type?.toLowerCase().includes('credential'.toLowerCase()) && (
                 <span className={styles.iconwrapper + ' credentialCard'}>
                   <img
@@ -361,8 +529,7 @@ const CardWithLeftIcon: React.FC<Props> = (props: Props) => {
                   />
                 </span>
               )}
-            </>
-          )}
+            </> */}
         </Col>
         <Col span="19">
           <>

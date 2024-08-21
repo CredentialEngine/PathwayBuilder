@@ -39,6 +39,7 @@ export const Message = ({
   onLinkClick,
   linkText,
 }: Props) => {
+  antMessage.destroy();
   const onLinkTextClick = () => {
     antMessage.destroy();
     onLinkClick!();

@@ -27,6 +27,25 @@
 }
 .right_drawer {
   :global {
+    .ant-select-selection-overflow-item {
+      white-space: nowrap;
+      overflow: hidden;
+      .ant-tag {
+        background-color: $selection;
+        border-radius: 15px;
+        color: $black;
+        margin: 1px;
+      }
+    }
+    .ant-select-multiple .ant-select-selection-item {
+      white-space: nowrap;
+      overflow: hidden;
+
+      background-color: $selection;
+      border-radius: 15px;
+      color: $black;
+      margin: 1px;
+    }
     .ant-checkbox-wrapper {
       span:last-child {
         font-weight: normal;
@@ -138,6 +157,14 @@
     .workExperienceCard,
     .iconwrapper {
       background-color: #17609a;
+    }
+    .collectionCard,
+    .iconwrapper {
+      background-color: #999999;
+    }
+    .multiCard,
+    .iconwrapper {
+      background-color: #bfffff;
     }
     .ant-drawer-header-close-only button.ant-drawer-close {
       margin-right: 0;

@@ -403,7 +403,7 @@ const Constraintv2: React.FC<Props> = (Props) => {
   };
 
   return (
-    <Drawer visible={true} className={Styles.right_drawer}>
+    <Drawer visible={true} className={Styles.right_drawer} width={500}>
       <>
         <div style={{ display: 'flex' }}>
           <h2>Constraints</h2>

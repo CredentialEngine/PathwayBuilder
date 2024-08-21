@@ -18,6 +18,9 @@ import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { v4 as uuidv4 } from 'uuid';
 
 import { FINDER_URL } from '../../apiConfig/endpoint';
+import NewComponents from '../../assets/images/ComponentTypes.png';
+import Copy from '../../assets/images/Copy.png';
+import Search from '../../assets/images/Search.png';
 import Button from '../../components/button';
 import CardWithLeftIcon from '../../components/cardWithLeftIcon';
 import DropWrapper from '../../components/dropWrapper';
@@ -85,7 +88,7 @@ const HomePage: React.FC<Props> = ({
   const [dragElem, setDragElem] = useState<any>();
   const [leftpanelSelectedElem, setLeftpanelSelectedElem] =
     useState<HTMLElement>();
-  const [sticky, setsticky] = useState<any>();
+  //const [sticky, setsticky] = useState<any>();
 
   const [numberOfDropWrapper, setNumberOfDropWrapper] = useState<number>(4);
   const [point, setPoint] = useState({
@@ -126,6 +129,19 @@ const HomePage: React.FC<Props> = ({
   const [errorComponents, setErrorComponents] = useState<any>();
   const [progressionLevelForAddComponent, setProgressionLevelForAddComponent] =
     useState<string>('');
+  const [showMessage, setShowMessage] = useState(false);
+  const userId =
+    pathwayWrapper?.currentUserData?.data?.Id ||
+    pathwayWrapper?.mappedData?.Pathway?.LastUpdatedById;
+  useEffect(() => {
+    if (!isViewMode && userId !== undefined) {
+      const hasSeenMessage = localStorage.getItem(`messageSeen_${userId}`);
+      if (!hasSeenMessage) {
+        setShowMessage(true);
+        localStorage.setItem(`messageSeen_${userId}`, 'true');
+      }
+    }
+  }, [isViewMode, userId]);
   useEffect(() => {
     dispatch(getLeftPanelPathwayComponentRequest());
   }, []);
@@ -139,20 +155,20 @@ const HomePage: React.FC<Props> = ({
   }, []);
   useEffect(() => {
     const handleScroll = () => {
-      setsticky(window.pageYOffset);
+      const stickyValue = window.pageYOffset + 'px';
+      const divElement = document.getElementById('stickyDiv'); // Add an ID to your div
+
+      if (divElement) {
+        divElement.style.top = stickyValue;
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  // function addExtraCSSClick() {
-  //   if(extraCSS !== true){
-  //     setExtraCSS(true);
-  //   }else{
-  //     setExtraCSS(false);
-  //   }
-  // }
 
   useEffect(() => {
     const updatedConditionalComponents: any = [];
@@ -381,7 +397,6 @@ const HomePage: React.FC<Props> = ({
             ...prog_level,
             columnNumber: 1,
           }));
-
         pathwayComponent?.ProgressionModels?.map((model: any) =>
           model?.HasTopConcept?.forEach((CTID: any) => {
             updatedProgressionLevel?.forEach((level: any) => {
@@ -427,7 +442,6 @@ const HomePage: React.FC<Props> = ({
               });
             }
           });
-
         setColumnsData([
           ...updatedPathwayLevel2,
           {
@@ -1131,6 +1145,29 @@ const HomePage: React.FC<Props> = ({
     return conditionalComponent;
   };
 
+  const OnCopyHandler = (data: any) => {
+    const updatedPathwayWrapper = { ...pathwayComponent };
+    const updatedPathwayComponent = pathwayComponentCards.filter(
+      (item: any) => item.CTID == data.CTID
+    );
+    const newPending = {
+      ...updatedPathwayComponent[0],
+      CTID: `ce-${uuidv4()}`,
+      RowId: uuidv4(),
+      HasCondition: [],
+      PrecededBy: [],
+      Precedes: [],
+      HasChild: [],
+      RowNumber: 0,
+      ColumnNumber: 0,
+      IsChildOf: [],
+      HasProgressionLevel: [],
+    };
+    updatedPathwayWrapper?.PendingComponents?.push(newPending);
+    dispatch(updateMappedDataRequest(updatedPathwayWrapper));
+    // console.log(newPending);
+  };
+
   const onDeleteHandler = (data: any) => {
     const updatedPathwayWrapper = { ...pathwayComponent };
     const updatedPathway = { ...updatedPathwayWrapper.Pathway };
@@ -1439,7 +1476,7 @@ const HomePage: React.FC<Props> = ({
           end: id,
         });
         e?.target?.classList?.add('active');
-        debugger;
+        //  debugger;
         const startCard: any = _.get(
           [
             ...pathwayComponentCards,
@@ -1605,6 +1642,11 @@ const HomePage: React.FC<Props> = ({
               tempCon.push({ start: card?.CTID || card?.RowId, end: child });
             });
           }
+          // if (card?.Precedes?.length > 0) {
+          //   card?.Precedes?.map((child: string) => {
+          //     tempCon.push({ start:card?.CTID || card?.RowId  , end:child });
+          //   });
+          // }
           if (card?.HasChild?.length > 0) {
             card?.HasChild?.map((child: string) => {
               tempCon.push({ start: card?.CTID || card?.RowId, end: child });
@@ -1642,6 +1684,16 @@ const HomePage: React.FC<Props> = ({
                       }
                     });
                   }
+                  // if (card?.Precedes?.length > 0) {
+                  //   card?.Precedes?.map((_preceded: any) => {
+                  //     if (_preceded !== target) {
+                  //       tempCon?.push({
+                  //         start: card?.CTID || card?.RowId,
+                  //         end: _preceded,
+                  //       });
+                  //     }
+                  //   });
+                  // }
                   if (card?.HasChild?.length > 0) {
                     card?.HasChild?.map((_preceded: any) => {
                       if (_preceded !== target) {
@@ -1700,6 +1752,24 @@ const HomePage: React.FC<Props> = ({
                   });
                 });
               }
+              // if (
+              //   compCond?.RowId === condition &&
+              //   card?.Precedes?.length > 0 &&
+              //   compCond?.TargetComponent?.length > 0
+              // ) {
+              //   card?.Precedes?.map((preced: string) => {
+              //     compCond?.Precedes?.map((target: string) => {
+              //       if (preced === target) {
+              //         const itemToRemove = tempCon?.findIndex(
+              //           (item: any) =>
+              //             item?.start === card?.CTID ||
+              //             (card?.RowId && item?.end === preced)
+              //         );
+              //         tempCon?.splice(itemToRemove, 1);
+              //       }
+              //     });
+              //   });
+              // }
               if (
                 compCond?.RowId === condition &&
                 card?.HasChild?.length > 0 &&
@@ -1909,7 +1979,7 @@ const HomePage: React.FC<Props> = ({
     }
   };
   const checkIfSameRow = (item: any) => {
-    debugger;
+    //debu gger;
     const filteredEndComponent = [
       ...pathwayComponentCards,
       ...updatedPathwayComponentConditionCards,
@@ -2179,7 +2249,7 @@ const HomePage: React.FC<Props> = ({
     }
   };
   const CheckIfItsGoingtoDestination = (item: any) => {
-    debugger;
+    // debugger;
     const filteredEndComponent = [
       ...pathwayComponentCards,
       ...updatedPathwayComponentConditionCards,
@@ -2591,6 +2661,7 @@ const HomePage: React.FC<Props> = ({
     if (!column.semesters || !column.semesters.length) {
       // if (pathwayComponent?.Pathway?.HasProgressionModel !== undefined) {
       // }
+
       const columnNumber = pathwayComponentCards
         ?.filter((card: any) => card.HasProgressionLevel === column.CTID)
         .reduce((acc: any, curr: any) => {
@@ -2600,6 +2671,7 @@ const HomePage: React.FC<Props> = ({
             return curr.ColumnNumber;
           }
         }, 1);
+
       const rowNumber = pathwayComponentCards
         ?.filter((card: any) => card.HasProgressionLevel === column.CTID)
         .reduce((acc: any, curr: any) => {
@@ -2630,6 +2702,7 @@ const HomePage: React.FC<Props> = ({
           }
         }, 1);
       const maxRowNumber = Math.max(rowNumber, conditinalComponentRowNumber);
+      // console.log( Math.max(columnNumber, conditinalComponentColumnNumber));
       const destinationComponent =
         pathwayComponent?.Pathway?.HasDestinationComponent;
       {
@@ -2951,6 +3024,12 @@ const HomePage: React.FC<Props> = ({
                                     ) ||
                                     item?.Type?.toLowerCase().includes(
                                       'WorkExperienceComponent'.toLowerCase()
+                                    ) ||
+                                    item?.Type?.toLowerCase().includes(
+                                      'collection'.toLowerCase()
+                                    ) ||
+                                    item?.Type?.toLowerCase().includes(
+                                      'multi'.toLowerCase()
                                     )
                                   }
                                   isConditionalCard={item?.Type?.toLowerCase().includes(
@@ -2972,6 +3051,7 @@ const HomePage: React.FC<Props> = ({
                                   columnNumber={column_num}
                                   HasProgressionLevel={column.CTID}
                                   onDelete={onDeleteHandler}
+                                  onCopy={OnCopyHandler}
                                   updatedPathwayComponentConditionCards={
                                     updatedPathwayComponentConditionCards
                                   }
@@ -3025,6 +3105,7 @@ const HomePage: React.FC<Props> = ({
                             forwardRef={wrapperRef}
                             leftpanelSelectedElem={leftpanelSelectedElem}
                             onDelete={onDeleteHandler}
+                            onCopy={OnCopyHandler}
                             rowNumber={0}
                             columnNumber={0}
                             HasProgressionLevel=""
@@ -3174,7 +3255,7 @@ const HomePage: React.FC<Props> = ({
             <Layout
               className="site-layout"
               style={{
-                marginLeft: !collapsed ? '277px' : '0px',
+                marginLeft: !collapsed ? '325px' : '0px',
               }}
             >
               {!isViewMode && (
@@ -3239,9 +3320,10 @@ const HomePage: React.FC<Props> = ({
                                 }}
                               >
                                 <div
+                                  id="stickyDiv"
                                   style={{
-                                    position: 'relative',
-                                    top: sticky,
+                                    position: 'sticky',
+                                    // top: sticky,
                                     zIndex: 1000,
                                     height: '30px',
                                     backgroundColor: `${
@@ -3445,6 +3527,52 @@ const HomePage: React.FC<Props> = ({
                 </div>
               ))
             : ''}
+        </Modal>
+      )}
+      {showMessage && (
+        <Modal
+          width="30vw"
+          visible={showMessage}
+          title="Updates to the Pathway Builder"
+          footer={[]}
+          onCancel={() => {
+            setShowMessage(false);
+          }}
+        >
+          <div>
+            New Updates have been made to the Pathway Builder. For more
+            information use the help icon on the right corner of the Pathway
+            Builder tool.
+            <ul>
+              <li>
+                Search for components in an existing published pathway and link
+                directly to the pathway from where the component is used.
+              </li>
+              <li>
+                Search for components in an existing published pathway and copy
+                the component to avoid entering data manually.
+              </li>
+              <li>Copy existing components from the board</li>
+              <li>
+                Added <b>Collection</b> and <b>Multi</b> Components to the
+                Component Library.
+              </li>
+            </ul>
+            <Row>
+              <Col span="1"></Col>
+              <Col span="6">
+                <img src={Search} alt="Start with Destination" />
+              </Col>
+              <Col span="1"></Col>
+              <Col span="6">
+                <img src={Copy} alt="Start with Destination" />
+              </Col>
+              <Col span="1"></Col>
+              <Col span="6">
+                <img src={NewComponents} alt="Start with Destination" />
+              </Col>
+            </Row>
+          </div>
         </Modal>
       )}
     </>

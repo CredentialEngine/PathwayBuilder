@@ -86,6 +86,11 @@
   font-weight: bold;
   color: $primary-dark;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-block;
 }
 
 .editPathway {

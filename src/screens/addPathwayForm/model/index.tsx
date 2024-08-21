@@ -18,10 +18,15 @@ export class PathwayEntity implements pathway {
   CTID: string;
   HasDestinationComponent: string[];
   HasProgressionModel: string[];
+  LifeCycleStatusType: string[];
   IndustryType: [ResourceSummary];
   OccupationType: [ResourceSummary];
   InstructionalProgram: [ResourceSummary];
   SubjectWebpage: '';
+  LatestVersion: '';
+  PreviousVersion: '';
+  NextVersion: '';
+  VersionIdentifier: '';
   Keyword: string[];
   Subject: string[];
   LastUpdated: '';
