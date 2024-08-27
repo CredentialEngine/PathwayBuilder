@@ -2,11 +2,7 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  IS_LOCALHOST,
-  sanboxSetting,
-  TEMP_BASE_URL,
-} from './apiConfig/setting';
+import { IS_LOCALHOST } from './apiConfig/setting';
 import './App.scss';
 
 import Button from './components/button';
@@ -107,7 +103,7 @@ const App = () => {
     const url = window.location.href;
     if (url?.toLowerCase().includes('?id=')) {
       const pathwayIdFromUrl = url?.toLowerCase().split('id=').pop();
-      const pathwayViewFromUrl = sanboxSetting.api.url
+      const pathwayViewFromUrl = `${process.env.REACT_APP_API_URL}`
         ?.toLowerCase()
         .includes('finder')
         ? 'true'
@@ -227,7 +223,7 @@ const App = () => {
       setIsAddPathwayFormVisible(false);
       setIsEditPathwayFormVisible(false);
     } else {
-      window.location.href = TEMP_BASE_URL;
+      window.location.href = `${process.env.REACT_APP_API_URL}`;
     }
   };
   return pathwayLoad?.valid ? (
@@ -351,8 +347,8 @@ const App = () => {
             visible={isSelectOrganizationsVisible}
             onOk={selectOrgOkHandler}
             onCancel={() => {
-              window.location.href = TEMP_BASE_URL;
-              //window.location.href = `${process.env.REACT_APP_API_BASE_URL}`;
+              //window.location.href = TEMP_BASE_URL;
+              window.location.href = `${process.env.REACT_APP_API_URL}`;
             }}
             footer={[
               <>

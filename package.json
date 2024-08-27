@@ -4,7 +4,19 @@
   "private": true,
   "scripts": {
     "start": "webpack serve --config webpack/webpack.config.js --env env=dev",
+    "start:localEditor": "cross-env NODE_ENV=localEditor webpack serve --config webpack/webpack.config.js",
+    "start:localFinder": "cross-env NODE_ENV=localFinder webpack serve --config webpack/webpack.config.js",
+    "start:sandboxEditor": "cross-env NODE_ENV=sandboxEditor webpack serve --config webpack/webpack.config.js",
+    "start:sandboxFinder": "cross-env NODE_ENV=sandboxFinder webpack serve --config webpack/webpack.config.js",
+    "start:prodEditor": "cross-env NODE_ENV=prodEditor webpack serve --config webpack/webpack.config.js",
+    "start:prodFinder": "cross-env NODE_ENV=prodFinder webpack serve --config webpack/webpack.config.js",
     "build": "webpack --config webpack/webpack.config.js --env env=prod",
+    "build:LocalEditor": "cross-env NODE_ENV=localEditor webpack --config webpack/webpack.config.js",
+    "build:localViewer": "cross-env NODE_ENV=localFinder webpack --config webpack/webpack.config.js",
+    "build:sandboxEditor": "cross-env NODE_ENV=sandboxEditor webpack --config webpack/webpack.config.js",
+    "build:sandboxFinder": "cross-env NODE_ENV=sandboxFinder webpack --config webpack/webpack.config.js",
+    "build:prodEditor": "cross-env NODE_ENV=prodEditor webpack --config webpack/webpack.config.js",
+    "build:prodFinder": "cross-env NODE_ENV=prodFinder webpack --config webpack/webpack.config.js",
     "lint": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx,json}\"",
     "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "test": "jest"
@@ -23,6 +35,7 @@
     "antd": "^4.21.3",
     "axios": "^0.27.2",
     "babel-plugin-macros": "^3.1.0",
+    "dotenv": "^16.4.5",
     "lodash": "^4.17.21",
     "memoize-one": "^6.0.0",
     "moment": "^2.29.3",
@@ -57,6 +70,7 @@
     "babel-loader": "^8.2.5",
     "babel-plugin-dynamic-import-node": "^2.3.3",
     "babel-preset-jest": "^29.2.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^8.5.0",
@@ -79,11 +93,12 @@
     "react-xarrows": "^2.0.2",
     "sass": "^1.53.0",
     "sass-loader": "^13.0.2",
+    "terser-webpack-plugin": "^5.3.10",
     "url-loader": "^4.1.1",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9.2",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.10.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json}": [

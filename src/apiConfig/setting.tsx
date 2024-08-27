@@ -54,9 +54,6 @@ export const IS_LOCALHOST = Boolean(
     )
 );
 
-export const TEMP_BASE_URL =
-  process.env.NODE_ENV !== 'production'
-    ? sanboxSetting.api.url
-    : productionSetting.api.url;
+export const TEMP_BASE_URL = process.env.REACT_APP_API_URL;
 
 export const progressionModelUrl = TEMP_BASE_URL + 'progressionmodel';
